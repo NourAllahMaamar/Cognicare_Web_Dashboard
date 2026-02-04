@@ -37,6 +37,7 @@ function Home() {
             <a href="#features">Features</a>
             <a href="#about">About</a>
             <a href="#download">Download</a>
+            <a href="/admin/login" className="admin-link">Admin</a>
           </nav>
         </header>
 
