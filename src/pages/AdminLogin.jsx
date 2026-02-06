@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Grainient from '../components/Grainient';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './AdminLogin.css';
 
 function AdminLogin() {
@@ -9,6 +11,7 @@ function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ function AdminLogin() {
 
       // Check if user is admin
       if (data.user.role !== 'admin') {
-        throw new Error('Access denied. Admin privileges required.');
+        throw new Error(t('adminLogin.accessDenied'));
       }
 
       // Store token and user data
@@ -78,8 +81,9 @@ function AdminLogin() {
       <div className="login-content">
         <div className="login-container">
           <div className="login-header">
-            <h1 className="login-title">🧠 CogniCare Admin</h1>
-            <p className="login-subtitle">Dashboard Access</p>
+            <LanguageSwitcher />
+            <h1>{t('adminLogin.title')}</h1>
+            <p>{t('adminLogin.subtitle')}</p>
           </div>
 
           <form className="login-form" onSubmit={handleLogin}>
@@ -91,7 +95,7 @@ function AdminLogin() {
             )}
 
             <div className="form-group">
-              <label htmlFor="email">Email Address</label>
+              <label htmlFor="email">{t('adminLogin.email')}</label>
               <input
                 type="email"
                 id="email"
@@ -104,13 +108,13 @@ function AdminLogin() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t('adminLogin.password')}</label>
               <input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder={t('adminLogin.password')}
                 required
                 autoComplete="current-password"
               />
@@ -120,16 +124,16 @@ function AdminLogin() {
               {loading ? (
                 <>
                   <span className="spinner"></span>
-                  Signing in...
+                  {t('adminLogin.signing')}
                 </>
               ) : (
-                'Sign In'
+                t('adminLogin.signIn')
               )}
             </button>
           </form>
 
           <div className="login-footer">
-            <a href="/" className="back-link">← Back to Home</a>
+            <a href="/" className="back-link">← {t('adminLogin.backToHome')}</a>
           </div>
         </div>
       </div>

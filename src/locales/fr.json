@@ -1,0 +1,153 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "about": "À propos",
+    "download": "Télécharger",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Renforcez Votre Santé Cognitive",
+    "subtitle": "Une plateforme complète pour le développement cognitif personnalisé et la gestion des soins de santé",
+    "downloadApp": "Télécharger l'App",
+    "learnMore": "En Savoir Plus"
+  },
+  "features": {
+    "title": "Pourquoi Choisir CogniCare?",
+    "multiLanguage": {
+      "title": "Support Multilingue",
+      "description": "Disponible en anglais, français et arabe avec support RTL pour une accessibilité parfaite"
+    },
+    "crossPlatform": {
+      "title": "Multi-plateforme",
+      "description": "Accessible sur iOS, Android et Web - votre parcours de santé cognitive partout, à tout moment"
+    },
+    "secure": {
+      "title": "Sécurisé et Privé",
+      "description": "Authentification JWT avec stockage crypté pour protéger vos données"
+    },
+    "modernDesign": {
+      "title": "Design Moderne",
+      "description": "Interface Material Design 3 pour une expérience utilisateur intuitive"
+    },
+    "familyFriendly": {
+      "title": "Familial",
+      "description": "Gérez la santé cognitive de toute votre famille depuis une seule plateforme"
+    },
+    "tracking": {
+      "title": "Suivi Personnalisé",
+      "description": "Suivez vos progrès avec des analyses détaillées et des plans de développement cognitif personnalisés"
+    }
+  },
+  "about": {
+    "title": "À Propos de CogniCare",
+    "text1": "CogniCare est votre compagnon de confiance pour la gestion de la santé cognitive. Notre plateforme combine une technologie de pointe avec une expertise en soins de santé pour offrir des programmes de développement cognitif personnalisés adaptés à vos besoins uniques.",
+    "text2": "Que vous cherchiez à améliorer votre mémoire, à renforcer votre concentration ou à maintenir votre bien-être cognitif, CogniCare vous fournit les outils et le soutien dont vous avez besoin pour votre parcours vers une meilleure santé cérébrale."
+  },
+  "download": {
+    "title": "Commencez Aujourd'hui",
+    "subtitle": "Téléchargez CogniCare et commencez votre parcours de santé cognitive",
+    "appStore": {
+      "small": "Télécharger sur",
+      "large": "App Store"
+    },
+    "googlePlay": {
+      "small": "Disponible sur",
+      "large": "Google Play"
+    }
+  },
+  "footer": {
+    "tagline": "Renforcer la santé cognitive grâce à la technologie",
+    "product": "Produit",
+    "support": "Support",
+    "helpCenter": "Centre d'Aide",
+    "contact": "Nous Contacter",
+    "privacy": "Politique de Confidentialité",
+    "copyright": "© 2026 CogniCare. Tous droits réservés."
+  },
+  "adminLogin": {
+    "title": "Connexion Admin",
+    "subtitle": "Accéder au tableau de bord administratif",
+    "email": "Adresse Email",
+    "password": "Mot de Passe",
+    "signIn": "Se Connecter",
+    "signing": "Connexion en cours...",
+    "backToHome": "Retour à l'Accueil",
+    "accessDenied": "Accès refusé. Privilèges administrateur requis.",
+    "loginFailed": "Échec de la connexion"
+  },
+  "language": {
+    "select": "Langue",
+    "en": "Anglais",
+    "fr": "Français",
+    "ar": "Arabe"
+  },
+  "dashboard": {
+    "title": "Admin CogniCare",
+    "welcome": "Bon retour",
+    "subtitle": "Gérez votre plateforme CogniCare",
+    "logout": "Déconnexion",
+    "loading": "Chargement...",
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "users": "Gestion des Utilisateurs"
+    },
+    "stats": {
+      "totalUsers": "Utilisateurs Totaux",
+      "activeAccounts": "Comptes actifs",
+      "familyAccounts": "Comptes Familiaux",
+      "regularUsers": "Utilisateurs réguliers",
+      "healthcareProviders": "Professionnels de Santé",
+      "medicalProfessionals": "Professionnels médicaux",
+      "volunteers": "Bénévoles",
+      "communityHelpers": "Aides communautaires"
+    },
+    "quickActions": {
+      "title": "Actions Rapides",
+      "addUser": "Ajouter un Utilisateur",
+      "manageUsers": "Gérer les Utilisateurs",
+      "viewReports": "Voir les Rapports",
+      "settings": "Paramètres"
+    },
+    "users": {
+      "title": "Gestion des Utilisateurs",
+      "addNew": "Ajouter un Nouvel Utilisateur",
+      "name": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "role": "Rôle",
+      "joined": "Inscrit",
+      "actions": "Actions",
+      "edit": "Modifier l'utilisateur",
+      "delete": "Supprimer l'utilisateur",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet utilisateur?"
+    },
+    "modal": {
+      "addUser": "Ajouter un Nouvel Utilisateur",
+      "editUser": "Modifier l'Utilisateur",
+      "close": "Fermer",
+      "fullName": "Nom Complet",
+      "email": "Email",
+      "phone": "Téléphone (optionnel)",
+      "password": "Mot de Passe",
+      "role": "Rôle",
+      "cancel": "Annuler",
+      "create": "Créer l'Utilisateur",
+      "update": "Mettre à Jour l'Utilisateur"
+    },
+    "roles": {
+      "family": "Famille",
+      "doctor": "Docteur",
+      "volunteer": "Bénévole",
+      "admin": "Admin"
+    },
+    "messages": {
+      "userCreated": "Utilisateur créé avec succès!",
+      "userUpdated": "Utilisateur mis à jour avec succès!",
+      "userDeleted": "Utilisateur supprimé avec succès!",
+      "createFailed": "Échec de la création de l'utilisateur",
+      "updateFailed": "Échec de la mise à jour de l'utilisateur",
+      "deleteFailed": "Échec de la suppression de l'utilisateur"
+    }
+  }
+}

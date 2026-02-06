@@ -1,0 +1,153 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "about": "About",
+    "download": "Download",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Empower Your Cognitive Health",
+    "subtitle": "A comprehensive platform for personalized cognitive development and healthcare management",
+    "downloadApp": "Download App",
+    "learnMore": "Learn More"
+  },
+  "features": {
+    "title": "Why Choose CogniCare?",
+    "multiLanguage": {
+      "title": "Multi-Language Support",
+      "description": "Available in English, French, and Arabic with RTL support for seamless accessibility"
+    },
+    "crossPlatform": {
+      "title": "Cross-Platform",
+      "description": "Access on iOS, Android, and Web - your cognitive health journey anywhere, anytime"
+    },
+    "secure": {
+      "title": "Secure & Private",
+      "description": "JWT-based authentication with encrypted storage to keep your data safe"
+    },
+    "modernDesign": {
+      "title": "Modern Design",
+      "description": "Beautiful Material Design 3 interface for an intuitive user experience"
+    },
+    "familyFriendly": {
+      "title": "Family-Friendly",
+      "description": "Manage cognitive health for your entire family from a single platform"
+    },
+    "tracking": {
+      "title": "Personalized Tracking",
+      "description": "Track progress with detailed insights and personalized cognitive development plans"
+    }
+  },
+  "about": {
+    "title": "About CogniCare",
+    "text1": "CogniCare is your trusted companion in cognitive health management. Our platform combines cutting-edge technology with healthcare expertise to deliver personalized cognitive development programs tailored to your unique needs.",
+    "text2": "Whether you're looking to improve memory, enhance focus, or maintain cognitive wellness, CogniCare provides the tools and support you need on your journey to better brain health."
+  },
+  "download": {
+    "title": "Get Started Today",
+    "subtitle": "Download CogniCare and begin your cognitive health journey",
+    "appStore": {
+      "small": "Download on the",
+      "large": "App Store"
+    },
+    "googlePlay": {
+      "small": "Get it on",
+      "large": "Google Play"
+    }
+  },
+  "footer": {
+    "tagline": "Empowering cognitive health through technology",
+    "product": "Product",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "contact": "Contact Us",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2026 CogniCare. All rights reserved."
+  },
+  "adminLogin": {
+    "title": "Admin Login",
+    "subtitle": "Access the administrative dashboard",
+    "email": "Email Address",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signing": "Signing in...",
+    "backToHome": "Back to Home",
+    "accessDenied": "Access denied. Admin privileges required.",
+    "loginFailed": "Login failed"
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "fr": "French",
+    "ar": "Arabic"
+  },
+  "dashboard": {
+    "title": "CogniCare Admin",
+    "welcome": "Welcome back",
+    "subtitle": "Manage your CogniCare platform",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "tabs": {
+      "overview": "Overview",
+      "users": "User Management"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "activeAccounts": "Active accounts",
+      "familyAccounts": "Family Accounts",
+      "regularUsers": "Regular users",
+      "healthcareProviders": "Healthcare Providers",
+      "medicalProfessionals": "Medical professionals",
+      "volunteers": "Volunteers",
+      "communityHelpers": "Community helpers"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "addUser": "Add User",
+      "manageUsers": "Manage Users",
+      "viewReports": "View Reports",
+      "settings": "Settings"
+    },
+    "users": {
+      "title": "User Management",
+      "addNew": "Add New User",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "joined": "Joined",
+      "actions": "Actions",
+      "edit": "Edit user",
+      "delete": "Delete user",
+      "deleteConfirm": "Are you sure you want to delete this user?"
+    },
+    "modal": {
+      "addUser": "Add New User",
+      "editUser": "Edit User",
+      "close": "Close",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "password": "Password",
+      "role": "Role",
+      "cancel": "Cancel",
+      "create": "Create User",
+      "update": "Update User"
+    },
+    "roles": {
+      "family": "Family",
+      "doctor": "Doctor",
+      "volunteer": "Volunteer",
+      "admin": "Admin"
+    },
+    "messages": {
+      "userCreated": "User created successfully!",
+      "userUpdated": "User updated successfully!",
+      "userDeleted": "User deleted successfully!",
+      "createFailed": "Failed to create user",
+      "updateFailed": "Failed to update user",
+      "deleteFailed": "Failed to delete user"
+    }
+  }
+}

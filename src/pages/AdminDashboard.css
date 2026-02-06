@@ -370,6 +370,16 @@
   gap: 0.75rem;
 }
 
+[dir="rtl"] .user-cell {
+  flex-direction: row-reverse !important;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+[dir="rtl"] .user-avatar {
+  order: 2;
+}
+
 .user-avatar {
   width: 36px;
   height: 36px;
@@ -607,4 +617,84 @@
   .actions-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* RTL Support */
+[dir="rtl"] .dashboard-nav {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .nav-actions {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .dashboard-tabs {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .stats-grid,
+[dir="rtl"] .actions-grid {
+  direction: rtl;
+}
+
+[dir="rtl"] .users-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .users-table {
+  direction: rtl;
+}
+
+[dir="rtl"] .users-table th {
+  text-align: right;
+}
+
+[dir="rtl"] .users-table td {
+  text-align: right;
+}
+
+[dir="rtl"] .role-badge {
+  direction: rtl;
+}
+
+[dir="rtl"] .action-buttons {
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .modal-actions {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .form-group label {
+  text-align: right;
+}
+
+[dir="rtl"] .form-group input,
+[dir="rtl"] .form-group select {
+  text-align: right;
+}
+
+[dir="rtl"] .modal-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .error-message,
+[dir="rtl"] .success-banner {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .stat-card {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .action-card {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .dashboard-header h2,
+[dir="rtl"] .dashboard-subtitle,
+[dir="rtl"] .section-title {
+  text-align: right;
 }

@@ -37,8 +37,10 @@
 
 .login-header {
   text-align: center;
-  margin-bottom: 2.5rem;
-}
+  margin-bottom: 2.5rem;  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;}
 
 .login-title {
   font-size: 2rem;
@@ -171,4 +173,25 @@
   .login-title {
     font-size: 1.75rem;
   }
+}
+
+/* RTL Support */
+[dir="rtl"] .login-header {
+  text-align: center;
+}
+
+[dir="rtl"] .form-group label {
+  text-align: right;
+}
+
+[dir="rtl"] .form-group input {
+  text-align: right;
+}
+
+[dir="rtl"] .back-link {
+  direction: rtl;
+}
+
+[dir="rtl"] .error-message {
+  text-align: right;
 }

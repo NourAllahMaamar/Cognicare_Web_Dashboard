@@ -26,6 +26,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
   padding: 1.5rem 3rem;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
@@ -417,4 +418,33 @@
   .home-footer {
     padding: 2rem 1.5rem 1rem;
   }
+}
+
+/* RTL Support */
+[dir="rtl"] .home-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .nav-menu {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .hero-buttons {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .download-buttons {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .footer-content {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .footer-links {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .download-text {
+  align-items: flex-end;
 }

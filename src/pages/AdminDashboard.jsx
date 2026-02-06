@@ -1,8 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,7 +118,7 @@ function AdminDashboard() {
         throw new Error(data.message || 'Failed to create user');
       }
 
-      setSuccessMessage('User created successfully!');
+      setSuccessMessage(t('dashboard.messages.userCreated'));
       setShowAddUserModal(false);
       setFormData({
         fullName: '',
@@ -164,7 +167,7 @@ function AdminDashboard() {
         throw new Error(data.message || 'Failed to update user');
       }
 
-      setSuccessMessage('User updated successfully!');
+      setSuccessMessage(t('dashboard.messages.userUpdated'));
       setEditingUser(null);
       setFormData({
         fullName: '',
@@ -182,7 +185,7 @@ function AdminDashboard() {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) {
+    if (!window.confirm(t('dashboard.users.deleteConfirm'))) {
       return;
     }
 
@@ -205,7 +208,7 @@ function AdminDashboard() {
         throw new Error(data.message || 'Failed to delete user');
       }
 
-      setSuccessMessage('User deleted successfully!');
+      setSuccessMessage(t('dashboard.messages.userDeleted'));
       fetchUsers(token);
       
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -258,12 +261,13 @@ function AdminDashboard() {
     <div className="admin-dashboard">
       <nav className="dashboard-nav">
         <div className="nav-brand">
-          <h1>🧠 CogniCare Admin</h1>
+          <h1>🧠 {t('dashboard.title')}</h1>
         </div>
         <div className="nav-actions">
+          <LanguageSwitcher />
           <span className="user-name">{user.fullName}</span>
           <button onClick={handleLogout} className="logout-btn">
-            Logout
+            {t('dashboard.logout')}
           </button>
         </div>
       </nav>
@@ -277,8 +281,8 @@ function AdminDashboard() {
 
       <div className="dashboard-content">
         <header className="dashboard-header">
-          <h2>Welcome back, {user.fullName?.split(' ')[0]}! 👋</h2>
-          <p className="dashboard-subtitle">Manage your CogniCare platform</p>
+          <h2>{t('dashboard.welcome')}, {user.fullName?.split(' ')[0]}! 👋</h2>
+          <p className="dashboard-subtitle">{t('dashboard.subtitle')}</p>
         </header>
 
         <div className="dashboard-tabs">
@@ -286,13 +290,13 @@ function AdminDashboard() {
             className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            Overview
+            {t('dashboard.tabs.overview')}
           </button>
           <button
             className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            User Management
+            {t('dashboard.tabs.users')}
           </button>
         </div>
 
@@ -302,62 +306,62 @@ function AdminDashboard() {
               <div className="stat-card">
                 <div className="stat-icon">👥</div>
                 <div className="stat-info">
-                  <h3>Total Users</h3>
+                  <h3>{t('dashboard.stats.totalUsers')}</h3>
                   <p className="stat-value">{stats.total}</p>
-                  <span className="stat-change positive">Active accounts</span>
+                  <span className="stat-change positive">{t('dashboard.stats.activeAccounts')}</span>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">👨‍👩‍👧‍👦</div>
                 <div className="stat-info">
-                  <h3>Family Accounts</h3>
+                  <h3>{t('dashboard.stats.familyAccounts')}</h3>
                   <p className="stat-value">{stats.families}</p>
-                  <span className="stat-change">Regular users</span>
+                  <span className="stat-change">{t('dashboard.stats.regularUsers')}</span>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">👨‍⚕️</div>
                 <div className="stat-info">
-                  <h3>Healthcare Providers</h3>
+                  <h3>{t('dashboard.stats.healthcareProviders')}</h3>
                   <p className="stat-value">{stats.doctors}</p>
-                  <span className="stat-change">Medical professionals</span>
+                  <span className="stat-change">{t('dashboard.stats.medicalProfessionals')}</span>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">🤝</div>
                 <div className="stat-info">
-                  <h3>Volunteers</h3>
+                  <h3>{t('dashboard.stats.volunteers')}</h3>
                   <p className="stat-value">{stats.volunteers}</p>
-                  <span className="stat-change">Community helpers</span>
+                  <span className="stat-change">{t('dashboard.stats.communityHelpers')}</span>
                 </div>
               </div>
             </div>
 
             <div className="dashboard-grid">
               <section className="dashboard-section">
-                <h3 className="section-title">Quick Actions</h3>
+                <h3 className="section-title">{t('dashboard.quickActions.title')}</h3>
                 <div className="actions-grid">
                   <button className="action-card" onClick={() => {
                     setActiveTab('users');
                     setShowAddUserModal(true);
                   }}>
                     <span className="action-icon">➕</span>
-                    <span>Add User</span>
+                    <span>{t('dashboard.quickActions.addUser')}</span>
                   </button>
                   <button className="action-card" onClick={() => setActiveTab('users')}>
                     <span className="action-icon">👥</span>
-                    <span>Manage Users</span>
+                    <span>{t('dashboard.quickActions.manageUsers')}</span>
                   </button>
                   <button className="action-card">
                     <span className="action-icon">📈</span>
-                    <span>View Reports</span>
+                    <span>{t('dashboard.quickActions.viewReports')}</span>
                   </button>
                   <button className="action-card">
                     <span className="action-icon">⚙️</span>
-                    <span>Settings</span>
+                    <span>{t('dashboard.quickActions.settings')}</span>
                   </button>
                 </div>
               </section>
@@ -368,9 +372,9 @@ function AdminDashboard() {
         {activeTab === 'users' && (
           <div className="users-section">
             <div className="users-header">
-              <h3 className="section-title">User Management</h3>
+              <h3 className="section-title">{t('dashboard.users.title')}</h3>
               <button className="add-user-btn" onClick={() => setShowAddUserModal(true)}>
-                ➕ Add New User
+                ➕ {t('dashboard.users.addNew')}
               </button>
             </div>
 
@@ -383,12 +387,12 @@ function AdminDashboard() {
                 <table className="users-table">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Phone</th>
-                      <th>Role</th>
-                      <th>Joined</th>
-                      <th>Actions</th>
+                      <th>{t('dashboard.users.name')}</th>
+                      <th>{t('dashboard.users.email')}</th>
+                      <th>{t('dashboard.users.phone')}</th>
+                      <th>{t('dashboard.users.role')}</th>
+                      <th>{t('dashboard.users.joined')}</th>
+                      <th>{t('dashboard.users.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -413,14 +417,14 @@ function AdminDashboard() {
                             <button
                               className="edit-btn"
                               onClick={() => openEditModal(u)}
-                              title="Edit user"
+                              title={t('dashboard.users.edit')}
                             >
                               ✏️
                             </button>
                             <button
                               className="delete-btn"
                               onClick={() => handleDeleteUser(u._id)}
-                              title="Delete user"
+                              title={t('dashboard.users.delete')}
                               disabled={u.role === 'admin'}
                             >
                               🗑️
@@ -442,7 +446,7 @@ function AdminDashboard() {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>{editingUser ? 'Edit User' : 'Add New User'}</h3>
+              <h3>{editingUser ? t('dashboard.modal.editUser') : t('dashboard.modal.addUser')}</h3>
               <button className="close-btn" onClick={closeModal}>✕</button>
             </div>
 
@@ -455,7 +459,7 @@ function AdminDashboard() {
 
             <form onSubmit={editingUser ? handleEditUser : handleAddUser}>
               <div className="form-group">
-                <label htmlFor="fullName">Full Name</label>
+                <label htmlFor="fullName">{t('dashboard.modal.fullName')}</label>
                 <input
                   type="text"
                   id="fullName"
@@ -467,7 +471,7 @@ function AdminDashboard() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t('dashboard.modal.email')}</label>
                 <input
                   type="email"
                   id="email"
@@ -479,7 +483,7 @@ function AdminDashboard() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone">Phone (optional)</label>
+                <label htmlFor="phone">{t('dashboard.modal.phone')}</label>
                 <input
                   type="tel"
                   id="phone"
@@ -491,7 +495,7 @@ function AdminDashboard() {
 
               {!editingUser && (
                 <div className="form-group">
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="password">{t('dashboard.modal.password')}</label>
                   <input
                     type="password"
                     id="password"
@@ -505,7 +509,7 @@ function AdminDashboard() {
               )}
 
               <div className="form-group">
-                <label htmlFor="role">Role</label>
+                <label htmlFor="role">{t('dashboard.modal.role')}</label>
                 <select
                   id="role"
                   name="role"
@@ -513,19 +517,19 @@ function AdminDashboard() {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="family">Family</option>
-                  <option value="doctor">Doctor</option>
-                  <option value="volunteer">Volunteer</option>
-                  <option value="admin">Admin</option>
+                  <option value="family">{t('dashboard.roles.family')}</option>
+                  <option value="doctor">{t('dashboard.roles.doctor')}</option>
+                  <option value="volunteer">{t('dashboard.roles.volunteer')}</option>
+                  <option value="admin">{t('dashboard.roles.admin')}</option>
                 </select>
               </div>
 
               <div className="modal-actions">
                 <button type="button" className="cancel-btn" onClick={closeModal}>
-                  Cancel
+                  {t('dashboard.modal.cancel')}
                 </button>
                 <button type="submit" className="submit-btn">
-                  {editingUser ? 'Update User' : 'Create User'}
+                  {editingUser ? t('dashboard.modal.update') : t('dashboard.modal.create')}
                 </button>
               </div>
             </form>
