@@ -4,7 +4,8 @@
     "features": "Fonctionnalités",
     "about": "À propos",
     "download": "Télécharger",
-    "admin": "Admin"
+    "admin": "Admin",
+    "orgLeader": "Organisation"
   },
   "hero": {
     "title": "Renforcez Votre Santé Cognitive",
@@ -76,6 +77,67 @@
     "accessDenied": "Accès refusé. Privilèges administrateur requis.",
     "loginFailed": "Échec de la connexion"
   },
+  "orgLeaderLogin": {
+    "title": "Connexion Chef d'Organisation",
+    "subtitle": "Accéder à votre tableau de bord d'organisation",
+    "email": "Adresse Email",
+    "password": "Mot de Passe",
+    "signIn": "Se Connecter",
+    "signing": "Connexion en cours...",
+    "backToHome": "Retour à l'Accueil",
+    "accessDenied": "Accès refusé. Privilèges de chef d'organisation requis.",
+    "loginFailed": "Échec de la connexion"
+  },
+  "orgDashboard": {
+    "title": "Tableau de Bord de l'Organisation",
+    "welcome": "Bon retour",
+    "subtitle": "Gérez le personnel de votre organisation",
+    "logout": "Déconnexion",
+    "loading": "Chargement...",
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "staff": "Gestion du Personnel"
+    },
+    "stats": {
+      "totalStaff": "Personnel Total",
+      "activeMembers": "Membres actifs",
+      "psychologists": "Psychologues",
+      "mentalHealth": "Soutien en santé mentale",
+      "speechTherapists": "Orthophonistes",
+      "communication": "Spécialistes de la communication",
+      "occupationalTherapists": "Ergothérapeutes",
+      "motorSkills": "Soutien aux compétences motrices",
+      "doctors": "Docteurs",
+      "medicalProfessionals": "Professionnels médicaux",
+      "volunteers": "Bénévoles & Autres",
+      "communityHelpers": "Aides communautaires"
+    },
+    "staff": {
+      "title": "Gestion du Personnel",
+      "addNew": "Ajouter un Membre du Personnel",
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "joined": "Inscrit",
+      "actions": "Actions",
+      "remove": "Retirer le membre du personnel",
+      "removeConfirm": "Êtes-vous sûr de vouloir retirer ce membre du personnel?"
+    },
+    "modal": {
+      "addStaff": "Ajouter un Membre du Personnel",
+      "close": "Fermer",
+      "email": "Email du Personnel",
+      "emailHelp": "Entrez l'email d'un utilisateur existant",
+      "cancel": "Annuler",
+      "add": "Ajouter le Personnel"
+    },
+    "messages": {
+      "staffAdded": "Membre du personnel ajouté avec succès!",
+      "staffRemoved": "Membre du personnel retiré avec succès!",
+      "addFailed": "Échec de l'ajout du membre du personnel",
+      "removeFailed": "Échec du retrait du membre du personnel"
+    }
+  },
   "language": {
     "select": "Langue",
     "en": "Anglais",
@@ -139,7 +201,11 @@
       "family": "Famille",
       "doctor": "Docteur",
       "volunteer": "Bénévole",
-      "admin": "Admin"
+      "admin": "Admin",
+      "psychologist": "Psychologue",
+      "speech_therapist": "Orthophoniste",
+      "occupational_therapist": "Ergothérapeute",
+      "other": "Autre"
     },
     "messages": {
       "userCreated": "Utilisateur créé avec succès!",

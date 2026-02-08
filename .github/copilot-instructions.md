@@ -2,13 +2,23 @@
 
 ## Project Overview
 
-React + Vite landing page for CogniCare - a cognitive health platform. This is a **marketing/introduction site** for normal users (families), NOT the admin dashboard. The Flutter mobile app and NestJS backend live in sibling `cognicare-mobile/` directory.
+React + Vite landing page for CogniCare - a cognitive health platform. This web app serves multiple purposes:
+1. **Marketing/introduction site** for normal users (families)
+2. **Admin dashboard** for platform administrators (full user CRUD)
+3. **Organization leader dashboard** for managing staff within an organization
+
+The Flutter mobile app and NestJS backend live in sibling `cognicare-mobile/` directory.
 
 ## Architecture & Structure
 
 - **Framework**: React 19 + Vite 7 (ES modules, hot reload)
-- **Entry**: [index.html](../index.html) → [src/main.jsx](../src/main.jsx) → [src/App.jsx](../src/App.jsx) → [src/pages/Home.jsx](../src/pages/Home.jsx)
-- **Pages**: Single-page app - `src/pages/Home.jsx` contains hero, features, about, download, footer sections
+- **Entry**: [index.html](../index.html) → [src/main.jsx](../src/main.jsx) → [src/App.jsx](../src/App.jsx)
+- **Routes**:
+  - `/` - Marketing home page ([Home.jsx](../src/pages/Home.jsx))
+  - `/admin/login` - Admin login ([AdminLogin.jsx](../src/pages/AdminLogin.jsx))
+  - `/admin/dashboard` - Admin dashboard ([AdminDashboard.jsx](../src/pages/AdminDashboard.jsx))
+  - `/org/login` - Organization leader login ([OrgLeaderLogin.jsx](../src/pages/OrgLeaderLogin.jsx))
+  - `/org/dashboard` - Organization leader dashboard ([OrgLeaderDashboard.jsx](../src/pages/OrgLeaderDashboard.jsx))
 - **Components**: `src/components/Grainient.jsx` - WebGL animated gradient background using OGL library
 - **Styling**: CSS per-component (e.g., `Home.css`, `Grainient.css`) + global `App.css`, `index.css`
 
@@ -32,7 +42,14 @@ npm run preview   # Preview production build
 
 ### Environment Setup
 
-No `.env` file currently exists. If backend integration is added, create `.env`:
+No `.env` file required for marketing pages. For dashboard features (admin/org leader), backend must be running.
+
+**Backend connection** (for dashboards):
+- Base URL: `http://localhost:3000/api/v1`
+- Admin endpoints: `/users`, `/auth/login`
+- Organization endpoints: `/organization/:orgId/staff`
+
+If adding environment variables:
 ```env
 VITE_API_URL=http://localhost:3000/api/v1  # CogniCare backend
 ```
@@ -57,6 +74,25 @@ Vite exposes env vars via `import.meta.env.VITE_*` pattern.
    - All sections use glass-morphism: `background: rgba(255,255,255,0.08)`, `backdrop-filter: blur(10px)`
    - Semantic HTML5 sections: `<header>`, `<section>`, `<footer>`
 
+3. **Dashboard authentication pattern** ([AdminLogin.jsx](../src/pages/AdminLogin.jsx), [OrgLeaderLogin.jsx](../src/pages/OrgLeaderLogin.jsx)):
+   - POST to `/api/v1/auth/login` with email/password
+   - Validate user role (`'admin'` or `'organization_leader'`)
+   - Store JWT in `localStorage` (`adminToken` or `orgLeaderToken`)
+   - Store user object in `localStorage` (`adminUser` or `orgLeaderUser`)
+   - Redirect to respective dashboard
+
+4. **Organization staff management pattern** ([OrgLeaderDashboard.jsx](../src/pages/OrgLeaderDashboard.jsx)):
+   - Fetch staff: `GET /api/v1/organization/:orgId/staff`
+   - Add staff: `POST /api/v1/organization/:orgId/staff` with `{ email }`
+   - Remove staff: `DELETE /api/v1/organization/:orgId/staff/:staffId`
+   - All endpoints require `Authorization: Bearer <token>` header
+   - Organization ID retrieved from logged-in user's `organizationId` field
+   - **Staff must already have accounts** - org leader adds existing users by email
+   - Organization-specific roles (`psychologist`, `speech_therapist`, `occupational_therapist`, `other`) can ONLY be created through org staff management, never via public signup
+   - Dashboard displays 6 statistics cards filtering by role type with translated labels
+   - Role badges use color coding: psychologist (purple), speech_therapist (pink), occupational_therapist (orange), doctor (blue), volunteer (green), other (gray)
+   - All role names translated via `t(\`dashboard.roles.${member.role}\`)` pattern
+
 ### Styling Conventions
 
 1. **Glass-morphism theme**:
@@ -75,7 +111,10 @@ Vite exposes env vars via `import.meta.env.VITE_*` pattern.
 
 ### Content & Messaging
 
-**Target audience**: Normal users (families seeking cognitive health tools), NOT healthcare professionals.
+**Target audiences**: 
+1. Normal users (families seeking cognitive health tools) - Marketing pages
+2. Platform admins - Full user management
+3. Organization leaders - Staff management within their organization
 
 Key messaging points from [src/about_our_app](../src/about_our_app):
 - Multi-language support (English, French, Arabic with RTL)
@@ -88,12 +127,24 @@ Key messaging points from [src/about_our_app](../src/about_our_app):
 
 ## Integration Points
 
-### Potential Backend Integration
+### Backend Integration
 
-If adding API calls to `cognicare-mobile/backend`:
+**Marketing pages**: No backend required (static content).
+
+**Dashboards**: Integrate with `cognicare-mobile/backend`:
 - Base URL: `http://localhost:3000/api/v1` (development)
 - Authentication: JWT Bearer tokens
-- Relevant endpoints: `GET /health`, `POST /auth/signup` (for newsletter/early access forms)
+- **Admin endpoints**:
+  - `POST /auth/login` - Login (validate `role === 'admin'`)
+  - `GET /users` - List all users
+  - `POST /users` - Create user
+  - `PATCH /users/:id` - Update user
+  - `DELETE /users/:id` - Delete user
+- **Organization leader endpoints**:
+  - `POST /auth/login` - Login (validate `role === 'organization_leader'`)
+  - `GET /organization/:orgId/staff` - List staff members
+  - `POST /organization/:orgId/staff` - Add staff member (body: `{ email }`)
+  - `DELETE /organization/:orgId/staff/:staffId` - Remove staff member
 
 ### Related Projects
 

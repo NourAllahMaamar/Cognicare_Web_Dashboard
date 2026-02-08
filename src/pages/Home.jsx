@@ -40,6 +40,7 @@ function Home() {
             <a href="#features">{t('nav.features')}</a>
             <a href="#about">{t('nav.about')}</a>
             <a href="#download">{t('nav.download')}</a>
+            <a href="/org/login" className="admin-link">{t('nav.orgLeader')}</a>
             <a href="/admin/login" className="admin-link">{t('nav.admin')}</a>
           </nav>
           <LanguageSwitcher />

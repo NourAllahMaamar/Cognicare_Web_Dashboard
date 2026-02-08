@@ -4,7 +4,8 @@
     "features": "Features",
     "about": "About",
     "download": "Download",
-    "admin": "Admin"
+    "admin": "Admin",
+    "orgLeader": "Organization"
   },
   "hero": {
     "title": "Empower Your Cognitive Health",
@@ -76,6 +77,67 @@
     "accessDenied": "Access denied. Admin privileges required.",
     "loginFailed": "Login failed"
   },
+  "orgLeaderLogin": {
+    "title": "Organization Leader Login",
+    "subtitle": "Access your organization dashboard",
+    "email": "Email Address",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signing": "Signing in...",
+    "backToHome": "Back to Home",
+    "accessDenied": "Access denied. Organization leader privileges required.",
+    "loginFailed": "Login failed"
+  },
+  "orgDashboard": {
+    "title": "Organization Dashboard",
+    "welcome": "Welcome back",
+    "subtitle": "Manage your organization staff",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "tabs": {
+      "overview": "Overview",
+      "staff": "Staff Management"
+    },
+    "stats": {
+      "totalStaff": "Total Staff",
+      "activeMembers": "Active members",
+      "psychologists": "Psychologists",
+      "mentalHealth": "Mental health support",
+      "speechTherapists": "Speech Therapists",
+      "communication": "Communication specialists",
+      "occupationalTherapists": "Occupational Therapists",
+      "motorSkills": "Motor skills support",
+      "doctors": "Doctors",
+      "medicalProfessionals": "Medical professionals",
+      "volunteers": "Volunteers & Others",
+      "communityHelpers": "Community helpers"
+    },
+    "staff": {
+      "title": "Staff Management",
+      "addNew": "Add Staff Member",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "joined": "Joined",
+      "actions": "Actions",
+      "remove": "Remove staff member",
+      "removeConfirm": "Are you sure you want to remove this staff member?"
+    },
+    "modal": {
+      "addStaff": "Add Staff Member",
+      "close": "Close",
+      "email": "Staff Email",
+      "emailHelp": "Enter the email of an existing user",
+      "cancel": "Cancel",
+      "add": "Add Staff"
+    },
+    "messages": {
+      "staffAdded": "Staff member added successfully!",
+      "staffRemoved": "Staff member removed successfully!",
+      "addFailed": "Failed to add staff member",
+      "removeFailed": "Failed to remove staff member"
+    }
+  },
   "language": {
     "select": "Language",
     "en": "English",
@@ -139,7 +201,11 @@
       "family": "Family",
       "doctor": "Doctor",
       "volunteer": "Volunteer",
-      "admin": "Admin"
+      "admin": "Admin",
+      "psychologist": "Psychologist",
+      "speech_therapist": "Speech Therapist",
+      "occupational_therapist": "Occupational Therapist",
+      "other": "Other"
     },
     "messages": {
       "userCreated": "User created successfully!",

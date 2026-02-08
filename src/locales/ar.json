@@ -4,7 +4,8 @@
     "features": "المميزات",
     "about": "حول",
     "download": "تحميل",
-    "admin": "المدير"
+    "admin": "المدير",
+    "orgLeader": "المنظمة"
   },
   "hero": {
     "title": "تمكين صحتك الإدراكية",
@@ -76,6 +77,67 @@
     "accessDenied": "تم رفض الوصول. مطلوب امتيازات المدير.",
     "loginFailed": "فشل تسجيل الدخول"
   },
+  "orgLeaderLogin": {
+    "title": "تسجيل دخول قائد المنظمة",
+    "subtitle": "الوصول إلى لوحة إدارة منظمتك",
+    "email": "عنوان البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "signIn": "تسجيل الدخول",
+    "signing": "جاري تسجيل الدخول...",
+    "backToHome": "العودة إلى الرئيسية",
+    "accessDenied": "تم رفض الوصول. مطلوب امتيازات قائد المنظمة.",
+    "loginFailed": "فشل تسجيل الدخول"
+  },
+  "orgDashboard": {
+    "title": "لوحة إدارة المنظمة",
+    "welcome": "مرحباً بعودتك",
+    "subtitle": "إدارة موظفي منظمتك",
+    "logout": "تسجيل الخروج",
+    "loading": "جاري التحميل...",
+    "tabs": {
+      "overview": "نظرة عامة",
+      "staff": "إدارة الموظفين"
+    },
+    "stats": {
+      "totalStaff": "إجمالي الموظفين",
+      "activeMembers": "أعضاء نشطون",
+      "psychologists": "الأخصائيون النفسيون",
+      "mentalHealth": "دعم الصحة النفسية",
+      "speechTherapists": "معالجو النطق",
+      "communication": "متخصصو التواصل",
+      "occupationalTherapists": "معالجو التأهيل المهني",
+      "motorSkills": "دعم المهارات الحركية",
+      "doctors": "الأطباء",
+      "medicalProfessionals": "متخصصون طبيون",
+      "volunteers": "المتطوعون وآخرون",
+      "communityHelpers": "مساعدو المجتمع"
+    },
+    "staff": {
+      "title": "إدارة الموظفين",
+      "addNew": "إضافة موظف",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "joined": "تاريخ الانضمام",
+      "actions": "الإجراءات",
+      "remove": "إزالة الموظف",
+      "removeConfirm": "هل أنت متأكد من رغبتك في إزالة هذا الموظف؟"
+    },
+    "modal": {
+      "addStaff": "إضافة موظف",
+      "close": "إغلاق",
+      "email": "البريد الإلكتروني للموظف",
+      "emailHelp": "أدخل البريد الإلكتروني لمستخدم موجود",
+      "cancel": "إلغاء",
+      "add": "إضافة الموظف"
+    },
+    "messages": {
+      "staffAdded": "تمت إضافة الموظف بنجاح!",
+      "staffRemoved": "تمت إزالة الموظف بنجاح!",
+      "addFailed": "فشل في إضافة الموظف",
+      "removeFailed": "فشل في إزالة الموظف"
+    }
+  },
   "language": {
     "select": "اللغة",
     "en": "الإنجليزية",
@@ -139,7 +201,11 @@
       "family": "عائلة",
       "doctor": "طبيب",
       "volunteer": "متطوع",
-      "admin": "مدير"
+      "admin": "مدير",
+      "psychologist": "أخصائي نفسي",
+      "speech_therapist": "معالج نطق",
+      "occupational_therapist": "معالج تأهيل مهني",
+      "other": "آخر"
     },
     "messages": {
       "userCreated": "تم إنشاء المستخدم بنجاح!",
