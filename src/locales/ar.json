@@ -80,11 +80,35 @@
   "orgLeaderLogin": {
     "title": "تسجيل دخول قائد المنظمة",
     "subtitle": "الوصول إلى لوحة إدارة منظمتك",
+    "signupTitle": "إنشاء منظمتك",
+    "signupSubtitle": "التسجيل كقائد منظمة",
     "email": "عنوان البريد الإلكتروني",
     "password": "كلمة المرور",
+    "fullName": "الاسم الكامل",
+    "organizationName": "اسم المنظمة",
+    "phone": "رقم الهاتف (اختياري)",
+    "emailPlaceholder": "leader@organization.com",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "fullNamePlaceholder": "أدخل اسمك الكامل",
+    "organizationNamePlaceholder": "أدخل اسم المنظمة",
+    "phonePlaceholder": "+1234567890",
+    "verificationCode": "رمز التحقق",
+    "verificationCodePlaceholder": "أدخل الرمز المكون من 6 أرقام",
     "signIn": "تسجيل الدخول",
     "signing": "جاري تسجيل الدخول...",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "sendVerificationCode": "إرسال رمز التحقق",
+    "sendingCode": "جاري الإرسال...",
+    "createAccount": "إنشاء المنظمة",
+    "creatingOrganization": "جاري إنشاء المنظمة...",
+    "createOrganization": "إنشاء منظمة جديدة",
+    "backToLogin": "العودة لتسجيل الدخول",
+    "or": "أو",
+    "codeSentMessage": "تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.",
+    "resendCode": "إعادة إرسال الرمز",
     "backToHome": "العودة إلى الرئيسية",
+    "adminLink": "تسجيل دخول المدير",
     "accessDenied": "تم رفض الوصول. مطلوب امتيازات قائد المنظمة.",
     "loginFailed": "فشل تسجيل الدخول"
   },
@@ -96,7 +120,9 @@
     "loading": "جاري التحميل...",
     "tabs": {
       "overview": "نظرة عامة",
-      "staff": "إدارة الموظفين"
+      "staff": "إدارة الموظفين",
+      "families": "العائلات",
+      "children": "الأطفال"
     },
     "stats": {
       "totalStaff": "إجمالي الموظفين",
@@ -136,6 +162,32 @@
       "staffRemoved": "تمت إزالة الموظف بنجاح!",
       "addFailed": "فشل في إضافة الموظف",
       "removeFailed": "فشل في إزالة الموظف"
+    },
+    "families": {
+      "title": "إدارة العائلات",
+      "addNew": "إضافة عائلة",
+      "parentName": "اسم ولي الأمر",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "childrenCount": "عدد الأطفال",
+      "joined": "تاريخ الانضمام",
+      "actions": "الإجراءات",
+      "remove": "إزالة العائلة",
+      "noPhone": "غير متوفر",
+      "emptyState": "لا توجد عائلات مسجلة بعد"
+    },
+    "children": {
+      "title": "الأطفال تحت الرعاية",
+      "total": "إجمالي الأطفال",
+      "childName": "اسم الطفل",
+      "gender": "الجنس",
+      "dateOfBirth": "تاريخ الميلاد",
+      "age": "العمر",
+      "diagnosis": "التشخيص",
+      "parent": "ولي الأمر",
+      "noDiagnosis": "غير متوفر",
+      "unknownParent": "غير معروف",
+      "emptyState": "لا يوجد أطفال مسجلين بعد"
     }
   },
   "language": {

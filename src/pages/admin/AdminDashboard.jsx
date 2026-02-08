@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 import './AdminDashboard.css';
 
 function AdminDashboard() {

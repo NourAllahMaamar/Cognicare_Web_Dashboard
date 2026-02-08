@@ -80,11 +80,35 @@
   "orgLeaderLogin": {
     "title": "Organization Leader Login",
     "subtitle": "Access your organization dashboard",
+    "signupTitle": "Create Your Organization",
+    "signupSubtitle": "Register as an organization leader",
     "email": "Email Address",
     "password": "Password",
+    "fullName": "Full Name",
+    "organizationName": "Organization Name",
+    "phone": "Phone Number (Optional)",
+    "emailPlaceholder": "leader@organization.com",
+    "passwordPlaceholder": "Enter your password",
+    "fullNamePlaceholder": "Enter your full name",
+    "organizationNamePlaceholder": "Enter organization name",
+    "phonePlaceholder": "+1234567890",
+    "verificationCode": "Verification Code",
+    "verificationCodePlaceholder": "Enter 6-digit code",
     "signIn": "Sign In",
     "signing": "Signing in...",
+    "loginButton": "Sign In",
+    "loggingIn": "Signing in...",
+    "sendVerificationCode": "Send Verification Code",
+    "sendingCode": "Sending code...",
+    "createAccount": "Create Organization",
+    "creatingOrganization": "Creating organization...",
+    "createOrganization": "Create New Organization",
+    "backToLogin": "Back to Login",
+    "or": "OR",
+    "codeSentMessage": "Verification code sent to your email. Please check your inbox.",
+    "resendCode": "Resend Code",
     "backToHome": "Back to Home",
+    "adminLink": "Admin Login",
     "accessDenied": "Access denied. Organization leader privileges required.",
     "loginFailed": "Login failed"
   },
@@ -96,7 +120,9 @@
     "loading": "Loading...",
     "tabs": {
       "overview": "Overview",
-      "staff": "Staff Management"
+      "staff": "Staff Management",
+      "families": "Families",
+      "children": "Children"
     },
     "stats": {
       "totalStaff": "Total Staff",
@@ -136,6 +162,32 @@
       "staffRemoved": "Staff member removed successfully!",
       "addFailed": "Failed to add staff member",
       "removeFailed": "Failed to remove staff member"
+    },
+    "families": {
+      "title": "Families Management",
+      "addNew": "Add Family",
+      "parentName": "Parent Name",
+      "email": "Email",
+      "phone": "Phone",
+      "childrenCount": "Children Count",
+      "joined": "Joined Date",
+      "actions": "Actions",
+      "remove": "Remove family",
+      "noPhone": "N/A",
+      "emptyState": "No families registered yet"
+    },
+    "children": {
+      "title": "Children Under Care",
+      "total": "Total children",
+      "childName": "Child Name",
+      "gender": "Gender",
+      "dateOfBirth": "Date of Birth",
+      "age": "Age",
+      "diagnosis": "Diagnosis",
+      "parent": "Parent",
+      "noDiagnosis": "N/A",
+      "unknownParent": "Unknown",
+      "emptyState": "No children registered yet"
     }
   },
   "language": {

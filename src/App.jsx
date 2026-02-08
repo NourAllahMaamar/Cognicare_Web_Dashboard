@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Home from './pages/Home';
-import AdminLogin from './pages/AdminLogin';
-import AdminDashboard from './pages/AdminDashboard';
-import OrgLeaderLogin from './pages/OrgLeaderLogin';
-import OrgLeaderDashboard from './pages/OrgLeaderDashboard';
+import Home from './pages/home/Home';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import OrgLeaderLogin from './pages/org-leader/OrgLeaderLogin';
+import OrgLeaderDashboard from './pages/org-leader/OrgLeaderDashboard';
 import './App.css'
 
 function App() {

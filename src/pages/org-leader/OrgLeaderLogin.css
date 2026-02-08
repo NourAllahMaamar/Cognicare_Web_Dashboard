@@ -152,17 +152,84 @@
 .login-footer {
   margin-top: 2rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
-.back-link {
+.back-link,
+.admin-link {
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s ease;
 }
 
-.back-link:hover {
+.back-link:hover,
+.admin-link:hover {
   color: white;
+}
+
+.divider {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.switch-mode-btn,
+.resend-code-btn {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 0.875rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.switch-mode-btn:hover,
+.resend-code-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.resend-code-btn {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.info-message {
+  background: rgba(82, 39, 255, 0.2);
+  border: 1px solid rgba(82, 39, 255, 0.4);
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.info-icon {
+  font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {

@@ -78,15 +78,39 @@
     "loginFailed": "Échec de la connexion"
   },
   "orgLeaderLogin": {
-    "title": "Connexion Chef d'Organisation",
-    "subtitle": "Accéder à votre tableau de bord d'organisation",
+    "title": "Connexion du Leader de l'Organisation",
+    "subtitle": "Accédez au tableau de bord de votre organisation",
+    "signupTitle": "Créer Votre Organisation",
+    "signupSubtitle": "S'inscrire en tant que leader d'organisation",
     "email": "Adresse Email",
     "password": "Mot de Passe",
+    "fullName": "Nom Complet",
+    "organizationName": "Nom de l'Organisation",
+    "phone": "Numéro de Téléphone (Optionnel)",
+    "emailPlaceholder": "leader@organisation.fr",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "fullNamePlaceholder": "Entrez votre nom complet",
+    "organizationNamePlaceholder": "Entrez le nom de l'organisation",
+    "phonePlaceholder": "+33123456789",
+    "verificationCode": "Code de Vérification",
+    "verificationCodePlaceholder": "Entrez le code à 6 chiffres",
     "signIn": "Se Connecter",
     "signing": "Connexion en cours...",
+    "loginButton": "Se Connecter",
+    "loggingIn": "Connexion en cours...",
+    "sendVerificationCode": "Envoyer le Code de Vérification",
+    "sendingCode": "Envoi en cours...",
+    "createAccount": "Créer l'Organisation",
+    "creatingOrganization": "Création en cours...",
+    "createOrganization": "Créer une Nouvelle Organisation",
+    "backToLogin": "Retour à la Connexion",
+    "or": "OU",
+    "codeSentMessage": "Code de vérification envoyé à votre adresse email. Veuillez vérifier votre boîte de réception.",
+    "resendCode": "Renvoyer le Code",
     "backToHome": "Retour à l'Accueil",
-    "accessDenied": "Accès refusé. Privilèges de chef d'organisation requis.",
-    "loginFailed": "Échec de la connexion"
+    "adminLink": "Connexion Admin",
+    "accessDenied": "Accès refusé. Privilèges de leader d'organisation requis.",
+    "loginFailed": "Échec de connexion"
   },
   "orgDashboard": {
     "title": "Tableau de Bord de l'Organisation",
@@ -96,7 +120,9 @@
     "loading": "Chargement...",
     "tabs": {
       "overview": "Vue d'ensemble",
-      "staff": "Gestion du Personnel"
+      "staff": "Gestion du Personnel",
+      "families": "Familles",
+      "children": "Enfants"
     },
     "stats": {
       "totalStaff": "Personnel Total",
@@ -136,6 +162,32 @@
       "staffRemoved": "Membre du personnel retiré avec succès!",
       "addFailed": "Échec de l'ajout du membre du personnel",
       "removeFailed": "Échec du retrait du membre du personnel"
+    },
+    "families": {
+      "title": "Gestion des Familles",
+      "addNew": "Ajouter une Famille",
+      "parentName": "Nom du Parent",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "childrenCount": "Nombre d'Enfants",
+      "joined": "Date d'Inscription",
+      "actions": "Actions",
+      "remove": "Supprimer la famille",
+      "noPhone": "N/D",
+      "emptyState": "Aucune famille enregistrée pour le moment"
+    },
+    "children": {
+      "title": "Enfants Sous Soins",
+      "total": "Total des enfants",
+      "childName": "Nom de l'Enfant",
+      "gender": "Sexe",
+      "dateOfBirth": "Date de Naissance",
+      "age": "Âge",
+      "diagnosis": "Diagnostic",
+      "parent": "Parent",
+      "noDiagnosis": "N/D",
+      "unknownParent": "Inconnu",
+      "emptyState": "Aucun enfant enregistré pour le moment"
     }
   },
   "language": {

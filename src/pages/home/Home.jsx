@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import Grainient from '../components/Grainient';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import Grainient from '../../components/Grainient';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 import './Home.css';
 
 function Home() {

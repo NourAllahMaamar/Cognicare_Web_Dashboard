@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 import './OrgLeaderDashboard.css';
 
 function OrgLeaderDashboard() {
@@ -133,18 +133,20 @@ function OrgLeaderDashboard() {
       }
       setUser(parsedUser);
       
-      // Fetch staff, families, and children for the organization
-      if (parsedUser.organizationId) {
-        fetchStaff(token, parsedUser.organizationId);
-        fetchFamilies(token, parsedUser.organizationId);
-        fetchChildren(token, parsedUser.organizationId);
+      // Use organization data from login response if available
+      if (parsedUser.organization) {
+        // Set data from login response
+        setStaff(parsedUser.organization.staff || []);
+        setFamilies(parsedUser.organization.families || []);
+        setChildren(parsedUser.organization.children || []);
+        setLoading(false);
       } else {
         setLoading(false);
       }
     } catch {
       navigate('/org/login');
     }
-  }, [navigate, fetchStaff, fetchFamilies, fetchChildren]);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('orgLeaderToken');
@@ -157,7 +159,8 @@ function OrgLeaderDashboard() {
     setError('');
     setSuccessMessage('');
 
-    if (!user?.organizationId) {
+    const organizationId = user?.organization?.id;
+    if (!organizationId) {
       setError('Organization not found');
       return;
     }
@@ -168,7 +171,7 @@ function OrgLeaderDashboard() {
       let response;
       if (staffModalMode === 'create') {
         // Create new staff account
-        response = await fetch(`http://localhost:3000/api/v1/organization/${user.organizationId}/staff/create`, {
+        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -178,7 +181,7 @@ function OrgLeaderDashboard() {
         });
       } else {
         // Add existing staff by email
-        response = await fetch(`http://localhost:3000/api/v1/organization/${user.organizationId}/staff`, {
+        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -209,7 +212,7 @@ function OrgLeaderDashboard() {
         password: '',
         role: 'psychologist'
       });
-      fetchStaff(token, user.organizationId);
+      fetchStaff(token, user?.organization?.id);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -225,14 +228,15 @@ function OrgLeaderDashboard() {
     setError('');
     setSuccessMessage('');
 
-    if (!user?.organizationId) {
+    const organizationId = user?.organization?.id;
+    if (!organizationId) {
       setError('Organization not found');
       return;
     }
 
     try {
       const token = localStorage.getItem('orgLeaderToken');
-      const response = await fetch(`http://localhost:3000/api/v1/organization/${user.organizationId}/staff/${staffId}`, {
+      const response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff/${staffId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -250,7 +254,7 @@ function OrgLeaderDashboard() {
       }
 
       setSuccessMessage(t('orgDashboard.messages.staffRemoved'));
-      fetchStaff(token, user.organizationId);
+      fetchStaff(token, user?.organization?.id);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -263,7 +267,8 @@ function OrgLeaderDashboard() {
     setError('');
     setSuccessMessage('');
 
-    if (!user?.organizationId) {
+    const organizationId = user?.organization?.id;
+    if (!organizationId) {
       setError('Organization not found');
       return;
     }
@@ -274,7 +279,7 @@ function OrgLeaderDashboard() {
       let response;
       if (familyModalMode === 'create') {
         // Create new family account with children
-        response = await fetch(`http://localhost:3000/api/v1/organization/${user.organizationId}/families/create`, {
+        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -284,7 +289,7 @@ function OrgLeaderDashboard() {
         });
       } else {
         // Add existing family by email
-        response = await fetch(`http://localhost:3000/api/v1/organization/${user.organizationId}/families`, {
+        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -315,8 +320,8 @@ function OrgLeaderDashboard() {
         password: '',
         children: []
       });
-      fetchFamilies(token, user.organizationId);
-      fetchChildren(token, user.organizationId);
+      fetchFamilies(token, user?.organization?.id);
+      fetchChildren(token, user?.organization?.id);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -332,14 +337,15 @@ function OrgLeaderDashboard() {
     setError('');
     setSuccessMessage('');
 
-    if (!user?.organizationId) {
+    const organizationId = user?.organization?.id;
+    if (!organizationId) {
       setError('Organization not found');
       return;
     }
 
     try {
       const token = localStorage.getItem('orgLeaderToken');
-      const response = await fetch(`http://localhost:3000/api/v1/organization/${user.organizationId}/families/${familyId}`, {
+      const response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families/${familyId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -357,8 +363,8 @@ function OrgLeaderDashboard() {
       }
 
       setSuccessMessage('Family removed successfully!');
-      fetchFamilies(token, user.organizationId);
-      fetchChildren(token, user.organizationId);
+      fetchFamilies(token, user?.organization?.id);
+      fetchChildren(token, user?.organization?.id);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -460,13 +466,13 @@ function OrgLeaderDashboard() {
             className={`tab ${activeTab === 'families' ? 'active' : ''}`}
             onClick={() => setActiveTab('families')}
           >
-            Families
+            {t('orgDashboard.tabs.families')}
           </button>
           <button
             className={`tab ${activeTab === 'children' ? 'active' : ''}`}
             onClick={() => setActiveTab('children')}
           >
-            Children
+            {t('orgDashboard.tabs.children')}
           </button>
         </div>
 
@@ -581,27 +587,30 @@ function OrgLeaderDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    staff.map((member) => (
-                      <tr key={member._id}>
-                        <td>{member.fullName}</td>
-                        <td>{member.email}</td>
-                        <td>
-                          <span className={`role-badge ${member.role}`}>
-                            {t(`dashboard.roles.${member.role}`)}
-                          </span>
-                        </td>
-                        <td>{new Date(member.createdAt).toLocaleDateString()}</td>
-                        <td>
-                          <button
-                            onClick={() => handleRemoveStaff(member._id)}
-                            className="action-button delete"
-                            title={t('orgDashboard.staff.remove')}
-                          >
-                            🗑️
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                    staff.map((member) => {
+                      const memberId = member._id || member.id;
+                      return (
+                        <tr key={memberId}>
+                          <td>{member.fullName}</td>
+                          <td>{member.email}</td>
+                          <td>
+                            <span className={`role-badge ${member.role}`}>
+                              {t(`dashboard.roles.${member.role}`)}
+                            </span>
+                          </td>
+                          <td>{new Date(member.createdAt).toLocaleDateString()}</td>
+                          <td>
+                            <button
+                              onClick={() => handleRemoveStaff(memberId)}
+                              className="action-button delete"
+                              title={t('orgDashboard.staff.remove')}
+                            >
+                              🗑️
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -613,12 +622,12 @@ function OrgLeaderDashboard() {
         {activeTab === 'families' && (
           <div className="tab-content">
             <div className="content-header">
-              <h2>Families</h2>
+              <h2>{t('orgDashboard.families.title')}</h2>
               <button
                 className="action-button primary"
                 onClick={() => setShowAddFamilyModal(true)}
               >
-                + Add Family
+                + {t('orgDashboard.families.addNew')}
               </button>
             </div>
 
@@ -626,40 +635,47 @@ function OrgLeaderDashboard() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Parent Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Children Count</th>
-                    <th>Joined Date</th>
-                    <th>Actions</th>
+                    <th>{t('orgDashboard.families.parentName')}</th>
+                    <th>{t('orgDashboard.families.email')}</th>
+                    <th>{t('orgDashboard.families.phone')}</th>
+                    <th>{t('orgDashboard.families.childrenCount')}</th>
+                    <th>{t('orgDashboard.families.joined')}</th>
+                    <th>{t('orgDashboard.families.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {families.length === 0 ? (
                     <tr>
                       <td colSpan="6" className="empty-state">
-                        No families registered yet
+                        {t('orgDashboard.families.emptyState')}
                       </td>
                     </tr>
                   ) : (
-                    families.map((family) => (
-                      <tr key={family._id}>
-                        <td>{family.fullName}</td>
-                        <td>{family.email}</td>
-                        <td>{family.phone || 'N/A'}</td>
-                        <td>{family.childrenIds?.length || 0}</td>
-                        <td>{new Date(family.createdAt).toLocaleDateString()}</td>
-                        <td>
-                          <button
-                            onClick={() => handleRemoveFamily(family._id)}
-                            className="action-button delete"
-                            title="Remove family"
-                          >
-                            🗑️
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                    families.map((family) => {
+                      const familyId = family._id || family.id;
+                      const familyChildrenCount = children.filter(c => {
+                        const childParentId = c.parentId?.toString() || c.parentId;
+                        return childParentId === familyId?.toString();
+                      }).length;
+                      return (
+                        <tr key={familyId}>
+                          <td>{family.fullName}</td>
+                          <td>{family.email}</td>
+                          <td>{family.phone || t('orgDashboard.families.noPhone')}</td>
+                          <td>{familyChildrenCount}</td>
+                          <td>{new Date(family.createdAt).toLocaleDateString()}</td>
+                          <td>
+                            <button
+                              onClick={() => handleRemoveFamily(familyId)}
+                              className="action-button delete"
+                              title={t('orgDashboard.families.remove')}
+                            >
+                              🗑️
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -671,41 +687,46 @@ function OrgLeaderDashboard() {
         {activeTab === 'children' && (
           <div className="tab-content">
             <div className="content-header">
-              <h2>Children Under Care</h2>
-              <p className="subtitle">Total children: {children.length}</p>
+              <h2>{t('orgDashboard.children.title')}</h2>
+              <p className="subtitle">{t('orgDashboard.children.total')}: {children.length}</p>
             </div>
 
             <div className="table-container">
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Child Name</th>
-                    <th>Gender</th>
-                    <th>Date of Birth</th>
-                    <th>Age</th>
-                    <th>Diagnosis</th>
-                    <th>Parent</th>
+                    <th>{t('orgDashboard.children.childName')}</th>
+                    <th>{t('orgDashboard.children.gender')}</th>
+                    <th>{t('orgDashboard.children.dateOfBirth')}</th>
+                    <th>{t('orgDashboard.children.age')}</th>
+                    <th>{t('orgDashboard.children.diagnosis')}</th>
+                    <th>{t('orgDashboard.children.parent')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {children.length === 0 ? (
                     <tr>
                       <td colSpan="6" className="empty-state">
-                        No children registered yet
+                        {t('orgDashboard.children.emptyState')}
                       </td>
                     </tr>
                   ) : (
                     children.map((child) => {
                       const age = Math.floor((new Date() - new Date(child.dateOfBirth)) / 31557600000);
-                      const parent = families.find(f => f._id === child.parentId?.toString());
+                      // Handle both 'id' (from login response) and '_id' (from API fetch)
+                      const childParentId = child.parentId?.toString() || child.parentId;
+                      const parent = families.find(f => {
+                        const familyId = f._id?.toString() || f.id?.toString();
+                        return familyId === childParentId;
+                      });
                       return (
-                        <tr key={child._id}>
+                        <tr key={child._id || child.id}>
                           <td>{child.fullName}</td>
                           <td>{child.gender}</td>
                           <td>{new Date(child.dateOfBirth).toLocaleDateString()}</td>
                           <td>{age} years</td>
-                          <td>{child.diagnosis || 'N/A'}</td>
-                          <td>{parent?.fullName || 'Unknown'}</td>
+                          <td>{child.diagnosis || t('orgDashboard.children.noDiagnosis')}</td>
+                          <td>{parent?.fullName || t('orgDashboard.children.unknownParent')}</td>
                         </tr>
                       );
                     })
