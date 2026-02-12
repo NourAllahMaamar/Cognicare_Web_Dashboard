@@ -73,7 +73,19 @@
   gap: 0.5rem;
 }
 
-.error-icon {
+.success-message {
+  background: rgba(0, 255, 0, 0.2);
+  border: 1px solid rgba(0, 255, 0, 0.4);
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-icon, .success-icon {
   font-size: 1.2rem;
 }
 
@@ -260,5 +272,9 @@
 }
 
 [dir="rtl"] .error-message {
+  text-align: right;
+}
+
+[dir="rtl"] .success-message {
   text-align: right;
 }

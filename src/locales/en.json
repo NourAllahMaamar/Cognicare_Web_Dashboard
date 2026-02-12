@@ -75,7 +75,8 @@
     "signing": "Signing in...",
     "backToHome": "Back to Home",
     "accessDenied": "Access denied. Admin privileges required.",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "organizationPendingApproval": "Your organization request has been submitted successfully. Please wait for admin approval. You will receive an email notification once your request is reviewed."
   },
   "orgLeaderLogin": {
     "title": "Organization Leader Login",

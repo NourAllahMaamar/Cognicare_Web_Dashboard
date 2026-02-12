@@ -75,7 +75,8 @@
     "signing": "Connexion en cours...",
     "backToHome": "Retour à l'Accueil",
     "accessDenied": "Accès refusé. Privilèges administrateur requis.",
-    "loginFailed": "Échec de la connexion"
+    "loginFailed": "Échec de la connexion",
+    "organizationPendingApproval": "Votre demande d'organisation a été soumise avec succès. Veuillez attendre l'approbation de l'administrateur. Vous recevrez une notification par e-mail une fois votre demande examinée."
   },
   "orgLeaderLogin": {
     "title": "Connexion du Leader de l'Organisation",

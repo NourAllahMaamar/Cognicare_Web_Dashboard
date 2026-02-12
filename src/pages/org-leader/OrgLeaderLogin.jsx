@@ -15,6 +15,7 @@ function OrgLeaderLogin() {
   const [verificationCode, setVerificationCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ function OrgLeaderLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
@@ -61,6 +63,7 @@ function OrgLeaderLogin() {
   const handleSendCode = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
@@ -89,6 +92,7 @@ function OrgLeaderLogin() {
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
@@ -114,7 +118,21 @@ function OrgLeaderLogin() {
         throw new Error(data.message || 'Signup failed');
       }
 
-      // Store tokens and user data
+      // Check if organization needs approval
+      if (data.requiresApproval) {
+        setSuccess(data.message || 'Your organization request has been submitted successfully. Please wait for admin approval.');
+        // Reset form but stay on signup page
+        setCodeSent(false);
+        setVerificationCode('');
+        setEmail('');
+        setPassword('');
+        setFullName('');
+        setPhone('');
+        setOrganizationName('');
+        return;
+      }
+
+      // Store tokens and user data (for non-organization_leader roles)
       localStorage.setItem('orgLeaderToken', data.accessToken);
       localStorage.setItem('orgLeaderRefreshToken', data.refreshToken);
       localStorage.setItem('orgLeaderUser', JSON.stringify(data.user));
@@ -169,6 +187,12 @@ function OrgLeaderLogin() {
                 <div className="error-message">
                   <span className="error-icon">⚠️</span>
                   {error}
+                </div>
+              )}
+              {success && (
+                <div className="success-message">
+                  <span className="success-icon">✅</span>
+                  {success}
                 </div>
               )}
 
@@ -230,6 +254,12 @@ function OrgLeaderLogin() {
                 <div className="error-message">
                   <span className="error-icon">⚠️</span>
                   {error}
+                </div>
+              )}
+              {success && (
+                <div className="success-message">
+                  <span className="success-icon">✅</span>
+                  {success}
                 </div>
               )}
 

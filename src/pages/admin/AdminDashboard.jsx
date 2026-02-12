@@ -152,7 +152,7 @@ function AdminDashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        setPendingOrganizations(data.data || []);
+        setPendingOrganizations(data || []);
       }
     } catch (err) {
       console.error('Failed to fetch pending organizations:', err);
