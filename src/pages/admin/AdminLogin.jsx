@@ -38,8 +38,11 @@ function AdminLogin() {
         throw new Error(t('adminLogin.accessDenied'));
       }
 
-      // Store token and user data
+      // Store tokens and user data
       localStorage.setItem('adminToken', data.accessToken);
+      if (data.refreshToken) {
+        localStorage.setItem('adminRefreshToken', data.refreshToken);
+      }
       localStorage.setItem('adminUser', JSON.stringify(data.user));
 
       // Navigate to dashboard
