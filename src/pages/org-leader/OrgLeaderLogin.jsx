@@ -44,8 +44,9 @@ function OrgLeaderLogin() {
         throw new Error(t('orgLeaderLogin.accessDenied'));
       }
 
-      // Store token and user data
+      // Store tokens and user data
       localStorage.setItem('orgLeaderToken', data.accessToken);
+      localStorage.setItem('orgLeaderRefreshToken', data.refreshToken);
       localStorage.setItem('orgLeaderUser', JSON.stringify(data.user));
 
       // Navigate to dashboard
@@ -113,8 +114,9 @@ function OrgLeaderLogin() {
         throw new Error(data.message || 'Signup failed');
       }
 
-      // Store token and user data
+      // Store tokens and user data
       localStorage.setItem('orgLeaderToken', data.accessToken);
+      localStorage.setItem('orgLeaderRefreshToken', data.refreshToken);
       localStorage.setItem('orgLeaderUser', JSON.stringify(data.user));
 
       // Navigate to dashboard

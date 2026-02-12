@@ -81,17 +81,27 @@ Vite exposes env vars via `import.meta.env.VITE_*` pattern.
    - Store user object in `localStorage` (`adminUser` or `orgLeaderUser`)
    - Redirect to respective dashboard
 
-4. **Organization staff management pattern** ([OrgLeaderDashboard.jsx](../src/pages/OrgLeaderDashboard.jsx)):
+4. **Organization staff management pattern** ([OrgLeaderDashboard.jsx](../src/pages/org-leader/OrgLeaderDashboard.jsx)):
    - Fetch staff: `GET /api/v1/organization/:orgId/staff`
    - Add staff: `POST /api/v1/organization/:orgId/staff` with `{ email }`
-   - Remove staff: `DELETE /api/v1/organization/:orgId/staff/:staffId`
+   - Create staff: `POST /api/v1/organization/my-organization/staff/create` with full user data
+   - Update staff: `PATCH /api/v1/organization/my-organization/staff/:staffId` with `{ fullName, email, phone, role }`
+   - Remove staff: `DELETE /api/v1/organization/my-organization/staff/:staffId`
+   - **Family management**:
+     - Fetch: `GET /api/v1/organization/:orgId/families`
+     - Add: `POST /api/v1/organization/:orgId/families` with `{ email }`
+     - Create: `POST /api/v1/organization/my-organization/families/create` with full user data + optional children array
+     - Update: `PATCH /api/v1/organization/my-organization/families/:familyId` with `{ fullName, email, phone }`
+     - Remove: `DELETE /api/v1/organization/my-organization/families/:familyId`
+   - **Children management**:
+     - Fetch: `GET /api/v1/organization/:orgId/children`
+     - Add to family: `POST /api/v1/organization/my-organization/families/:familyId/children`
+     - Update: `PATCH /api/v1/organization/my-organization/families/:familyId/children/:childId`
+     - Delete: `DELETE /api/v1/organization/my-organization/families/:familyId/children/:childId`
    - All endpoints require `Authorization: Bearer <token>` header
-   - Organization ID retrieved from logged-in user's `organizationId` field
-   - **Staff must already have accounts** - org leader adds existing users by email
-   - Organization-specific roles (`psychologist`, `speech_therapist`, `occupational_therapist`, `other`) can ONLY be created through org staff management, never via public signup
-   - Dashboard displays 6 statistics cards filtering by role type with translated labels
-   - Role badges use color coding: psychologist (purple), speech_therapist (pink), occupational_therapist (orange), doctor (blue), volunteer (green), other (gray)
-   - All role names translated via `t(\`dashboard.roles.${member.role}\`)` pattern
+   - **Modal modes**: Three states (`'add'`, `'create'`, `'edit'`) managed via `staffModalMode` / `familyModalMode`
+   - **Edit pattern**: Click edit button → Modal opens with pre-filled data → Password field optional → Submit calls PATCH endpoint
+   - **CSS**: Edit buttons use `.action-button.edit` with blue hover color (`rgba(59, 130, 246, 0.2)`)
 
 ### Styling Conventions
 
