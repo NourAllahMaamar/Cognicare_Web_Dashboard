@@ -29,6 +29,25 @@ function AdminDashboard() {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewDecision, setReviewDecision] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
+  
+  // All organizations state (for management tab)
+  const [organizations, setOrganizations] = useState([]);
+  const [loadingAllOrgs, setLoadingAllOrgs] = useState(false);
+  const [showOrgModal, setShowOrgModal] = useState(false);
+  const [editingOrg, setEditingOrg] = useState(null);
+  const [orgFormData, setOrgFormData] = useState({
+    organizationName: '',
+    leaderFullName: '',
+    leaderEmail: '',
+    leaderPhone: '',
+    leaderPassword: ''
+  });
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [orgMembers, setOrgMembers] = useState([]);
+  const [loadingMembers, setLoadingMembers] = useState(false);
+  const [pendingOrgInvitations, setPendingOrgInvitations] = useState([]);
+  const [loadingPendingInvites, setLoadingPendingInvites] = useState(false);
+  
   const navigate = useNavigate();
 
   // Handle session expiration
@@ -163,6 +182,118 @@ function AdminDashboard() {
     }
   }, [handleSessionExpired, refreshAccessToken]);
 
+  // Fetch all organizations
+  const fetchAllOrganizations = useCallback(async (token) => {
+    setLoadingAllOrgs(true);
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch('http://localhost:3000/api/v1/organization/all', {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          handleSessionExpired();
+          return;
+        }
+        
+        authToken = newToken;
+        response = await fetch('http://localhost:3000/api/v1/organization/all', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        if (response.status === 401) {
+          handleSessionExpired();
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setOrganizations(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch organizations:', err);
+      setError('Failed to fetch organizations');
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setLoadingAllOrgs(false);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Fetch pending organization invitations
+  const fetchPendingOrgInvitations = useCallback(async (token) => {
+    setLoadingPendingInvites(true);
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch('http://localhost:3000/api/v1/organization/admin/pending-invitations', {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          handleSessionExpired();
+          return;
+        }
+        
+        authToken = newToken;
+        response = await fetch('http://localhost:3000/api/v1/organization/admin/pending-invitations', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        if (response.status === 401) {
+          handleSessionExpired();
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setPendingOrgInvitations(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch pending org invitations:', err);
+    } finally {
+      setLoadingPendingInvites(false);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Fetch organization members (staff and families)
+  const fetchOrgMembers = useCallback(async (orgId) => {
+    setLoadingMembers(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const [staffRes, familiesRes] = await Promise.all([
+        fetch(`http://localhost:3000/api/v1/organization/${orgId}/staff`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`http://localhost:3000/api/v1/organization/${orgId}/families`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
+
+      if (staffRes.ok && familiesRes.ok) {
+        const staff = await staffRes.json();
+        const families = await familiesRes.json();
+        setOrgMembers({ staff: staff || [], families: families || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch members:', err);
+    } finally {
+      setLoadingMembers(false);
+    }
+  }, []);
+
   useEffect(() => {
     // Check authentication
     const token = localStorage.getItem('adminToken');
@@ -182,10 +313,12 @@ function AdminDashboard() {
       setUser(parsedUser);
       fetchUsers(token);
       fetchPendingOrganizations(token);
+      fetchAllOrganizations(token);
+      fetchPendingOrgInvitations(token);
     } catch {
       navigate('/admin/login');
     }
-  }, [navigate, fetchUsers, fetchPendingOrganizations]);
+  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -200,10 +333,14 @@ function AdminDashboard() {
     
     setLoading(true);
     setLoadingOrganizations(true);
+    setLoadingAllOrgs(true);
+    setLoadingPendingInvites(true);
     try {
       await Promise.all([
         fetchUsers(token),
-        fetchPendingOrganizations(token)
+        fetchPendingOrganizations(token),
+        fetchAllOrganizations(token),
+        fetchPendingOrgInvitations(token)
       ]);
       setSuccessMessage('Data refreshed successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -214,6 +351,8 @@ function AdminDashboard() {
     } finally {
       setLoading(false);
       setLoadingOrganizations(false);
+      setLoadingAllOrgs(false);
+      setLoadingPendingInvites(false);
     }
   };
 
@@ -409,6 +548,158 @@ function AdminDashboard() {
     }
   };
 
+  // Organization CRUD operations
+  const handleOrgInputChange = (e) => {
+    setOrgFormData({
+      ...orgFormData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleCreateOrg = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      
+      // Send organization leader invitation (creates pending invitation)
+      const response = await fetch('http://localhost:3000/api/v1/organization/admin/invite-leader', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          organizationName: orgFormData.organizationName,
+          leaderFullName: orgFormData.leaderFullName,
+          leaderEmail: orgFormData.leaderEmail,
+          leaderPhone: orgFormData.leaderPhone,
+          leaderPassword: orgFormData.leaderPassword
+        })
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to send organization invitation');
+      }
+
+      setSuccessMessage('Organization invitation sent! The user will receive an email to accept or reject the organization leadership.');
+      setShowOrgModal(false);
+      setOrgFormData({ 
+        organizationName: '', 
+        leaderFullName: '',
+        leaderEmail: '',
+        leaderPhone: '',
+        leaderPassword: ''
+      });
+      fetchPendingOrgInvitations(token);
+      setTimeout(() => setSuccessMessage(''), 5000);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleUpdateOrg = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`http://localhost:3000/api/v1/organization/${editingOrg._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          organizationName: orgFormData.organizationName,
+          description: orgFormData.description
+        })
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to update organization');
+      }
+
+      setSuccessMessage('Organization updated successfully!');
+      setShowOrgModal(false);
+      setEditingOrg(null);
+      setOrgFormData({ organizationName: '', description: '', leaderEmail: '' });
+      fetchAllOrganizations(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteOrg = async (orgId) => {
+    if (!window.confirm('Are you sure you want to delete this organization? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`http://localhost:3000/api/v1/organization/${orgId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete organization');
+      }
+
+      setSuccessMessage('Organization deleted successfully!');
+      fetchAllOrganizations(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const openEditOrgModal = (org) => {
+    setEditingOrg(org);
+    setOrgFormData({
+      organizationName: org.name,
+      description: org.description || '',
+      leaderEmail: org.leaderId?.email || ''
+    });
+    setShowOrgModal(true);
+  };
+
+  const closeOrgModal = () => {
+    setShowOrgModal(false);
+    setEditingOrg(null);
+    setOrgFormData({ 
+      organizationName: '', 
+      leaderFullName: '',
+      leaderEmail: '',
+      leaderPhone: '',
+      leaderPassword: ''
+    });
+    setError('');
+  };
+
   const openEditModal = (userToEdit) => {
     setEditingUser(userToEdit);
     setFormData({
@@ -448,7 +739,11 @@ function AdminDashboard() {
     total: users.length,
     families: users.filter(u => u.role === 'family').length,
     doctors: users.filter(u => u.role === 'doctor').length,
-    volunteers: users.filter(u => u.role === 'volunteer').length
+    volunteers: users.filter(u => u.role === 'volunteer').length,
+    organizations: organizations.length,
+    orgLeaders: users.filter(u => u.role === 'organization_leader').length,
+    pendingInvites: pendingOrgInvitations.length,
+    pendingReviews: pendingOrganizations.length
   };
 
   return (
@@ -503,10 +798,31 @@ function AdminDashboard() {
             {t('dashboard.tabs.users')}
           </button>
           <button
+            className={`tab-btn ${activeTab === 'manage-orgs' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('manage-orgs');
+              if (organizations.length === 0) {
+                const token = localStorage.getItem('adminToken');
+                fetchAllOrganizations(token);
+              }
+            }}
+          >
+            🏢 Organizations
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'pending-invites' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pending-invites')}
+          >
+            📧 Pending Invitations
+            {pendingOrgInvitations.length > 0 && (
+              <span className="pending-badge">{pendingOrgInvitations.length}</span>
+            )}
+          </button>
+          <button
             className={`tab-btn ${activeTab === 'organizations' ? 'active' : ''}`}
             onClick={() => setActiveTab('organizations')}
           >
-            Pending Organizations
+            Pending Reviews
             {pendingOrganizations.length > 0 && (
               <span className="pending-badge">{pendingOrganizations.length}</span>
             )}
@@ -555,10 +871,19 @@ function AdminDashboard() {
               <div className="stat-card">
                 <div className="stat-icon">🏢</div>
                 <div className="stat-info">
-                  <h3>Pending Organizations</h3>
-                  <p className="stat-value">{pendingOrganizations.length}</p>
-                  <span className={`stat-change ${pendingOrganizations.length > 0 ? 'pending' : ''}`}>
-                    {pendingOrganizations.length > 0 ? 'Awaiting Review' : 'All Reviewed'}
+                  <h3>Organizations</h3>
+                  <p className="stat-value">{stats.organizations}</p>
+                  <span className="stat-change">{stats.orgLeaders} Leaders</span>
+                </div>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-icon">⏳</div>
+                <div className="stat-info">
+                  <h3>Pending Items</h3>
+                  <p className="stat-value">{stats.pendingInvites + stats.pendingReviews}</p>
+                  <span className={`stat-change ${(stats.pendingInvites + stats.pendingReviews) > 0 ? 'pending' : ''}`}>
+                    {stats.pendingInvites} Invites, {stats.pendingReviews} Reviews
                   </span>
                 </div>
               </div>
@@ -579,14 +904,51 @@ function AdminDashboard() {
                     <span className="action-icon">👥</span>
                     <span>{t('dashboard.quickActions.manageUsers')}</span>
                   </button>
-                  <button className="action-card" onClick={() => setActiveTab('organizations')}>
+                  <button className="action-card" onClick={() => {
+                    setActiveTab('manage-orgs');
+                    if (organizations.length === 0) {
+                      const token = localStorage.getItem('adminToken');
+                      fetchAllOrganizations(token);
+                    }
+                  }}>
                     <span className="action-icon">🏢</span>
-                    <span>Review Organizations</span>
+                    <span>Manage Organizations</span>
                   </button>
-                  <button className="action-card">
-                    <span className="action-icon">⚙️</span>
-                    <span>{t('dashboard.quickActions.settings')}</span>
+                  <button className="action-card" onClick={() => setActiveTab('organizations')}>
+                    <span className="action-icon">📋</span>
+                    <span>Review Requests</span>
                   </button>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <h3 className="section-title">📊 Recent Activity</h3>
+                <div className="activity-list">
+                  <div className="activity-item">
+                    <span className="activity-icon">👥</span>
+                    <div className="activity-info">
+                      <p className="activity-text">{stats.total} total users registered</p>
+                      <span className="activity-time">System Overview</span>
+                    </div>
+                  </div>
+                  <div className="activity-item">
+                    <span className="activity-icon">🏢</span>
+                    <div className="activity-info">
+                      <p className="activity-text">{stats.organizations} active organizations</p>
+                      <span className="activity-time">Current Status</span>
+                    </div>
+                  </div>
+                  <div className="activity-item">
+                    <span className="activity-icon">⏳</span>
+                    <div className="activity-info">
+                      <p className="activity-text">
+                        {pendingOrganizations.length > 0 
+                          ? `${pendingOrganizations.length} organization${pendingOrganizations.length > 1 ? 's' : ''} awaiting review`
+                          : 'No pending organization requests'}
+                      </p>
+                      <span className="activity-time">Review Queue</span>
+                    </div>
+                  </div>
                 </div>
               </section>
             </div>
@@ -652,6 +1014,186 @@ function AdminDashboard() {
                               disabled={u.role === 'admin'}
                             >
                               🗑️
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Manage Organizations Tab */}
+        {activeTab === 'manage-orgs' && (
+          <div className="users-section">
+            <div className="users-header">
+              <h3 className="section-title">🏢 Organizations Management</h3>
+              <button className="add-user-btn" onClick={() => setShowOrgModal(true)}>
+                ➕ Create Organization
+              </button>
+            </div>
+
+            {loadingAllOrgs ? (
+              <div className="loading-container">
+                <div className="spinner-large"></div>
+              </div>
+            ) : (
+              <div className="users-table-container">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th>Organization Name</th>
+                      <th>Leader</th>
+                      <th>Status</th>
+                      <th>Staff Count</th>
+                      <th>Family Count</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {organizations.map(org => (
+                      <tr key={org._id}>
+                        <td>
+                          <div className="user-cell">
+                            <div className="user-avatar">🏢</div>
+                            {org.name}
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                            <div>{org.leaderId?.fullName || 'N/A'}</div>
+                            <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                              {org.leaderId?.email || 'N/A'}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`role-badge role-${org.status || 'approved'}`}>
+                            {org.status || 'approved'}
+                          </span>
+                        </td>
+                        <td>{org.staffIds?.length || 0}</td>
+                        <td>{org.childIds?.length || 0}</td>
+                        <td>{new Date(org.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          <div className="action-buttons">
+                            <button
+                              className="edit-btn"
+                              onClick={() => openEditOrgModal(org)}
+                              title="Edit Organization"
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className="view-btn"
+                              onClick={() => {
+                                setSelectedOrg(org);
+                                fetchOrgMembers(org._id);
+                              }}
+                              title="View Members"
+                            >
+                              👥
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleDeleteOrg(org._id)}
+                              title="Delete Organization"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Pending Invitations Tab */}
+        {activeTab === 'pending-invites' && (
+          <div className="users-section">
+            <div className="users-header">
+              <h3 className="section-title">📧 Pending Organization Leader Invitations</h3>
+              <button 
+                className="add-user-btn" 
+                onClick={() => fetchPendingOrgInvitations()}
+                disabled={loadingPendingInvites}
+              >
+                🔄 Refresh
+              </button>
+            </div>
+
+            {loadingPendingInvites ? (
+              <div className="loading-container">
+                <div className="spinner-large"></div>
+              </div>
+            ) : pendingOrgInvitations.length === 0 ? (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '3rem', 
+                color: 'rgba(255, 255, 255, 0.6)' 
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
+                <p>No pending invitations</p>
+              </div>
+            ) : (
+              <div className="users-table-container">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th>Organization Name</th>
+                      <th>Leader Details</th>
+                      <th>Status</th>
+                      <th>Sent Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingOrgInvitations.map(invite => (
+                      <tr key={invite._id}>
+                        <td>
+                          <div className="user-cell">
+                            <div className="user-avatar">🏢</div>
+                            {invite.organizationName}
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                            <div>{invite.leaderFullName}</div>
+                            <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                              {invite.leaderEmail}
+                            </div>
+                            <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.5)' }}>
+                              {invite.leaderPhone}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="role-badge role-pending">
+                            {invite.status || 'pending'}
+                          </span>
+                        </td>
+                        <td>{new Date(invite.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          <div className="action-buttons">
+                            <button
+                              className="delete-btn"
+                              onClick={() => {
+                                if (confirm('Cancel this invitation?')) {
+                                  // TODO: Implement cancel invitation API call
+                                  console.log('Cancel invitation:', invite._id);
+                                }
+                              }}
+                              title="Cancel Invitation"
+                            >
+                              ❌
                             </button>
                           </div>
                         </td>
@@ -948,6 +1490,199 @@ function AdminDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Organization Create/Edit Modal */}
+      {showOrgModal && (
+        <div className="modal-overlay" onClick={closeOrgModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{editingOrg ? 'Edit Organization' : 'Create New Organization Leader'}</h3>
+              <button className="close-btn" onClick={closeOrgModal}>✕</button>
+            </div>
+
+            {error && (
+              <div className="error-message">
+                <span className="error-icon">⚠️</span>
+                {error}
+              </div>
+            )}
+
+            {/* Info Banner - Only show when creating */}
+            {!editingOrg && (
+              <div style={{ 
+                padding: '0 1.5rem', 
+                marginBottom: '1rem'
+              }}>
+                <div style={{
+                  background: 'rgba(100, 200, 255, 0.15)',
+                  border: '1px solid rgba(100, 200, 255, 0.3)',
+                  borderRadius: '8px',
+                  padding: '0.75rem',
+                  fontSize: '0.8rem',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  lineHeight: '1.5'
+                }}>
+                  <strong>📧 Registration Invitation:</strong> Fill out the complete registration form below. 
+                  The user will receive an email to accept or reject the organization leadership. 
+                  The invitation will be marked as <strong>pending</strong> until they respond.
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={editingOrg ? handleUpdateOrg : handleCreateOrg}>
+              <div className="form-group">
+                <label htmlFor="organizationName">Organization Name</label>
+                <input
+                  type="text"
+                  id="organizationName"
+                  name="organizationName"
+                  value={orgFormData.organizationName}
+                  onChange={handleOrgInputChange}
+                  required
+                />
+              </div>
+
+              {!editingOrg && (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="leaderFullName">Leader Full Name</label>
+                    <input
+                      type="text"
+                      id="leaderFullName"
+                      name="leaderFullName"
+                      value={orgFormData.leaderFullName}
+                      onChange={handleOrgInputChange}
+                      placeholder="e.g., John Doe"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="leaderEmail">Leader Email</label>
+                    <input
+                      type="email"
+                      id="leaderEmail"
+                      name="leaderEmail"
+                      value={orgFormData.leaderEmail}
+                      onChange={handleOrgInputChange}
+                      placeholder="leader@example.com"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="leaderPhone">Leader Phone</label>
+                    <input
+                      type="tel"
+                      id="leaderPhone"
+                      name="leaderPhone"
+                      value={orgFormData.leaderPhone}
+                      onChange={handleOrgInputChange}
+                      placeholder="+1234567890"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="leaderPassword">Initial Password</label>
+                    <input
+                      type="password"
+                      id="leaderPassword"
+                      name="leaderPassword"
+                      value={orgFormData.leaderPassword}
+                      onChange={handleOrgInputChange}
+                      placeholder="Minimum 8 characters"
+                      required
+                      minLength={8}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="modal-actions">
+                <button type="button" className="cancel-btn" onClick={closeOrgModal}>
+                  Cancel
+                </button>
+                <button type="submit" className="submit-btn">
+                  {editingOrg ? '✓ Update Organization' : '📧 Send Invitation'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Organization Members Modal */}
+      {selectedOrg && (
+        <div className="modal-overlay" onClick={() => setSelectedOrg(null)}>
+          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>👥 Members of {selectedOrg.name}</h3>
+              <button className="close-btn" onClick={() => setSelectedOrg(null)}>✕</button>
+            </div>
+
+            {loadingMembers ? (
+              <div className="loading-container">
+                <div className="spinner-large"></div>
+              </div>
+            ) : (
+              <div style={{ padding: '0 2rem 2rem' }}>
+                <div style={{ marginBottom: '2rem' }}>
+                  <h4 style={{ color: 'white', marginBottom: '1rem' }}>Staff ({orgMembers.staff?.length || 0})</h4>
+                  {orgMembers.staff?.length > 0 ? (
+                    <table className="users-table" style={{ fontSize: '0.85rem' }}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Role</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orgMembers.staff.map(member => (
+                          <tr key={member._id}>
+                            <td>{member.fullName}</td>
+                            <td>{member.email}</td>
+                            <td><span className={`role-badge role-${member.role}`}>{member.role}</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>No staff members</p>
+                  )}
+                </div>
+
+                <div>
+                  <h4 style={{ color: 'white', marginBottom: '1rem' }}>Families ({orgMembers.families?.length || 0})</h4>
+                  {orgMembers.families?.length > 0 ? (
+                    <table className="users-table" style={{ fontSize: '0.85rem' }}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Children</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orgMembers.families.map(member => (
+                          <tr key={member._id}>
+                            <td>{member.fullName}</td>
+                            <td>{member.email}</td>
+                            <td>{member.childrenIds?.length || 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>No families</p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
