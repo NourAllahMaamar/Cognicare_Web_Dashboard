@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import { API_BASE_URL } from '../../config';
 import './OrgLeaderDashboard.css';
 
 function OrgLeaderDashboard() {
@@ -49,7 +50,7 @@ function OrgLeaderDashboard() {
         return null;
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/auth/refresh', {
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -86,7 +87,7 @@ function OrgLeaderDashboard() {
     setLoading(true);
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff`, {
+      let response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -101,7 +102,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff`, {
+        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -128,7 +129,7 @@ function OrgLeaderDashboard() {
   const fetchFamilies = useCallback(async (token, organizationId) => {
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families`, {
+      let response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -143,7 +144,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families`, {
+        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -168,7 +169,7 @@ function OrgLeaderDashboard() {
   const fetchChildren = useCallback(async (token, organizationId) => {
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/children`, {
+      let response = await fetch(`${API_BASE_URL}/organization/${organizationId}/children`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -183,7 +184,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/children`, {
+        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/children`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -208,7 +209,7 @@ function OrgLeaderDashboard() {
   const fetchPendingInvitations = useCallback(async (token) => {
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/invitations`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/invitations`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -223,7 +224,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/invitations`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/invitations`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -329,7 +330,7 @@ function OrgLeaderDashboard() {
       let response;
       if (staffModalMode === 'create') {
         // Create new staff account
-        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff/create`, {
+        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -339,7 +340,7 @@ function OrgLeaderDashboard() {
         });
       } else {
         // Invite existing staff by email - sends invitation
-        response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/staff/invite`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/invite`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -361,7 +362,7 @@ function OrgLeaderDashboard() {
         
         // Retry the request
         if (staffModalMode === 'create') {
-          response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff/create`, {
+          response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff/create`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -370,7 +371,7 @@ function OrgLeaderDashboard() {
             body: JSON.stringify(newStaff)
           });
         } else {
-          response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/staff`, {
+          response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -442,7 +443,7 @@ function OrgLeaderDashboard() {
         role: newStaff.role
       };
 
-      let response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/staff/${editingStaff._id || editingStaff.id}`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/${editingStaff._id || editingStaff.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -462,7 +463,7 @@ function OrgLeaderDashboard() {
         token = newToken;
         
         // Retry the request with new token
-        response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/staff/${editingStaff._id || editingStaff.id}`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/${editingStaff._id || editingStaff.id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -512,7 +513,7 @@ function OrgLeaderDashboard() {
 
     try {
       const token = localStorage.getItem('orgLeaderToken');
-      const response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/staff/${staffId}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/${staffId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -555,7 +556,7 @@ function OrgLeaderDashboard() {
       let response;
       if (familyModalMode === 'create') {
         // Create new family account with children
-        response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families/create`, {
+        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -565,7 +566,7 @@ function OrgLeaderDashboard() {
         });
       } else {
         // Invite existing family by email - sends invitation
-        response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/invite`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/families/invite`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -587,7 +588,7 @@ function OrgLeaderDashboard() {
         
         // Retry the request
         if (familyModalMode === 'create') {
-          response = await fetch(`http://localhost:3000/api/v1/organization/${organizationId}/families/create`, {
+          response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families/create`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -596,7 +597,7 @@ function OrgLeaderDashboard() {
             body: JSON.stringify(newFamily)
           });
         } else {
-          response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/invite`, {
+          response = await fetch(`${API_BASE_URL}/organization/my-organization/families/invite`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -681,7 +682,7 @@ function OrgLeaderDashboard() {
         phone: newFamily.phone
       };
 
-      let response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -701,7 +702,7 @@ function OrgLeaderDashboard() {
         token = newToken;
         
         // Retry the request with new token
-        response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -725,7 +726,7 @@ function OrgLeaderDashboard() {
 
       // 2. Delete marked children
       for (const childId of childrenToDelete) {
-        await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}/children/${childId}`, {
+        await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}/children/${childId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -740,7 +741,7 @@ function OrgLeaderDashboard() {
           // eslint-disable-next-line no-unused-vars
           const { _id, id, _modified, parentId, organizationId, createdAt, updatedAt, __v, ...childData } = child;
           
-          await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}/children/${childId}`, {
+          await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}/children/${childId}`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
@@ -753,7 +754,7 @@ function OrgLeaderDashboard() {
 
       // 4. Add new children
       for (const child of newFamily.children) {
-        await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}/children`, {
+        await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}/children`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -794,7 +795,7 @@ function OrgLeaderDashboard() {
 
     try {
       let token = localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -812,7 +813,7 @@ function OrgLeaderDashboard() {
         token = newToken;
         
         // Retry the request with new token
-        response = await fetch(`http://localhost:3000/api/v1/organization/my-organization/families/${familyId}`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`

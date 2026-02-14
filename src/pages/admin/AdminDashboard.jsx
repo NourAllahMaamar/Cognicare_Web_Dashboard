@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import { API_BASE_URL } from '../../config';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -67,7 +68,7 @@ function AdminDashboard() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/v1/auth/refresh', {
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +98,7 @@ function AdminDashboard() {
     setLoading(true);
     try {
       let authToken = token || localStorage.getItem('adminToken');
-      let response = await fetch('http://localhost:3000/api/v1/users', {
+      let response = await fetch(`${API_BASE_URL}/users`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -112,7 +113,7 @@ function AdminDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch('http://localhost:3000/api/v1/users', {
+        response = await fetch(`${API_BASE_URL}/users`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -142,7 +143,7 @@ function AdminDashboard() {
     setLoadingOrganizations(true);
     try {
       let authToken = token || localStorage.getItem('adminToken');
-      let response = await fetch('http://localhost:3000/api/v1/organization/admin/pending-requests', {
+      let response = await fetch(`${API_BASE_URL}/organization/admin/pending-requests`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -157,7 +158,7 @@ function AdminDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch('http://localhost:3000/api/v1/organization/admin/pending-requests', {
+        response = await fetch(`${API_BASE_URL}/organization/admin/pending-requests`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -187,7 +188,7 @@ function AdminDashboard() {
     setLoadingAllOrgs(true);
     try {
       let authToken = token || localStorage.getItem('adminToken');
-      let response = await fetch('http://localhost:3000/api/v1/organization/all', {
+      let response = await fetch(`${API_BASE_URL}/organization/all`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -201,7 +202,7 @@ function AdminDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch('http://localhost:3000/api/v1/organization/all', {
+        response = await fetch(`${API_BASE_URL}/organization/all`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -231,7 +232,7 @@ function AdminDashboard() {
     setLoadingPendingInvites(true);
     try {
       let authToken = token || localStorage.getItem('adminToken');
-      let response = await fetch('http://localhost:3000/api/v1/organization/admin/pending-invitations', {
+      let response = await fetch(`${API_BASE_URL}/organization/admin/pending-invitations`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -245,7 +246,7 @@ function AdminDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch('http://localhost:3000/api/v1/organization/admin/pending-invitations', {
+        response = await fetch(`${API_BASE_URL}/organization/admin/pending-invitations`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -274,10 +275,10 @@ function AdminDashboard() {
     try {
       const token = localStorage.getItem('adminToken');
       const [staffRes, familiesRes] = await Promise.all([
-        fetch(`http://localhost:3000/api/v1/organization/${orgId}/staff`, {
+        fetch(`${API_BASE_URL}/organization/${orgId}/staff`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch(`http://localhost:3000/api/v1/organization/${orgId}/families`, {
+        fetch(`${API_BASE_URL}/organization/${orgId}/families`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -376,7 +377,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:3000/api/v1/organization/admin/review/${reviewingOrg._id}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/admin/review/${reviewingOrg._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -428,7 +429,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:3000/api/v1/users', {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -472,7 +473,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:3000/api/v1/users/${editingUser._id}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${editingUser._id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -521,7 +522,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:3000/api/v1/users/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -564,7 +565,7 @@ function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       
       // Send organization leader invitation (creates pending invitation)
-      const response = await fetch('http://localhost:3000/api/v1/organization/admin/invite-leader', {
+      const response = await fetch(`${API_BASE_URL}/organization/admin/invite-leader`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -611,7 +612,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:3000/api/v1/organization/${editingOrg._id}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/${editingOrg._id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -651,7 +652,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:3000/api/v1/organization/${orgId}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/${orgId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
