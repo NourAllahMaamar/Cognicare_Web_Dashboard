@@ -590,7 +590,17 @@ function AdminDashboard() {
         throw new Error(data.message || 'Failed to send organization invitation');
       }
 
-      setSuccessMessage('Organization invitation sent! The user will receive an email to accept or reject the organization leadership.');
+      const data = await response.json();
+      
+      // Check if email was sent successfully or if there was a warning
+      if (data.message && data.message.includes('email failed')) {
+        setSuccessMessage('⚠️ ' + data.message);
+        setTimeout(() => setSuccessMessage(''), 10000); // Longer timeout for warnings
+      } else {
+        setSuccessMessage('Organization invitation sent! The user will receive an email to accept or reject the organization leadership.');
+        setTimeout(() => setSuccessMessage(''), 5000);
+      }
+
       setShowOrgModal(false);
       setOrgFormData({ 
         organizationName: '', 
@@ -600,7 +610,6 @@ function AdminDashboard() {
         leaderPassword: ''
       });
       fetchPendingOrgInvitations(token);
-      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       setError(err.message);
     }
@@ -699,6 +708,39 @@ function AdminDashboard() {
       leaderPassword: ''
     });
     setError('');
+  };
+
+  const handleCancelInvitation = async (invitationId) => {
+    if (!window.confirm('Are you sure you want to cancel this invitation?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/organization/admin/invitations/${invitationId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to cancel invitation');
+      }
+
+      setSuccessMessage('Invitation cancelled successfully!');
+      fetchPendingOrgInvitations(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
   };
 
   const openEditModal = (userToEdit) => {
@@ -1186,12 +1228,7 @@ function AdminDashboard() {
                           <div className="action-buttons">
                             <button
                               className="delete-btn"
-                              onClick={() => {
-                                if (confirm('Cancel this invitation?')) {
-                                  // TODO: Implement cancel invitation API call
-                                  console.log('Cancel invitation:', invite._id);
-                                }
-                              }}
+                              onClick={() => handleCancelInvitation(invite._id)}
                               title="Cancel Invitation"
                             >
                               ❌

@@ -83,11 +83,11 @@ function OrgLeaderDashboard() {
     navigate('/org/login');
   }, [navigate]);
 
-  const fetchStaff = useCallback(async (token, organizationId) => {
+  const fetchStaff = useCallback(async (token) => {
     setLoading(true);
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/staff`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -102,7 +102,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -126,10 +126,10 @@ function OrgLeaderDashboard() {
     }
   }, [handleSessionExpired, refreshAccessToken]);
 
-  const fetchFamilies = useCallback(async (token, organizationId) => {
+  const fetchFamilies = useCallback(async (token) => {
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/families`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -144,7 +144,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/families`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -166,10 +166,10 @@ function OrgLeaderDashboard() {
     }
   }, [handleSessionExpired, refreshAccessToken]);
 
-  const fetchChildren = useCallback(async (token, organizationId) => {
+  const fetchChildren = useCallback(async (token) => {
     try {
       let authToken = token || localStorage.getItem('orgLeaderToken');
-      let response = await fetch(`${API_BASE_URL}/organization/${organizationId}/children`, {
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -184,7 +184,7 @@ function OrgLeaderDashboard() {
         }
         
         authToken = newToken;
-        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/children`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
@@ -266,12 +266,10 @@ function OrgLeaderDashboard() {
       
       // Fetch fresh data from API if organization exists
       if (parsedUser.organization) {
-        const orgId = parsedUser.organization.id;
-        
         // Fetch all data from API to ensure it's up-to-date
-        fetchStaff(token, orgId);
-        fetchFamilies(token, orgId);
-        fetchChildren(token, orgId);
+        fetchStaff(token);
+        fetchFamilies(token);
+        fetchChildren(token);
         fetchPendingInvitations(token);
       } else {
         setLoading(false);
@@ -289,17 +287,16 @@ function OrgLeaderDashboard() {
 
   const handleRefresh = async () => {
     const token = localStorage.getItem('orgLeaderToken');
-    const organizationId = user?.organization?.id;
     
-    if (!token || !organizationId) return;
+    if (!token) return;
     
     setLoading(true);
     try {
       // Refresh all data
       await Promise.all([
-        fetchStaff(token, organizationId),
-        fetchFamilies(token, organizationId),
-        fetchChildren(token, organizationId),
+        fetchStaff(token),
+        fetchFamilies(token),
+        fetchChildren(token),
         fetchPendingInvitations(token),
       ]);
       setSuccessMessage('Data refreshed successfully!');
@@ -318,19 +315,13 @@ function OrgLeaderDashboard() {
     setError('');
     setSuccessMessage('');
 
-    const organizationId = user?.organization?.id;
-    if (!organizationId) {
-      setError('Organization not found');
-      return;
-    }
-
     try {
       let token = localStorage.getItem('orgLeaderToken');
       
       let response;
       if (staffModalMode === 'create') {
         // Create new staff account
-        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff/create`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -362,7 +353,7 @@ function OrgLeaderDashboard() {
         
         // Retry the request
         if (staffModalMode === 'create') {
-          response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff/create`, {
+          response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/create`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -371,7 +362,7 @@ function OrgLeaderDashboard() {
             body: JSON.stringify(newStaff)
           });
         } else {
-          response = await fetch(`${API_BASE_URL}/organization/${organizationId}/staff`, {
+          response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/invite`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -404,7 +395,7 @@ function OrgLeaderDashboard() {
         role: 'psychologist'
       });
       if (staffModalMode === 'create') {
-        fetchStaff(token, user?.organization?.id);
+        fetchStaff(token);
       } else {
         // Refresh pending invitations for 'add' mode
         fetchPendingInvitations(token);
@@ -495,7 +486,7 @@ function OrgLeaderDashboard() {
         password: '',
         role: 'psychologist'
       });
-      fetchStaff(token, user?.organization?.id);
+      fetchStaff(token);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -531,7 +522,7 @@ function OrgLeaderDashboard() {
       }
 
       setSuccessMessage(t('orgDashboard.messages.staffRemoved'));
-      fetchStaff(token, user?.organization?.id);
+      fetchStaff(token);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -556,7 +547,7 @@ function OrgLeaderDashboard() {
       let response;
       if (familyModalMode === 'create') {
         // Create new family account with children
-        response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families/create`, {
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/families/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -588,7 +579,7 @@ function OrgLeaderDashboard() {
         
         // Retry the request
         if (familyModalMode === 'create') {
-          response = await fetch(`${API_BASE_URL}/organization/${organizationId}/families/create`, {
+          response = await fetch(`${API_BASE_URL}/organization/my-organization/families/create`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -630,8 +621,8 @@ function OrgLeaderDashboard() {
         children: []
       });
       if (familyModalMode === 'create') {
-        fetchFamilies(token, user?.organization?.id);
-        fetchChildren(token, user?.organization?.id);
+        fetchFamilies(token);
+        fetchChildren(token);
       } else {
         // Refresh pending invitations for 'add' mode
         fetchPendingInvitations(token);
@@ -776,8 +767,8 @@ function OrgLeaderDashboard() {
         password: '',
         children: []
       });
-      fetchFamilies(token, user?.organization?.id);
-      fetchChildren(token, user?.organization?.id);
+      fetchFamilies(token);
+      fetchChildren(token);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -833,8 +824,8 @@ function OrgLeaderDashboard() {
       }
 
       setSuccessMessage('Family removed successfully!');
-      fetchFamilies(token, user?.organization?.id);
-      fetchChildren(token, user?.organization?.id);
+      fetchFamilies(token);
+      fetchChildren(token);
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
