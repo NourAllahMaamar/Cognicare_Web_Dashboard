@@ -37,10 +37,25 @@
 
 .login-header {
   text-align: center;
-  margin-bottom: 2.5rem;  display: flex;
+  margin-bottom: 2.5rem;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;}
+  gap: 1rem;
+}
+
+.login-logo-container {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.login-logo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
 
 .login-title {
   font-size: 2rem;
@@ -146,7 +161,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .login-footer {
