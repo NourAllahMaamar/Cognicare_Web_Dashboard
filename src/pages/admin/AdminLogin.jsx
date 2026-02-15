@@ -31,7 +31,7 @@ function AdminLogin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || t('dashboard.messages.loginFailed'));
       }
 
       // Check if user is admin
@@ -84,6 +84,9 @@ function AdminLogin() {
 
       <div className="login-content">
         <div className="login-container">
+          <div className="login-logo-container">
+            <img src="/src/assets/logo.png" alt="CogniCare Logo" className="login-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+          </div>
           <div className="login-header">
             <LanguageSwitcher />
             <h1>{t('adminLogin.title')}</h1>
