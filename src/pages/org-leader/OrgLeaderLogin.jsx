@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Grainient from '../../components/Grainient';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
@@ -19,7 +19,16 @@ function OrgLeaderLogin() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const initialMode = params.get('mode');
+    if (initialMode === 'signup' || initialMode === 'login') {
+      setMode(initialMode);
+    }
+  }, [location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,7 +48,7 @@ function OrgLeaderLogin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || t('dashboard.messages.loginFailed'));
       }
 
       // Check if user is organization_leader
@@ -79,7 +88,7 @@ function OrgLeaderLogin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to send verification code');
+        throw new Error(data.message || t('dashboard.messages.verificationCodeFailed'));
       }
 
       setCodeSent(true);
@@ -116,12 +125,12 @@ function OrgLeaderLogin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Signup failed');
+        throw new Error(data.message || t('dashboard.messages.signupFailed'));
       }
 
       // Check if organization needs approval
       if (data.requiresApproval) {
-        setSuccess(data.message || 'Your organization request has been submitted successfully. Please wait for admin approval.');
+        setSuccess(data.message || t('dashboard.messages.orgCreatedPending'));
         // Reset form but stay on signup page
         setCodeSent(false);
         setVerificationCode('');
@@ -176,6 +185,9 @@ function OrgLeaderLogin() {
 
       <div className="login-content">
         <div className="login-container">
+          <div className="login-logo-container">
+            <img src="/src/assets/logo.png" alt="CogniCare Logo" className="login-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+          </div>
           <div className="login-header">
             <LanguageSwitcher />
             <h1>{mode === 'login' ? t('orgLeaderLogin.title') : t('orgLeaderLogin.signupTitle')}</h1>
