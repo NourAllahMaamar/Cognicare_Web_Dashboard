@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Grainient from '../../components/Grainient';
@@ -8,8 +8,29 @@ import './Home.css';
 function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const toggleAccountMenu = () => {
+    setShowAccountMenu(!showAccountMenu);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowAccountMenu(false);
+      }
+    };
+
+    if (showAccountMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAccountMenu]);
 
   return (
     <div className="home-page">
@@ -50,29 +71,14 @@ function Home() {
             <a href="#about">{t('nav.about')}</a>
             <a href="#download">{t('nav.download')}</a>
 
-            <div className="auth-dropdown"
-              onMouseEnter={() => setShowSignIn(true)}
-              onMouseLeave={() => setShowSignIn(false)}>
-              <button className="auth-trigger-btn">
-                {t('nav.signIn')} <span className="chevron">▼</span>
-              </button>
-              {showSignIn && (
+            <div className="auth-dropdown" ref={dropdownRef}>
+              <a className="auth-trigger-link" onClick={toggleAccountMenu}>
+                {t('nav.account')} <span className={`chevron ${showAccountMenu ? 'open' : ''}`}>▼</span>
+              </a>
+              {showAccountMenu && (
                 <div className="dropdown-menu">
                   <button onClick={() => navigate('/org/login')}>{t('nav.orgLeader')}</button>
                   <button onClick={() => navigate('/admin/login')}>{t('nav.admin')}</button>
-                </div>
-              )}
-            </div>
-
-            <div className="auth-dropdown"
-              onMouseEnter={() => setShowSignUp(true)}
-              onMouseLeave={() => setShowSignUp(false)}>
-              <button className="auth-trigger-btn signup">
-                {t('nav.signUp')} <span className="chevron">▼</span>
-              </button>
-              {showSignUp && (
-                <div className="dropdown-menu">
-                  <button onClick={() => navigate('/org/login?mode=signup')}>{t('nav.orgLeader')}</button>
                 </div>
               )}
             </div>

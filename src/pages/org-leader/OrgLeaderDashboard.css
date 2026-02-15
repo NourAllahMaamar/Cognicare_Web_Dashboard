@@ -218,8 +218,11 @@
   border-radius: 15px;
   padding: 2rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
   transition: all 0.3s ease;
 }
 
@@ -237,6 +240,15 @@
   justify-content: center;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
 }
 
 .stat-info h3 {
@@ -246,14 +258,16 @@
 }
 
 .stat-info p {
-  margin: 0.25rem 0;
+  margin: 0;
   font-size: 1.1rem;
   color: white;
+  font-weight: 600;
 }
 
 .stat-subtitle {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.25rem;
 }
 
 /* Content Header */
@@ -909,4 +923,283 @@
   background: rgba(167, 233, 164, 0.2);
   color: #a7e9a4;
   border: 1px solid rgba(167, 233, 164, 0.4);
+}
+
+/* User Grid & Profile Cards */
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  opacity: 0.7;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.card-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.card-role-badge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.card-email {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.card-email:hover {
+  color: white;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-info-item span:not(.card-info-label) {
+  flex: 1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.card-info-label {
+  color: rgba(255, 255, 255, 0.6);
+  width: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-stat-box {
+  text-align: center;
+}
+
+.card-stat-value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.card-stat-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+}
+
+.card-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-date {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-action-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.card-action-btn.edit:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.card-action-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Role Badge Color Variations */
+.card-role-badge.psychologist,
+.role-psychologist {
+  background: rgba(139, 92, 246, 0.9);
+  color: white;
+}
+
+.card-role-badge.speech_therapist,
+.role-speech_therapist {
+  background: rgba(236, 72, 153, 0.9);
+  color: white;
+}
+
+.card-role-badge.occupational_therapist,
+.role-occupational_therapist {
+  background: rgba(251, 146, 60, 0.9);
+  color: white;
+}
+
+.card-role-badge.doctor,
+.role-doctor {
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+}
+
+.card-role-badge.volunteer,
+.role-volunteer {
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+}
+
+.card-role-badge.other,
+.role-other {
+  background: rgba(148, 163, 184, 0.9);
+  color: white;
+}
+
+.card-role-badge.family,
+.role-family {
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+}
+
+.card-role-badge.admin,
+.role-admin {
+  background: rgba(248, 113, 113, 0.9);
+  color: white;
+}
+
+.card-role-badge.organization_leader,
+.role-organization_leader {
+  background: rgba(167, 139, 250, 0.9);
+  color: white;
+}
+
+/* Status badges */
+.card-role-badge.status-pending {
+  background: rgba(251, 191, 36, 0.9);
+  color: white;
+}
+
+.card-role-badge.status-approved {
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+}
+
+.card-role-badge.status-rejected {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+/* RTL Support for cards */
+[dir="rtl"] .card-role-badge {
+  right: auto;
+  left: -5px;
 }

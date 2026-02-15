@@ -7,7 +7,8 @@
     "admin": "Admin",
     "orgLeader": "Organisation",
     "signIn": "Se connecter",
-    "signUp": "S'inscrire"
+    "signUp": "S'inscrire",
+    "account": "Compte"
   },
   "hero": {
     "title": "Renforcez Votre Santé Cognitive",
@@ -121,11 +122,15 @@
     "subtitle": "Gérez le personnel de votre organisation",
     "logout": "Déconnexion",
     "loading": "Chargement...",
+    "header": {
+      "refresh": "Actualiser"
+    },
     "tabs": {
-      "overview": "Vue d'ensemble",
-      "staff": "Gestion du Personnel",
+      "overview": "Aperçu",
+      "staff": "Gestion du personnel",
       "families": "Familles",
-      "children": "Enfants"
+      "children": "Enfants",
+      "invitations": "Invitations"
     },
     "stats": {
       "totalStaff": "Personnel Total",
@@ -137,10 +142,15 @@
       "active": "Actif",
       "viewAll": "Voir Tout",
       "activeMembers": "Membres actifs",
+      "psychologists": "Psychologues",
       "mentalHealth": "Soutien en santé mentale",
+      "speechTherapists": "Orthophonistes",
       "communication": "Spécialistes de la communication",
-      "motorSkills": "Soutien aux compétences motrices",
+      "occupationalTherapists": "Ergothérapeutes",
+      "motorSkills": "Soutien aux habiletés motrices",
+      "doctors": "Médecins",
       "medicalProfessionals": "Professionnels médicaux",
+      "volunteers": "Bénévoles",
       "communityHelpers": "Aides communautaires"
     },
     "staff": {
@@ -254,7 +264,8 @@
       "unknownParent": "Inconnu",
       "emptyState": "Aucun enfant enregistré pour le moment",
       "ageYears": "{{count}} ans",
-      "ageYear": "{{count}} an"
+      "ageYear": "{{count}} an",
+      "yearsOld": "ans"
     },
     "invitations": {
       "title": "Invitations en Attente",
@@ -429,7 +440,8 @@
       "noInvites": "Aucune invitation en attente",
       "sentDate": "Date d'Envoi",
       "cancel": "Annuler l'Invitation",
-      "leaderDetails": "Détails du Leader"
+      "leaderDetails": "Détails du chef",
+      "pending": "En attente d'approbation"
     }
   }
 }

@@ -1019,12 +1019,12 @@ function AdminDashboard() {
               <div className="user-grid">
                 {users.map(u => (
                   <div key={u._id} className="profile-card user-profile-card">
+                    <span className={`card-role-badge role-${u.role}`}>
+                      {u.roleMapping?.[u.role] || u.role}
+                    </span>
                     <div className="card-header">
                       <div className="card-avatar">
                         {u.fullName?.[0]?.toUpperCase()}
-                        <span className={`card-role-badge role-${u.role}`}>
-                          {u.roleMapping?.[u.role] || u.role}
-                        </span>
                       </div>
                       <h4 className="card-name">{u.fullName}</h4>
                       <a href={`mailto:${u.email}`} className="card-email">{u.email}</a>
@@ -1180,9 +1180,14 @@ function AdminDashboard() {
                 {pendingOrgInvitations.map(invite => (
                   <div key={invite._id} className="profile-card">
                     <div className="card-header">
-                      <div className="card-avatar">🏢</div>
+                      <div className="card-avatar">
+                        🏢
+                        <span className="card-role-badge status-pending" style={{ background: '#f59e0b', color: 'white' }}>
+                          {t('roles.pending')}
+                        </span>
+                      </div>
                       <h4 className="card-name">{invite.organizationName}</h4>
-                      <p className="card-email">{t('dashboard.invitations.sentDate')}: {new Date(invite.createdAt).toLocaleDateString()}</p>
+                      <p className="card-email">{t('dashboard.invitations.sentDate')}: {new Date(invite.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</p>
                     </div>
 
                     <div className="card-body">
@@ -1192,7 +1197,7 @@ function AdminDashboard() {
                       </div>
                       <div className="card-info-item">
                         <span className="card-info-label">📧</span>
-                        <span style={{ fontSize: '0.85rem' }}>{invite.leaderEmail}</span>
+                        <span style={{ fontSize: '0.85rem', wordBreak: 'break-word' }}>{invite.leaderEmail}</span>
                       </div>
                       <div className="card-info-item">
                         <span className="card-info-label">📞</span>
@@ -1201,11 +1206,7 @@ function AdminDashboard() {
                     </div>
 
                     <div className="card-footer">
-                      <div className="card-date">
-                        <span className="card-role-badge status-pending" style={{ background: '#f59e0b', color: 'white' }}>
-                          {invite.status || 'pending'}
-                        </span>
-                      </div>
+                      <div className="card-date">{t('dashboard.invitations.pending')}</div>
                       <div className="card-actions">
                         <button
                           className="card-action-btn delete"

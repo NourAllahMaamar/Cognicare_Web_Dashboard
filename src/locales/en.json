@@ -7,7 +7,8 @@
     "admin": "Admin",
     "orgLeader": "Organization",
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "account": "Account"
   },
   "hero": {
     "title": "Empower Your Cognitive Health",
@@ -121,11 +122,15 @@
     "subtitle": "Manage your organization staff",
     "logout": "Logout",
     "loading": "Loading...",
+    "header": {
+      "refresh": "Refresh"
+    },
     "tabs": {
       "overview": "Overview",
       "staff": "Staff Management",
       "families": "Families",
-      "children": "Children"
+      "children": "Children",
+      "invitations": "Invitations"
     },
     "stats": {
       "totalStaff": "Total Staff",
@@ -137,10 +142,15 @@
       "active": "Active",
       "viewAll": "View All",
       "activeMembers": "Active members",
+      "psychologists": "Psychologists",
       "mentalHealth": "Mental health support",
+      "speechTherapists": "Speech Therapists",
       "communication": "Communication specialists",
+      "occupationalTherapists": "Occupational Therapists",
       "motorSkills": "Motor skills support",
+      "doctors": "Doctors",
       "medicalProfessionals": "Medical professionals",
+      "volunteers": "Volunteers",
       "communityHelpers": "Community helpers"
     },
     "staff": {
@@ -256,7 +266,8 @@
       "unknownParent": "Unknown",
       "emptyState": "No children registered yet",
       "ageYears": "{{count}} years",
-      "ageYear": "{{count}} year"
+      "ageYear": "{{count}} year",
+      "yearsOld": "years old"
     },
     "invitations": {
       "title": "Pending Invitations",
@@ -429,7 +440,8 @@
       "noInvites": "No pending invitations",
       "sentDate": "Sent Date",
       "cancel": "Cancel Invitation",
-      "leaderDetails": "Leader Details"
+      "leaderDetails": "Leader Details",
+      "pending": "Pending Approval"
     }
   }
 }

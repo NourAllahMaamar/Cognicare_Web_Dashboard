@@ -1278,26 +1278,37 @@ function OrgLeaderDashboard() {
                   const expiresAt = new Date(invitation.expiresAt);
                   const createdAt = new Date(invitation.createdAt);
                   const isExpired = expiresAt < new Date();
+                  
+                  // Debug log to check invitation data
+                  console.log('Invitation data:', invitation);
+                  
+                  const invType = invitation.invitationType || invitation.type || 'staff';
+                  const userEmail = invitation.userEmail || invitation.email || invitation.userId?.email || 'N/A';
+                  const userName = invitation.userId?.fullName || null;
 
                   return (
                     <div key={invitation._id || invitation.token} className="profile-card">
                       <div className="card-header">
                         <div className="card-avatar">
-                          {invitation.invitationType === 'staff' ? '👔' : '👨‍👩‍👧‍👦'}
+                          {invType === 'staff' ? '👔' : '👨‍👩‍👧‍👦'}
                           <span className={`card-role-badge status-${isExpired ? 'rejected' : 'pending'}`}
                             style={{ background: isExpired ? '#ef4444' : '#f59e0b', color: 'white' }}>
-                            {invitation.invitationType === 'staff' ? t('orgDashboard.invitations.staff') : t('orgDashboard.invitations.family')}
+                            {invType === 'staff' ? t('orgDashboard.invitations.staff') : t('orgDashboard.invitations.family')}
                           </span>
                         </div>
-                        <h4 className="card-name">{invitation.userEmail}</h4>
-                        <p className="card-email">{t('orgDashboard.invitations.sentDate')}: {createdAt.toLocaleDateString()}</p>
+                        <h4 className="card-name">{userName || (invType === 'staff' ? t('orgDashboard.invitations.staff') : t('orgDashboard.invitations.family'))}</h4>
+                        <p className="card-email">{t('orgDashboard.invitations.sentDate')}: {createdAt.toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</p>
                       </div>
 
                       <div className="card-body">
                         <div className="card-info-item">
+                          <span className="card-info-label">📧</span>
+                          <span style={{ fontSize: '0.85rem', wordBreak: 'break-word' }}>{userEmail}</span>
+                        </div>
+                        <div className="card-info-item">
                           <span className="card-info-label">⌛</span>
                           <span className={isExpired ? 'expired-text' : ''}>
-                            {t('orgDashboard.invitations.expires')}: {expiresAt.toLocaleDateString()}
+                            {t('orgDashboard.invitations.expires')}: {expiresAt.toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}
                             {isExpired && ` (${t('orgDashboard.invitations.expired')})`}
                           </span>
                         </div>
@@ -1305,16 +1316,6 @@ function OrgLeaderDashboard() {
                           <span className="card-info-label">📍</span>
                           <span>{t('dashboard.organizations.status')}: {isExpired ? t('orgDashboard.invitations.expired') : t('roles.pending')}</span>
                         </div>
-                      </div>
-
-                      <div className="card-footer" style={{ justifyContent: 'center' }}>
-                        <button
-                          className="card-action-btn delete"
-                          onClick={() => handleCancelInvitation(invitation._id || invitation.token)}
-                          title={t('orgDashboard.modal.delete')}
-                        >
-                          🗑️ {t('orgDashboard.invitations.cancel') || 'Cancel'}
-                        </button>
                       </div>
                     </div>
                   );

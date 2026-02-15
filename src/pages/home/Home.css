@@ -73,38 +73,29 @@
   display: inline-block;
 }
 
-.auth-trigger-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-weight: 600;
+.auth-trigger-link {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
-.auth-trigger-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.auth-trigger-btn.signup {
-  background: #5227FF;
-  border-color: #5227FF;
-}
-
-.auth-trigger-btn.signup:hover {
-  background: #411ce6;
-  box-shadow: 0 4px 15px rgba(82, 39, 255, 0.4);
+.auth-trigger-link:hover {
+  color: white;
 }
 
 .chevron {
   font-size: 0.7rem;
   opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
 }
 
 .dropdown-menu {

@@ -7,7 +7,8 @@
     "admin": "المدير",
     "orgLeader": "المنظمة",
     "signIn": "تسجيل الدخول",
-    "signUp": "إنشاء حساب"
+    "signUp": "إنشاء حساب",
+    "account": "الحساب"
   },
   "hero": {
     "title": "تمكين صحتك الإدراكية",
@@ -120,11 +121,15 @@
     "subtitle": "إدارة موظفي منظمتك",
     "logout": "تسجيل الخروج",
     "loading": "جاري التحميل...",
+    "header": {
+      "refresh": "تحديث"
+    },
     "tabs": {
       "overview": "نظرة عامة",
       "staff": "إدارة الموظفين",
       "families": "العائلات",
-      "children": "الأطفال"
+      "children": "الأطفال",
+      "invitations": "الدعوات"
     },
     "stats": {
       "totalStaff": "إجمالي الموظفين",
@@ -136,10 +141,15 @@
       "active": "نشط",
       "viewAll": "عرض الكل",
       "activeMembers": "أعضاء نشطون",
-      "mentalHealth": "دعم الصحة النفسية",
+      "psychologists": "الأخصائيين النفسيين",
+      "mentalHealth": "دعم الصحة العقلية",
+      "speechTherapists": "معالجي النطق",
       "communication": "متخصصو التواصل",
+      "occupationalTherapists": "معالجي العلاج الوظيفي",
       "motorSkills": "دعم المهارات الحركية",
-      "medicalProfessionals": "متخصصون طبيون",
+      "doctors": "الأطباء",
+      "medicalProfessionals": "المتخصصون الطبيون",
+      "volunteers": "المتطوعون",
       "communityHelpers": "مساعدو المجتمع"
     },
     "staff": {
@@ -253,7 +263,8 @@
       "unknownParent": "غير معروف",
       "emptyState": "لا يوجد أطفال مسجلين بعد",
       "ageYears": "{{count}} سنوات",
-      "ageYear": "{{count}} سنة"
+      "ageYear": "{{count}} سنة",
+      "yearsOld": "سنوات"
     },
     "invitations": {
       "title": "الدعوات المعلقة",
@@ -428,7 +439,8 @@
       "noInvites": "لا توجد دعوات معلقة",
       "sentDate": "تاريخ الإرسال",
       "cancel": "إلغاء الدعوة",
-      "leaderDetails": "تفاصيل القائد"
+      "leaderDetails": "تفاصيل القائد",
+      "pending": "في انتظار الموافقة"
     }
   }
 }
