@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { API_BASE_URL } from '../../config';
 import './OrgLeaderDashboard.css';
@@ -63,11 +64,11 @@ function OrgLeaderDashboard() {
       }
 
       const data = await response.json();
-      
+
       // Store new tokens
       localStorage.setItem('orgLeaderToken', data.accessToken);
       localStorage.setItem('orgLeaderRefreshToken', data.refreshToken);
-      
+
       return data.accessToken;
     } catch (error) {
       console.error('Token refresh failed:', error);
@@ -100,14 +101,14 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         authToken = newToken;
         response = await fetch(`${API_BASE_URL}/organization/my-organization/staff`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         });
-        
+
         if (response.status === 401) {
           handleSessionExpired();
           return;
@@ -142,14 +143,14 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         authToken = newToken;
         response = await fetch(`${API_BASE_URL}/organization/my-organization/families`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         });
-        
+
         if (response.status === 401) {
           handleSessionExpired();
           return;
@@ -182,14 +183,14 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         authToken = newToken;
         response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         });
-        
+
         if (response.status === 401) {
           handleSessionExpired();
           return;
@@ -222,14 +223,14 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         authToken = newToken;
         response = await fetch(`${API_BASE_URL}/organization/my-organization/invitations`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         });
-        
+
         if (response.status === 401) {
           handleSessionExpired();
           return;
@@ -263,7 +264,7 @@ function OrgLeaderDashboard() {
         return;
       }
       setUser(parsedUser);
-      
+
       // Fetch fresh data from API if organization exists
       if (parsedUser.organization) {
         // Fetch all data from API to ensure it's up-to-date
@@ -287,9 +288,9 @@ function OrgLeaderDashboard() {
 
   const handleRefresh = async () => {
     const token = localStorage.getItem('orgLeaderToken');
-    
+
     if (!token) return;
-    
+
     setLoading(true);
     try {
       // Refresh all data
@@ -299,11 +300,11 @@ function OrgLeaderDashboard() {
         fetchChildren(token),
         fetchPendingInvitations(token),
       ]);
-      setSuccessMessage('Data refreshed successfully!');
+      setSuccessMessage(t('orgDashboard.messages.refreshed'));
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Failed to refresh data:', error);
-      setError('Failed to refresh data');
+      setError(t('orgDashboard.messages.refreshFailed'));
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -317,7 +318,7 @@ function OrgLeaderDashboard() {
 
     try {
       let token = localStorage.getItem('orgLeaderToken');
-      
+
       let response;
       if (staffModalMode === 'create') {
         // Create new staff account
@@ -348,9 +349,9 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         token = newToken;
-        
+
         // Retry the request
         if (staffModalMode === 'create') {
           response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/create`, {
@@ -371,7 +372,7 @@ function OrgLeaderDashboard() {
             body: JSON.stringify({ email: staffEmail })
           });
         }
-        
+
         if (response.status === 401) {
           handleSessionExpired();
           return;
@@ -384,7 +385,7 @@ function OrgLeaderDashboard() {
         throw new Error(data.message || 'Failed to add staff member');
       }
 
-      setSuccessMessage(staffModalMode === 'create' ? 'Staff account created successfully!' : 'Invitation sent successfully! The user will receive an email to accept.');
+      setSuccessMessage(staffModalMode === 'create' ? t('orgDashboard.messages.staffCreateSuccess') : t('orgDashboard.messages.staffInviteSuccess'));
       setShowAddStaffModal(false);
       setStaffEmail('');
       setNewStaff({
@@ -400,7 +401,7 @@ function OrgLeaderDashboard() {
         // Refresh pending invitations for 'add' mode
         fetchPendingInvitations(token);
       }
-      
+
       setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       setError(err.message);
@@ -450,9 +451,9 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         token = newToken;
-        
+
         // Retry the request with new token
         response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/${editingStaff._id || editingStaff.id}`, {
           method: 'PATCH',
@@ -462,7 +463,7 @@ function OrgLeaderDashboard() {
           },
           body: JSON.stringify(updateData)
         });
-        
+
         // If still 401, logout
         if (response.status === 401) {
           handleSessionExpired();
@@ -476,7 +477,7 @@ function OrgLeaderDashboard() {
         throw new Error(data.message || 'Failed to update staff member');
       }
 
-      setSuccessMessage('Staff member updated successfully!');
+      setSuccessMessage(t('orgDashboard.messages.staffUpdateSuccess'));
       setShowAddStaffModal(false);
       setEditingStaff(null);
       setNewStaff({
@@ -487,7 +488,7 @@ function OrgLeaderDashboard() {
         role: 'psychologist'
       });
       fetchStaff(token);
-      
+
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setError(err.message);
@@ -523,7 +524,7 @@ function OrgLeaderDashboard() {
 
       setSuccessMessage(t('orgDashboard.messages.staffRemoved'));
       fetchStaff(token);
-      
+
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setError(err.message);
@@ -537,13 +538,13 @@ function OrgLeaderDashboard() {
 
     const organizationId = user?.organization?.id;
     if (!organizationId) {
-      setError('Organization not found');
+      setError(t('orgDashboard.messages.orgNotFound'));
       return;
     }
 
     try {
       let token = localStorage.getItem('orgLeaderToken');
-      
+
       let response;
       if (familyModalMode === 'create') {
         // Create new family account with children
@@ -574,9 +575,9 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         token = newToken;
-        
+
         // Retry the request
         if (familyModalMode === 'create') {
           response = await fetch(`${API_BASE_URL}/organization/my-organization/families/create`, {
@@ -597,7 +598,7 @@ function OrgLeaderDashboard() {
             body: JSON.stringify({ email: familyEmail })
           });
         }
-        
+
         if (response.status === 401) {
           handleSessionExpired();
           return;
@@ -610,7 +611,7 @@ function OrgLeaderDashboard() {
         throw new Error(data.message || 'Failed to add family');
       }
 
-      setSuccessMessage(familyModalMode === 'create' ? 'Family account created successfully!' : 'Invitation sent successfully! The family will receive an email to accept.');
+      setSuccessMessage(familyModalMode === 'create' ? t('orgDashboard.messages.familyCreateSuccess') : t('orgDashboard.messages.familyInviteSuccess'));
       setShowAddFamilyModal(false);
       setFamilyEmail('');
       setNewFamily({
@@ -627,7 +628,7 @@ function OrgLeaderDashboard() {
         // Refresh pending invitations for 'add' mode
         fetchPendingInvitations(token);
       }
-      
+
       setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       setError(err.message);
@@ -643,7 +644,7 @@ function OrgLeaderDashboard() {
       password: '', // Don't show existing password
       children: []
     });
-    
+
     // Fetch existing children for this family
     const familyId = family._id || family.id;
     const familyChildren = children.filter(c => {
@@ -652,7 +653,7 @@ function OrgLeaderDashboard() {
     });
     setExistingChildren(familyChildren);
     setChildrenToDelete([]);
-    
+
     setFamilyModalMode('edit');
     setShowAddFamilyModal(true);
   };
@@ -665,7 +666,7 @@ function OrgLeaderDashboard() {
     try {
       let token = localStorage.getItem('orgLeaderToken');
       const familyId = editingFamily._id || editingFamily.id;
-      
+
       // 1. Update family info
       const updateData = {
         fullName: newFamily.fullName,
@@ -689,9 +690,9 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         token = newToken;
-        
+
         // Retry the request with new token
         response = await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}`, {
           method: 'PATCH',
@@ -701,7 +702,7 @@ function OrgLeaderDashboard() {
           },
           body: JSON.stringify(updateData)
         });
-        
+
         // If still 401, logout
         if (response.status === 401) {
           handleSessionExpired();
@@ -731,7 +732,7 @@ function OrgLeaderDashboard() {
           const childId = child._id || child.id;
           // eslint-disable-next-line no-unused-vars
           const { _id, id, _modified, parentId, organizationId, createdAt, updatedAt, __v, ...childData } = child;
-          
+
           await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}/children/${childId}`, {
             method: 'PATCH',
             headers: {
@@ -755,7 +756,7 @@ function OrgLeaderDashboard() {
         });
       }
 
-      setSuccessMessage('Family and children updated successfully!');
+      setSuccessMessage(t('orgDashboard.messages.familyUpdateSuccess'));
       setShowAddFamilyModal(false);
       setEditingFamily(null);
       setExistingChildren([]);
@@ -769,7 +770,7 @@ function OrgLeaderDashboard() {
       });
       fetchFamilies(token);
       fetchChildren(token);
-      
+
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setError(err.message);
@@ -800,9 +801,9 @@ function OrgLeaderDashboard() {
           handleSessionExpired();
           return;
         }
-        
+
         token = newToken;
-        
+
         // Retry the request with new token
         response = await fetch(`${API_BASE_URL}/organization/my-organization/families/${familyId}`, {
           method: 'DELETE',
@@ -810,7 +811,7 @@ function OrgLeaderDashboard() {
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         // If still 401, logout
         if (response.status === 401) {
           handleSessionExpired();
@@ -823,10 +824,10 @@ function OrgLeaderDashboard() {
         throw new Error(data.message || 'Failed to remove family');
       }
 
-      setSuccessMessage('Family removed successfully!');
+      setSuccessMessage(t('orgDashboard.messages.familyRemoved'));
       fetchFamilies(token);
       fetchChildren(token);
-      
+
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setError(err.message);
@@ -875,8 +876,8 @@ function OrgLeaderDashboard() {
   const handleDeleteExistingChild = (index) => {
     const child = existingChildren[index];
     const childId = child._id || child.id;
-    
-    if (window.confirm(`Are you sure you want to delete ${child.fullName}?`)) {
+
+    if (window.confirm(t('orgDashboard.messages.confirmDeleteChild') + ` (${child.fullName})`)) {
       setChildrenToDelete([...childrenToDelete, childId]);
       setExistingChildren(existingChildren.filter((_, i) => i !== index));
     }
@@ -897,15 +898,18 @@ function OrgLeaderDashboard() {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
-            <h1 className="dashboard-title">{t('orgDashboard.title')}</h1>
+            <h1 className="dashboard-title">
+              <img src="/src/assets/logo.png" alt="CogniCare Logo" className="header-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+              <span>CogniCare</span>
+            </h1>
             <p className="dashboard-subtitle">{t('orgDashboard.subtitle')}</p>
           </div>
           <div className="header-right">
             <LanguageSwitcher />
             <div className="user-info">
               <span className="user-greeting">{t('orgDashboard.welcome')}, {user?.fullName || 'User'}</span>
-              <button onClick={handleRefresh} className="refresh-button" title="Refresh data">
-                🔄 Refresh
+              <button onClick={handleRefresh} className="refresh-button" title={t('orgDashboard.header.refresh')}>
+                🔄 {t('orgDashboard.header.refresh')}
               </button>
               <button onClick={handleLogout} className="logout-button">
                 {t('orgDashboard.logout')}
@@ -959,7 +963,7 @@ function OrgLeaderDashboard() {
             className={`tab ${activeTab === 'invitations' ? 'active' : ''}`}
             onClick={() => setActiveTab('invitations')}
           >
-            Pending Invitations
+            {t('orgDashboard.tabs.invitations')}
             {pendingInvitations.length > 0 && (
               <span className="badge">{pendingInvitations.length}</span>
             )}
@@ -1028,8 +1032,8 @@ function OrgLeaderDashboard() {
                 <div className="stat-icon">👨‍👩‍👧‍👦</div>
                 <div className="stat-info">
                   <h3>{families.length}</h3>
-                  <p>Families</p>
-                  <span className="stat-subtitle">Registered families</span>
+                  <p>{t('orgDashboard.tabs.families')}</p>
+                  <span className="stat-subtitle">{t('orgDashboard.stats.registeredFamilies')}</span>
                 </div>
               </div>
 
@@ -1037,8 +1041,8 @@ function OrgLeaderDashboard() {
                 <div className="stat-icon">👶</div>
                 <div className="stat-info">
                   <h3>{children.length}</h3>
-                  <p>Children</p>
-                  <span className="stat-subtitle">Under care</span>
+                  <p>{t('orgDashboard.tabs.children')}</p>
+                  <span className="stat-subtitle">{t('orgDashboard.stats.underCare')}</span>
                 </div>
               </div>
             </div>
@@ -1058,60 +1062,61 @@ function OrgLeaderDashboard() {
               </button>
             </div>
 
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>{t('orgDashboard.staff.name')}</th>
-                    <th>{t('orgDashboard.staff.email')}</th>
-                    <th>{t('orgDashboard.staff.role')}</th>
-                    <th>{t('orgDashboard.staff.joined')}</th>
-                    <th>{t('orgDashboard.staff.actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {staff.length === 0 ? (
-                    <tr>
-                      <td colSpan="5" className="empty-state">
-                        No staff members yet. Add your first staff member!
-                      </td>
-                    </tr>
-                  ) : (
-                    staff.map((member) => {
-                      const memberId = member._id || member.id;
-                      return (
-                        <tr key={memberId}>
-                          <td>{member.fullName}</td>
-                          <td>{member.email}</td>
-                          <td>
-                            <span className={`role-badge ${member.role}`}>
-                              {t(`dashboard.roles.${member.role}`)}
-                            </span>
-                          </td>
-                          <td>{new Date(member.createdAt).toLocaleDateString()}</td>
-                          <td>
-                            <button
-                              onClick={() => handleEditStaff(member)}
-                              className="action-button edit"
-                              title="Edit staff member"
-                              style={{ marginRight: '8px' }}
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              onClick={() => handleRemoveStaff(memberId)}
-                              className="action-button delete"
-                              title={t('orgDashboard.staff.remove')}
-                            >
-                              🗑️
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+            <div className="user-grid">
+              {staff.length === 0 ? (
+                <div className="empty-state">
+                  {t('orgDashboard.staff.emptyState')}
+                </div>
+              ) : (
+                staff.map((member) => {
+                  const memberId = member._id || member.id;
+                  return (
+                    <div key={memberId} className="profile-card">
+                      <div className="card-header">
+                        <div className="card-avatar">
+                          {member.fullName?.[0]?.toUpperCase()}
+                          <span className={`card-role-badge ${member.role}`}>
+                            {t(`roles.${member.role}`) || member.role}
+                          </span>
+                        </div>
+                        <h4 className="card-name">{member.fullName}</h4>
+                        <a href={`mailto:${member.email}`} className="card-email">{member.email}</a>
+                      </div>
+
+                      <div className="card-body">
+                        <div className="card-info-item">
+                          <span className="card-info-label">📞</span>
+                          <span>{member.phone || '—'}</span>
+                        </div>
+                        <div className="card-info-item">
+                          <span className="card-info-label">📅</span>
+                          <span>{new Date(member.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</span>
+                        </div>
+                      </div>
+
+                      <div className="card-footer">
+                        <div className="card-date">{t('orgDashboard.staff.joined')}</div>
+                        <div className="card-actions">
+                          <button
+                            onClick={() => handleEditStaff(member)}
+                            className="card-action-btn edit"
+                            title={t('orgDashboard.staff.editTitle')}
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleRemoveStaff(memberId)}
+                            className="card-action-btn delete"
+                            title={t('orgDashboard.staff.remove')}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -1129,62 +1134,67 @@ function OrgLeaderDashboard() {
               </button>
             </div>
 
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>{t('orgDashboard.families.parentName')}</th>
-                    <th>{t('orgDashboard.families.email')}</th>
-                    <th>{t('orgDashboard.families.phone')}</th>
-                    <th>{t('orgDashboard.families.childrenCount')}</th>
-                    <th>{t('orgDashboard.families.joined')}</th>
-                    <th>{t('orgDashboard.families.actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {families.length === 0 ? (
-                    <tr>
-                      <td colSpan="6" className="empty-state">
-                        {t('orgDashboard.families.emptyState')}
-                      </td>
-                    </tr>
-                  ) : (
-                    families.map((family) => {
-                      const familyId = family._id || family.id;
-                      const familyChildrenCount = children.filter(c => {
-                        const childParentId = c.parentId?.toString() || c.parentId;
-                        return childParentId === familyId?.toString();
-                      }).length;
-                      return (
-                        <tr key={familyId}>
-                          <td>{family.fullName}</td>
-                          <td>{family.email}</td>
-                          <td>{family.phone || t('orgDashboard.families.noPhone')}</td>
-                          <td>{familyChildrenCount}</td>
-                          <td>{new Date(family.createdAt).toLocaleDateString()}</td>
-                          <td>
-                            <button
-                              onClick={() => handleEditFamily(family)}
-                              className="action-button edit"
-                              title="Edit family"
-                              style={{ marginRight: '8px' }}
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              onClick={() => handleRemoveFamily(familyId)}
-                              className="action-button delete"
-                              title={t('orgDashboard.families.remove')}
-                            >
-                              🗑️
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+            <div className="user-grid">
+              {families.length === 0 ? (
+                <div className="empty-state">
+                  {t('orgDashboard.families.emptyState')}
+                </div>
+              ) : (
+                families.map((family) => {
+                  const familyId = family._id || family.id;
+                  const familyChildrenCount = children.filter(c => {
+                    const childParentId = c.parentId?.toString() || c.parentId;
+                    return childParentId === familyId?.toString();
+                  }).length;
+                  return (
+                    <div key={familyId} className="profile-card">
+                      <div className="card-header">
+                        <div className="card-avatar">
+                          {family.fullName?.[0]?.toUpperCase()}
+                          <span className="card-role-badge status-approved" style={{ background: '#10b981', color: 'white' }}>
+                            {t('roles.family')}
+                          </span>
+                        </div>
+                        <h4 className="card-name">{family.fullName}</h4>
+                        <a href={`mailto:${family.email}`} className="card-email">{family.email}</a>
+                      </div>
+
+                      <div className="card-body">
+                        <div className="card-info-item">
+                          <span className="card-info-label">📞</span>
+                          <span>{family.phone || t('orgDashboard.families.noPhone')}</span>
+                        </div>
+                        <div className="card-stats">
+                          <div className="card-stat-box">
+                            <span className="card-stat-value">{familyChildrenCount}</span>
+                            <span className="card-stat-label">{t('orgDashboard.tabs.children')}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="card-footer">
+                        <div className="card-date">{new Date(family.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</div>
+                        <div className="card-actions">
+                          <button
+                            onClick={() => handleEditFamily(family)}
+                            className="card-action-btn edit"
+                            title={t('orgDashboard.families.editTitle')}
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleRemoveFamily(familyId)}
+                            className="card-action-btn delete"
+                            title={t('orgDashboard.families.remove')}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -1197,48 +1207,55 @@ function OrgLeaderDashboard() {
               <p className="subtitle">{t('orgDashboard.children.total')}: {children.length}</p>
             </div>
 
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>{t('orgDashboard.children.childName')}</th>
-                    <th>{t('orgDashboard.children.gender')}</th>
-                    <th>{t('orgDashboard.children.dateOfBirth')}</th>
-                    <th>{t('orgDashboard.children.age')}</th>
-                    <th>{t('orgDashboard.children.diagnosis')}</th>
-                    <th>{t('orgDashboard.children.parent')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {children.length === 0 ? (
-                    <tr>
-                      <td colSpan="6" className="empty-state">
-                        {t('orgDashboard.children.emptyState')}
-                      </td>
-                    </tr>
-                  ) : (
-                    children.map((child) => {
-                      const age = Math.floor((new Date() - new Date(child.dateOfBirth)) / 31557600000);
-                      // Handle both 'id' (from login response) and '_id' (from API fetch)
-                      const childParentId = child.parentId?.toString() || child.parentId;
-                      const parent = families.find(f => {
-                        const familyId = f._id?.toString() || f.id?.toString();
-                        return familyId === childParentId;
-                      });
-                      return (
-                        <tr key={child._id || child.id}>
-                          <td>{child.fullName}</td>
-                          <td>{child.gender}</td>
-                          <td>{new Date(child.dateOfBirth).toLocaleDateString()}</td>
-                          <td>{age} years</td>
-                          <td>{child.diagnosis || t('orgDashboard.children.noDiagnosis')}</td>
-                          <td>{parent?.fullName || t('orgDashboard.children.unknownParent')}</td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+            <div className="user-grid">
+              {children.length === 0 ? (
+                <div className="empty-state">
+                  {t('orgDashboard.children.emptyState')}
+                </div>
+              ) : (
+                children.map((child) => {
+                  const age = Math.floor((new Date() - new Date(child.dateOfBirth)) / 31557600000);
+                  const childParentId = child.parentId?.toString() || child.parentId;
+                  const parent = families.find(f => {
+                    const familyId = f._id?.toString() || f.id?.toString();
+                    return familyId === childParentId;
+                  });
+
+                  return (
+                    <div key={child._id} className="profile-card">
+                      <div className="card-header">
+                        <div className="card-avatar">
+                          👶
+                          <span className="card-role-badge" style={{ background: '#3b82f6', color: 'white' }}>
+                            {t(`orgDashboard.modal.${child.gender}`) || child.gender}
+                          </span>
+                        </div>
+                        <h4 className="card-name">{child.fullName}</h4>
+                        <p className="card-email">{age} {t('orgDashboard.children.yearsOld') || 'years old'}</p>
+                      </div>
+
+                      <div className="card-body">
+                        <div className="card-info-item">
+                          <span className="card-info-label">👤</span>
+                          <span>{parent?.fullName || t('orgDashboard.children.unknownParent')}</span>
+                        </div>
+                        <div className="card-info-item">
+                          <span className="card-info-label">🏥</span>
+                          <span style={{ fontSize: '0.8rem' }}>{child.diagnosis || t('orgDashboard.children.noDiagnosis')}</span>
+                        </div>
+                        <div className="card-info-item">
+                          <span className="card-info-label">📅</span>
+                          <span>{new Date(child.dateOfBirth).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</span>
+                        </div>
+                      </div>
+
+                      <div className="card-footer">
+                        <div className="card-date">{child.allergies ? `⚠️ ${child.allergies}` : ''}</div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -1247,60 +1264,62 @@ function OrgLeaderDashboard() {
         {activeTab === 'invitations' && (
           <div className="tab-content">
             <div className="content-header">
-              <h2>Pending Invitations</h2>
-              <p className="subtitle">Total Pending: {pendingInvitations.length}</p>
+              <h2>{t('orgDashboard.invitations.title')}</h2>
+              <p className="subtitle">{t('orgDashboard.invitations.total')}: {pendingInvitations.length}</p>
             </div>
 
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Email</th>
-                    <th>Type</th>
-                    <th>Invited On</th>
-                    <th>Expires</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pendingInvitations.length === 0 ? (
-                    <tr>
-                      <td colSpan="5" className="empty-state">
-                        No pending invitations
-                      </td>
-                    </tr>
-                  ) : (
-                    pendingInvitations.map((invitation) => {
-                      const expiresAt = new Date(invitation.expiresAt);
-                      const createdAt = new Date(invitation.createdAt);
-                      const isExpired = expiresAt < new Date();
-                      
-                      return (
-                        <tr key={invitation._id || invitation.token}>
-                          <td>{invitation.userEmail}</td>
-                          <td>
-                            <span className={`role-badge ${invitation.invitationType}`}>
-                              {invitation.invitationType === 'staff' ? '👔 Staff' : '👨‍👩‍👧‍👦 Family'}
-                            </span>
-                          </td>
-                          <td>{createdAt.toLocaleDateString()}</td>
-                          <td>
-                            <span className={isExpired ? 'expired-text' : ''}>
-                              {expiresAt.toLocaleDateString()}
-                              {isExpired && ' (Expired)'}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="status-badge pending">
-                              ⏳ Pending
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+            <div className="user-grid">
+              {pendingInvitations.length === 0 ? (
+                <div className="empty-state">
+                  {t('orgDashboard.invitations.noInvites')}
+                </div>
+              ) : (
+                pendingInvitations.map((invitation) => {
+                  const expiresAt = new Date(invitation.expiresAt);
+                  const createdAt = new Date(invitation.createdAt);
+                  const isExpired = expiresAt < new Date();
+
+                  return (
+                    <div key={invitation._id || invitation.token} className="profile-card">
+                      <div className="card-header">
+                        <div className="card-avatar">
+                          {invitation.invitationType === 'staff' ? '👔' : '👨‍👩‍👧‍👦'}
+                          <span className={`card-role-badge status-${isExpired ? 'rejected' : 'pending'}`}
+                            style={{ background: isExpired ? '#ef4444' : '#f59e0b', color: 'white' }}>
+                            {invitation.invitationType === 'staff' ? t('orgDashboard.invitations.staff') : t('orgDashboard.invitations.family')}
+                          </span>
+                        </div>
+                        <h4 className="card-name">{invitation.userEmail}</h4>
+                        <p className="card-email">{t('orgDashboard.invitations.sentDate')}: {createdAt.toLocaleDateString()}</p>
+                      </div>
+
+                      <div className="card-body">
+                        <div className="card-info-item">
+                          <span className="card-info-label">⌛</span>
+                          <span className={isExpired ? 'expired-text' : ''}>
+                            {t('orgDashboard.invitations.expires')}: {expiresAt.toLocaleDateString()}
+                            {isExpired && ` (${t('orgDashboard.invitations.expired')})`}
+                          </span>
+                        </div>
+                        <div className="card-info-item">
+                          <span className="card-info-label">📍</span>
+                          <span>{t('dashboard.organizations.status')}: {isExpired ? t('orgDashboard.invitations.expired') : t('roles.pending')}</span>
+                        </div>
+                      </div>
+
+                      <div className="card-footer" style={{ justifyContent: 'center' }}>
+                        <button
+                          className="card-action-btn delete"
+                          onClick={() => handleCancelInvitation(invitation._id || invitation.token)}
+                          title={t('orgDashboard.modal.delete')}
+                        >
+                          🗑️ {t('orgDashboard.invitations.cancel') || 'Cancel'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -1336,14 +1355,14 @@ function OrgLeaderDashboard() {
                   className={`mode-button ${staffModalMode === 'add' ? 'active' : ''}`}
                   onClick={() => setStaffModalMode('add')}
                 >
-                  Add Existing User
+                  {t('orgDashboard.staff.addExisting')}
                 </button>
                 <button
                   type="button"
                   className={`mode-button ${staffModalMode === 'create' ? 'active' : ''}`}
                   onClick={() => setStaffModalMode('create')}
                 >
-                  Create New Account
+                  {t('orgDashboard.staff.createNew')}
                 </button>
               </div>
             )}
@@ -1365,37 +1384,37 @@ function OrgLeaderDashboard() {
               ) : (
                 <>
                   <div className="form-group">
-                    <label htmlFor="staff-fullName">Full Name *</label>
+                    <label htmlFor="staff-fullName">{t('orgDashboard.modal.fullName')} *</label>
                     <input
                       type="text"
                       id="staff-fullName"
                       value={newStaff.fullName}
                       onChange={(e) => setNewStaff({ ...newStaff, fullName: e.target.value })}
-                      placeholder="Dr. Sarah Johnson"
+                      placeholder={t('orgDashboard.modal.fullNamePlaceholder')}
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="staff-email-new">Email *</label>
+                    <label htmlFor="staff-email-new">{t('orgDashboard.modal.email')} *</label>
                     <input
                       type="email"
                       id="staff-email-new"
                       value={newStaff.email}
                       onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
-                      placeholder="sarah.johnson@example.com"
+                      placeholder={t('orgDashboard.modal.emailPlaceholder')}
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="staff-phone">Phone</label>
+                    <label htmlFor="staff-phone">{t('orgDashboard.modal.phone')}</label>
                     <input
                       type="tel"
                       id="staff-phone"
                       value={newStaff.phone}
                       onChange={(e) => setNewStaff({ ...newStaff, phone: e.target.value })}
-                      placeholder="+1234567890"
+                      placeholder={t('orgDashboard.modal.phonePlaceholder')}
                     />
                   </div>
 
@@ -1407,28 +1426,30 @@ function OrgLeaderDashboard() {
                       onChange={(e) => setNewStaff({ ...newStaff, role: e.target.value })}
                       required
                     >
-                      <option value="psychologist">Psychologist</option>
-                      <option value="speech_therapist">Speech Therapist</option>
-                      <option value="occupational_therapist">Occupational Therapist</option>
-                      <option value="doctor">Doctor</option>
-                      <option value="volunteer">Volunteer</option>
-                      <option value="other">Other</option>
+                      <option value="psychologist">{t('roles.psychologist')}</option>
+                      <option value="speech_therapist">{t('roles.speech_therapist')}</option>
+                      <option value="occupational_therapist">{t('roles.occupational_therapist')}</option>
+                      <option value="doctor">{t('roles.doctor')}</option>
+                      <option value="volunteer">{t('roles.volunteer')}</option>
+                      <option value="other">{t('roles.other')}</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="staff-password">Temporary Password {staffModalMode === 'edit' ? '(leave blank to keep current)' : '*'}</label>
+                    <label htmlFor="staff-password">
+                      {staffModalMode === 'edit' ? t('orgDashboard.modal.editTempPassword') : `${t('orgDashboard.modal.tempPassword')} *`}
+                    </label>
                     <input
                       type="password"
                       id="staff-password"
                       value={newStaff.password}
                       onChange={(e) => setNewStaff({ ...newStaff, password: e.target.value })}
-                      placeholder="Minimum 6 characters"
+                      placeholder={t('orgDashboard.modal.minCharacters')}
                       minLength="6"
                       required={staffModalMode !== 'edit'}
                     />
                     {staffModalMode !== 'edit' && (
-                      <small className="form-help">User will be asked to change on first login</small>
+                      <small className="form-help">{t('orgDashboard.modal.resetNotice')}</small>
                     )}
                   </div>
                 </>
@@ -1447,7 +1468,7 @@ function OrgLeaderDashboard() {
                   {t('orgDashboard.modal.cancel')}
                 </button>
                 <button type="submit" className="button-primary">
-                  {staffModalMode === 'edit' ? 'Update Staff' : (staffModalMode === 'create' ? 'Create Account' : t('orgDashboard.modal.add'))}
+                  {staffModalMode === 'edit' ? t('orgDashboard.modal.update') : (staffModalMode === 'create' ? t('orgDashboard.modal.create') : t('orgDashboard.modal.add'))}
                 </button>
               </div>
             </form>
@@ -1466,7 +1487,7 @@ function OrgLeaderDashboard() {
         }}>
           <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{familyModalMode === 'edit' ? 'Edit Family Member' : (familyModalMode === 'create' ? 'Create Family Account' : 'Add Family to Organization')}</h2>
+              <h2>{familyModalMode === 'edit' ? t('orgDashboard.families.editTitle') : (familyModalMode === 'create' ? t('orgDashboard.families.createNew') : t('orgDashboard.families.addExisting'))}</h2>
               <button
                 className="modal-close"
                 onClick={() => {
@@ -1490,14 +1511,14 @@ function OrgLeaderDashboard() {
                   className={`mode-button ${familyModalMode === 'add' ? 'active' : ''}`}
                   onClick={() => setFamilyModalMode('add')}
                 >
-                  Add Existing Family
+                  {t('orgDashboard.families.addExisting')}
                 </button>
                 <button
                   type="button"
                   className={`mode-button ${familyModalMode === 'create' ? 'active' : ''}`}
                   onClick={() => setFamilyModalMode('create')}
                 >
-                  Create New Family
+                  {t('orgDashboard.families.createNew')}
                 </button>
               </div>
             )}
@@ -1505,7 +1526,7 @@ function OrgLeaderDashboard() {
             <form onSubmit={familyModalMode === 'edit' ? handleUpdateFamily : handleAddFamily} className="modal-form">
               {familyModalMode === 'add' ? (
                 <div className="form-group">
-                  <label htmlFor="familyEmail">Family Parent Email</label>
+                  <label htmlFor="familyEmail">{t('orgDashboard.families.email')}</label>
                   <input
                     type="email"
                     id="familyEmail"
@@ -1514,32 +1535,32 @@ function OrgLeaderDashboard() {
                     placeholder="parent@example.com"
                     required
                   />
-                  <small className="form-help">Enter the email of the family's parent user</small>
+                  <small className="form-help">{t('orgDashboard.modal.emailHelp')}</small>
                 </div>
               ) : (
                 <>
-                  <h3 className="section-title">Parent Information</h3>
+                  <h3 className="section-title">{t('orgDashboard.modal.parentInfo')}</h3>
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="family-fullName">Full Name *</label>
+                      <label htmlFor="family-fullName">{t('orgDashboard.modal.fullName')} *</label>
                       <input
                         type="text"
                         id="family-fullName"
                         value={newFamily.fullName}
                         onChange={(e) => setNewFamily({ ...newFamily, fullName: e.target.value })}
-                        placeholder="John Smith"
+                        placeholder={t('orgDashboard.modal.fullNamePlaceholder')}
                         required
                       />
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="family-email">Email *</label>
+                      <label htmlFor="family-email">{t('orgDashboard.modal.email')} *</label>
                       <input
                         type="email"
                         id="family-email"
                         value={newFamily.email}
                         onChange={(e) => setNewFamily({ ...newFamily, email: e.target.value })}
-                        placeholder="john.smith@example.com"
+                        placeholder={t('orgDashboard.modal.emailPlaceholder')}
                         required
                       />
                     </div>
@@ -1547,7 +1568,7 @@ function OrgLeaderDashboard() {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="family-phone">Phone</label>
+                      <label htmlFor="family-phone">{t('orgDashboard.modal.phone')}</label>
                       <input
                         type="tel"
                         id="family-phone"
@@ -1558,7 +1579,7 @@ function OrgLeaderDashboard() {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="family-password">Temporary Password {familyModalMode === 'edit' ? '(leave blank to keep current)' : '*'}</label>
+                      <label htmlFor="family-password">{t('orgDashboard.modal.password')} {familyModalMode === 'edit' ? `(${t('orgDashboard.modal.leaveBlank')})` : '*'}</label>
                       <input
                         type="password"
                         id="family-password"
@@ -1576,21 +1597,21 @@ function OrgLeaderDashboard() {
                     <div className="children-section">
                       <div className="section-header">
                         <h3 className="section-title">
-                          {familyModalMode === 'edit' ? 'Manage Children' : 'Children (Optional)'}
+                          {familyModalMode === 'edit' ? t('orgDashboard.modal.manageChildren') : t('orgDashboard.modal.childrenOptional')}
                         </h3>
                         <button
                           type="button"
                           className="add-child-button"
                           onClick={handleAddChild}
                         >
-                          + Add Child
+                          + {t('orgDashboard.modal.addChild')}
                         </button>
                       </div>
 
                       {/* Existing children (edit mode only) */}
                       {familyModalMode === 'edit' && existingChildren.length > 0 && (
                         <div className="existing-children">
-                          <h4 className="subsection-title">Existing Children</h4>
+                          <h4 className="subsection-title">{t('orgDashboard.modal.existingChildren')}</h4>
                           {existingChildren.map((child, index) => (
                             <div key={child._id || child.id} className="child-form existing">
                               <div className="child-header">
@@ -1600,13 +1621,13 @@ function OrgLeaderDashboard() {
                                   className="remove-child-button delete"
                                   onClick={() => handleDeleteExistingChild(index)}
                                 >
-                                  Delete
+                                  {t('orgDashboard.modal.delete')}
                                 </button>
                               </div>
 
                               <div className="form-row">
                                 <div className="form-group">
-                                  <label>Full Name *</label>
+                                  <label>{t('orgDashboard.modal.fullName')} *</label>
                                   <input
                                     type="text"
                                     value={child.fullName}
@@ -1617,7 +1638,7 @@ function OrgLeaderDashboard() {
                                 </div>
 
                                 <div className="form-group">
-                                  <label>Date of Birth *</label>
+                                  <label>{t('orgDashboard.modal.dob')} *</label>
                                   <input
                                     type="date"
                                     value={child.dateOfBirth ? new Date(child.dateOfBirth).toISOString().split('T')[0] : ''}
@@ -1627,43 +1648,43 @@ function OrgLeaderDashboard() {
                                 </div>
 
                                 <div className="form-group">
-                                  <label>Gender *</label>
+                                  <label>{t('orgDashboard.modal.gender')} *</label>
                                   <select
                                     value={child.gender}
                                     onChange={(e) => handleExistingChildChange(index, 'gender', e.target.value)}
                                     required
                                   >
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
+                                    <option value="male">{t('orgDashboard.modal.male')}</option>
+                                    <option value="female">{t('orgDashboard.modal.female')}</option>
+                                    <option value="other">{t('orgDashboard.modal.other')}</option>
                                   </select>
                                 </div>
                               </div>
 
                               <div className="form-row">
                                 <div className="form-group">
-                                  <label>Diagnosis</label>
+                                  <label>{t('orgDashboard.modal.diagnosis')}</label>
                                   <input
                                     type="text"
                                     value={child.diagnosis || ''}
                                     onChange={(e) => handleExistingChildChange(index, 'diagnosis', e.target.value)}
-                                    placeholder="e.g., Autism Spectrum Disorder"
+                                    placeholder={t('orgDashboard.modal.diagnosis')}
                                   />
                                 </div>
 
                                 <div className="form-group">
-                                  <label>Allergies</label>
+                                  <label>{t('orgDashboard.modal.allergies')}</label>
                                   <input
                                     type="text"
                                     value={child.allergies || ''}
                                     onChange={(e) => handleExistingChildChange(index, 'allergies', e.target.value)}
-                                    placeholder="e.g., Peanuts, dairy"
+                                    placeholder={t('orgDashboard.modal.allergies')}
                                   />
                                 </div>
                               </div>
 
                               <div className="form-group">
-                                <label>Medical History</label>
+                                <label>{t('orgDashboard.modal.medicalHistory')}</label>
                                 <textarea
                                   value={child.medicalHistory || ''}
                                   onChange={(e) => handleExistingChildChange(index, 'medicalHistory', e.target.value)}
@@ -1673,7 +1694,7 @@ function OrgLeaderDashboard() {
                               </div>
 
                               <div className="form-group">
-                                <label>Current Medications</label>
+                                <label>{t('orgDashboard.modal.medications')}</label>
                                 <input
                                   type="text"
                                   value={child.medications || ''}
@@ -1683,7 +1704,7 @@ function OrgLeaderDashboard() {
                               </div>
 
                               <div className="form-group">
-                                <label>Notes</label>
+                                <label>{t('orgDashboard.modal.notes')}</label>
                                 <textarea
                                   value={child.notes || ''}
                                   onChange={(e) => handleExistingChildChange(index, 'notes', e.target.value)}
@@ -1699,7 +1720,7 @@ function OrgLeaderDashboard() {
                       {/* New children to add */}
                       {newFamily.children.length > 0 && (
                         <div className="new-children">
-                          {familyModalMode === 'edit' && <h4 className="subsection-title">New Children to Add</h4>}
+                          {familyModalMode === 'edit' && <h4 className="subsection-title">{t('orgDashboard.modal.newChildrenToAdd')}</h4>}
                           {newFamily.children.map((child, index) => (
                             <div key={index} className="child-form">
                               <div className="child-header">
@@ -1709,7 +1730,7 @@ function OrgLeaderDashboard() {
                                   className="remove-child-button"
                                   onClick={() => handleRemoveChild(index)}
                                 >
-                                  Remove
+                                  {t('orgDashboard.modal.remove')}
                                 </button>
                               </div>
 
@@ -1742,16 +1763,16 @@ function OrgLeaderDashboard() {
                                     onChange={(e) => handleChildChange(index, 'gender', e.target.value)}
                                     required
                                   >
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
+                                    <option value="male">{t('orgDashboard.modal.male')}</option>
+                                    <option value="female">{t('orgDashboard.modal.female')}</option>
+                                    <option value="other">{t('orgDashboard.modal.other')}</option>
                                   </select>
                                 </div>
                               </div>
 
                               <div className="form-row">
                                 <div className="form-group">
-                                  <label>Diagnosis</label>
+                                  <label>{t('orgDashboard.modal.diagnosis')}</label>
                                   <input
                                     type="text"
                                     value={child.diagnosis}
@@ -1761,7 +1782,7 @@ function OrgLeaderDashboard() {
                                 </div>
 
                                 <div className="form-group">
-                                  <label>Allergies</label>
+                                  <label>{t('orgDashboard.modal.allergies')}</label>
                                   <input
                                     type="text"
                                     value={child.allergies}
@@ -1792,11 +1813,11 @@ function OrgLeaderDashboard() {
                               </div>
 
                               <div className="form-group">
-                                <label>Notes</label>
+                                <label>{t('orgDashboard.modal.notes')}</label>
                                 <textarea
                                   value={child.notes}
                                   onChange={(e) => handleChildChange(index, 'notes', e.target.value)}
-                                  placeholder="Additional notes..."
+                                  placeholder={t('orgDashboard.modal.notes')}
                                   rows="2"
                                 />
                               </div>
@@ -1821,10 +1842,10 @@ function OrgLeaderDashboard() {
                   }}
                   className="button-secondary"
                 >
-                  Cancel
+                  {t('orgDashboard.modal.cancel')}
                 </button>
                 <button type="submit" className="button-primary">
-                  {familyModalMode === 'edit' ? 'Update Family' : (familyModalMode === 'create' ? 'Create Family & Children' : 'Add Family')}
+                  {familyModalMode === 'edit' ? t('orgDashboard.modal.update') : (familyModalMode === 'create' ? t('orgDashboard.modal.create') : t('orgDashboard.modal.add'))}
                 </button>
               </div>
             </form>
