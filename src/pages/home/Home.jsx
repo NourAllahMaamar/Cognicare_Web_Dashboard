@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import Grainient from '../../components/Grainient';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import './Home.css';
 
 function Home() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
+
   return (
     <div className="home-page">
       <Grainient
@@ -31,17 +37,45 @@ function Home() {
         centerY={0}
         zoom={0.9}
       />
-      
+
       <div className="home-content">
         <header className="home-header">
-          <div className="logo">🧠 CogniCare</div>
+          <div className="logo-container">
+            <img src="/src/assets/logo.png" alt="CogniCare Logo" className="header-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+            <span className="logo-text">CogniCare</span>
+          </div>
           <nav className="nav-menu">
             <a href="#home">{t('nav.home')}</a>
             <a href="#features">{t('nav.features')}</a>
             <a href="#about">{t('nav.about')}</a>
             <a href="#download">{t('nav.download')}</a>
-            <a href="/org/login" className="admin-link">{t('nav.orgLeader')}</a>
-            <a href="/admin/login" className="admin-link">{t('nav.admin')}</a>
+
+            <div className="auth-dropdown"
+              onMouseEnter={() => setShowSignIn(true)}
+              onMouseLeave={() => setShowSignIn(false)}>
+              <button className="auth-trigger-btn">
+                {t('nav.signIn')} <span className="chevron">▼</span>
+              </button>
+              {showSignIn && (
+                <div className="dropdown-menu">
+                  <button onClick={() => navigate('/org/login')}>{t('nav.orgLeader')}</button>
+                  <button onClick={() => navigate('/admin/login')}>{t('nav.admin')}</button>
+                </div>
+              )}
+            </div>
+
+            <div className="auth-dropdown"
+              onMouseEnter={() => setShowSignUp(true)}
+              onMouseLeave={() => setShowSignUp(false)}>
+              <button className="auth-trigger-btn signup">
+                {t('nav.signUp')} <span className="chevron">▼</span>
+              </button>
+              {showSignUp && (
+                <div className="dropdown-menu">
+                  <button onClick={() => navigate('/org/login?mode=signup')}>{t('nav.orgLeader')}</button>
+                </div>
+              )}
+            </div>
           </nav>
           <LanguageSwitcher />
         </header>
@@ -133,7 +167,10 @@ function Home() {
         <footer className="home-footer">
           <div className="footer-content">
             <div className="footer-brand">
-              <div className="footer-logo">🧠 CogniCare</div>
+              <div className="footer-logo-container">
+                <img src="/src/assets/logo.png" alt="CogniCare Logo" className="footer-logo-img" onError={(e) => { e.target.style.display = 'none'; }} />
+                <span className="footer-logo-text">CogniCare</span>
+              </div>
               <p className="footer-tagline">{t('footer.tagline')}</p>
             </div>
             <div className="footer-links">
