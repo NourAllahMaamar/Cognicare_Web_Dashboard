@@ -5,7 +5,9 @@
     "about": "حول",
     "download": "تحميل",
     "admin": "المدير",
-    "orgLeader": "المنظمة"
+    "orgLeader": "المنظمة",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب"
   },
   "hero": {
     "title": "تمكين صحتك الإدراكية",
@@ -126,28 +128,36 @@
     },
     "stats": {
       "totalStaff": "إجمالي الموظفين",
+      "underCare": "تحت الرعاية",
+      "registeredFamilies": "العائلات المسجلة",
+      "totalFamilies": "إجمالي العائلات",
+      "totalChildren": "إجمالي الأطفال",
+      "pendingInvites": "الدعوات المعلقة",
+      "active": "نشط",
+      "viewAll": "عرض الكل",
       "activeMembers": "أعضاء نشطون",
-      "psychologists": "الأخصائيون النفسيون",
       "mentalHealth": "دعم الصحة النفسية",
-      "speechTherapists": "معالجو النطق",
       "communication": "متخصصو التواصل",
-      "occupationalTherapists": "معالجو التأهيل المهني",
       "motorSkills": "دعم المهارات الحركية",
-      "doctors": "الأطباء",
       "medicalProfessionals": "متخصصون طبيون",
-      "volunteers": "المتطوعون وآخرون",
       "communityHelpers": "مساعدو المجتمع"
     },
     "staff": {
       "title": "إدارة الموظفين",
       "addNew": "إضافة موظف",
+      "addExisting": "إضافة موظف موجود",
+      "createNew": "إنشاء حساب موظف جديد",
       "name": "الاسم",
       "email": "البريد الإلكتروني",
       "role": "الدور",
       "joined": "تاريخ الانضمام",
       "actions": "الإجراءات",
       "remove": "إزالة الموظف",
-      "removeConfirm": "هل أنت متأكد من رغبتك في إزالة هذا الموظف؟"
+      "removeConfirm": "هل أنت متأكد أنك تريد إزالة هذا الموظف من منظمتك؟",
+      "inviteSent": "تم إرسال الدعوة بنجاح! سيتلقى المستخدم بريداً إلكترونياً للقبول.",
+      "accountCreated": "تم إنشاء حساب الموظف بنجاح!",
+      "emptyState": "لا يوجد موظفون بعد. أضف موظفك الأول!",
+      "editTitle": "تعديل بيانات الموظف"
     },
     "modal": {
       "addStaff": "إضافة موظف",
@@ -155,17 +165,67 @@
       "email": "البريد الإلكتروني للموظف",
       "emailHelp": "أدخل البريد الإلكتروني لمستخدم موجود",
       "cancel": "إلغاء",
-      "add": "إضافة الموظف"
+      "add": "إضافة الموظف",
+      "create": "إنشاء",
+      "edit": "تعديل",
+      "update": "تحديث",
+      "save": "حفظ",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "مثال: سارة أحمد",
+      "emailPlaceholder": "مثال: sarah@example.com",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+966 50 123 4567",
+      "password": "كلمة المرور",
+      "tempPassword": "كلمة مرور مؤقتة",
+      "editTempPassword": "كلمة مرور مؤقتة (اتركها فارغة للاحتفاظ بالحالية)",
+      "minCharacters": "6 أحرف على الأقل",
+      "resetNotice": "سيُطلب من المستخدم تغييرها عند تسجيل الدخول الأول",
+      "role": "الدور",
+      "children": "الأطفال",
+      "childName": "اسم الطفل",
+      "dob": "تاريخ الميلاد",
+      "gender": "الجنس",
+      "diagnosis": "التشخيص",
+      "allergies": "الحساسية",
+      "medicalHistory": "التاريخ الطبي",
+      "medications": "الأدوية الحالية",
+      "notes": "ملاحظات",
+      "remove": "إزالة",
+      "parentInfo": "معلومات ولي الأمر",
+      "manageChildren": "إدارة الأطفال",
+      "childrenOptional": "الأطفال (اختياري)",
+      "addChild": "إضافة طفل",
+      "existingChildren": "الأطفال الحاليون",
+      "delete": "حذف",
+      "newChildrenToAdd": "أطفال جدد للإضافة",
+      "male": "ذكر",
+      "female": "أنثى",
+      "other": "آخر",
+      "passwordHelp": "سيُطلب من المستخدم تغييرها عند تسجيل الدخول الأول",
+      "leaveBlank": "اتركه فارغاً للحفاظ على الحالي"
     },
     "messages": {
       "staffAdded": "تمت إضافة الموظف بنجاح!",
       "staffRemoved": "تمت إزالة الموظف بنجاح!",
       "addFailed": "فشل في إضافة الموظف",
-      "removeFailed": "فشل في إزالة الموظف"
+      "removeFailed": "فشل في إزالة الموظف",
+      "refreshed": "تم تحديث البيانات بنجاح!",
+      "refreshFailed": "فشل تحديث البيانات",
+      "familyRemoved": "تمت إزالة العائلة بنجاح!",
+      "confirmDeleteChild": "هل أنت متأكد أنك تريد حذف هذا الطفل؟",
+      "staffCreateSuccess": "تم إنشاء حساب الموظف بنجاح!",
+      "staffInviteSuccess": "تم إرسال الدعوة بنجاح! سيتلقى المستخدم بريداً إلكترونياً للقبول.",
+      "staffUpdateSuccess": "تم تحديث عضو الموظفين بنجاح!",
+      "familyCreateSuccess": "تم إنشاء حساب العائلة بنجاح!",
+      "familyInviteSuccess": "تم إرسال الدعوة بنجاح! ستتلقى العائلة بريداً إلكترونياً للقبول.",
+      "familyUpdateSuccess": "تم تحديث العائلة والأطفال بنجاح!",
+      "orgNotFound": "المنظمة غير موجودة"
     },
     "families": {
       "title": "إدارة العائلات",
       "addNew": "إضافة عائلة",
+      "addExisting": "إضافة عائلة موجودة",
+      "createNew": "إنشاء حساب عائلة جديد",
       "parentName": "اسم ولي الأمر",
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",
@@ -173,8 +233,12 @@
       "joined": "تاريخ الانضمام",
       "actions": "الإجراءات",
       "remove": "إزالة العائلة",
+      "removeConfirm": "هل أنت متأكد أنك تريد إزالة هذه العائلة من المنظمة؟",
+      "inviteSent": "تم إرسال الدعوة بنجاح! ستتلقى العائلة بريداً إلكترونياً للقبول.",
+      "accountCreated": "تم إنشاء حساب العائلة بنجاح!",
       "noPhone": "غير متوفر",
-      "emptyState": "لا توجد عائلات مسجلة بعد"
+      "emptyState": "لا توجد عائلات مسجلة بعد",
+      "editTitle": "تعديل بيانات العائلة"
     },
     "children": {
       "title": "الأطفال تحت الرعاية",
@@ -187,7 +251,24 @@
       "parent": "ولي الأمر",
       "noDiagnosis": "غير متوفر",
       "unknownParent": "غير معروف",
-      "emptyState": "لا يوجد أطفال مسجلين بعد"
+      "emptyState": "لا يوجد أطفال مسجلين بعد",
+      "ageYears": "{{count}} سنوات",
+      "ageYear": "{{count}} سنة"
+    },
+    "invitations": {
+      "title": "الدعوات المعلقة",
+      "noInvites": "لا توجد دعوات معلقة",
+      "total": "إجمالي المعلقة",
+      "email": "البريد الإلكتروني",
+      "sentDate": "تاريخ الإرسال",
+      "type": "النوع",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "staff": "موظف",
+      "family": "عائلة",
+      "cancel": "إلغاء الدعوة",
+      "expired": "منتهية",
+      "awaitingResponse": "في انتظار الرد"
     }
   },
   "language": {
@@ -204,7 +285,10 @@
     "loading": "جاري التحميل...",
     "tabs": {
       "overview": "نظرة عامة",
-      "users": "إدارة المستخدمين"
+      "users": "إدارة المستخدمين",
+      "manageOrgs": "إدارة المنظمات",
+      "pendingInvites": "الدعوات المعلقة",
+      "pendingReviews": "الطلبات المعلقة"
     },
     "stats": {
       "totalUsers": "إجمالي المستخدمين",
@@ -214,7 +298,8 @@
       "healthcareProviders": "مقدمو الرعاية الصحية",
       "medicalProfessionals": "متخصصون طبيون",
       "volunteers": "المتطوعون",
-      "communityHelpers": "مساعدو المجتمع"
+      "communityHelpers": "مساعدو المجتمع",
+      "orgLeaders": "قادة المنظمات"
     },
     "quickActions": {
       "title": "إجراءات سريعة",
@@ -222,6 +307,15 @@
       "manageUsers": "إدارة المستخدمين",
       "viewReports": "عرض التقارير",
       "settings": "الإعدادات"
+    },
+    "refresh": "تحديث",
+    "recentActivity": {
+      "title": "النشاط الأخير",
+      "totalUsers": "إجمالي المستخدمين المسجلين",
+      "activeOrgs": "المنظمات النشطة",
+      "reviewQueue": "قائمة المراجعة",
+      "noPending": "لا توجد طلبات منظمات معلقة",
+      "awaitingReview": "طلبات منظمات في انتظار المراجعة"
     },
     "users": {
       "title": "إدارة المستخدمين",
@@ -257,15 +351,84 @@
       "psychologist": "أخصائي نفسي",
       "speech_therapist": "معالج نطق",
       "occupational_therapist": "معالج تأهيل مهني",
-      "other": "آخر"
+      "other": "آخر",
+      "leader": "قائد",
+      "pending": "معلق",
+      "approved": "مقبول",
+      "rejected": "مرفوض"
     },
     "messages": {
       "userCreated": "تم إنشاء المستخدم بنجاح!",
       "userUpdated": "تم تحديث المستخدم بنجاح!",
       "userDeleted": "تم حذف المستخدم بنجاح!",
-      "createFailed": "فشل في إنشاء المستخدم",
-      "updateFailed": "فشل في تحديث المستخدم",
-      "deleteFailed": "فشل في حذف المستخدم"
+      "createFailed": "فشل إنشاء المستخدم",
+      "updateFailed": "فشل تحديث المستخدم",
+      "deleteFailed": "فشل حذف المستخدم",
+      "fetchUsersFailed": "فشل جلب المستخدمين",
+      "fetchPendingOrgsFailed": "فشل جلب المنظمات المعلقة",
+      "fetchOrgsFailed": "فشل جلب المنظمات",
+      "refreshed": "تم تحديث البيانات بنجاح!",
+      "refreshFailed": "فشل تحديث البيانات",
+      "rejectionReasonRequired": "يرجى تقديم سبب للرفض",
+      "orgReviewSuccess": "تم {{status}} المنظمة بنجاح!",
+      "orgInviteSuccess": "تم إرسال دعوة المنظمة! سيتلقى المستخدم بريداً إلكترونياً لقبول أو رفض قيادة المنظمة.",
+      "orgUpdateSuccess": "تم تحديث المنظمة بنجاح!",
+      "orgDeleteSuccess": "تم حذف المنظمة بنجاح!",
+      "inviteCancelSuccess": "تم إلغاء الدعوة بنجاح!",
+      "loginFailed": "فشل تسجيل الدخول",
+      "signupFailed": "فشل التسجيل",
+      "verificationCodeFailed": "فشل إرسال كود التحقق",
+      "orgCreatedPending": "تم تقديم طلب منظمتك بنجاح. يرجى انتظار موافقة المسؤول."
+    },
+    "organizations": {
+      "title": "إدارة المنظمات",
+      "addNew": "إنشاء منظمة",
+      "name": "اسم المنظمة",
+      "leader": "القائد",
+      "status": "الحالة",
+      "staffCount": "عدد الموظفين",
+      "familyCount": "عدد العائلات",
+      "created": "تاريخ الإنشاء",
+      "actions": "الإجراءات",
+      "edit": "تعديل المنظمة",
+      "viewMembers": "عرض الأعضاء",
+      "delete": "حذف المنظمة",
+      "pendingTitle": "طلبات المنظمات المعلقة",
+      "noPending": "لا توجد طلبات معلقة",
+      "noPendingSub": "تمت مراجعة جميع طلبات المنظمات!",
+      "pendingReview": "قيد المراجعة",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "reasonForRejection": "سبب الرفض:",
+      "rejectionPlaceholder": "يرجى تقديم سبب واضح للرفض لمساعدة المنظمة على تحسين طلبها...",
+      "approveThisOrg": "الموافقة على هذه المنظمة",
+      "rejectThisOrg": "رفض هذه المنظمة",
+      "createOrgLeader": "إنشاء قائد منظمة جديد",
+      "leadershipInvite": "دعوة التسجيل:",
+      "leadershipInviteDetail": "املأ نموذج التسجيل الكامل أدناه. سيتلقى المستخدم بريداً إلكترونياً لقبول أو رفض قيادة المنظمة. ستظل الدعوة معلقة حتى يستجيب.",
+      "sendInvitation": "إرسال الدعوة",
+      "membersOf": "أعضاء",
+      "noStaff": "لا يوجد موظفون",
+      "noFamilies": "لا توجد عائلات",
+      "modal": {
+        "approveTitle": "الموافقة على المنظمة",
+        "rejectTitle": "رفض المنظمة"
+      },
+      "loading": "جاري تحميل المنظمات المعلقة...",
+      "description": "الوصف",
+      "orgName": "اسم المنظمة",
+      "leaderName": "اسم القائد",
+      "leaderEmail": "البريد الإلكتروني للقائد",
+      "leaderPhone": "هاتف القائد",
+      "initialPassword": "كلمة المرور الأولية",
+      "passwordHelp": "8 أحرف كحد أدنى"
+    },
+    "invitations": {
+      "title": "دعوات قادة المنظمات المعلقة",
+      "noInvites": "لا توجد دعوات معلقة",
+      "sentDate": "تاريخ الإرسال",
+      "cancel": "إلغاء الدعوة",
+      "leaderDetails": "تفاصيل القائد"
     }
   }
 }

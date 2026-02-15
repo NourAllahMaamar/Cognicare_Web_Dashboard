@@ -5,7 +5,9 @@
     "about": "About",
     "download": "Download",
     "admin": "Admin",
-    "orgLeader": "Organization"
+    "orgLeader": "Organization",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
   },
   "hero": {
     "title": "Empower Your Cognitive Health",
@@ -127,28 +129,36 @@
     },
     "stats": {
       "totalStaff": "Total Staff",
+      "underCare": "Under care",
+      "registeredFamilies": "Registered families",
+      "totalFamilies": "Total Families",
+      "totalChildren": "Total Children",
+      "pendingInvites": "Pending Invitations",
+      "active": "Active",
+      "viewAll": "View All",
       "activeMembers": "Active members",
-      "psychologists": "Psychologists",
       "mentalHealth": "Mental health support",
-      "speechTherapists": "Speech Therapists",
       "communication": "Communication specialists",
-      "occupationalTherapists": "Occupational Therapists",
       "motorSkills": "Motor skills support",
-      "doctors": "Doctors",
       "medicalProfessionals": "Medical professionals",
-      "volunteers": "Volunteers & Others",
       "communityHelpers": "Community helpers"
     },
     "staff": {
       "title": "Staff Management",
       "addNew": "Add Staff Member",
+      "addExisting": "Add Existing Staff",
+      "createNew": "Create New Staff Account",
       "name": "Name",
       "email": "Email",
       "role": "Role",
       "joined": "Joined",
       "actions": "Actions",
       "remove": "Remove staff member",
-      "removeConfirm": "Are you sure you want to remove this staff member?"
+      "removeConfirm": "Are you sure you want to remove this staff member from your organization?",
+      "inviteSent": "Invitation sent successfully! The user will receive an email to accept.",
+      "accountCreated": "Staff account created successfully!",
+      "emptyState": "No staff members yet. Add your first staff member!",
+      "editTitle": "Edit staff member"
     },
     "modal": {
       "addStaff": "Add Staff Member",
@@ -156,17 +166,69 @@
       "email": "Staff Email",
       "emailHelp": "Enter the email of an existing user",
       "cancel": "Cancel",
-      "add": "Add Staff"
+      "add": "Add Staff",
+      "create": "Create",
+      "edit": "Edit",
+      "update": "Update",
+      "save": "Save",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "e.g. Sarah Johnson",
+      "emailPlaceholder": "e.g. sarah@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 234 567 890",
+      "password": "Password",
+      "tempPassword": "Temporary Password",
+      "editTempPassword": "Temporary Password (leave blank to keep current)",
+      "minCharacters": "Minimum 6 characters",
+      "resetNotice": "User will be asked to change on first login",
+      "role": "Role",
+      "children": "Children",
+      "childName": "Child Name",
+      "dob": "Date of Birth",
+      "gender": "Gender",
+      "diagnosis": "Diagnosis",
+      "allergies": "Allergies",
+      "medicalHistory": "Medical History",
+      "medicalHistoryPlaceholder": "Brief medical history...",
+      "medications": "Current Medications",
+      "medicationsPlaceholder": "Active medications...",
+      "notes": "Notes",
+      "remove": "Remove",
+      "parentInfo": "Parent Information",
+      "manageChildren": "Manage Children",
+      "childrenOptional": "Children (Optional)",
+      "addChild": "Add Child",
+      "existingChildren": "Existing Children",
+      "delete": "Delete",
+      "newChildrenToAdd": "New Children to Add",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "passwordHelp": "User will be asked to change on first login",
+      "leaveBlank": "leave blank to keep current"
     },
     "messages": {
       "staffAdded": "Staff member added successfully!",
       "staffRemoved": "Staff member removed successfully!",
       "addFailed": "Failed to add staff member",
-      "removeFailed": "Failed to remove staff member"
+      "removeFailed": "Failed to remove staff member",
+      "refreshed": "Data refreshed successfully!",
+      "refreshFailed": "Failed to refresh data",
+      "familyRemoved": "Family removed successfully!",
+      "confirmDeleteChild": "Are you sure you want to delete this child?",
+      "staffCreateSuccess": "Staff account created successfully!",
+      "staffInviteSuccess": "Invitation sent successfully! The user will receive an email to accept.",
+      "staffUpdateSuccess": "Staff member updated successfully!",
+      "familyCreateSuccess": "Family account created successfully!",
+      "familyInviteSuccess": "Invitation sent successfully! The family will receive an email to accept.",
+      "familyUpdateSuccess": "Family and children updated successfully!",
+      "orgNotFound": "Organization not found"
     },
     "families": {
-      "title": "Families Management",
+      "title": "Family Management",
       "addNew": "Add Family",
+      "addExisting": "Add Existing Family",
+      "createNew": "Create New Family Account",
       "parentName": "Parent Name",
       "email": "Email",
       "phone": "Phone",
@@ -174,8 +236,12 @@
       "joined": "Joined Date",
       "actions": "Actions",
       "remove": "Remove family",
+      "removeConfirm": "Are you sure you want to remove this family from the organization?",
+      "inviteSent": "Invitation sent successfully! The family will receive an email to accept.",
+      "accountCreated": "Family account created successfully!",
       "noPhone": "N/A",
-      "emptyState": "No families registered yet"
+      "emptyState": "No families registered yet",
+      "editTitle": "Edit family"
     },
     "children": {
       "title": "Children Under Care",
@@ -188,7 +254,22 @@
       "parent": "Parent",
       "noDiagnosis": "N/A",
       "unknownParent": "Unknown",
-      "emptyState": "No children registered yet"
+      "emptyState": "No children registered yet",
+      "ageYears": "{{count}} years",
+      "ageYear": "{{count}} year"
+    },
+    "invitations": {
+      "title": "Pending Invitations",
+      "total": "Total Pending",
+      "email": "Email",
+      "type": "Type",
+      "sentDate": "Invited On",
+      "expires": "Expires",
+      "status": "Status",
+      "staff": "Staff",
+      "family": "Family",
+      "expired": "Expired",
+      "noInvites": "No pending invitations"
     }
   },
   "language": {
@@ -205,7 +286,10 @@
     "loading": "Loading...",
     "tabs": {
       "overview": "Overview",
-      "users": "User Management"
+      "users": "User Management",
+      "manageOrgs": "Organizations Management",
+      "pendingInvites": "Pending Invitations",
+      "pendingReviews": "Pending Reviews"
     },
     "stats": {
       "totalUsers": "Total Users",
@@ -215,7 +299,8 @@
       "healthcareProviders": "Healthcare Providers",
       "medicalProfessionals": "Medical professionals",
       "volunteers": "Volunteers",
-      "communityHelpers": "Community helpers"
+      "communityHelpers": "Community helpers",
+      "orgLeaders": "Organization Leaders"
     },
     "quickActions": {
       "title": "Quick Actions",
@@ -223,6 +308,15 @@
       "manageUsers": "Manage Users",
       "viewReports": "View Reports",
       "settings": "Settings"
+    },
+    "refresh": "Refresh",
+    "recentActivity": {
+      "title": "Recent Activity",
+      "totalUsers": "total users registered",
+      "activeOrgs": "active organizations",
+      "reviewQueue": "Review Queue",
+      "noPending": "No pending organization requests",
+      "awaitingReview": "organization requests awaiting review"
     },
     "users": {
       "title": "User Management",
@@ -258,7 +352,11 @@
       "psychologist": "Psychologist",
       "speech_therapist": "Speech Therapist",
       "occupational_therapist": "Occupational Therapist",
-      "other": "Other"
+      "other": "Other",
+      "leader": "Leader",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
     },
     "messages": {
       "userCreated": "User created successfully!",
@@ -266,7 +364,72 @@
       "userDeleted": "User deleted successfully!",
       "createFailed": "Failed to create user",
       "updateFailed": "Failed to update user",
-      "deleteFailed": "Failed to delete user"
+      "deleteFailed": "Failed to delete user",
+      "refreshed": "Data refreshed successfully!",
+      "fetchUsersFailed": "Failed to fetch users",
+      "fetchPendingOrgsFailed": "Failed to fetch pending organizations",
+      "fetchOrgsFailed": "Failed to fetch organizations",
+      "refreshFailed": "Failed to refresh data",
+      "rejectionReasonRequired": "Please provide a reason for rejection",
+      "orgReviewSuccess": "Organization {{status}} successfully!",
+      "orgInviteSuccess": "Organization invitation sent! The user will receive an email to accept or reject the organization leadership.",
+      "orgUpdateSuccess": "Organization updated successfully!",
+      "orgDeleteSuccess": "Organization deleted successfully!",
+      "inviteCancelSuccess": "Invitation cancelled successfully!",
+      "loginFailed": "Login failed",
+      "signupFailed": "Signup failed",
+      "verificationCodeFailed": "Failed to send verification code",
+      "orgCreatedPending": "Your organization request has been submitted successfully. Please wait for admin approval."
+    },
+    "organizations": {
+      "title": "Organizations Management",
+      "addNew": "Create Organization",
+      "name": "Organization Name",
+      "leader": "Leader",
+      "status": "Status",
+      "staffCount": "Staff Count",
+      "familyCount": "Family Count",
+      "created": "Created",
+      "actions": "Actions",
+      "edit": "Edit Organization",
+      "viewMembers": "View Members",
+      "delete": "Delete Organization",
+      "pendingTitle": "Pending Organization Requests",
+      "noPending": "No Pending Requests",
+      "noPendingSub": "All organization requests have been reviewed!",
+      "pendingReview": "Pending Review",
+      "approve": "Approve",
+      "reject": "Reject",
+      "reasonForRejection": "Reason for rejection:",
+      "rejectionPlaceholder": "Please provide a clear reason for rejection that will help the organization improve their application...",
+      "approveThisOrg": "Approve this organization",
+      "rejectThisOrg": "Reject this organization",
+      "createOrgLeader": "Create New Organization Leader",
+      "leadershipInvite": "Registration Invitation:",
+      "leadershipInviteDetail": "Fill out the complete registration form below. The user will receive an email to accept or reject the organization leadership. The invitation will be marked as pending until they respond.",
+      "sendInvitation": "Send Invitation",
+      "membersOf": "Members of",
+      "noStaff": "No staff members",
+      "noFamilies": "No families",
+      "modal": {
+        "approveTitle": "Approve Organization",
+        "rejectTitle": "Reject Organization"
+      },
+      "loading": "Loading pending organizations...",
+      "description": "Description",
+      "orgName": "Organization Name",
+      "leaderName": "Leader Name",
+      "leaderEmail": "Leader Email",
+      "leaderPhone": "Leader Phone",
+      "initialPassword": "Initial Password",
+      "passwordHelp": "Minimum 8 characters"
+    },
+    "invitations": {
+      "title": "Pending Organization Leader Invitations",
+      "noInvites": "No pending invitations",
+      "sentDate": "Sent Date",
+      "cancel": "Cancel Invitation",
+      "leaderDetails": "Leader Details"
     }
   }
 }

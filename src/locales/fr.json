@@ -5,7 +5,9 @@
     "about": "À propos",
     "download": "Télécharger",
     "admin": "Admin",
-    "orgLeader": "Organisation"
+    "orgLeader": "Organisation",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire"
   },
   "hero": {
     "title": "Renforcez Votre Santé Cognitive",
@@ -127,46 +129,104 @@
     },
     "stats": {
       "totalStaff": "Personnel Total",
+      "underCare": "Sous soins",
+      "registeredFamilies": "Familles enregistrées",
+      "totalFamilies": "Total des Familles",
+      "totalChildren": "Enfants Totaux",
+      "pendingInvites": "Invitations en Attente",
+      "active": "Actif",
+      "viewAll": "Voir Tout",
       "activeMembers": "Membres actifs",
-      "psychologists": "Psychologues",
       "mentalHealth": "Soutien en santé mentale",
-      "speechTherapists": "Orthophonistes",
       "communication": "Spécialistes de la communication",
-      "occupationalTherapists": "Ergothérapeutes",
       "motorSkills": "Soutien aux compétences motrices",
-      "doctors": "Docteurs",
       "medicalProfessionals": "Professionnels médicaux",
-      "volunteers": "Bénévoles & Autres",
       "communityHelpers": "Aides communautaires"
     },
     "staff": {
       "title": "Gestion du Personnel",
       "addNew": "Ajouter un Membre du Personnel",
+      "addExisting": "Ajouter du Personnel Existant",
+      "createNew": "Créer un Nouveau Compte de Personnel",
       "name": "Nom",
       "email": "Email",
       "role": "Rôle",
       "joined": "Inscrit",
       "actions": "Actions",
       "remove": "Retirer le membre du personnel",
-      "removeConfirm": "Êtes-vous sûr de vouloir retirer ce membre du personnel?"
+      "removeConfirm": "Êtes-vous sûr de vouloir supprimer ce membre du personnel de votre organisation ?",
+      "inviteSent": "Invitation envoyée avec succès ! L'utilisateur recevra un e-mail pour l'accepter.",
+      "accountCreated": "Compte de personnel créé avec succès !",
+      "emptyState": "Aucun membre du personnel pour le moment. Ajoutez votre premier membre !",
+      "editTitle": "Modifier le membre du personnel"
     },
     "modal": {
-      "addStaff": "Ajouter un Membre du Personnel",
+      "addStaff": "Ajouter un membre du personnel",
       "close": "Fermer",
-      "email": "Email du Personnel",
+      "email": "Email du personnel",
       "emailHelp": "Entrez l'email d'un utilisateur existant",
       "cancel": "Annuler",
-      "add": "Ajouter le Personnel"
+      "add": "Ajouter le personnel",
+      "create": "Créer",
+      "edit": "Modifier",
+      "update": "Mettre à jour",
+      "save": "Enregistrer",
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "ex: Sarah Johnson",
+      "emailPlaceholder": "ex: sarah@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+33 1 23 45 67 89",
+      "password": "Mot de passe",
+      "tempPassword": "Mot de passe temporaire",
+      "editTempPassword": "Mot de passe temporaire (laisser vide pour conserver l'actuel)",
+      "minCharacters": "Minimum 6 caractères",
+      "resetNotice": "L'utilisateur sera invité à le changer lors de la première connexion",
+      "role": "Rôle",
+      "children": "Enfants",
+      "childName": "Nom de l'enfant",
+      "dob": "Date de naissance",
+      "gender": "Genre",
+      "diagnosis": "Diagnostic",
+      "allergies": "Allergies",
+      "medicalHistory": "Antécédents médicaux",
+      "medications": "Médicaments actuels",
+      "notes": "Notes",
+      "remove": "Retirer",
+      "parentInfo": "Informations parentales",
+      "manageChildren": "Gérer les enfants",
+      "childrenOptional": "Enfants (Facultatif)",
+      "addChild": "Ajouter un enfant",
+      "existingChildren": "Enfants existants",
+      "delete": "Supprimer",
+      "newChildrenToAdd": "Nouveaux enfants à ajouter",
+      "male": "Homme",
+      "female": "Femme",
+      "other": "Autre",
+      "passwordHelp": "L'utilisateur sera invité à le changer lors de sa première connexion",
+      "leaveBlank": "laisser vide pour conserver l'actuel"
     },
     "messages": {
       "staffAdded": "Membre du personnel ajouté avec succès!",
       "staffRemoved": "Membre du personnel retiré avec succès!",
       "addFailed": "Échec de l'ajout du membre du personnel",
-      "removeFailed": "Échec du retrait du membre du personnel"
+      "removeFailed": "Échec du retrait du membre du personnel",
+      "refreshed": "Données actualisées avec succès !",
+      "refreshFailed": "Échec de l'actualisation des données",
+      "familyRemoved": "Famille supprimée avec succès !",
+      "confirmDeleteChild": "Êtes-vous sûr de vouloir supprimer cet enfant ?",
+      "staffCreateSuccess": "Compte du personnel créé avec succès !",
+      "staffInviteSuccess": "Invitation envoyée avec succès ! L'utilisateur recevra un e-mail pour accepter.",
+      "staffUpdateSuccess": "Membre du personnel mis à jour avec succès !",
+      "familyCreateSuccess": "Compte de famille créé avec succès !",
+      "familyInviteSuccess": "Invitation envoyée avec succès ! La famille recevra un e-mail pour accepter.",
+      "familyUpdateSuccess": "Famille et enfants mis à jour avec succès !",
+      "orgNotFound": "Organisation non trouvée"
     },
     "families": {
       "title": "Gestion des Familles",
       "addNew": "Ajouter une Famille",
+      "addExisting": "Ajouter une Famille Existante",
+      "createNew": "Créer un Nouveau Compte de Famille",
       "parentName": "Nom du Parent",
       "email": "E-mail",
       "phone": "Téléphone",
@@ -174,8 +234,12 @@
       "joined": "Date d'Inscription",
       "actions": "Actions",
       "remove": "Supprimer la famille",
+      "removeConfirm": "Êtes-vous sûr de vouloir supprimer cette famille de l'organisation ?",
+      "inviteSent": "Invitation envoyée avec succès ! La famille recevra un e-mail pour l'accepter.",
+      "accountCreated": "Compte de famille créé avec succès !",
       "noPhone": "N/D",
-      "emptyState": "Aucune famille enregistrée pour le moment"
+      "emptyState": "Aucune famille enregistrée pour le moment",
+      "editTitle": "Modifier la famille"
     },
     "children": {
       "title": "Enfants Sous Soins",
@@ -188,7 +252,24 @@
       "parent": "Parent",
       "noDiagnosis": "N/D",
       "unknownParent": "Inconnu",
-      "emptyState": "Aucun enfant enregistré pour le moment"
+      "emptyState": "Aucun enfant enregistré pour le moment",
+      "ageYears": "{{count}} ans",
+      "ageYear": "{{count}} an"
+    },
+    "invitations": {
+      "title": "Invitations en Attente",
+      "noInvites": "Aucune invitation en attente",
+      "total": "Total en Attente",
+      "email": "E-mail",
+      "sentDate": "Date d'Envoi",
+      "type": "Type",
+      "status": "Statut",
+      "actions": "Actions",
+      "staff": "Personnel",
+      "family": "Famille",
+      "cancel": "Annuler l'Invitation",
+      "expired": "Expiré",
+      "awaitingResponse": "en attente de réponse"
     }
   },
   "language": {
@@ -205,7 +286,10 @@
     "loading": "Chargement...",
     "tabs": {
       "overview": "Vue d'ensemble",
-      "users": "Gestion des Utilisateurs"
+      "users": "Gestion des Utilisateurs",
+      "manageOrgs": "Gestion des Organisations",
+      "pendingInvites": "Invitations en Attente",
+      "pendingReviews": "Demandes en Attente"
     },
     "stats": {
       "totalUsers": "Utilisateurs Totaux",
@@ -215,7 +299,8 @@
       "healthcareProviders": "Professionnels de Santé",
       "medicalProfessionals": "Professionnels médicaux",
       "volunteers": "Bénévoles",
-      "communityHelpers": "Aides communautaires"
+      "communityHelpers": "Aides communautaires",
+      "orgLeaders": "Leaders d'Organisation"
     },
     "quickActions": {
       "title": "Actions Rapides",
@@ -223,6 +308,15 @@
       "manageUsers": "Gérer les Utilisateurs",
       "viewReports": "Voir les Rapports",
       "settings": "Paramètres"
+    },
+    "refresh": "Rafraîchir",
+    "recentActivity": {
+      "title": "Activité Récente",
+      "totalUsers": "utilisateurs inscrits au total",
+      "activeOrgs": "organisations actives",
+      "reviewQueue": "File d'attente de révision",
+      "noPending": "Aucune demande d'organisation en attente",
+      "awaitingReview": "demandes d'organisation en attente de révision"
     },
     "users": {
       "title": "Gestion des Utilisateurs",
@@ -258,7 +352,11 @@
       "psychologist": "Psychologue",
       "speech_therapist": "Orthophoniste",
       "occupational_therapist": "Ergothérapeute",
-      "other": "Autre"
+      "other": "Autre",
+      "leader": "Leader",
+      "pending": "En attente",
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
     },
     "messages": {
       "userCreated": "Utilisateur créé avec succès!",
@@ -266,7 +364,72 @@
       "userDeleted": "Utilisateur supprimé avec succès!",
       "createFailed": "Échec de la création de l'utilisateur",
       "updateFailed": "Échec de la mise à jour de l'utilisateur",
-      "deleteFailed": "Échec de la suppression de l'utilisateur"
+      "deleteFailed": "Échec de la suppression de l'utilisateur",
+      "fetchUsersFailed": "Échec de la récupération des utilisateurs",
+      "fetchPendingOrgsFailed": "Échec de la récupération des organisations en attente",
+      "fetchOrgsFailed": "Échec de la récupération des organisations",
+      "refreshed": "Données actualisées avec succès !",
+      "refreshFailed": "Échec de l'actualisation des données",
+      "rejectionReasonRequired": "Veuillez fournir un motif de rejet",
+      "orgReviewSuccess": "Organisation {{status}} avec succès !",
+      "orgInviteSuccess": "Invitation d'organisation envoyée ! L'utilisateur recevra un e-mail pour accepter ou rejeter la direction de l'organisation.",
+      "orgUpdateSuccess": "Organisation mise à jour avec succès !",
+      "orgDeleteSuccess": "Organisation supprimée avec succès !",
+      "inviteCancelSuccess": "Invitation annulée avec succès !",
+      "loginFailed": "Échec de la connexion",
+      "signupFailed": "Échec de l'inscription",
+      "verificationCodeFailed": "Échec de l'envoi du code de vérification",
+      "orgCreatedPending": "Votre demande d'organisation a été soumise avec succès. Veuillez attendre l'approbation de l'administrateur."
+    },
+    "organizations": {
+      "title": "Gestion des Organisations",
+      "addNew": "Créer l'Organisation",
+      "name": "Nom de l'Organisation",
+      "leader": "Leader",
+      "status": "Statut",
+      "staffCount": "Nombre d'Employés",
+      "familyCount": "Nombre de Familles",
+      "created": "Créé le",
+      "actions": "Actions",
+      "edit": "Modifier l'Organisation",
+      "viewMembers": "Voir les Membres",
+      "delete": "Supprimer l'Organisation",
+      "pendingTitle": "Demandes d'Organisation en Attente",
+      "noPending": "Aucune Demande en Attente",
+      "noPendingSub": "Toutes les demandes d'organisation ont été examinées!",
+      "pendingReview": "Examen en Attente",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "reasonForRejection": "Motif du rejet :",
+      "rejectionPlaceholder": "Veuillez fournir un motif de rejet clair pour aider l'organisation à améliorer sa demande...",
+      "approveThisOrg": "Approuver cette organisation",
+      "rejectThisOrg": "Rejeter cette organisation",
+      "createOrgLeader": "Créer un Nouveau Leader d'Organisation",
+      "leadershipInvite": "Invitation à l'Inscription :",
+      "leadershipInviteDetail": "Remplissez le formulaire d'inscription complet ci-dessous. L'utilisateur recevra un e-mail pour accepter ou rejeter la direction de l'organisation. L'invitation sera marquée comme en attente jusqu'à sa réponse.",
+      "sendInvitation": "Envoyer l'Invitation",
+      "membersOf": "Membres de",
+      "noStaff": "Aucun membre du personnel",
+      "noFamilies": "Aucune famille",
+      "modal": {
+        "approveTitle": "Approuver l'Organisation",
+        "rejectTitle": "Rejeter l'Organisation"
+      },
+      "loading": "Chargement des organisations en attente...",
+      "description": "Description",
+      "orgName": "Nom de l'Organisation",
+      "leaderName": "Nom du Leader",
+      "leaderEmail": "Email du Leader",
+      "leaderPhone": "Téléphone du Leader",
+      "initialPassword": "Mot de passe initial",
+      "passwordHelp": "Minimum 8 caractères"
+    },
+    "invitations": {
+      "title": "Invitations de Leaders d'Organisation en Attente",
+      "noInvites": "Aucune invitation en attente",
+      "sentDate": "Date d'Envoi",
+      "cancel": "Annuler l'Invitation",
+      "leaderDetails": "Détails du Leader"
     }
   }
 }
