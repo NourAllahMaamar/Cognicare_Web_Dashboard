@@ -14,7 +14,7 @@ React-based public marketing website and admin portal for CogniCare platform:
 - **React**: 19.2.0 (new JSX transform - no `import React` needed)
 - **Vite**: 7.2.4 (dev server, HMR, production build)
 - **Routing**: react-router-dom 7.13.0 (BrowserRouter)
-- **i18n**: react-i18next 16.5.4 + i18next-browser-languagedetector
+- **i18n**: react-i18next 16.5.4 + i18next 25.8.4 + i18next-browser-languagedetector 8.2.0
 - **WebGL**: OGL 1.0.11 (lighter than Three.js)
 - **Styling**: Pure CSS with CSS variables, glass-morphism effects
 
@@ -98,10 +98,13 @@ useEffect(() => {
 
 **Centralized API URL** (from [config.js](../src/config.js)):
 ```javascript
-export const API_BASE_URL = 'https://cognicare-mobile-h4ct.onrender.com/api/v1';
+// API Configuration
+// export const API_BASE_URL = 'https://cognicare-mobile-h4ct.onrender.com/api/v1';
+
+export const API_BASE_URL = 'http://localhost:3000/api/v1';
 ```
 
-**For local development**: Change to `http://localhost:3000/api/v1`
+**For production**: Uncomment the production URL and comment out the local development URL
 
 **Standard fetch pattern** (no service layer):
 ```javascript
