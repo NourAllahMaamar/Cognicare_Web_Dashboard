@@ -1649,6 +1649,272 @@
   margin-bottom: 0.6rem;
 }
 
+/* Certificate Upload for Fraud Detection */
+.certificate-upload-section {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.certificate-upload-section h4 {
+  color: white;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.certificate-link {
+  color: rgba(82, 39, 255, 1);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.certificate-link:hover {
+  color: rgba(255, 159, 252, 1);
+  text-decoration: underline;
+}
+
+.upload-container {
+  margin: 1rem 0;
+}
+
+.upload-label {
+  cursor: pointer;
+  display: block;
+}
+
+.upload-box {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: var(--transition);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-box:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-blue);
+}
+
+.upload-box.has-file {
+  border-style: solid;
+  border-color: var(--accent-green);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.upload-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.upload-prompt .icon {
+  font-size: 2.5rem;
+}
+
+.upload-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.upload-status .icon {
+  font-size: 2.5rem;
+}
+
+.upload-status .filename {
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.upload-status.success {
+  color: var(--accent-green);
+}
+
+.change-file-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.change-file-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.spinner-small {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Fraud Analysis Results */
+.fraud-result {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px solid;
+}
+
+.fraud-result.risk-high {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.fraud-result.risk-medium {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.fraud-result.risk-low {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.result-header h5 {
+  color: white;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.risk-score {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.result-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.detail-item .label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+}
+
+.detail-item .value {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.flags-list {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.15);
+  border-radius: 8px;
+}
+
+.flags-list strong {
+  color: white;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.flags-list ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.flags-list li {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.extracted-data {
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.extracted-data summary {
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.extracted-data summary:hover {
+  color: var(--accent-blue);
+}
+
+.extracted-data summary::marker {
+  display: none;
+}
+
+.extracted-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+}
+
+.extracted-grid div {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.extracted-grid strong {
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 0.5rem;
+}
+
+
 .rejection-reason textarea {
   width: 100%;
   min-height: 120px;
@@ -1936,4 +2202,689 @@
 [dir="rtl"] .pending-badge {
   margin-left: 0;
   margin-right: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Fraud Detection Tab
+   -------------------------------------------------------------------------- */
+
+.fraud-detection-content {
+  padding: 2rem;
+}
+
+.tab-header {
+  margin-bottom: 2rem;
+}
+
+.tab-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.tab-header p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+}
+
+/* AI Health Status Banner */
+.ai-health-banner {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ai-health-banner.status-ok {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.ai-health-banner.status-degraded {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.health-icon {
+  font-size: 2rem;
+}
+
+.health-info strong {
+  color: white;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.health-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Fraud Stats Grid */
+.fraud-stats {
+  margin-bottom: 2rem;
+}
+
+.fraud-stats .stat-card.high-risk {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.fraud-stats .stat-card.pending {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.fraud-stats .stat-card.approved {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.fraud-stats .stat-card.rejected {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Fraud Filters */
+.fraud-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.fraud-search {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.fraud-search::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.fraud-search:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-blue);
+}
+
+.fraud-filter {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 180px;
+}
+
+.fraud-filter:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.fraud-filter:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.fraud-filter option {
+  background: #2a2a3e;
+  color: white;
+}
+
+/* Fraud Sections */
+.fraud-section {
+  margin-bottom: 2.5rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Fraud Table */
+.fraud-table-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.fraud-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fraud-table thead {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.fraud-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fraud-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.fraud-table tbody tr {
+  transition: var(--transition);
+}
+
+.fraud-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.fraud-table tbody tr.risk-high {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.fraud-table tbody tr.risk-medium {
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.fraud-table tbody tr.risk-low {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+/* Table Cells */
+.org-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.org-cell strong {
+  color: white;
+}
+
+.org-cell small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+.leader-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.leader-cell div:first-child {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.leader-cell small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+.risk-score {
+  font-weight: 700;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  text-align: center;
+  display: inline-block;
+}
+
+.risk-score.risk-high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.risk-score.risk-medium {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fde047;
+}
+
+.risk-score.risk-low {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.risk-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.risk-badge.risk-high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.risk-badge.risk-medium {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fde047;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.risk-badge.risk-low {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.flags-cell .flag-count {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.flags-cell .no-flags {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+}
+
+.flags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.flag-item {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  display: inline-block;
+  max-width: fit-content;
+}
+
+.similarity-cell {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-badge.pending {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fde047;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.status-badge.approved {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.rejected {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.review-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+.review-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.3);
+}
+
+/* Fraud Review Modal */
+.fraud-review-modal {
+  max-width: 900px !important;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.fraud-review-content {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-section h4 {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-item label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.info-item span {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+/* Risk Assessment */
+.risk-assessment .risk-overview {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.risk-score-large {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  min-width: 180px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.risk-score-large.risk-high {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.risk-score-large.risk-medium {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.risk-score-large.risk-low {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.score-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.score-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.risk-breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.breakdown-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+}
+
+.breakdown-value {
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Flags Section */
+.flags-list-detailed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.flag-item-detailed {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid var(--accent-red);
+  border-radius: 6px;
+}
+
+.flag-icon {
+  font-size: 1.25rem;
+}
+
+.flag-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+/* AI Raw Section */
+.ai-raw-section summary {
+  cursor: pointer;
+  user-select: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+.ai-raw-section summary:hover {
+  color: white;
+}
+
+.ai-raw-response {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  color: #6ee7b7;
+  font-size: 0.8rem;
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+/* Review Notes */
+.review-notes-input {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  resize: vertical;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.review-notes-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.review-notes-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-blue);
+}
+
+.review-notes-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.review-meta {
+  margin-top: 0.5rem;
+}
+
+.review-meta small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+/* Modal Actions for Fraud Review */
+.fraud-review-modal .approve-btn {
+  background: linear-gradient(135deg, var(--accent-green), #059669);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.fraud-review-modal .approve-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.fraud-review-modal .reject-btn {
+  background: linear-gradient(135deg, var(--accent-red), #dc2626);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.fraud-review-modal .reject-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .fraud-filters {
+    flex-direction: column;
+  }
+
+  .fraud-search,
+  .fraud-filter {
+    width: 100%;
+  }
+
+  .fraud-table-container {
+    overflow-x: scroll;
+  }
+
+  .fraud-table {
+    min-width: 800px;
+  }
+
+  .risk-overview {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .risk-score-large {
+    width: 100%;
+  }
+
+  .fraud-review-modal {
+    max-width: 95% !important;
+  }
 }

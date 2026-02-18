@@ -31,6 +31,10 @@ function AdminDashboard() {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewDecision, setReviewDecision] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
+  const [fraudAnalysisResult, setFraudAnalysisResult] = useState(null);
+  const [loadingFraudAnalysis, setLoadingFraudAnalysis] = useState(false);
+  const [rescanLoading, setRescanLoading] = useState(false);
+  const [rescanError, setRescanError] = useState(null);
 
   // All organizations state (for management tab)
   const [organizations, setOrganizations] = useState([]);
@@ -49,6 +53,26 @@ function AdminDashboard() {
   const [loadingMembers, setLoadingMembers] = useState(false);
   const [pendingOrgInvitations, setPendingOrgInvitations] = useState([]);
   const [loadingPendingInvites, setLoadingPendingInvites] = useState(false);
+
+  // Fraud detection state
+  const [fraudStats, setFraudStats] = useState({
+    totalSubmissions: 0,
+    highRiskPercentage: 0,
+    pendingReviews: 0,
+    averageFraudScore: 0,
+    approvedCount: 0,
+    rejectedCount: 0
+  });
+  const [highRiskAnalyses, setHighRiskAnalyses] = useState([]);
+  const [pendingAnalyses, setPendingAnalyses] = useState([]);
+  const [loadingFraudData, setLoadingFraudData] = useState(false);
+  const [aiHealthStatus, setAiHealthStatus] = useState(null);
+  const [showReviewAnalysisModal, setShowReviewAnalysisModal] = useState(false);
+  const [reviewingAnalysis, setReviewingAnalysis] = useState(null);
+  const [analysisReviewNotes, setAnalysisReviewNotes] = useState('');
+  const [fraudSearchTerm, setFraudSearchTerm] = useState('');
+  const [fraudRiskFilter, setFraudRiskFilter] = useState('all'); // all, LOW, MEDIUM, HIGH
+  const [fraudStatusFilter, setFraudStatusFilter] = useState('all'); // all, pending, approved, rejected
 
   const navigate = useNavigate();
 
@@ -137,7 +161,7 @@ function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [handleSessionExpired, refreshAccessToken]);
+  }, [handleSessionExpired, refreshAccessToken, t]);
 
   // Fetch pending organizations
   const fetchPendingOrganizations = useCallback(async (token) => {
@@ -182,7 +206,7 @@ function AdminDashboard() {
     } finally {
       setLoadingOrganizations(false);
     }
-  }, [handleSessionExpired, refreshAccessToken]);
+  }, [handleSessionExpired, refreshAccessToken, t]);
 
   // Fetch all organizations
   const fetchAllOrganizations = useCallback(async (token) => {
@@ -226,7 +250,7 @@ function AdminDashboard() {
     } finally {
       setLoadingAllOrgs(false);
     }
-  }, [handleSessionExpired, refreshAccessToken]);
+  }, [handleSessionExpired, refreshAccessToken, t]);
 
   // Fetch pending organization invitations
   const fetchPendingOrgInvitations = useCallback(async (token) => {
@@ -296,6 +320,251 @@ function AdminDashboard() {
     }
   }, []);
 
+  // Fetch fraud detection stats
+  const fetchFraudStats = useCallback(async (token) => {
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch(`${API_BASE_URL}/org-scan-ai/admin/stats`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          handleSessionExpired();
+          return;
+        }
+
+        authToken = newToken;
+        response = await fetch(`${API_BASE_URL}/org-scan-ai/admin/stats`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.status === 401) {
+          handleSessionExpired();
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setFraudStats(data || {
+          totalSubmissions: 0,
+          highRiskPercentage: 0,
+          pendingReviews: 0,
+          averageFraudScore: 0,
+          approvedCount: 0,
+          rejectedCount: 0
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch fraud stats:', err);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Fetch high-risk fraud analyses
+  const fetchHighRiskAnalyses = useCallback(async (token) => {
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch(`${API_BASE_URL}/org-scan-ai/admin/high-risk`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          handleSessionExpired();
+          return;
+        }
+
+        authToken = newToken;
+        response = await fetch(`${API_BASE_URL}/org-scan-ai/admin/high-risk`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.status === 401) {
+          handleSessionExpired();
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setHighRiskAnalyses(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch high-risk analyses:', err);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Fetch pending fraud analyses
+  const fetchPendingAnalyses = useCallback(async (token) => {
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch(`${API_BASE_URL}/org-scan-ai/admin/pending`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          handleSessionExpired();
+          return;
+        }
+
+        authToken = newToken;
+        response = await fetch(`${API_BASE_URL}/org-scan-ai/admin/pending`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.status === 401) {
+          handleSessionExpired();
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setPendingAnalyses(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch pending analyses:', err);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Fetch AI health status
+  const fetchAIHealthStatus = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/org-scan-ai/health`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setAiHealthStatus(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch AI health status:', err);
+    }
+  }, []);
+
+  // Fetch all fraud detection data
+  const fetchAllFraudData = useCallback(async (token) => {
+    setLoadingFraudData(true);
+    try {
+      await Promise.all([
+        fetchFraudStats(token),
+        fetchHighRiskAnalyses(token),
+        fetchPendingAnalyses(token),
+        fetchAIHealthStatus()
+      ]);
+    } catch (err) {
+      console.error('Failed to fetch fraud data:', err);
+    } finally {
+      setLoadingFraudData(false);
+    }
+  }, [fetchFraudStats, fetchHighRiskAnalyses, fetchPendingAnalyses, fetchAIHealthStatus]);
+
+  // Handle approve fraud analysis  
+  const handleApproveFraudAnalysis = async () => {
+    if (!reviewingAnalysis) return;
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/org-scan-ai/analysis/${reviewingAnalysis._id}/approve`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          notes: analysisReviewNotes || 'Approved by admin'
+        })
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to approve analysis');
+      }
+
+      setSuccessMessage('Organization fraud analysis approved successfully');
+      setShowReviewAnalysisModal(false);
+      setReviewingAnalysis(null);
+      setAnalysisReviewNotes('');
+
+      // Refresh fraud data
+      await fetchAllFraudData(token);
+
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  // Handle reject fraud analysis
+  const handleRejectFraudAnalysis = async () => {
+    if (!reviewingAnalysis) return;
+
+    if (!analysisReviewNotes.trim()) {
+      setError('Review notes are required when rejecting');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/org-scan-ai/analysis/${reviewingAnalysis._id}/reject`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          notes: analysisReviewNotes
+        })
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to reject analysis');
+      }
+
+      setSuccessMessage('Organization fraud analysis rejected');
+      setShowReviewAnalysisModal(false);
+      setReviewingAnalysis(null);
+      setAnalysisReviewNotes('');
+
+      // Refresh fraud data
+      await fetchAllFraudData(token);
+
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   useEffect(() => {
     // Check authentication
     const token = localStorage.getItem('adminToken');
@@ -317,10 +586,11 @@ function AdminDashboard() {
       fetchPendingOrganizations(token);
       fetchAllOrganizations(token);
       fetchPendingOrgInvitations(token);
+      fetchAllFraudData(token);
     } catch {
       navigate('/admin/login');
     }
-  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations]);
+  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations, fetchAllFraudData]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -337,12 +607,14 @@ function AdminDashboard() {
     setLoadingOrganizations(true);
     setLoadingAllOrgs(true);
     setLoadingPendingInvites(true);
+    setLoadingFraudData(true);
     try {
       await Promise.all([
         fetchUsers(token),
         fetchPendingOrganizations(token),
         fetchAllOrganizations(token),
-        fetchPendingOrgInvitations(token)
+        fetchPendingOrgInvitations(token),
+        fetchAllFraudData(token)
       ]);
       setSuccessMessage(t('dashboard.messages.refreshed'));
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -355,6 +627,7 @@ function AdminDashboard() {
       setLoadingOrganizations(false);
       setLoadingAllOrgs(false);
       setLoadingPendingInvites(false);
+      setLoadingFraudData(false);
     }
   };
 
@@ -364,6 +637,38 @@ function AdminDashboard() {
     if (!token) return;
 
     await fetchPendingOrganizations(token);
+  };
+
+  // Fetch existing fraud analysis for an organization
+  const fetchFraudAnalysisForOrg = async (organizationId) => {
+    setLoadingFraudAnalysis(true);
+    setFraudAnalysisResult(null);
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/org-scan-ai/organization/${organizationId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      if (response.ok) {
+        const analyses = await response.json();
+        // Get the most recent analysis
+        if (analyses && analyses.length > 0) {
+          setFraudAnalysisResult(analyses[0]);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch fraud analysis:', err);
+    } finally {
+      setLoadingFraudAnalysis(false);
+    }
   };
 
   // Handle organization review
@@ -405,9 +710,14 @@ function AdminDashboard() {
       setReviewingOrg(null);
       setReviewDecision('');
       setRejectionReason('');
+      setFraudAnalysisResult(null);
+      setRescanLoading(false);
+      setRescanError(null);
 
       // Refresh the pending organizations list
       await fetchPendingOrganizations(token);
+      // Refresh fraud data to show new analysis
+      await fetchAllFraudData(token);
 
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -867,11 +1177,15 @@ function AdminDashboard() {
           </button>
           <button
             className={`tab-btn ${activeTab === 'organizations' ? 'active' : ''}`}
-            onClick={() => setActiveTab('organizations')}
+            onClick={() => {
+              setActiveTab('organizations');
+              const token = localStorage.getItem('adminToken');
+              fetchAllFraudData(token);
+            }}
           >
-            {t('dashboard.tabs.pendingReviews')}
-            {pendingOrganizations.length > 0 && (
-              <span className="pending-badge">{pendingOrganizations.length}</span>
+            🛡️ {t('dashboard.tabs.pendingReviews')} & Fraud Detection
+            {(pendingOrganizations.length + fraudStats.pendingReviews) > 0 && (
+              <span className="pending-badge">{pendingOrganizations.length + fraudStats.pendingReviews}</span>
             )}
           </button>
         </div>
@@ -1227,8 +1541,80 @@ function AdminDashboard() {
         {/* Pending Organizations Tab */}
         {activeTab === 'organizations' && (
           <div className="organizations-section">
+            {/* AI Health Status Banner */}
+            {aiHealthStatus && (
+              <div className={`ai-health-banner ${aiHealthStatus.status === 'OK' ? 'status-ok' : 'status-degraded'}`}>
+                <div className="health-icon">{aiHealthStatus.status === 'OK' ? '✅' : '⚠️'}</div>
+                <div className="health-info">
+                  <strong>AI Services Status: {aiHealthStatus.status}</strong>
+                  <div className="health-details">
+                    <span>Gemini AI: {aiHealthStatus.gemini?.available ? '✓ Online' : '✗ Offline'}</span>
+                    <span>Embedding Model: {aiHealthStatus.similarity?.available ? '✓ Ready' : '✗ Not Ready'}</span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>Last checked: {new Date(aiHealthStatus.timestamp).toLocaleTimeString()}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Fraud Stats Grid */}
+            <div className="stats-grid fraud-stats" style={{ marginBottom: '2rem' }}>
+              <div className="stat-card">
+                <div className="stat-icon">📊</div>
+                <div className="stat-info">
+                  <h3>Total Submissions</h3>
+                  <p className="stat-value">{fraudStats.totalSubmissions || 0}</p>
+                  <span className="stat-label">Organizations analyzed</span>
+                </div>
+              </div>
+
+              <div className="stat-card high-risk">
+                <div className="stat-icon">🚨</div>
+                <div className="stat-info">
+                  <h3>High Risk</h3>
+                  <p className="stat-value">{Math.round((fraudStats.highRiskPercentage || 0) * 100)}%</p>
+                  <span className="stat-label">Fraud risk &gt; 60%</span>
+                </div>
+              </div>
+
+              <div className="stat-card pending">
+                <div className="stat-icon">⏳</div>
+                <div className="stat-info">
+                  <h3>Pending Reviews</h3>
+                  <p className="stat-value">{fraudStats.pendingReviews || 0}</p>
+                  <span className="stat-label">Awaiting admin action</span>
+                </div>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-icon">📈</div>
+                <div className="stat-info">
+                  <h3>Average Score</h3>
+                  <p className="stat-value">{((fraudStats.averageFraudScore || 0) * 100).toFixed(1)}</p>
+                  <span className="stat-label">Mean fraud risk score</span>
+                </div>
+              </div>
+
+              <div className="stat-card approved">
+                <div className="stat-icon">✅</div>
+                <div className="stat-info">
+                  <h3>Approved</h3>
+                  <p className="stat-value">{fraudStats.approvedCount || 0}</p>
+                  <span className="stat-label">Verified organizations</span>
+                </div>
+              </div>
+
+              <div className="stat-card rejected">
+                <div className="stat-icon">❌</div>
+                <div className="stat-info">
+                  <h3>Rejected</h3>
+                  <p className="stat-value">{fraudStats.rejectedCount || 0}</p>
+                  <span className="stat-label">Fraudulent submissions</span>
+                </div>
+              </div>
+            </div>
+
             <div className="section-header">
-              <h2>{t('dashboard.organizations.pendingTitle')}</h2>
+              <h2>📋 {t('dashboard.organizations.pendingTitle')}</h2>
               <button
                 onClick={refreshOrganizations}
                 className="refresh-button"
@@ -1297,22 +1683,26 @@ function AdminDashboard() {
                     <div className="org-actions">
                       <button
                         className="btn-approve"
-                        onClick={() => {
+                        onClick={async () => {
                           setReviewingOrg(org);
                           setReviewDecision('approved');
                           setRejectionReason('');
                           setShowReviewModal(true);
+                          // Fetch fraud analysis for this organization
+                          await fetchFraudAnalysisForOrg(org._id);
                         }}
                       >
                         ✅ {t('dashboard.organizations.approve')}
                       </button>
                       <button
                         className="btn-reject"
-                        onClick={() => {
+                        onClick={async () => {
                           setReviewingOrg(org);
                           setReviewDecision('rejected');
                           setRejectionReason('');
                           setShowReviewModal(true);
+                          // Fetch fraud analysis for this organization
+                          await fetchFraudAnalysisForOrg(org._id);
                         }}
                       >
                         ❌ {t('dashboard.organizations.reject')}
@@ -1322,9 +1712,369 @@ function AdminDashboard() {
                 ))}
               </div>
             )}
+
+            {/* Fraud Detection Table Section */}
+            <div className="fraud-detection-section" style={{ marginTop: '3rem' }}>
+              <div className="section-header">
+                <h2>🛡️ AI Fraud Detection Analysis</h2>
+              </div>
+
+              {/* Filters */}
+              <div className="fraud-filters">
+                <input
+                  type="text"
+                  placeholder="🔍 Search by organization or leader email..."
+                  className="fraud-search"
+                  value={fraudSearchTerm}
+                  onChange={(e) => setFraudSearchTerm(e.target.value)}
+                />
+                <select
+                  className="fraud-filter"
+                  value={fraudRiskFilter}
+                  onChange={(e) => setFraudRiskFilter(e.target.value)}
+                >
+                  <option value="all">All Risk Levels</option>
+                  <option value="HIGH">🔴 High Risk</option>
+                  <option value="MEDIUM">🟡 Medium Risk</option>
+                  <option value="LOW">🟢 Low Risk</option>
+                </select>
+                <select
+                  className="fraud-filter"
+                  value={fraudStatusFilter}
+                  onChange={(e) => setFraudStatusFilter(e.target.value)}
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="pending">⏳ Pending</option>
+                  <option value="approved">✅ Approved</option>
+                  <option value="rejected">❌ Rejected</option>
+                </select>
+              </div>
+
+              {loadingFraudData ? (
+                <div className="loading-container">
+                  <div className="spinner-large"></div>
+                  <p>Loading fraud detection data...</p>
+                </div>
+              ) : (
+                <>
+                  {/* All Fraud Analyses Section */}
+                  {(() => {
+                    // Combine pending and high-risk analyses, remove duplicates
+                    const allAnalyses = [...pendingAnalyses, ...highRiskAnalyses];
+                    const uniqueAnalyses = allAnalyses.filter((analysis, index, self) =>
+                      index === self.findIndex((a) => a._id === analysis._id)
+                    );
+
+                    // Apply filters
+                    const filteredAnalyses = uniqueAnalyses.filter(analysis => {
+                      const matchesSearch = !fraudSearchTerm || 
+                        analysis.organizationId?.name?.toLowerCase().includes(fraudSearchTerm.toLowerCase()) ||
+                        analysis.organizationId?.leaderId?.email?.toLowerCase().includes(fraudSearchTerm.toLowerCase()) ||
+                        analysis.extractedFields?.organizationName?.toLowerCase().includes(fraudSearchTerm.toLowerCase());
+                      
+                      const matchesRisk = fraudRiskFilter === 'all' || analysis.fraudRiskLevel === fraudRiskFilter;
+                      
+                      const matchesStatus = fraudStatusFilter === 'all' || 
+                        (fraudStatusFilter === 'pending' && !analysis.isRejected && !analysis.reviewedAt) ||
+                        (fraudStatusFilter === 'approved' && analysis.reviewedAt && !analysis.isRejected) ||
+                        (fraudStatusFilter === 'rejected' && analysis.isRejected);
+                      
+                      return matchesSearch && matchesRisk && matchesStatus;
+                    });
+
+                    return filteredAnalyses.length > 0 ? (
+                      <div className="fraud-section">
+                        <h3 className="section-title">
+                          <span>📋 All Fraud Analyses ({filteredAnalyses.length})</span>
+                        </h3>
+                        <div className="fraud-table-container">
+                          <table className="fraud-table">
+                            <thead>
+                              <tr>
+                                <th>Organization</th>
+                                <th>Leader</th>
+                                <th>Risk Score</th>
+                                <th>Risk Level</th>
+                                <th>Flags</th>
+                                <th>Similarity</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredAnalyses.map(analysis => (
+                                <tr key={analysis._id} className={`risk-${analysis.fraudRiskLevel?.toLowerCase()}`}>
+                                  <td>
+                                    <div className="org-cell">
+                                      <strong>{analysis.organizationId?.name || analysis.extractedFields?.organizationName || 'N/A'}</strong>
+                                      {analysis.extractedFields?.registrationNumber && (
+                                        <small>Reg: {analysis.extractedFields.registrationNumber}</small>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="leader-cell">
+                                      <div>{analysis.organizationId?.leaderId?.fullName || 'N/A'}</div>
+                                      <small>{analysis.organizationId?.leaderId?.email || ''}</small>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className={`risk-score risk-${analysis.fraudRiskLevel?.toLowerCase()}`}>
+                                      {((analysis.fraudRiskScore || 0) * 100).toFixed(1)}%
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <span className={`risk-badge risk-${analysis.fraudRiskLevel?.toLowerCase()}`}>
+                                      {analysis.fraudRiskLevel === 'HIGH' && '🔴'}
+                                      {analysis.fraudRiskLevel === 'MEDIUM' && '🟡'}
+                                      {analysis.fraudRiskLevel === 'LOW' && '🟢'}
+                                      {' '}{analysis.fraudRiskLevel || 'N/A'}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <div className="flags-cell">
+                                      {analysis.flags && analysis.flags.length > 0 ? (
+                                        <span className="flag-count">{analysis.flags.length} flags</span>
+                                      ) : (
+                                        <span className="no-flags">None</span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="similarity-cell">
+                                      {analysis.similarityScore !== undefined && analysis.similarityScore !== null 
+                                        ? `${(analysis.similarityScore * 100).toFixed(1)}%`
+                                        : 'N/A'}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <span className={`status-badge ${
+                                      analysis.isRejected ? 'rejected' : 
+                                      analysis.reviewedAt ? 'approved' : 
+                                      'pending'
+                                    }`}>
+                                      {analysis.isRejected ? '❌ Rejected' : 
+                                       analysis.reviewedAt ? '✅ Approved' : 
+                                       '⏳ Pending'}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <small>{new Date(analysis.createdAt).toLocaleDateString()}</small>
+                                  </td>
+                                  <td>
+                                    <button
+                                      className="review-btn"
+                                      onClick={() => {
+                                        setReviewingAnalysis(analysis);
+                                        setShowReviewAnalysisModal(true);
+                                        setAnalysisReviewNotes('');
+                                      }}
+                                    >
+                                      📋 Review
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="empty-state">
+                        <div className="empty-icon">🔍</div>
+                        <h3>No fraud analyses found</h3>
+                        <p>No fraud detection results match your filters</p>
+                      </div>
+                    );
+                  })()}
+                </>
+              )}
+            </div>
           </div>
         )}
+
+        {/* Fraud Detection Tab - REMOVED: Now merged with Pending Reviews tab */}
       </main>
+
+      {/* Fraud Analysis Review Modal */}
+      {showReviewAnalysisModal && reviewingAnalysis && (
+        <div className="modal-overlay" onClick={() => setShowReviewAnalysisModal(false)}>
+          <div className="modal-content fraud-review-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>🛡️ Fraud Analysis Review</h3>
+              <button className="close-btn" onClick={() => setShowReviewAnalysisModal(false)}>✕</button>
+            </div>
+
+            <div className="fraud-review-content">
+              {/* Organization Info */}
+              <div className="review-section">
+                <h4>🏢 Organization Information</h4>
+                <div className="info-grid">
+                  <div className="info-item">
+                    <label>Organization Name:</label>
+                    <span>{reviewingAnalysis.organizationId?.name || reviewingAnalysis.extractedFields?.organizationName || 'N/A'}</span>
+                  </div>
+                  <div className="info-item">
+                    <label>Leader:</label>
+                    <span>{reviewingAnalysis.organizationId?.leaderId?.fullName || 'N/A'}</span>
+                  </div>
+                  <div className="info-item">
+                    <label>Email:</label>
+                    <span>{reviewingAnalysis.organizationId?.leaderId?.email || 'N/A'}</span>
+                  </div>
+                  <div className="info-item">
+                    <label>Submitted:</label>
+                    <span>{new Date(reviewingAnalysis.createdAt).toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Assessment */}
+              <div className="review-section risk-assessment">
+                <h4>📊 Risk Assessment</h4>
+                <div className="risk-overview">
+                  <div className={`risk-score-large risk-${reviewingAnalysis.fraudRiskLevel?.toLowerCase()}`}>
+                    <div className="score-value">
+                      {((reviewingAnalysis.fraudRiskScore || 0) * 100).toFixed(1)}%
+                    </div>
+                    <div className="score-label">
+                      {reviewingAnalysis.fraudRiskLevel === 'HIGH' && '🔴 HIGH RISK'}
+                      {reviewingAnalysis.fraudRiskLevel === 'MEDIUM' && '🟡 MEDIUM RISK'}
+                      {reviewingAnalysis.fraudRiskLevel === 'LOW' && '🟢 LOW RISK'}
+                      {!reviewingAnalysis.fraudRiskLevel && 'N/A'}
+                    </div>
+                  </div>
+                  <div className="risk-breakdown">
+                    <div className="breakdown-item">
+                      <span className="break down-label">Document Inconsistency (40%):</span>
+                      <span className="breakdown-value">{((reviewingAnalysis.fraudRiskScore || 0) * 0.4 * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="breakdown-item">
+                      <span className="breakdown-label">Template Similarity (30%):</span>
+                      <span className="breakdown-value">{((reviewingAnalysis.similarityScore || 0) * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="breakdown-item">
+                      <span className="breakdown-label">Domain Risk (30%):</span>
+                      <span className="breakdown-value">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Extracted Fields */}
+              {reviewingAnalysis.extractedFields && (
+                <div className="review-section">
+                  <h4>🤖 AI-Extracted Information</h4>
+                  <div className="info-grid">
+                    {reviewingAnalysis.extractedFields.organizationName && (
+                      <div className="info-item">
+                        <label>Organization Name:</label>
+                        <span>{reviewingAnalysis.extractedFields.organizationName}</span>
+                      </div>
+                    )}
+                    {reviewingAnalysis.extractedFields.registrationNumber && (
+                      <div className="info-item">
+                        <label>Registration Number:</label>
+                        <span>{reviewingAnalysis.extractedFields.registrationNumber}</span>
+                      </div>
+                    )}
+                    {reviewingAnalysis.extractedFields.expiryDate && (
+                      <div className="info-item">
+                        <label>Expiry Date:</label>
+                        <span>{reviewingAnalysis.extractedFields.expiryDate}</span>
+                      </div>
+                    )}
+                    {reviewingAnalysis.extractedFields.issuingAuthority && (
+                      <div className="info-item">
+                        <label>Issuing Authority:</label>
+                        <span>{reviewingAnalysis.extractedFields.issuingAuthority}</span>
+                      </div>
+                    )}
+                    {reviewingAnalysis.extractedFields.address && (
+                      <div className="info-item">
+                        <label>Address:</label>
+                        <span>{reviewingAnalysis.extractedFields.address}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Fraud Flags */}
+              {reviewingAnalysis.flags && reviewingAnalysis.flags.length > 0 && (
+                <div className="review-section flags-section">
+                  <h4>🚩 Fraud Flags Detected</h4>
+                  <div className="flags-list-detailed">
+                    {reviewingAnalysis.flags.map((flag, idx) => (
+                      <div key={idx} className="flag-item-detailed">
+                        <span className="flag-icon">⚠️</span>
+                        <span className="flag-text">{flag}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* AI Raw Response */}
+              {reviewingAnalysis.aiRawResponse && (
+                <details className="review-section ai-raw-section">
+                  <summary>🔍 AI Raw Response (Click to expand)</summary>
+                  <pre className="ai-raw-response">{JSON.stringify(reviewingAnalysis.aiRawResponse, null, 2)}</pre>
+                </details>
+              )}
+
+              {/* Review Notes Input */}
+              <div className="review-section">
+                <h4>📝 Review Notes</h4>
+                <textarea
+                  className="review-notes-input"
+                  placeholder={reviewingAnalysis.isRejected ? "Review notes (view only - already reviewed)" : "Add your review notes here... (required for rejection, optional for approval)"}
+                  value={reviewingAnalysis.reviewNotes || analysisReviewNotes}
+                  onChange={(e) => setAnalysisReviewNotes(e.target.value)}
+                  rows={4}
+                  disabled={reviewingAnalysis.isRejected || reviewingAnalysis.reviewedAt}
+                />
+                {reviewingAnalysis.reviewedAt && (
+                  <div className="review-meta">
+                    <small>Reviewed on {new Date(reviewingAnalysis.reviewedAt).toLocaleString()}</small>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={() => setShowReviewAnalysisModal(false)}
+              >
+                Close
+              </button>
+              {!reviewingAnalysis.isRejected && !reviewingAnalysis.reviewedAt && (
+                <>
+                  <button
+                    type="button"
+                    className="reject-btn"
+                    onClick={handleRejectFraudAnalysis}
+                  >
+                    ❌ Reject Organization
+                  </button>
+                  <button
+                    type="button"
+                    className="approve-btn"
+                    onClick={handleApproveFraudAnalysis}
+                  >
+                    ✅ Approve Organization
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit User Modal (continues from line 1700...) */}
 
       {/* Organization Review Modal */}
       {showReviewModal && reviewingOrg && (
@@ -1349,6 +2099,141 @@ function AdminDashboard() {
                 <p><strong>{t('dashboard.modal.email')}:</strong> {reviewingOrg.leaderEmail}</p>
                 {reviewingOrg.description && (
                   <p><strong>{t('dashboard.organizations.description')}:</strong> {reviewingOrg.description}</p>
+                )}
+              </div>
+
+              {/* AI Fraud Detection Results */}
+              <div className="certificate-upload-section">
+                <h4>🛡️ AI Fraud Detection Results</h4>
+                {reviewingOrg.certificateUrl && (
+                  <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
+                    <a href={reviewingOrg.certificateUrl} target="_blank" rel="noopener noreferrer" className="certificate-link">
+                      📄 View Certificate
+                    </a>
+                  </p>
+                )}
+                
+                {loadingFraudAnalysis ? (
+                  <div className="fraud-result" style={{ padding: '2rem', textAlign: 'center' }}>
+                    <div className="spinner-small"></div>
+                    <p>Loading AI analysis results...</p>
+                  </div>
+                ) : fraudAnalysisResult ? (
+                  <div className={`fraud-result risk-${fraudAnalysisResult.fraudRiskLevel?.toLowerCase()}`}>
+                    <div className="result-header">
+                      <h5>
+                        {fraudAnalysisResult.fraudRiskLevel === 'HIGH' && '🔴'}
+                        {fraudAnalysisResult.fraudRiskLevel === 'MEDIUM' && '🟡'}
+                        {fraudAnalysisResult.fraudRiskLevel === 'LOW' && '🟢'}
+                        {' '}AI Analysis: {fraudAnalysisResult.fraudRiskLevel} Risk
+                      </h5>
+                      <span className="risk-score">
+                        {(fraudAnalysisResult.fraudRiskScore * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                    
+                    <div className="result-details">
+                      <div className="detail-item">
+                        <span className="label">Similarity Score:</span>
+                        <span className="value">{(fraudAnalysisResult.similarityScore * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="label">Flags Detected:</span>
+                        <span className="value">{fraudAnalysisResult.flags?.length || 0}</span>
+                      </div>
+                    </div>
+
+                    {fraudAnalysisResult.flags && fraudAnalysisResult.flags.length > 0 && (
+                      <div className="flags-list">
+                        <strong>⚠️ Fraud Flags:</strong>
+                        <ul>
+                          {fraudAnalysisResult.flags.map((flag, idx) => (
+                            <li key={idx}>{flag}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {fraudAnalysisResult.extractedFields && (
+                      <details className="extracted-data">
+                        <summary>📋 Extracted Information</summary>
+                        <div className="extracted-grid">
+                          {fraudAnalysisResult.extractedFields.name && (
+                            <div><strong>Name:</strong> {fraudAnalysisResult.extractedFields.name}</div>
+                          )}
+                          {fraudAnalysisResult.extractedFields.registrationNumber && (
+                            <div><strong>Reg #:</strong> {fraudAnalysisResult.extractedFields.registrationNumber}</div>
+                          )}
+                          {fraudAnalysisResult.extractedFields.issuingAuthority && (
+                            <div><strong>Authority:</strong> {fraudAnalysisResult.extractedFields.issuingAuthority}</div>
+                          )}
+                          {fraudAnalysisResult.extractedFields.expirationDate && (
+                            <div><strong>Expiry:</strong> {fraudAnalysisResult.extractedFields.expirationDate}</div>
+                          )}
+                        </div>
+                      </details>
+                    )}
+                    
+                    {fraudAnalysisResult.createdAt && (
+                      <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', marginTop: '1rem' }}>
+                        Analyzed: {new Date(fraudAnalysisResult.createdAt).toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                ) : reviewingOrg.certificateUrl ? (
+                  <div className="fraud-result" style={{ padding: '1.5rem', backgroundColor: 'rgba(255, 193, 7, 0.1)', border: '1px solid rgba(255, 193, 7, 0.3)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <p style={{ margin: 0, color: 'rgba(255, 193, 7, 1)' }}>
+                      ⚠️ Certificate uploaded but AI analysis not available
+                    </p>
+                    {rescanError && (
+                      <p style={{ margin: 0, color: 'rgba(255, 100, 100, 1)', fontSize: '0.85rem' }}>
+                        ❌ {rescanError}
+                      </p>
+                    )}
+                    <button
+                      onClick={async () => {
+                        const token = localStorage.getItem('adminToken');
+                        setRescanLoading(true);
+                        setRescanError(null);
+                        try {
+                          await fetch(`${API_BASE_URL}/org-scan-ai/rescan/${reviewingOrg._id}`, {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${token}` },
+                          }).then(async (res) => {
+                            if (!res.ok) {
+                              const body = await res.json();
+                              throw new Error(body?.message || 'Rescan failed');
+                            }
+                          });
+                          await fetchFraudAnalysisForOrg(reviewingOrg._id);
+                        } catch (err) {
+                          setRescanError(err.message || 'Failed to rescan');
+                        } finally {
+                          setRescanLoading(false);
+                        }
+                      }}
+                      disabled={rescanLoading}
+                      style={{
+                        alignSelf: 'flex-start',
+                        padding: '0.5rem 1.2rem',
+                        backgroundColor: rescanLoading ? 'rgba(255,255,255,0.1)' : 'rgba(255, 193, 7, 0.2)',
+                        border: '1px solid rgba(255, 193, 7, 0.6)',
+                        borderRadius: '8px',
+                        color: 'rgba(255, 193, 7, 1)',
+                        cursor: rescanLoading ? 'not-allowed' : 'pointer',
+                        fontWeight: '600',
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      {rescanLoading ? '🔄 Scanning...' : '🤖 Rescan with AI'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="fraud-result" style={{ padding: '1.5rem', backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
+                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)' }}>
+                      ℹ️ No certificate was uploaded during organization creation
+                    </p>
+                  </div>
                 )}
               </div>
 

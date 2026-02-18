@@ -14,6 +14,7 @@ function OrgLeaderLogin() {
   const [organizationName, setOrganizationName] = useState('');
   const [phone, setPhone] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
+  const [certificatePdf, setCertificatePdf] = useState(null);
   const [codeSent, setCodeSent] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -106,20 +107,25 @@ function OrgLeaderLogin() {
     setLoading(true);
 
     try {
+      // Use FormData to support file upload
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('fullName', fullName);
+      formData.append('phone', phone);
+      formData.append('role', 'organization_leader');
+      formData.append('organizationName', organizationName);
+      formData.append('verificationCode', verificationCode);
+      
+      // Add certificate PDF if uploaded
+      if (certificatePdf) {
+        formData.append('certificate', certificatePdf);
+      }
+
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          fullName,
-          phone,
-          role: 'organization_leader',
-          organizationName,
-          verificationCode,
-        }),
+        // Note: Don't set Content-Type header, browser will set it with boundary for multipart/form-data
+        body: formData,
       });
 
       const data = await response.json();
@@ -139,6 +145,7 @@ function OrgLeaderLogin() {
         setFullName('');
         setPhone('');
         setOrganizationName('');
+        setCertificatePdf(null);
         return;
       }
 
@@ -338,6 +345,54 @@ function OrgLeaderLogin() {
                       autoComplete="new-password"
                       minLength={6}
                     />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="certificatePdf">
+                      {t('orgLeaderLogin.certificatePdf')}
+                    </label>
+                    <div className="file-upload-wrapper">
+                      <input
+                        type="file"
+                        id="certificatePdf"
+                        accept=".pdf"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            if (file.type !== 'application/pdf') {
+                              setError(t('orgLeaderLogin.pdfOnly'));
+                              e.target.value = '';
+                              return;
+                            }
+                            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                              setError(t('orgLeaderLogin.fileTooLarge'));
+                              e.target.value = '';
+                              return;
+                            }
+                            setCertificatePdf(file);
+                            setError('');
+                          }
+                        }}
+                        className="file-input"
+                      />
+                      {certificatePdf && (
+                        <div className="file-selected">
+                          <span className="file-icon">📄</span>
+                          <span className="file-name">{certificatePdf.name}</span>
+                          <button
+                            type="button"
+                            className="remove-file-btn"
+                            onClick={() => {
+                              setCertificatePdf(null);
+                              document.getElementById('certificatePdf').value = '';
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+                      <p className="file-hint">{t('orgLeaderLogin.certificateHint')}</p>
+                    </div>
                   </div>
 
                   <button type="submit" className="login-btn" disabled={loading}>

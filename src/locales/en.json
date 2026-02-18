@@ -114,7 +114,12 @@
     "backToHome": "Back to Home",
     "adminLink": "Admin Login",
     "accessDenied": "Access denied. Organization leader privileges required.",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "certificatePdf": "Organization Certificate (Required)",
+    "optional": "Optional",
+    "pdfOnly": "Only PDF files are allowed",
+    "fileTooLarge": "File size must be less than 10MB",
+    "certificateHint": "Upload your organization's official registration certificate for AI-powered fraud detection (required for approval)"
   },
   "orgDashboard": {
     "title": "Organization Dashboard",

@@ -114,7 +114,12 @@
     "backToHome": "Retour à l'Accueil",
     "adminLink": "Connexion Admin",
     "accessDenied": "Accès refusé. Privilèges de leader d'organisation requis.",
-    "loginFailed": "Échec de connexion"
+    "loginFailed": "Échec de la connexion",
+    "certificatePdf": "Certificat d'organisation (Requis)",
+    "optional": "Optionnel",
+    "pdfOnly": "Seuls les fichiers PDF sont autorisés",
+    "fileTooLarge": "La taille du fichier doit être inférieure à 10 Mo",
+    "certificateHint": "Téléchargez le certificat d'enregistrement officiel de votre organisation pour la détection de fraude par IA (requis pour l'approbation)"
   },
   "orgDashboard": {
     "title": "Tableau de Bord de l'Organisation",
