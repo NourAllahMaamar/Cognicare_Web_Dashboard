@@ -35,6 +35,11 @@ function AdminDashboard() {
   const [loadingFraudAnalysis, setLoadingFraudAnalysis] = useState(false);
   const [rescanLoading, setRescanLoading] = useState(false);
   const [rescanError, setRescanError] = useState(null);
+  
+  // Reviewed organizations state
+  const [reviewedOrganizations, setReviewedOrganizations] = useState([]);
+  const [loadingReviewedOrgs, setLoadingReviewedOrgs] = useState(false);
+  const [orgReviewSubTab, setOrgReviewSubTab] = useState('pending'); // 'pending' or 'history'
 
   // All organizations state (for management tab)
   const [organizations, setOrganizations] = useState([]);
@@ -53,6 +58,45 @@ function AdminDashboard() {
   const [loadingMembers, setLoadingMembers] = useState(false);
   const [pendingOrgInvitations, setPendingOrgInvitations] = useState([]);
   const [loadingPendingInvites, setLoadingPendingInvites] = useState(false);
+
+  // Families management state
+  const [families, setFamilies] = useState([]);
+  const [loadingFamilies, setLoadingFamilies] = useState(false);
+  const [showFamilyModal, setShowFamilyModal] = useState(false);
+  const [editingFamily, setEditingFamily] = useState(null);
+  const [familyFormData, setFamilyFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    password: '',
+    organizationId: ''
+  });
+  // Children management state
+  const [showChildrenModal, setShowChildrenModal] = useState(false);
+  const [selectedFamily, setSelectedFamily] = useState(null);
+  const [familyChildren, setFamilyChildren] = useState([]);
+  const [loadingChildren, setLoadingChildren] = useState(false);
+  const [showChildForm, setShowChildForm] = useState(false);
+  const [editingChild, setEditingChild] = useState(null);
+  const [childFormData, setChildFormData] = useState({
+    fullName: '',
+    dateOfBirth: '',
+    gender: 'male',
+    diagnosis: '',
+    medicalHistory: '',
+    allergies: '',
+    medications: '',
+    notes: ''
+  });
+  // Change leader state
+  const [showChangeLeaderInput, setShowChangeLeaderInput] = useState(false);
+  const [newLeaderEmail, setNewLeaderEmail] = useState('');
+  const [changingLeader, setChangingLeader] = useState(false);
+  // Assign org to family state
+  const [showAssignOrgModal, setShowAssignOrgModal] = useState(false);
+  const [assignOrgFamily, setAssignOrgFamily] = useState(null);
+  const [assignOrgSelectedId, setAssignOrgSelectedId] = useState('');
+  const [assigningOrg, setAssigningOrg] = useState(false);
 
   // Fraud detection state
   const [aiHealthStatus, setAiHealthStatus] = useState(null);
@@ -194,6 +238,75 @@ function AdminDashboard() {
     }
   }, [handleSessionExpired, refreshAccessToken, t]);
 
+  // Fetch reviewed (approved/rejected) organizations
+  const fetchReviewedOrganizations = useCallback(async (token) => {
+    setLoadingReviewedOrgs(true);
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch(`${API_BASE_URL}/organization/admin/reviewed-requests`, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) { handleSessionExpired(); return; }
+        authToken = newToken;
+        response = await fetch(`${API_BASE_URL}/organization/admin/reviewed-requests`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        if (response.status === 401) { handleSessionExpired(); return; }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setReviewedOrganizations(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch reviewed organizations:', err);
+    } finally {
+      setLoadingReviewedOrgs(false);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Re-review an already reviewed organization
+  const handleReReview = async (org, decision) => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) return;
+
+    const body = { decision };
+    if (decision === 'rejected') {
+      const reason = prompt('Enter reason for rejection:');
+      if (reason === null) return; // cancelled
+      body.rejectionReason = reason;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/organization/admin/re-review/${org._id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Re-review failed');
+      }
+
+      const result = await response.json();
+      setSuccessMessage(result.message || 'Re-review completed successfully');
+      setTimeout(() => setSuccessMessage(''), 3000);
+      // Refresh both lists
+      fetchReviewedOrganizations(token);
+      fetchPendingOrganizations(token);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   // Fetch all organizations
   const fetchAllOrganizations = useCallback(async (token) => {
     setLoadingAllOrgs(true);
@@ -329,6 +442,257 @@ function AdminDashboard() {
     }
   }, [fetchAIHealthStatus]);
 
+  // Fetch all families
+  const fetchFamilies = useCallback(async (token) => {
+    setLoadingFamilies(true);
+    try {
+      let authToken = token || localStorage.getItem('adminToken');
+      let response = await fetch(`${API_BASE_URL}/organization/admin/families`, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) { handleSessionExpired(); return; }
+        authToken = newToken;
+        response = await fetch(`${API_BASE_URL}/organization/admin/families`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        if (response.status === 401) { handleSessionExpired(); return; }
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        setFamilies(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch families:', err);
+    } finally {
+      setLoadingFamilies(false);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  // Fetch children for a specific family
+  const fetchFamilyChildren = useCallback(async (familyId) => {
+    setLoadingChildren(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/organization/admin/families/${familyId}/children`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setFamilyChildren(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch family children:', err);
+    } finally {
+      setLoadingChildren(false);
+    }
+  }, []);
+
+  // Handle create or update family
+  const handleSaveFamily = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const token = localStorage.getItem('adminToken');
+      const url = editingFamily
+        ? `${API_BASE_URL}/organization/admin/families/${editingFamily._id}`
+        : `${API_BASE_URL}/organization/admin/families`;
+      const method = editingFamily ? 'PATCH' : 'POST';
+      const body = editingFamily
+        ? { fullName: familyFormData.fullName, email: familyFormData.email, phone: familyFormData.phone }
+        : { ...familyFormData, organizationId: familyFormData.organizationId || undefined };
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+
+      if (response.status === 401) { handleSessionExpired(); return; }
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to save family');
+
+      setSuccessMessage(editingFamily ? 'Family updated successfully' : 'Family created successfully');
+      setShowFamilyModal(false);
+      setEditingFamily(null);
+      setFamilyFormData({ fullName: '', email: '', phone: '', password: '', organizationId: '' });
+      fetchFamilies(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteFamily = async (familyId) => {
+    if (!window.confirm('Delete this family and all their children? This cannot be undone.')) return;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/organization/admin/families/${familyId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.status === 401) { handleSessionExpired(); return; }
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete family');
+      }
+      setSuccessMessage('Family deleted successfully');
+      fetchFamilies(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const openEditFamilyModal = (family) => {
+    setEditingFamily(family);
+    setFamilyFormData({ fullName: family.fullName || '', email: family.email || '', phone: family.phone || '', password: '', organizationId: '' });
+    setAssignOrgFamily(family);
+    setAssignOrgSelectedId(family.organizationId?._id || family.organizationId || '');
+    setShowFamilyModal(true);
+  };
+
+  const closeFamilyModal = () => {
+    setShowFamilyModal(false);
+    setEditingFamily(null);
+    setFamilyFormData({ fullName: '', email: '', phone: '', password: '', organizationId: '' });
+    setError('');
+  };
+
+  const closeAssignOrgModal = () => {
+    setShowAssignOrgModal(false);
+    setAssignOrgFamily(null);
+    setAssignOrgSelectedId('');
+  };
+
+  const handleAssignOrg = async (familyOverride) => {
+    const targetFamily = familyOverride || assignOrgFamily;
+    if (!targetFamily) return;
+    setAssigningOrg(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const currentOrgId = targetFamily.organizationId?._id || targetFamily.organizationId || null;
+      if (!assignOrgSelectedId) {
+        // Remove from org
+        if (!currentOrgId) { closeAssignOrgModal(); return; }
+        const res = await fetch(`${API_BASE_URL}/organization/admin/families/${targetFamily._id}/organization`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401) { handleSessionExpired(); return; }
+        if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed to remove from organization'); }
+        setSuccessMessage('Family removed from organization');
+      } else {
+        // Assign to org
+        const res = await fetch(`${API_BASE_URL}/organization/admin/families/${targetFamily._id}/organization`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orgId: assignOrgSelectedId })
+        });
+        if (res.status === 401) { handleSessionExpired(); return; }
+        if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed to assign organization'); }
+        setSuccessMessage('Family assigned to organization');
+      }
+      if (!familyOverride) closeAssignOrgModal();
+      fetchFamilies(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setAssigningOrg(false);
+    }
+  };
+
+  const openChildrenModal = (family) => {
+    setSelectedFamily(family);
+    setShowChildrenModal(true);
+    setShowChildForm(false);
+    setEditingChild(null);
+    setChildFormData({ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' });
+    fetchFamilyChildren(family._id);
+  };
+
+  const handleSaveChild = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const token = localStorage.getItem('adminToken');
+      const url = editingChild
+        ? `${API_BASE_URL}/organization/admin/families/${selectedFamily._id}/children/${editingChild._id}`
+        : `${API_BASE_URL}/organization/admin/families/${selectedFamily._id}/children`;
+      const method = editingChild ? 'PATCH' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(childFormData)
+      });
+
+      if (response.status === 401) { handleSessionExpired(); return; }
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to save child');
+
+      setShowChildForm(false);
+      setEditingChild(null);
+      setChildFormData({ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' });
+      fetchFamilyChildren(selectedFamily._id);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteChild = async (childId) => {
+    if (!window.confirm('Delete this child? This cannot be undone.')) return;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(
+        `${API_BASE_URL}/organization/admin/families/${selectedFamily._id}/children/${childId}`,
+        { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      if (response.status === 401) { handleSessionExpired(); return; }
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete child');
+      }
+      fetchFamilyChildren(selectedFamily._id);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleChangeLeader = async () => {
+    if (!newLeaderEmail.trim() || !editingOrg) return;
+    setChangingLeader(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/organization/${editingOrg._id}/change-leader`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ newLeaderEmail })
+      });
+      if (response.status === 401) { handleSessionExpired(); return; }
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to change leader');
+
+      setSuccessMessage('Organization leader changed successfully');
+      setNewLeaderEmail('');
+      setShowChangeLeaderInput(false);
+      fetchAllOrganizations(token);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setChangingLeader(false);
+    }
+  };
+
   // Handle approve fraud analysis  
   const handleApproveFraudAnalysis = async () => {
     if (!reviewingAnalysis) return;
@@ -438,13 +802,15 @@ function AdminDashboard() {
       setUser(parsedUser);
       fetchUsers(token);
       fetchPendingOrganizations(token);
+      fetchReviewedOrganizations(token);
       fetchAllOrganizations(token);
       fetchPendingOrgInvitations(token);
+      fetchFamilies(token);
       fetchAllFraudData();
     } catch {
       navigate('/admin/login');
     }
-  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations, fetchAllFraudData]);
+  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchReviewedOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations, fetchFamilies, fetchAllFraudData]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -461,12 +827,15 @@ function AdminDashboard() {
     setLoadingOrganizations(true);
     setLoadingAllOrgs(true);
     setLoadingPendingInvites(true);
+    setLoadingFamilies(true);
     try {
       await Promise.all([
         fetchUsers(token),
         fetchPendingOrganizations(token),
+        fetchReviewedOrganizations(token),
         fetchAllOrganizations(token),
         fetchPendingOrgInvitations(token),
+        fetchFamilies(token),
         fetchAllFraudData()
       ]);
       setSuccessMessage(t('dashboard.messages.refreshed'));
@@ -480,6 +849,7 @@ function AdminDashboard() {
       setLoadingOrganizations(false);
       setLoadingAllOrgs(false);
       setLoadingPendingInvites(false);
+      setLoadingFamilies(false);
     }
   };
 
@@ -870,6 +1240,8 @@ function AdminDashboard() {
       leaderPhone: '',
       leaderPassword: ''
     });
+    setShowChangeLeaderInput(false);
+    setNewLeaderEmail('');
     setError('');
   };
 
@@ -1017,6 +1389,16 @@ function AdminDashboard() {
             }}
           >
             🏢 {t('dashboard.tabs.manageOrgs')}
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'families' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('families');
+              const token = localStorage.getItem('adminToken');
+              fetchFamilies(token);
+            }}
+          >
+            👨‍👩‍👧 Families
           </button>
           <button
             className={`tab-btn ${activeTab === 'pending-invites' ? 'active' : ''}`}
@@ -1313,6 +1695,120 @@ function AdminDashboard() {
           </div>
         )}
 
+        {/* Families Tab */}
+        {activeTab === 'families' && (
+          <div className="users-section">
+            <div className="users-header">
+              <h3 className="section-title">👨‍👩‍👧 Families Management</h3>
+              <button className="add-user-btn" onClick={() => setShowFamilyModal(true)}>
+                ➕ Add Family
+              </button>
+            </div>
+
+            {loadingFamilies ? (
+              <div className="loading-container"><div className="spinner-large"></div></div>
+            ) : families.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(255,255,255,0.6)' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👨‍👩‍👧</div>
+                <p>No families found</p>
+              </div>
+            ) : (
+              <div className="user-grid">
+                {families.map(family => (
+                  <div key={family._id} className="profile-card user-profile-card">
+                    <span className="card-role-badge role-family">Family</span>
+                    <div className="card-header">
+                      <div className="card-avatar">{family.fullName?.[0]?.toUpperCase()}</div>
+                      <h4 className="card-name">{family.fullName}</h4>
+                      <a href={`mailto:${family.email}`} className="card-email">{family.email}</a>
+                    </div>
+                    <div className="card-body">
+                      <div className="card-info-item">
+                        <span className="card-info-label">📞</span>
+                        <span>{family.phone || '—'}</span>
+                      </div>
+                      <div className="card-info-item">
+                        <span className="card-info-label">🏢</span>
+                        <span>{family.organizationId?.name || 'No organization'}</span>
+                      </div>
+                      <div className="card-info-item">
+                        <span className="card-info-label">👶</span>
+                        <span>{family.childCount ?? 0} children</span>
+                      </div>
+                    </div>
+                    <div className="card-footer">
+                      <div className="card-date">{new Date(family.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</div>
+                      <div className="card-actions">
+                        <button
+                          className="card-action-btn edit"
+                          onClick={() => openEditFamilyModal(family)}
+                          title="Edit family"
+                        >✏️</button>
+                        <button
+                          className="card-action-btn review"
+                          onClick={() => openChildrenModal(family)}
+                          title="Manage children"
+                        >👶</button>
+                        <button
+                          className="card-action-btn delete"
+                          onClick={() => handleDeleteFamily(family._id)}
+                          title="Delete family"
+                        >🗑️</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Assign Org Modal */}
+        {showAssignOrgModal && assignOrgFamily && (
+          <div className="modal-overlay" onClick={closeAssignOrgModal}>
+            <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '420px' }}>
+              <div className="modal-header">
+                <h3>🏢 Assign Organization</h3>
+                <button className="close-btn" onClick={closeAssignOrgModal}>✕</button>
+              </div>
+              <div className="modal-body">
+                <p style={{ marginBottom: '1rem', color: 'rgba(255,255,255,0.7)' }}>
+                  Family: <strong style={{ color: '#fff' }}>{assignOrgFamily.fullName}</strong>
+                  {assignOrgFamily.organizationId && (
+                    <span style={{ display: 'block', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                      Current org: {assignOrgFamily.organizationId?.name || assignOrgFamily.organizationId}
+                    </span>
+                  )}
+                </p>
+                <div className="form-group">
+                  <label className="form-label">Select Organization</label>
+                  <select
+                    className="form-input"
+                    value={assignOrgSelectedId}
+                    onChange={e => setAssignOrgSelectedId(e.target.value)}
+                  >
+                    <option value="">— No organization (remove) —</option>
+                    {organizations.map(org => (
+                      <option key={org._id} value={org._id}>{org.organizationName || org.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="cancel-btn" onClick={closeAssignOrgModal}>Cancel</button>
+                <button
+                  type="button"
+                  className="submit-btn"
+                  onClick={handleAssignOrg}
+                  disabled={assigningOrg}
+                >
+                  {assigningOrg ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Pending Invitations Tab */}
         {activeTab === 'pending-invites' && (
           <div className="users-section">
@@ -1407,116 +1903,235 @@ function AdminDashboard() {
               </div>
             )}
 
-            <div className="section-header">
-              <h2>📋 {t('dashboard.organizations.pendingTitle')}</h2>
+            {/* Sub-tabs: Pending / History */}
+            <div className="org-sub-tabs">
               <button
-                onClick={refreshOrganizations}
-                className="refresh-button"
-                disabled={loadingOrganizations}
+                className={`org-sub-tab-btn ${orgReviewSubTab === 'pending' ? 'active' : ''}`}
+                onClick={() => setOrgReviewSubTab('pending')}
               >
-                🔄 {t('dashboard.refresh')}
+                ⏳ Pending Reviews
+                {pendingOrganizations.length > 0 && (
+                  <span className="pending-badge">{pendingOrganizations.length}</span>
+                )}
+              </button>
+              <button
+                className={`org-sub-tab-btn ${orgReviewSubTab === 'history' ? 'active' : ''}`}
+                onClick={() => {
+                  setOrgReviewSubTab('history');
+                  const token = localStorage.getItem('adminToken');
+                  fetchReviewedOrganizations(token);
+                }}
+              >
+                📜 Review History
+                {reviewedOrganizations.length > 0 && (
+                  <span className="reviewed-badge">{reviewedOrganizations.length}</span>
+                )}
               </button>
             </div>
 
-            {loadingOrganizations && (
-              <div className="loading-spinner">
-                <div className="spinner"></div>
-                <span>{t('dashboard.organizations.loading')}</span>
-              </div>
-            )}
-
-            {!loadingOrganizations && pendingOrganizations.length === 0 && (
-              <div className="empty-state">
-                <div className="empty-icon">✅</div>
-                <h3>{t('dashboard.organizations.noPending')}</h3>
-                <p>{t('dashboard.organizations.noPendingSub')}</p>
-              </div>
-            )}
-
-            {!loadingOrganizations && pendingOrganizations.length > 0 && (
-              <div className="organizations-grid">
-                {pendingOrganizations.map(org => (
-                  <div 
-                    key={org._id} 
-                    className="organization-card clickable"
-                    onClick={async () => {
-                      setReviewingOrg(org);
-                      setReviewDecision('');
-                      setRejectionReason('');
-                      setShowReviewModal(true);
-                      // Fetch fraud analysis for this organization
-                      await fetchFraudAnalysisForOrg(org._id);
-                    }}
-                    style={{ cursor: 'pointer' }}
+            {/* Pending sub-tab */}
+            {orgReviewSubTab === 'pending' && (
+              <>
+                <div className="section-header">
+                  <h2>📋 {t('dashboard.organizations.pendingTitle')}</h2>
+                  <button
+                    onClick={refreshOrganizations}
+                    className="refresh-button"
+                    disabled={loadingOrganizations}
                   >
-                    <div className="org-header">
-                      <div className="org-icon">🏢</div>
-                      <div className="org-info">
-                        <h3>{org.organizationName}</h3>
-                        <p className="org-status pending">{t('dashboard.organizations.pendingReview')}</p>
-                      </div>
-                    </div>
+                    🔄 {t('dashboard.refresh')}
+                  </button>
+                </div>
 
-                    <div className="org-details">
-                      <div className="detail-row">
-                        <span className="label">{t('dashboard.organizations.leader')}:</span>
-                        <span className="value">{org.leaderFullName}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">{t('dashboard.modal.email')}:</span>
-                        <span className="value">{org.leaderEmail}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">{t('dashboard.organizations.created')}:</span>
-                        <span className="value">
-                          {new Date(org.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'), {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </span>
-                      </div>
-                      {org.description && (
-                        <div className="detail-row description">
-                          <span className="label">{t('dashboard.organizations.description')}:</span>
-                          <span className="value description-text">{org.description}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="org-actions" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        className="btn-approve"
-                        onClick={async () => {
-                          setReviewingOrg(org);
-                          setReviewDecision('approved');
-                          setRejectionReason('');
-                          setShowReviewModal(true);
-                          // Fetch fraud analysis for this organization
-                          await fetchFraudAnalysisForOrg(org._id);
-                        }}
-                      >
-                        ✅ {t('dashboard.organizations.approve')}
-                      </button>
-                      <button
-                        className="btn-reject"
-                        onClick={async () => {
-                          setReviewingOrg(org);
-                          setReviewDecision('rejected');
-                          setRejectionReason('');
-                          setShowReviewModal(true);
-                          // Fetch fraud analysis for this organization
-                          await fetchFraudAnalysisForOrg(org._id);
-                        }}
-                      >
-                        ❌ {t('dashboard.organizations.reject')}
-                      </button>
-                    </div>
+                {loadingOrganizations && (
+                  <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <span>{t('dashboard.organizations.loading')}</span>
                   </div>
-                ))}
-              </div>
+                )}
+
+                {!loadingOrganizations && pendingOrganizations.length === 0 && (
+                  <div className="empty-state">
+                    <div className="empty-icon">✅</div>
+                    <h3>{t('dashboard.organizations.noPending')}</h3>
+                    <p>{t('dashboard.organizations.noPendingSub')}</p>
+                  </div>
+                )}
+
+                {!loadingOrganizations && pendingOrganizations.length > 0 && (
+                  <div className="organizations-grid">
+                    {pendingOrganizations.map(org => (
+                      <div
+                        key={org._id}
+                        className="organization-card clickable"
+                        onClick={async () => {
+                          setReviewingOrg(org);
+                          setReviewDecision('');
+                          setRejectionReason('');
+                          setShowReviewModal(true);
+                          await fetchFraudAnalysisForOrg(org._id);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="org-header">
+                          <div className="org-icon">🏢</div>
+                          <div className="org-info">
+                            <h3>{org.organizationName}</h3>
+                            <p className="org-status pending">{t('dashboard.organizations.pendingReview')}</p>
+                          </div>
+                        </div>
+
+                        <div className="org-details">
+                          <div className="detail-row">
+                            <span className="label">{t('dashboard.organizations.leader')}:</span>
+                            <span className="value">{org.leaderFullName}</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="label">{t('dashboard.modal.email')}:</span>
+                            <span className="value">{org.leaderEmail}</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="label">{t('dashboard.organizations.created')}:</span>
+                            <span className="value">
+                              {new Date(org.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'), {
+                                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          {org.description && (
+                            <div className="detail-row description">
+                              <span className="label">{t('dashboard.organizations.description')}:</span>
+                              <span className="value description-text">{org.description}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="org-actions" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            className="btn-approve"
+                            onClick={async () => {
+                              setReviewingOrg(org);
+                              setReviewDecision('approved');
+                              setRejectionReason('');
+                              setShowReviewModal(true);
+                              await fetchFraudAnalysisForOrg(org._id);
+                            }}
+                          >
+                            ✅ {t('dashboard.organizations.approve')}
+                          </button>
+                          <button
+                            className="btn-reject"
+                            onClick={async () => {
+                              setReviewingOrg(org);
+                              setReviewDecision('rejected');
+                              setRejectionReason('');
+                              setShowReviewModal(true);
+                              await fetchFraudAnalysisForOrg(org._id);
+                            }}
+                          >
+                            ❌ {t('dashboard.organizations.reject')}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* History sub-tab */}
+            {orgReviewSubTab === 'history' && (
+              <>
+                <div className="section-header">
+                  <h2>📜 Review History</h2>
+                  <button
+                    onClick={() => fetchReviewedOrganizations(localStorage.getItem('adminToken'))}
+                    className="refresh-button"
+                    disabled={loadingReviewedOrgs}
+                  >
+                    🔄 {t('dashboard.refresh')}
+                  </button>
+                </div>
+
+                {loadingReviewedOrgs && (
+                  <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <span>Loading review history...</span>
+                  </div>
+                )}
+
+                {!loadingReviewedOrgs && reviewedOrganizations.length === 0 && (
+                  <div className="empty-state">
+                    <div className="empty-icon">📜</div>
+                    <h3>No reviewed organizations yet</h3>
+                    <p>All reviewed organization requests will appear here.</p>
+                  </div>
+                )}
+
+                {!loadingReviewedOrgs && reviewedOrganizations.length > 0 && (
+                  <div className="organizations-grid">
+                    {reviewedOrganizations.map(org => (
+                      <div key={org._id} className="organization-card reviewed-card">
+                        <div className="org-header">
+                          <div className="org-icon">🏢</div>
+                          <div className="org-info">
+                            <h3>{org.organizationName}</h3>
+                            <p className={`org-status ${org.status}`}>
+                              {org.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="org-details">
+                          <div className="detail-row">
+                            <span className="label">{t('dashboard.organizations.leader')}:</span>
+                            <span className="value">{org.leaderFullName}</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="label">{t('dashboard.modal.email')}:</span>
+                            <span className="value">{org.leaderEmail}</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="label">Reviewed:</span>
+                            <span className="value">
+                              {org.reviewedAt
+                                ? new Date(org.reviewedAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'), {
+                                    year: 'numeric', month: 'short', day: 'numeric'
+                                  })
+                                : 'N/A'}
+                            </span>
+                          </div>
+                          {org.rejectionReason && (
+                            <div className="detail-row">
+                              <span className="label">Rejection Reason:</span>
+                              <span className="value rejection-reason-text">{org.rejectionReason}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="org-actions">
+                          {org.status === 'rejected' && (
+                            <button
+                              className="btn-approve"
+                              onClick={() => handleReReview(org, 'approved')}
+                            >
+                              ✅ Approve Now
+                            </button>
+                          )}
+                          {org.status === 'approved' && (
+                            <button
+                              className="btn-reject"
+                              onClick={() => handleReReview(org, 'rejected')}
+                            >
+                              ❌ Revoke Approval
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
@@ -2079,6 +2694,42 @@ function AdminDashboard() {
                 />
               </div>
 
+              {/* Change Leader Section (edit mode only) */}
+              {editingOrg && (
+                <div className="change-leader-section">
+                  <div className="change-leader-header">
+                    <span>👤 {t('dashboard.organizations.currentLeader')}: <strong>{editingOrg.leaderId?.fullName || editingOrg.leaderId?.email || '—'}</strong></span>
+                    <button
+                      type="button"
+                      className="change-leader-toggle"
+                      onClick={() => { setShowChangeLeaderInput(!showChangeLeaderInput); setNewLeaderEmail(''); setError(''); }}
+                    >
+                      {showChangeLeaderInput ? '✕ Cancel' : '🔄 Change Leader'}
+                    </button>
+                  </div>
+                  {showChangeLeaderInput && (
+                    <div className="change-leader-input-row">
+                      <input
+                        type="email"
+                        placeholder="New leader email (must be existing user)"
+                        value={newLeaderEmail}
+                        onChange={(e) => setNewLeaderEmail(e.target.value)}
+                        className="change-leader-input"
+                      />
+                      <button
+                        type="button"
+                        className="submit-btn"
+                        onClick={handleChangeLeader}
+                        disabled={changingLeader || !newLeaderEmail.trim()}
+                        style={{ whiteSpace: 'nowrap', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
+                      >
+                        {changingLeader ? '⏳ Changing...' : '✓ Apply'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {!editingOrg && (
                 <>
                   <div className="form-group">
@@ -2210,7 +2861,7 @@ function AdminDashboard() {
                           <div style={{ fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>{member.fullName}</div>
                           <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>{member.email}</div>
                           <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)' }}>
-                            {t('orgDashboard.tabs.children')}: {member.childrenIds?.length || 0}
+                            {t('orgDashboard.tabs.children')}: {member.childCount ?? member.childrenIds?.length ?? 0}
                           </div>
                         </div>
                       ))}
@@ -2221,6 +2872,260 @@ function AdminDashboard() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Family Create/Edit Modal */}
+      {showFamilyModal && (
+        <div className="modal-overlay" onClick={closeFamilyModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{editingFamily ? '✏️ Edit Family' : '➕ Add Family'}</h3>
+              <button className="close-btn" onClick={closeFamilyModal}>✕</button>
+            </div>
+
+            {error && (
+              <div className="error-message"><span className="error-icon">⚠️</span>{error}</div>
+            )}
+
+            <form onSubmit={handleSaveFamily}>
+              <div className="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  value={familyFormData.fullName}
+                  onChange={(e) => setFamilyFormData({ ...familyFormData, fullName: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={familyFormData.email}
+                  onChange={(e) => setFamilyFormData({ ...familyFormData, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Phone</label>
+                <input
+                  type="tel"
+                  value={familyFormData.phone}
+                  onChange={(e) => setFamilyFormData({ ...familyFormData, phone: e.target.value })}
+                />
+              </div>
+              {!editingFamily && (
+                <>
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      value={familyFormData.password}
+                      onChange={(e) => setFamilyFormData({ ...familyFormData, password: e.target.value })}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Organization (optional)</label>
+                    <select
+                      value={familyFormData.organizationId}
+                      onChange={(e) => setFamilyFormData({ ...familyFormData, organizationId: e.target.value })}
+                    >
+                      <option value="">— No organization —</option>
+                      {organizations.map(org => (
+                        <option key={org._id} value={org._id}>{org.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
+              {editingFamily && (
+                <div className="form-group" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem', marginTop: '0.5rem' }}>
+                  <label>🏢 Organization</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <select
+                      className="form-input"
+                      style={{ flex: 1 }}
+                      value={assignOrgSelectedId}
+                      onChange={e => setAssignOrgSelectedId(e.target.value)}
+                    >
+                      <option value="">— No organization (remove) —</option>
+                      {organizations.map(org => (
+                        <option key={org._id} value={org._id}>{org.organizationName || org.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="submit-btn"
+                      style={{ whiteSpace: 'nowrap', padding: '0.5rem 1rem' }}
+                      disabled={assigningOrg}
+                      onClick={() => handleAssignOrg(editingFamily)}
+                    >
+                      {assigningOrg ? 'Saving…' : 'Apply'}
+                    </button>
+                  </div>
+                  {editingFamily.organizationId && (
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginTop: '0.35rem' }}>
+                      Current: {editingFamily.organizationId?.name || editingFamily.organizationId?.organizationName || editingFamily.organizationId}
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="modal-actions">
+                <button type="button" className="cancel-btn" onClick={closeFamilyModal}>
+                  {t('dashboard.modal.cancel')}
+                </button>
+                <button type="submit" className="submit-btn">
+                  {editingFamily ? t('dashboard.modal.update') : t('dashboard.modal.create')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Children Management Modal */}
+      {showChildrenModal && selectedFamily && (
+        <div className="modal-overlay" onClick={() => { setShowChildrenModal(false); setSelectedFamily(null); }}>
+          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>👶 Children of {selectedFamily.fullName}</h3>
+              <button className="close-btn" onClick={() => { setShowChildrenModal(false); setSelectedFamily(null); }}>✕</button>
+            </div>
+
+            {error && (
+              <div className="error-message" style={{ margin: '0 2rem 1rem' }}><span className="error-icon">⚠️</span>{error}</div>
+            )}
+
+            <div style={{ padding: '0 2rem 2rem' }}>
+              {/* Children list */}
+              {loadingChildren ? (
+                <div className="loading-container"><div className="spinner-small"></div></div>
+              ) : (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  {familyChildren.length === 0 && !showChildForm && (
+                    <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255,255,255,0.5)' }}>
+                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👶</div>
+                      <p>No children yet</p>
+                    </div>
+                  )}
+                  {familyChildren.map(child => (
+                    <div key={child._id} className="children-list-item">
+                      <div className="child-info">
+                        <strong>{child.fullName}</strong>
+                        <span style={{ fontSize: '0.8rem', opacity: 0.7, marginLeft: '0.5rem' }}>
+                          {child.gender} · {child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : ''}
+                        </span>
+                        {child.diagnosis && (
+                          <span style={{ fontSize: '0.75rem', color: 'rgba(255,150,100,0.9)', marginLeft: '0.5rem' }}>· {child.diagnosis}</span>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          className="card-action-btn edit"
+                          onClick={() => {
+                            setEditingChild(child);
+                            setChildFormData({
+                              fullName: child.fullName,
+                              dateOfBirth: child.dateOfBirth ? new Date(child.dateOfBirth).toISOString().split('T')[0] : '',
+                              gender: child.gender,
+                              diagnosis: child.diagnosis || '',
+                              medicalHistory: child.medicalHistory || '',
+                              allergies: child.allergies || '',
+                              medications: child.medications || '',
+                              notes: child.notes || ''
+                            });
+                            setShowChildForm(true);
+                          }}
+                          title="Edit child"
+                        >✏️</button>
+                        <button
+                          className="card-action-btn delete"
+                          onClick={() => handleDeleteChild(child._id)}
+                          title="Delete child"
+                        >🗑️</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add/Edit child form toggle */}
+              {!showChildForm ? (
+                <button
+                  className="add-user-btn"
+                  style={{ width: '100%' }}
+                  onClick={() => { setShowChildForm(true); setEditingChild(null); setChildFormData({ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }); }}
+                >
+                  ➕ Add Child
+                </button>
+              ) : (
+                <div className="child-form-container">
+                  <h4 style={{ color: 'white', marginBottom: '1rem' }}>{editingChild ? '✏️ Edit Child' : '➕ New Child'}</h4>
+                  <form onSubmit={handleSaveChild}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div className="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" value={childFormData.fullName}
+                          onChange={(e) => setChildFormData({ ...childFormData, fullName: e.target.value })} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Date of Birth *</label>
+                        <input type="date" value={childFormData.dateOfBirth}
+                          onChange={(e) => setChildFormData({ ...childFormData, dateOfBirth: e.target.value })} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Gender *</label>
+                        <select value={childFormData.gender}
+                          onChange={(e) => setChildFormData({ ...childFormData, gender: e.target.value })}>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" value={childFormData.diagnosis}
+                          onChange={(e) => setChildFormData({ ...childFormData, diagnosis: e.target.value })}
+                          placeholder="e.g. Autism" />
+                      </div>
+                      <div className="form-group">
+                        <label>Medical History</label>
+                        <input type="text" value={childFormData.medicalHistory}
+                          onChange={(e) => setChildFormData({ ...childFormData, medicalHistory: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>Allergies</label>
+                        <input type="text" value={childFormData.allergies}
+                          onChange={(e) => setChildFormData({ ...childFormData, allergies: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>Medications</label>
+                        <input type="text" value={childFormData.medications}
+                          onChange={(e) => setChildFormData({ ...childFormData, medications: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>Notes</label>
+                        <input type="text" value={childFormData.notes}
+                          onChange={(e) => setChildFormData({ ...childFormData, notes: e.target.value })} />
+                      </div>
+                    </div>
+                    <div className="modal-actions" style={{ paddingTop: 0 }}>
+                      <button type="button" className="cancel-btn"
+                        onClick={() => { setShowChildForm(false); setEditingChild(null); setError(''); }}>
+                        Cancel
+                      </button>
+                      <button type="submit" className="submit-btn">
+                        {editingChild ? 'Update Child' : 'Add Child'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

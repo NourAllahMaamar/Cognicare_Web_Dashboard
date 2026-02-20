@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import * as XLSX from 'xlsx';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { API_BASE_URL } from '../../config';
 import './OrgLeaderDashboard.css';
@@ -42,6 +43,19 @@ function OrgLeaderDashboard() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
+
+  // Import/Export state
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importType, setImportType] = useState(''); // 'staff', 'families', 'children', 'families_children'
+  const [importStep, setImportStep] = useState(1); // 1=upload, 2=mapping, 3=results
+  const [importFile, setImportFile] = useState(null);
+  const [importPreview, setImportPreview] = useState(null);
+  const [importMappings, setImportMappings] = useState([]);
+  const [importResults, setImportResults] = useState(null);
+  const [importLoading, setImportLoading] = useState(false);
+  const [importDefaultPassword, setImportDefaultPassword] = useState('');
+  const fileInputRef = useRef(null);
+  const [openDropdown, setOpenDropdown] = useState(null); // 'staff' | 'families' | 'children' | null
 
   // Refresh access token using refresh token
   const refreshAccessToken = useCallback(async () => {
@@ -834,6 +848,261 @@ function OrgLeaderDashboard() {
     }
   };
 
+  // ─── Template Download ───────────────────────────────
+  const handleDownloadTemplate = (type) => {
+    const templates = {
+      staff: ['Full Name', 'Email', 'Phone', 'Role', 'Password'],
+      families: ['Full Name', 'Email', 'Phone', 'Password'],
+      children: ['Child Name', 'Date of Birth', 'Gender', 'Parent Email', 'Diagnosis', 'Medical History', 'Allergies', 'Medications', 'Notes'],
+      families_children: ['Parent Name', 'Parent Email', 'Parent Phone', 'Parent Password', 'Child Name', 'Date of Birth', 'Gender', 'Diagnosis', 'Medical History', 'Allergies', 'Medications', 'Notes'],
+    };
+    const cols = templates[type];
+    if (!cols) return;
+
+    const ws = XLSX.utils.aoa_to_sheet([cols]);
+    // Auto-width based on header length
+    ws['!cols'] = cols.map(h => ({ wch: Math.max(h.length + 4, 14) }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Template');
+    XLSX.writeFile(wb, `cognicare_${type}_template.xlsx`);
+  };
+
+  // ─── Export Handlers ───────────────────────────────
+  const handleExport = (type) => {
+    let data = [];
+    let filename = '';
+
+    if (type === 'staff') {
+      if (staff.length === 0) {
+        setError(t('orgDashboard.importExport.noData'));
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      data = staff.map(s => ({
+        'Full Name': s.fullName || '',
+        'Email': s.email || '',
+        'Phone': s.phone || '',
+        'Role': s.role || '',
+        'Joined': s.createdAt ? new Date(s.createdAt).toLocaleDateString() : ''
+      }));
+      filename = 'staff_export.xlsx';
+    } else if (type === 'families') {
+      if (families.length === 0) {
+        setError(t('orgDashboard.importExport.noData'));
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      data = families.map(f => {
+        const familyId = f._id || f.id;
+        const childCount = children.filter(c => {
+          const pid = c.parentId?.toString() || c.parentId;
+          return pid === familyId?.toString();
+        }).length;
+        return {
+          'Full Name': f.fullName || '',
+          'Email': f.email || '',
+          'Phone': f.phone || '',
+          'Children Count': childCount,
+          'Joined': f.createdAt ? new Date(f.createdAt).toLocaleDateString() : ''
+        };
+      });
+      filename = 'families_export.xlsx';
+    } else if (type === 'children') {
+      if (children.length === 0) {
+        setError(t('orgDashboard.importExport.noData'));
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      data = children.map(c => {
+        const parent = families.find(f => {
+          const fid = f._id?.toString() || f.id?.toString();
+          const pid = c.parentId?.toString() || c.parentId;
+          return fid === pid;
+        });
+        return {
+          'Child Name': c.fullName || '',
+          'Date of Birth': c.dateOfBirth ? new Date(c.dateOfBirth).toLocaleDateString() : '',
+          'Gender': c.gender || '',
+          'Parent Name': parent?.fullName || '',
+          'Parent Email': parent?.email || '',
+          'Diagnosis': c.diagnosis || '',
+          'Medical History': c.medicalHistory || '',
+          'Allergies': c.allergies || '',
+          'Medications': c.medications || '',
+          'Notes': c.notes || ''
+        };
+      });
+      filename = 'children_export.xlsx';
+    }
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, type.charAt(0).toUpperCase() + type.slice(1));
+
+    // Auto-width columns
+    const colWidths = Object.keys(data[0] || {}).map(key => ({
+      wch: Math.max(key.length, ...data.map(row => String(row[key] || '').length)) + 2
+    }));
+    ws['!cols'] = colWidths;
+
+    XLSX.writeFile(wb, filename);
+    setSuccessMessage(t('orgDashboard.importExport.exportSuccess'));
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  // ─── Import Handlers ───────────────────────────────
+  const openImportModal = (type) => {
+    setImportType(type);
+    setImportStep(1);
+    setImportFile(null);
+    setImportPreview(null);
+    setImportMappings([]);
+    setImportResults(null);
+    setImportLoading(false);
+    setImportDefaultPassword('');
+    setShowImportModal(true);
+  };
+
+  const closeImportModal = () => {
+    setShowImportModal(false);
+    setImportType('');
+    setImportStep(1);
+    setImportFile(null);
+    setImportPreview(null);
+    setImportMappings([]);
+    setImportResults(null);
+    setImportLoading(false);
+    setImportDefaultPassword('');
+  };
+
+  const handleImportFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportFile(file);
+  };
+
+  const handleImportFileDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    setImportFile(file);
+  };
+
+  const handleImportPreview = async () => {
+    if (!importFile) return;
+
+    const orgId = user?.organization?.id;
+    if (!orgId) {
+      setError(t('orgDashboard.messages.orgNotFound'));
+      return;
+    }
+
+    setImportLoading(true);
+    try {
+      let token = localStorage.getItem('orgLeaderToken');
+      const formData = new FormData();
+      formData.append('file', importFile);
+
+      let response = await fetch(`${API_BASE_URL}/import/preview/${orgId}/${importType}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) { handleSessionExpired(); return; }
+        token = newToken;
+        response = await fetch(`${API_BASE_URL}/import/preview/${orgId}/${importType}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+      }
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Preview failed');
+
+      setImportPreview(data);
+      // Initialize mappings from suggestions
+      const initialMappings = (data.suggestedMappings || []).map(m => ({
+        excelHeader: m.excelHeader,
+        dbField: m.dbField || ''
+      }));
+      setImportMappings(initialMappings);
+      setImportStep(2);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setImportLoading(false);
+    }
+  };
+
+  const handleMappingChange = (index, newDbField) => {
+    const updated = [...importMappings];
+    updated[index] = { ...updated[index], dbField: newDbField };
+    setImportMappings(updated);
+  };
+
+  const handleImportExecute = async () => {
+    const orgId = user?.organization?.id;
+    if (!orgId) {
+      setError(t('orgDashboard.messages.orgNotFound'));
+      return;
+    }
+
+    // Filter out unmapped columns
+    const activeMappings = importMappings.filter(m => m.dbField);
+
+    setImportLoading(true);
+    try {
+      let token = localStorage.getItem('orgLeaderToken');
+      const formData = new FormData();
+      formData.append('file', importFile);
+      formData.append('importType', importType);
+      formData.append('mappings', JSON.stringify(activeMappings));
+
+      let url = `${API_BASE_URL}/import/execute/${orgId}/${importType}`;
+      if (importDefaultPassword) {
+        url += `?defaultPassword=${encodeURIComponent(importDefaultPassword)}`;
+      }
+
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) { handleSessionExpired(); return; }
+        token = newToken;
+        response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+      }
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Import failed');
+
+      setImportResults(data);
+      setImportStep(3);
+
+      // Refresh data
+      fetchStaff(token);
+      fetchFamilies(token);
+      fetchChildren(token);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setImportLoading(false);
+    }
+  };
+
   const handleAddChild = () => {
     setNewFamily({
       ...newFamily,
@@ -1054,12 +1323,37 @@ function OrgLeaderDashboard() {
           <div className="tab-content">
             <div className="content-header">
               <h2>{t('orgDashboard.staff.title')}</h2>
-              <button
-                onClick={() => setShowAddStaffModal(true)}
-                className="add-button"
-              >
-                + {t('orgDashboard.staff.addNew')}
-              </button>
+              <div className="header-actions">
+                <div className="dropdown-wrapper">
+                  <button
+                    className="io-button dropdown-toggle"
+                    onClick={() => setOpenDropdown(openDropdown === 'staff' ? null : 'staff')}
+                    onBlur={() => setTimeout(() => setOpenDropdown(null), 200)}
+                  >
+                    ⚙️ {t('orgDashboard.importExport.actions')} ▾
+                  </button>
+                  {openDropdown === 'staff' && (
+                    <div className="dropdown-menu">
+                      <button onClick={() => { handleExport('staff'); setOpenDropdown(null); }}>
+                        📤 {t('orgDashboard.importExport.exportStaff')}
+                      </button>
+                      <button onClick={() => { openImportModal('staff'); setOpenDropdown(null); }}>
+                        📥 {t('orgDashboard.importExport.importStaff')}
+                      </button>
+                      <div className="dropdown-divider" />
+                      <button onClick={() => { handleDownloadTemplate('staff'); setOpenDropdown(null); }}>
+                        📋 {t('orgDashboard.importExport.downloadTemplate')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => setShowAddStaffModal(true)}
+                  className="add-button"
+                >
+                  + {t('orgDashboard.staff.addNew')}
+                </button>
+              </div>
             </div>
 
             <div className="user-grid">
@@ -1126,12 +1420,43 @@ function OrgLeaderDashboard() {
           <div className="tab-content">
             <div className="content-header">
               <h2>{t('orgDashboard.families.title')}</h2>
-              <button
-                className="action-button primary"
-                onClick={() => setShowAddFamilyModal(true)}
-              >
-                + {t('orgDashboard.families.addNew')}
-              </button>
+              <div className="header-actions">
+                <div className="dropdown-wrapper">
+                  <button
+                    className="io-button dropdown-toggle"
+                    onClick={() => setOpenDropdown(openDropdown === 'families' ? null : 'families')}
+                    onBlur={() => setTimeout(() => setOpenDropdown(null), 200)}
+                  >
+                    ⚙️ {t('orgDashboard.importExport.actions')} ▾
+                  </button>
+                  {openDropdown === 'families' && (
+                    <div className="dropdown-menu">
+                      <button onClick={() => { handleExport('families'); setOpenDropdown(null); }}>
+                        📤 {t('orgDashboard.importExport.exportFamilies')}
+                      </button>
+                      <button onClick={() => { openImportModal('families'); setOpenDropdown(null); }}>
+                        📥 {t('orgDashboard.importExport.importFamilies')}
+                      </button>
+                      <button onClick={() => { openImportModal('families_children'); setOpenDropdown(null); }}>
+                        👨‍👧‍👦 {t('orgDashboard.importExport.importFamiliesChildren')}
+                      </button>
+                      <div className="dropdown-divider" />
+                      <button onClick={() => { handleDownloadTemplate('families'); setOpenDropdown(null); }}>
+                        📋 {t('orgDashboard.importExport.downloadTemplate')}
+                      </button>
+                      <button onClick={() => { handleDownloadTemplate('families_children'); setOpenDropdown(null); }}>
+                        📋 {t('orgDashboard.importExport.downloadTemplateFamiliesChildren')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <button
+                  className="action-button primary"
+                  onClick={() => setShowAddFamilyModal(true)}
+                >
+                  + {t('orgDashboard.families.addNew')}
+                </button>
+              </div>
             </div>
 
             <div className="user-grid">
@@ -1204,7 +1529,32 @@ function OrgLeaderDashboard() {
           <div className="tab-content">
             <div className="content-header">
               <h2>{t('orgDashboard.children.title')}</h2>
-              <p className="subtitle">{t('orgDashboard.children.total')}: {children.length}</p>
+              <div className="header-actions">
+                <div className="dropdown-wrapper">
+                  <button
+                    className="io-button dropdown-toggle"
+                    onClick={() => setOpenDropdown(openDropdown === 'children' ? null : 'children')}
+                    onBlur={() => setTimeout(() => setOpenDropdown(null), 200)}
+                  >
+                    ⚙️ {t('orgDashboard.importExport.actions')} ▾
+                  </button>
+                  {openDropdown === 'children' && (
+                    <div className="dropdown-menu">
+                      <button onClick={() => { handleExport('children'); setOpenDropdown(null); }}>
+                        📤 {t('orgDashboard.importExport.exportChildren')}
+                      </button>
+                      <button onClick={() => { openImportModal('children'); setOpenDropdown(null); }}>
+                        📥 {t('orgDashboard.importExport.importChildren')}
+                      </button>
+                      <div className="dropdown-divider" />
+                      <button onClick={() => { handleDownloadTemplate('children'); setOpenDropdown(null); }}>
+                        📋 {t('orgDashboard.importExport.downloadTemplate')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <p className="subtitle">{t('orgDashboard.children.total')}: {children.length}</p>
+              </div>
             </div>
 
             <div className="user-grid">
@@ -1850,6 +2200,255 @@ function OrgLeaderDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="modal-overlay" onClick={closeImportModal}>
+          <div className="modal-content import-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>
+                {importType === 'staff' && t('orgDashboard.importExport.importStaff')}
+                {importType === 'families' && t('orgDashboard.importExport.importFamilies')}
+                {importType === 'children' && t('orgDashboard.importExport.importChildren')}
+                {importType === 'families_children' && t('orgDashboard.importExport.importFamiliesChildren')}
+              </h2>
+              <button className="close-button" onClick={closeImportModal}>&times;</button>
+            </div>
+
+            {/* Step Indicator */}
+            <div className="import-steps">
+              <div className={`import-step ${importStep >= 1 ? 'active' : ''} ${importStep > 1 ? 'done' : ''}`}>
+                <span className="step-number">1</span>
+                <span className="step-label">{t('orgDashboard.importExport.step1')}</span>
+              </div>
+              <div className="step-connector" />
+              <div className={`import-step ${importStep >= 2 ? 'active' : ''} ${importStep > 2 ? 'done' : ''}`}>
+                <span className="step-number">2</span>
+                <span className="step-label">{t('orgDashboard.importExport.step2')}</span>
+              </div>
+              <div className="step-connector" />
+              <div className={`import-step ${importStep >= 3 ? 'active' : ''}`}>
+                <span className="step-number">3</span>
+                <span className="step-label">{t('orgDashboard.importExport.step3')}</span>
+              </div>
+            </div>
+
+            {/* Step 1: Upload */}
+            {importStep === 1 && (
+              <div className="import-step-content">
+                <div
+                  className={`drop-zone ${importFile ? 'has-file' : ''}`}
+                  onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }}
+                  onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); }}
+                  onDrop={handleImportFileDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".xlsx,.xls,.csv"
+                    onChange={handleImportFileSelect}
+                    style={{ display: 'none' }}
+                  />
+                  {importFile ? (
+                    <div className="file-selected">
+                      <span className="file-icon">📄</span>
+                      <span className="file-name">{importFile.name}</span>
+                      <button
+                        className="change-file-btn"
+                        onClick={(e) => { e.stopPropagation(); setImportFile(null); }}
+                      >
+                        {t('orgDashboard.importExport.changeFile')}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="drop-zone-content">
+                      <span className="drop-icon">📁</span>
+                      <p className="drop-text">{t('orgDashboard.importExport.dragDrop')}</p>
+                      <p className="drop-subtext">{t('orgDashboard.importExport.acceptedFormats')}</p>
+                    </div>
+                  )}
+                </div>
+
+                {(importType === 'staff' || importType === 'families' || importType === 'families_children') && (
+                  <div className="form-group default-password-group">
+                    <label>{t('orgDashboard.importExport.defaultPassword')}</label>
+                    <input
+                      type="text"
+                      value={importDefaultPassword}
+                      onChange={(e) => setImportDefaultPassword(e.target.value)}
+                      placeholder="e.g., Welcome123!"
+                    />
+                    <p className="field-help">{t('orgDashboard.importExport.defaultPasswordHelp')}</p>
+                  </div>
+                )}
+
+                <div className="import-modal-actions">
+                  <button className="button-secondary" onClick={closeImportModal}>
+                    {t('orgDashboard.modal.cancel')}
+                  </button>
+                  <button
+                    className="button-primary"
+                    disabled={!importFile || importLoading}
+                    onClick={handleImportPreview}
+                  >
+                    {importLoading ? t('orgDashboard.importExport.importing') : t('orgDashboard.importExport.next')}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Mapping */}
+            {importStep === 2 && importPreview && (
+              <div className="import-step-content">
+                <p className="import-info">
+                  {t('orgDashboard.importExport.totalRows')}: <strong>{importPreview.totalRows}</strong>
+                </p>
+
+                <div className="mapping-table-wrapper">
+                  <table className="mapping-table">
+                    <thead>
+                      <tr>
+                        <th>{t('orgDashboard.importExport.excelColumn')}</th>
+                        <th>{t('orgDashboard.importExport.mapsTo')}</th>
+                        <th>{t('orgDashboard.importExport.confidence')}</th>
+                        <th>{t('orgDashboard.importExport.sampleData')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {importMappings.map((mapping, index) => (
+                        <tr key={index} className={!mapping.dbField ? 'unmapped-row' : ''}>
+                          <td className="excel-header-cell">
+                            <span className="excel-header-name">{mapping.excelHeader}</span>
+                          </td>
+                          <td>
+                            <select
+                              value={mapping.dbField || ''}
+                              onChange={(e) => handleMappingChange(index, e.target.value)}
+                              className={`mapping-select ${!mapping.dbField ? 'unmapped' : ''}`}
+                            >
+                              <option value="">-- {t('orgDashboard.importExport.unmapped')} --</option>
+                              {importPreview.availableFields?.map((field) => (
+                                <option key={field.field} value={field.field}>
+                                  {field.label} {field.required ? '*' : ''}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                          <td>
+                            {mapping.confidence != null && (
+                              <span className={`confidence-badge confidence-${
+                                mapping.confidence >= 0.8 ? 'high' : mapping.confidence >= 0.5 ? 'medium' : 'low'
+                              }`}>
+                                {Math.round(mapping.confidence * 100)}%
+                              </span>
+                            )}
+                          </td>
+                          <td className="sample-data-cell">
+                            {importPreview.sampleRows?.slice(0, 2).map((row, ri) => (
+                              <div key={ri} className="sample-value">
+                                {row[mapping.originalHeader || mapping.excelHeader] ?? '—'}
+                              </div>
+                            ))}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="import-modal-actions">
+                  <button className="button-secondary" onClick={() => setImportStep(1)}>
+                    {t('orgDashboard.importExport.back')}
+                  </button>
+                  <button
+                    className="button-primary"
+                    disabled={importLoading}
+                    onClick={handleImportExecute}
+                  >
+                    {importLoading ? t('orgDashboard.importExport.importing') : t('orgDashboard.importExport.confirmImport')}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Results */}
+            {importStep === 3 && importResults && (
+              <div className="import-step-content">
+                <div className="import-results-summary">
+                  <h3>✅ {t('orgDashboard.importExport.importSuccess')}</h3>
+
+                  <div className="results-grid">
+                    <div className="result-card result-created">
+                      <span className="result-number">{importResults.created ?? importResults.familiesCreated ?? 0}</span>
+                      <span className="result-label">{t('orgDashboard.importExport.created')}</span>
+                    </div>
+                    <div className="result-card result-skipped">
+                      <span className="result-number">{importResults.skipped ?? importResults.childrenSkipped ?? 0}</span>
+                      <span className="result-label">{t('orgDashboard.importExport.skipped')}</span>
+                    </div>
+                    <div className="result-card result-errors">
+                      <span className="result-number">{importResults.errors?.length ?? importResults.childrenErrors?.length ?? 0}</span>
+                      <span className="result-label">{t('orgDashboard.importExport.errors')}</span>
+                    </div>
+                  </div>
+
+                  {/* Children-specific results for families_children import */}
+                  {importType === 'families_children' && importResults.childrenCreated != null && (
+                    <div className="results-grid" style={{ marginTop: '1rem' }}>
+                      <div className="result-card result-created">
+                        <span className="result-number">{importResults.childrenCreated}</span>
+                        <span className="result-label">{t('orgDashboard.importExport.childrenCreated')}</span>
+                      </div>
+                      <div className="result-card result-skipped">
+                        <span className="result-number">{importResults.childrenSkipped ?? 0}</span>
+                        <span className="result-label">{t('orgDashboard.importExport.childrenSkipped')}</span>
+                      </div>
+                      <div className="result-card result-errors">
+                        <span className="result-number">{importResults.childrenErrors?.length ?? 0}</span>
+                        <span className="result-label">{t('orgDashboard.importExport.childrenErrors')}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Error details */}
+                  {((importResults.errors && importResults.errors.length > 0) ||
+                    (importResults.childrenErrors && importResults.childrenErrors.length > 0)) && (
+                    <div className="import-error-details">
+                      <h4>{t('orgDashboard.importExport.errorDetails')}</h4>
+                      <div className="error-list">
+                        {(importResults.errors || []).concat(importResults.childrenErrors || []).map((err, i) => {
+                          const rawMsg = err.error || err.message || '';
+                          let displayMsg = rawMsg;
+                          if (rawMsg === 'Missing' && err.field) {
+                            displayMsg = t('orgDashboard.importExport.errorMissingField', { field: err.field });
+                          } else if (rawMsg.startsWith('Invalid') && err.field) {
+                            displayMsg = `${rawMsg} (${err.field})`;
+                          } else if (rawMsg.startsWith('Parent not found') && err.field) {
+                            displayMsg = rawMsg;
+                          }
+                          return (
+                            <div key={i} className="error-item">
+                              <span className="error-row">{t('orgDashboard.importExport.row')} {err.row}</span>
+                              {err.field && <span className="error-field">{err.field}</span>}
+                              <span className="error-message">{displayMsg}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="import-modal-actions">
+                  <button className="button-primary" onClick={closeImportModal}>
+                    {t('orgDashboard.importExport.close')}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
