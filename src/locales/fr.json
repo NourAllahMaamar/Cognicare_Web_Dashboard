@@ -115,6 +115,7 @@
     "adminLink": "Connexion Admin",
     "accessDenied": "Accès refusé. Privilèges de leader d'organisation requis.",
     "loginFailed": "Échec de la connexion",
+    "certificateRequired": "Le certificat d'organisation (PDF) est requis avant d'envoyer le code de vérification",
     "certificatePdf": "Certificat d'organisation (Requis)",
     "optional": "Optionnel",
     "pdfOnly": "Seuls les fichiers PDF sont autorisés",
@@ -427,8 +428,7 @@
       "membersOf": "Membres de",
       "noStaff": "Aucun membre du personnel",
       "noFamilies": "Aucune famille",
-      "modal": {
-        "approveTitle": "Approuver l'Organisation",
+      "modal": {        "reviewTitle": "Examiner l'organisation",        "approveTitle": "Approuver l'Organisation",
         "rejectTitle": "Rejeter l'Organisation"
       },
       "loading": "Chargement des organisations en attente...",

@@ -101,6 +101,17 @@
   font-weight: 500;
 }
 
+.required-asterisk {
+  color: #ff4444;
+  margin-left: 0.25rem;
+  font-weight: bold;
+}
+
+[dir="rtl"] .required-asterisk {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
 .form-group input {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);

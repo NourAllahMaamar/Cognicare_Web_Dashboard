@@ -115,6 +115,7 @@
     "adminLink": "Admin Login",
     "accessDenied": "Access denied. Organization leader privileges required.",
     "loginFailed": "Login failed",
+    "certificateRequired": "Organization certificate (PDF) is required before sending verification code",
     "certificatePdf": "Organization Certificate (Required)",
     "optional": "Optional",
     "pdfOnly": "Only PDF files are allowed",
@@ -428,6 +429,7 @@
       "noStaff": "No staff members",
       "noFamilies": "No families",
       "modal": {
+        "reviewTitle": "Review Organization",
         "approveTitle": "Approve Organization",
         "rejectTitle": "Reject Organization"
       },

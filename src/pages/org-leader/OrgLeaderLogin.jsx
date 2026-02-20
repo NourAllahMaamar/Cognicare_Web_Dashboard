@@ -78,6 +78,13 @@ function OrgLeaderLogin() {
     setLoading(true);
 
     try {
+      // Validate that certificate PDF is uploaded (REQUIRED for organization creation)
+      if (!certificatePdf) {
+        setError(t('orgLeaderLogin.certificateRequired') || 'Organization certificate (PDF) is required');
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/auth/send-verification-code`, {
         method: 'POST',
         headers: {
@@ -349,7 +356,7 @@ function OrgLeaderLogin() {
 
                   <div className="form-group">
                     <label htmlFor="certificatePdf">
-                      {t('orgLeaderLogin.certificatePdf')}
+                      {t('orgLeaderLogin.certificatePdf')} <span className="required-asterisk">*</span>
                     </label>
                     <div className="file-upload-wrapper">
                       <input
@@ -374,6 +381,7 @@ function OrgLeaderLogin() {
                           }
                         }}
                         className="file-input"
+                        required
                       />
                       {certificatePdf && (
                         <div className="file-selected">

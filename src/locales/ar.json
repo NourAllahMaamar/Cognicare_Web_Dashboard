@@ -114,6 +114,7 @@
     "adminLink": "تسجيل دخول المدير",
     "accessDenied": "تم رفض الوصول. مطلوب امتيازات قائد المنظمة.",
     "loginFailed": "فشل تسجيل الدخول",
+    "certificateRequired": "شهادة المنظمة (PDF) مطلوبة قبل إرسال رمز التحقق",
     "certificatePdf": "شهادة المنظمة (مطلوبة)",
     "optional": "اختياري",
     "pdfOnly": "يُسمح فقط بملفات PDF",
@@ -427,6 +428,7 @@
       "noStaff": "لا يوجد موظفون",
       "noFamilies": "لا توجد عائلات",
       "modal": {
+        "reviewTitle": "مراجعة المنظمة",
         "approveTitle": "الموافقة على المنظمة",
         "rejectTitle": "رفض المنظمة"
       },

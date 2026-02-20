@@ -1429,6 +1429,32 @@
   box-shadow: var(--shadow-lg);
 }
 
+.organization-card.clickable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.organization-card.clickable:hover {
+  border-color: rgba(103, 58, 183, 0.6);
+  box-shadow: 0 8px 32px rgba(103, 58, 183, 0.2), var(--shadow-lg);
+}
+
+.organization-card.clickable::after {
+  content: '👁️ Click to view details';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.organization-card.clickable:hover::after {
+  opacity: 1;
+}
+
 .org-header {
   display: flex;
   align-items: center;
@@ -2169,6 +2195,11 @@
 
 [dir="rtl"] .modal-actions {
   flex-direction: row-reverse;
+}
+
+[dir="rtl"] .organization-card.clickable::after {
+  right: auto;
+  left: 1rem;
 }
 
 [dir="rtl"] .form-group label,
