@@ -1,0 +1,1043 @@
+/* ═══════════════════════════════════════════════════
+   Specialist Dashboard – Dedicated Styles
+   ═══════════════════════════════════════════════════ */
+
+/* ── Overview Section ── */
+.sp-overview {
+    animation: fadeIn 0.3s ease;
+}
+
+.sp-section {
+    margin-top: 2rem;
+}
+
+.sp-section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 1.25rem 0;
+    color: white;
+}
+
+.sp-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Quick Actions ── */
+.sp-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.sp-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.sp-action-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.sp-action-icon {
+    font-size: 2rem;
+}
+
+.sp-action-label {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.sp-action-desc {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Tip Banner ── */
+.sp-tip-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 14px;
+    color: #fbbf24;
+    margin-top: 2rem;
+}
+
+.sp-tip-banner strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.sp-tip-banner p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+}
+
+.sp-tip-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* ── Plan Cards Grid ── */
+.sp-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+.sp-plan-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sp-plan-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #f59e0b);
+    border-radius: 16px 16px 0 0;
+}
+
+.sp-plan-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.sp-plan-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sp-plan-title {
+    margin: 0.75rem 0 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+}
+
+.sp-plan-child {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.sp-plan-date {
+    margin: 0.5rem 0;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.sp-plan-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.sp-btn-delete {
+    padding: 0.4rem 0.8rem;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #fca5a5;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.sp-btn-delete:hover {
+    background: rgba(239, 68, 68, 0.4);
+}
+
+/* ═══ Children Tab Layout ═══ */
+.sp-children-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    min-height: 500px;
+}
+
+/* ── Sidebar ── */
+.sp-sidebar {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.sp-sidebar-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sp-sidebar-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+}
+
+.sp-children-list {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.sp-child-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sp-child-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.sp-child-item.active {
+    background: rgba(99, 102, 241, 0.25);
+    border-left: 3px solid #6366f1;
+}
+
+.sp-child-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.sp-child-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.sp-child-info strong {
+    font-size: 0.9rem;
+    color: white;
+}
+
+.sp-child-info span {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.sp-empty-sidebar {
+    padding: 2rem 1.25rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.sp-empty-sidebar p {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+}
+
+.sp-empty-sidebar small {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Child Detail ── */
+.sp-child-detail {
+    min-height: 400px;
+}
+
+.sp-child-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sp-child-avatar-large {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.sp-child-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.sp-child-header p {
+    margin: 0.25rem 0 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+/* ── Action Buttons Row ── */
+.sp-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.sp-btn {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: white;
+}
+
+.sp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sp-btn-pecs {
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+}
+
+.sp-btn-teacch {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.sp-btn-skill {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.sp-btn-games {
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+}
+
+/* ── Empty States ── */
+.sp-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.sp-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.sp-empty-state h3 {
+    margin: 0 0 0.5rem;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.sp-empty-state p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+/* ═══ My Plans Tab ═══ */
+.sp-my-plans {
+    animation: fadeIn 0.3s ease;
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 768px) {
+    .sp-children-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sp-quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .sp-action-buttons {
+        flex-direction: column;
+    }
+
+    .sp-plans-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   Creator Pages (PECS/TEACCH/Skill) –  Shared Styles
+   ═══════════════════════════════════════════════════ */
+
+.pecs-creator-page,
+.teacch-creator-page {
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+    font-family: 'Outfit', sans-serif;
+}
+
+.creator-content {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+}
+
+.creator-content h1,
+.creator-content h2,
+.creator-content h3,
+.creator-content h4 {
+    color: #1e293b;
+}
+
+.creator-content p,
+.creator-content span,
+.creator-content label {
+    color: #475569;
+}
+
+.creator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.creator-main {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+}
+
+.settings-panel {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.add-item-box,
+.add-goal-box {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.add-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.back-btn {
+    padding: 0.5rem 1rem;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #475569;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background: #e2e8f0;
+}
+
+.save-btn {
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.error-message {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.empty-preview {
+    text-align: center;
+    color: #94a3b8;
+    padding: 2rem;
+    grid-column: 1 / -1;
+}
+
+/* ── PECS Cards ── */
+.pecs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 16px;
+    min-height: 400px;
+}
+
+.pecs-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.pecs-card:hover {
+    transform: translateY(-5px);
+    border-color: #6366f1;
+}
+
+.pecs-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.pecs-card span {
+    font-weight: 600;
+    color: #333;
+}
+
+.remove-card {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* ── TEACCH Goals ── */
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.goal-item-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    position: relative;
+}
+
+.goal-category-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: #6366f1;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.goal-text {
+    margin: 0.5rem 0;
+    color: #334155;
+    font-size: 0.95rem;
+}
+
+.goal-progress-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.remove-goal {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .creator-main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   PECS Phase Info & Trials
+   ═══════════════════════════════════════════════════ */
+
+.phase-info-card {
+    background: linear-gradient(135deg, #ede9fe, #dbeafe);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-top: 1rem;
+    border-left: 4px solid #6366f1;
+}
+
+.phase-info-card h4 {
+    margin: 0 0 0.5rem;
+    color: #4338ca;
+    font-size: 0.95rem;
+}
+
+.phase-info-card p {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #475569;
+}
+
+.phase-detail {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.phase-detail strong {
+    display: block;
+    color: #334155;
+    margin-bottom: 0.15rem;
+}
+
+.phase-detail span {
+    color: #64748b;
+}
+
+/* Trial Grid */
+.trial-section {
+    margin-top: 2rem;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 1.25rem;
+}
+
+.trial-section h3 {
+    margin: 0 0 0.25rem;
+    color: #1e293b;
+}
+
+.trial-desc {
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.trial-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.5rem;
+}
+
+.trial-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #94a3b8;
+    transition: all 0.15s;
+}
+
+.trial-cell:hover {
+    transform: scale(1.08);
+}
+
+.trial-cell.pass {
+    background: #dcfce7;
+    border-color: #22c55e;
+}
+
+.trial-cell.fail {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.trial-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.mastery-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    background: #f1f5f9;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.mastery-badge.mastered {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════
+   TEACCH Categories & Work System
+   ═══════════════════════════════════════════════════ */
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.category-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.6rem 0.4rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    transition: all 0.2s;
+}
+
+.category-btn:hover {
+    border-color: var(--cat-color, #6366f1);
+    background: #f8fafc;
+}
+
+.category-btn.active {
+    border-color: var(--cat-color, #6366f1);
+    background: color-mix(in srgb, var(--cat-color, #6366f1) 10%, white);
+    color: var(--cat-color, #6366f1);
+}
+
+.category-btn span:first-child {
+    font-size: 1.3rem;
+}
+
+/* Work System */
+.work-system-box {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #fef3c7, #fed7aa);
+    border-radius: 14px;
+    border-left: 4px solid #f59e0b;
+}
+
+.work-system-box h3 {
+    margin: 0 0 0.25rem;
+    color: #92400e;
+    font-size: 1rem;
+}
+
+.work-system-box .help-text {
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+    color: #b45309;
+}
+
+.work-system-box .form-group label {
+    color: #92400e;
+    font-weight: 700;
+}
+
+/* Goal Templates */
+.template-list {
+    margin-bottom: 1rem;
+}
+
+.template-list label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+.template-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.35rem;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.template-btn:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* ═══════════════════════════════════════════════════
+   Add Child Modal (Specialist Dashboard)
+   ═══════════════════════════════════════════════════ */
+
+.sp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.sp-modal {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    color: #1e293b;
+}
+
+.sp-modal h2 {
+    margin: 0 0 1.5rem;
+    color: #1e293b;
+}
+
+.sp-modal .form-group label {
+    color: #475569;
+}
+
+.sp-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.sp-modal-cancel {
+    padding: 0.6rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: white;
+    color: #64748b;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.sp-modal-submit {
+    padding: 0.6rem 1.25rem;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.sp-modal-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sp-modal-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Section divider for Org vs Private */
+.sp-section-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sp-section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Add child button in sidebar */
+.sp-add-child-btn {
+    width: calc(100% - 2rem);
+    margin: 1rem;
+    padding: 0.65rem;
+    border: 2px dashed rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.sp-add-child-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
+}

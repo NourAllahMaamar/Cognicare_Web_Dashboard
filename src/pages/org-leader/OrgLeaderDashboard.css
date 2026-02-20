@@ -391,6 +391,11 @@
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+.action-button.edit:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
 .action-button {
   padding: 0.5rem 0.75rem;
   background: rgba(255, 255, 255, 0.1);
@@ -411,9 +416,24 @@
   border-color: rgba(220, 38, 38, 0.3);
 }
 
-.action-button.edit:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.3);
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.confirmed {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 /* Modal */

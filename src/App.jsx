@@ -6,6 +6,13 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import OrgLeaderLogin from './pages/org-leader/OrgLeaderLogin';
 import OrgLeaderDashboard from './pages/org-leader/OrgLeaderDashboard';
+import ConfirmAccount from './pages/ConfirmAccount';
+import SpecialistLogin from './pages/specialist/SpecialistLogin';
+import SpecialistDashboard from './pages/specialist/SpecialistDashboard';
+import PECSBoardCreator from './pages/specialist/PECSBoardCreator';
+import TEACCHTrackerCreator from './pages/specialist/TEACCHTrackerCreator';
+import ActivitiesCreator from './pages/specialist/ActivitiesCreator';
+import SkillTrackerCreator from './pages/specialist/SkillTrackerCreator';
 import './App.css'
 
 function App() {
@@ -48,6 +55,13 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/org/login" element={<OrgLeaderLogin />} />
         <Route path="/org/dashboard" element={<OrgLeaderDashboard />} />
+        <Route path="/confirm-account" element={<ConfirmAccount />} />
+        <Route path="/specialist/login" element={<SpecialistLogin />} />
+        <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
+        <Route path="/specialist/pecs/create" element={<PECSBoardCreator />} />
+        <Route path="/specialist/teacch/create" element={<TEACCHTrackerCreator />} />
+        <Route path="/specialist/activities" element={<ActivitiesCreator />} />
+        <Route path="/specialist/skill-tracker" element={<SkillTrackerCreator />} />
       </Routes>
     </Router>
   )

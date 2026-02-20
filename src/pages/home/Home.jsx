@@ -78,6 +78,7 @@ function Home() {
               {showAccountMenu && (
                 <div className="dropdown-menu">
                   <button onClick={() => navigate('/org/login')}>{t('nav.orgLeader')}</button>
+                  <button onClick={() => navigate('/specialist/login')}>Professional Specialist</button>
                   <button onClick={() => navigate('/admin/login')}>{t('nav.admin')}</button>
                 </div>
               )}

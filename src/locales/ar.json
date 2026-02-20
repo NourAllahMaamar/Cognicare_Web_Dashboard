@@ -128,7 +128,8 @@
     "logout": "تسجيل الخروج",
     "loading": "جاري التحميل...",
     "header": {
-      "refresh": "تحديث"
+      "refresh": "تحديث",
+      "logout": "تسجيل خروج"
     },
     "tabs": {
       "overview": "نظرة عامة",
@@ -173,7 +174,14 @@
       "inviteSent": "تم إرسال الدعوة بنجاح! سيتلقى المستخدم بريداً إلكترونياً للقبول.",
       "accountCreated": "تم إنشاء حساب الموظف بنجاح!",
       "emptyState": "لا يوجد موظفون بعد. أضف موظفك الأول!",
-      "editTitle": "تعديل بيانات الموظف"
+      "editTitle": "تعديل بيانات الموظف",
+      "status": {
+        "confirmed": "مؤكد",
+        "pending": "في انتظار التأكيد"
+      },
+      "table": {
+        "status": "حالة الحساب"
+      }
     },
     "modal": {
       "addStaff": "إضافة موظف",
@@ -230,7 +238,7 @@
       "familyRemoved": "تمت إزالة العائلة بنجاح!",
       "confirmDeleteChild": "هل أنت متأكد أنك تريد حذف هذا الطفل؟",
       "staffCreateSuccess": "تم إنشاء حساب الموظف بنجاح!",
-      "staffInviteSuccess": "تم إرسال الدعوة بنجاح! سيتلقى المستخدم بريداً إلكترونياً للقبول.",
+      "staffInviteSuccess": "تم إرسال دعوة الموظف بنجاح. سيتلقى الأخصائي بريداً إلكترونياً لتفعيل حسابه.",
       "staffUpdateSuccess": "تم تحديث عضو الموظفين بنجاح!",
       "familyCreateSuccess": "تم إنشاء حساب العائلة بنجاح!",
       "familyInviteSuccess": "تم إرسال الدعوة بنجاح! ستتلقى العائلة بريداً إلكترونياً للقبول.",
@@ -283,9 +291,10 @@
       "actions": "الإجراءات",
       "staff": "موظف",
       "family": "عائلة",
-      "cancel": "إلغاء الدعوة",
       "expired": "منتهية",
-      "awaitingResponse": "في انتظار الرد"
+      "awaitingResponse": "في انتظار الرد",
+      "cancel": "إلغاء",
+      "cancelConfirm": "هل أنت متأكد أنك تريد إلغاء هذه الدعوة؟"
     },
     "importExport": {
       "import": "استيراد",
@@ -502,6 +511,98 @@
       "cancel": "إلغاء الدعوة",
       "leaderDetails": "تفاصيل القائد",
       "pending": "في انتظار الموافقة"
+    }
+  },
+  "specialistDashboard": {
+    "title": "لوحة تحكم الأخصائي",
+    "roles": {
+      "psychologist": "أخصائي نفسي",
+      "speech_therapist": "معالج نطق",
+      "occupational_therapist": "أخصائي علاج وظيفي",
+      "doctor": "طبيب",
+      "volunteer": "متطوع",
+      "other": "آخر"
+    },
+    "tabs": {
+      "overview": "نظرة عامة",
+      "children": "الأطفال",
+      "myPlans": "خططي"
+    },
+    "stats": {
+      "orgChildren": "أطفال المنظمة",
+      "orgChildrenDesc": "في منظمتك",
+      "privatePatients": "مرضى خاصون",
+      "privatePatientsDesc": "مرضاك الخاصون",
+      "pecsBoards": "لوحات بيكس",
+      "pecsBoardsDesc": "لوحات التواصل",
+      "teacchTrackers": "متتبعات تيتش",
+      "teacchTrackersDesc": "أهداف منظمة"
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "addPrivateFamily": "إضافة عائلة خاصة",
+      "addPrivateFamilyDesc": "تسجيل عائلة جديدة وأطفالهم",
+      "viewChildren": "عرض الأطفال",
+      "viewChildrenDesc": "اختر طفلاً لإنشاء خطط",
+      "myPlans": "خططي",
+      "myPlansDesc": "عرض جميع خططك المنشأة"
+    },
+    "gettingStarted": "البدء",
+    "noChildrenTip": "لم يتم العثور على أطفال. يمكنك إضافة مرضاك الخاصين باستخدام زر 'إضافة طفل خاص' أعلاه، أو اطلب من قائد المنظمة إضافة أطفال.",
+    "recentPlans": "الخطط الأخيرة",
+    "sidebar": {
+      "title": "الأطفال",
+      "noChildren": "لم يتم العثور على أطفال.",
+      "noChildrenSub": "أضف طفلاً خاصاً أو اطلب من قائد المنظمة إضافة أطفال.",
+      "organization": "المنظمة",
+      "privatePatients": "مرضاي الخاصون",
+      "addPrivateFamily": "إضافة عائلة خاصة"
+    },
+    "childDetail": {
+      "privatePatient": "مريض خاص",
+      "createPecs": "إنشاء لوحة بيكس",
+      "startTeacch": "بدء متتبع تيتش",
+      "skillTracker": "متتبع إتقان المهارات",
+      "assignGames": "تعيين أنشطة",
+      "activePlans": "الخطط النشطة لـ",
+      "noPlans": "لا توجد خطط بعد",
+      "noPlansSub": "قم بإنشاء لوحة بيكس أو متتبع تيتش أو تمرين إتقان المهارات باستخدام الأزرار أعلاه.",
+      "selectChild": "اختر طفلاً",
+      "selectChildSub": "اختر طفلاً من القائمة الجانبية لعرض خططه وإنشاء تمارين بيكس، تيتش، أو متتبع مهارات جديد."
+    },
+    "myPlansTab": {
+      "title": "جميع خططي",
+      "refresh": "تحديث",
+      "noPlans": "لم يتم إنشاء أي خطط بعد",
+      "noPlansSub": "اذهب إلى علامة تبويب الأطفال، اختر طفلاً، وأنشئ لوحة بيكس أو متتبع تيتش للبدء.",
+      "goToChildren": "الذهاب إلى الأطفال"
+    },
+    "modal": {
+      "title": "إضافة طفل خاص",
+      "subtitle": "سيتم ربط هذا الطفل بحسابك كأخصائي، وليس بمنظمة.",
+      "fullName": "الاسم الكامل *",
+      "dob": "تاريخ الميلاد *",
+      "gender": "الجنس *",
+      "male": "ذكر",
+      "female": "أنثى",
+      "other": "آخر",
+      "diagnosis": "التشخيص",
+      "notes": "ملاحظات",
+      "cancel": "إلغاء",
+      "add": "إضافة طفل",
+      "adding": "جاري الإضافة..."
+    },
+    "planCard": {
+      "phase": "المرحلة",
+      "delete": "حذف"
+    },
+    "messages": {
+      "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
+      "deleteSuccess": "تم حذف الخطة بنجاح.",
+      "deleteError": "فشل في حذف الخطة.",
+      "addError": "يرجى ملء اسم الطفل وتاريخ ميلاده.",
+      "addSuccess": "تم إضافة الطفل بنجاح!",
+      "inviteNotSupported": "دعوة العائلات الموجودة غير مدعومة حالياً للممارسة الخاصة."
     }
   }
 }

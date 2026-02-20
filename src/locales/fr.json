@@ -129,7 +129,8 @@
     "logout": "Déconnexion",
     "loading": "Chargement...",
     "header": {
-      "refresh": "Actualiser"
+      "refresh": "Actualiser",
+      "logout": "Déconnexion"
     },
     "tabs": {
       "overview": "Aperçu",
@@ -501,6 +502,97 @@
       "cancel": "Annuler l'Invitation",
       "leaderDetails": "Détails du chef",
       "pending": "En attente d'approbation"
+    }
+  },
+  "specialistDashboard": {
+    "title": "Tableau de Bord Spécialiste",
+    "roles": {
+      "psychologist": "Psychologue",
+      "speech_therapist": "Orthophoniste",
+      "occupational_therapist": "Ergothérapeute",
+      "doctor": "Docteur",
+      "volunteer": "Bénévole",
+      "other": "Autre"
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "children": "Enfants",
+      "myPlans": "Mes Plans"
+    },
+    "stats": {
+      "orgChildren": "Enfants de l'Org",
+      "orgChildrenDesc": "Dans votre organisation",
+      "privatePatients": "Patients Privés",
+      "privatePatientsDesc": "Vos propres patients",
+      "pecsBoards": "Tableaux PECS",
+      "pecsBoardsDesc": "Tableaux de communication",
+      "teacchTrackers": "Suivis TEACCH",
+      "teacchTrackersDesc": "Objectifs structurés"
+    },
+    "quickActions": {
+      "title": "Actions Rapides",
+      "addPrivateChild": "Ajouter un Enfant Privé",
+      "addPrivateChildDesc": "Ajouter un nouveau patient hors org",
+      "viewChildren": "Voir les Enfants",
+      "viewChildrenDesc": "Sélectionnez un enfant pour créer des plans",
+      "myPlans": "Mes Plans",
+      "myPlansDesc": "Voir tous vos plans créés"
+    },
+    "gettingStarted": "Pour Commencer",
+    "noChildrenTip": "Aucun enfant trouvé. Vous pouvez ajouter vos propres patients privés en utilisant le bouton 'Ajouter un Enfant Privé' ci-dessus, ou demander à votre Leader d'Organisation d'ajouter des enfants.",
+    "recentPlans": "Plans Récents",
+    "sidebar": {
+      "title": "Enfants",
+      "noChildren": "Aucun enfant trouvé.",
+      "noChildrenSub": "Ajoutez un enfant privé ou demandez au leader de l'org d'ajouter des enfants.",
+      "organization": "Organisation",
+      "privatePatients": "Mes Patients Privés",
+      "addPrivateChild": "Ajouter un Enfant Privé"
+    },
+    "childDetail": {
+      "privatePatient": "Patient Privé",
+      "createPecs": "Créer un Tableau PECS",
+      "startTeacch": "Commencer le Suivi TEACCH",
+      "skillTracker": "Suivi des Compétences",
+      "assignGames": "Assigner des Activités",
+      "activePlans": "Plans Actifs pour",
+      "noPlans": "Aucun plan pour le moment",
+      "noPlansSub": "Créez un tableau PECS, un suivi TEACCH ou un exercice de Maîtrise des Compétences à l'aide des boutons ci-dessus.",
+      "selectChild": "Sélectionnez un enfant",
+      "selectChildSub": "Choisissez un enfant dans la barre latérale pour voir ses plans et créer de nouveaux exercices PECS, TEACCH ou Suivi des Compétences."
+    },
+    "myPlansTab": {
+      "title": "Tous Mes Plans",
+      "refresh": "Actualiser",
+      "noPlans": "Aucun plan créé pour le moment",
+      "noPlansSub": "Allez dans l'onglet Enfants, sélectionnez un enfant et créez un tableau PECS ou un suivi TEACCH pour commencer.",
+      "goToChildren": "Aller aux Enfants"
+    },
+    "modal": {
+      "title": "Ajouter un Enfant Privé",
+      "subtitle": "Cet enfant sera lié à votre compte spécialiste, pas à une organisation.",
+      "fullName": "Nom Complet *",
+      "dob": "Date de Naissance *",
+      "gender": "Genre *",
+      "male": "Homme",
+      "female": "Femme",
+      "other": "Autre",
+      "diagnosis": "Diagnostic",
+      "notes": "Notes",
+      "cancel": "Annuler",
+      "add": "Ajouter l'Enfant",
+      "adding": "Ajout en cours..."
+    },
+    "planCard": {
+      "phase": "Phase",
+      "delete": "Supprimer"
+    },
+    "messages": {
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce plan ?",
+      "deleteSuccess": "Plan supprimé avec succès.",
+      "deleteError": "Échec de la suppression du plan.",
+      "addError": "Veuillez remplir le nom et la date de naissance de l'enfant.",
+      "addSuccess": "Enfant ajouté avec succès !"
     }
   }
 }

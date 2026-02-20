@@ -333,28 +333,22 @@ function OrgLeaderDashboard() {
     try {
       let token = localStorage.getItem('orgLeaderToken');
 
-      let response;
-      if (staffModalMode === 'create') {
-        // Create new staff account
-        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/create`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(newStaff)
-        });
-      } else {
-        // Invite existing staff by email - sends invitation
-        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/invite`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ email: staffEmail })
-        });
-      }
+      // The new flow uses the same "invite" endpoint but with userData
+      const inviteData = {
+        email: newStaff.email,
+        fullName: newStaff.fullName,
+        phone: newStaff.phone,
+        role: newStaff.role
+      };
+
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/invite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(inviteData)
+      });
 
       // If 401, try to refresh token and retry
       if (response.status === 401) {
@@ -367,25 +361,14 @@ function OrgLeaderDashboard() {
         token = newToken;
 
         // Retry the request
-        if (staffModalMode === 'create') {
-          response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/create`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(newStaff)
-          });
-        } else {
-          response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/invite`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ email: staffEmail })
-          });
-        }
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/staff/invite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(inviteData)
+        });
 
         if (response.status === 401) {
           handleSessionExpired();
@@ -399,7 +382,7 @@ function OrgLeaderDashboard() {
         throw new Error(data.message || 'Failed to add staff member');
       }
 
-      setSuccessMessage(staffModalMode === 'create' ? t('orgDashboard.messages.staffCreateSuccess') : t('orgDashboard.messages.staffInviteSuccess'));
+      setSuccessMessage(t('orgDashboard.messages.staffInviteSuccess'));
       setShowAddStaffModal(false);
       setStaffEmail('');
       setNewStaff({
@@ -409,12 +392,10 @@ function OrgLeaderDashboard() {
         password: '',
         role: 'psychologist'
       });
-      if (staffModalMode === 'create') {
-        fetchStaff(token);
-      } else {
-        // Refresh pending invitations for 'add' mode
-        fetchPendingInvitations(token);
-      }
+
+      // Refresh pending invitations and staff list
+      fetchPendingInvitations(token);
+      fetchStaff(token);
 
       setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
@@ -1152,6 +1133,52 @@ function OrgLeaderDashboard() {
     }
   };
 
+  const handleCancelInvitation = async (invitationId) => {
+    if (!window.confirm(t('orgDashboard.invitations.cancelConfirm'))) {
+      return;
+    }
+
+    try {
+      let token = localStorage.getItem('orgLeaderToken');
+      let response = await fetch(`${API_BASE_URL}/organization/my-organization/invitations/${invitationId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          handleSessionExpired();
+          return;
+        }
+        token = newToken;
+        response = await fetch(`${API_BASE_URL}/organization/my-organization/invitations/${invitationId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      }
+
+      if (response.ok) {
+        setSuccessMessage(t('dashboard.messages.inviteCancelSuccess'));
+        // Optimistically remove from invitations list
+        setPendingInvitations(prev => prev.filter(inv => inv._id !== invitationId));
+        // Refresh both lists to ensure consistency
+        fetchPendingInvitations(token);
+        fetchStaff(token);
+        setTimeout(() => setSuccessMessage(''), 5000);
+      } else {
+        const data = await response.json();
+        setError(data.message || 'Failed to cancel invitation');
+      }
+    } catch (err) {
+      setError('An error occurred while cancelling the invitation');
+    }
+  };
+
   if (loading) {
     return (
       <div className="org-dashboard-loading">
@@ -1385,6 +1412,12 @@ function OrgLeaderDashboard() {
                         <div className="card-info-item">
                           <span className="card-info-label">📅</span>
                           <span>{new Date(member.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</span>
+                        </div>
+                        <div className="card-info-item">
+                          <span className="card-info-label">✅</span>
+                          <span className={`status-badge ${member.isConfirmed ? 'confirmed' : 'pending'}`}>
+                            {member.isConfirmed ? t('orgDashboard.staff.status.confirmed') : t('orgDashboard.staff.status.pending')}
+                          </span>
                         </div>
                       </div>
 
@@ -1628,10 +1661,10 @@ function OrgLeaderDashboard() {
                   const expiresAt = new Date(invitation.expiresAt);
                   const createdAt = new Date(invitation.createdAt);
                   const isExpired = expiresAt < new Date();
-                  
+
                   // Debug log to check invitation data
                   console.log('Invitation data:', invitation);
-                  
+
                   const invType = invitation.invitationType || invitation.type || 'staff';
                   const userEmail = invitation.userEmail || invitation.email || invitation.userId?.email || 'N/A';
                   const userName = invitation.userId?.fullName || null;
@@ -1666,6 +1699,16 @@ function OrgLeaderDashboard() {
                           <span className="card-info-label">📍</span>
                           <span>{t('dashboard.organizations.status')}: {isExpired ? t('orgDashboard.invitations.expired') : t('roles.pending')}</span>
                         </div>
+                      </div>
+
+                      <div className="card-footer">
+                        <button
+                          className="action-button delete"
+                          onClick={() => handleCancelInvitation(invitation._id)}
+                          title={t('orgDashboard.invitations.cancel')}
+                        >
+                          {t('orgDashboard.invitations.cancel')}
+                        </button>
                       </div>
                     </div>
                   );

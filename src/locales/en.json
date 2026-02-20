@@ -129,7 +129,8 @@
     "logout": "Logout",
     "loading": "Loading...",
     "header": {
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "logout": "Logout"
     },
     "tabs": {
       "overview": "Overview",
@@ -174,7 +175,14 @@
       "inviteSent": "Invitation sent successfully! The user will receive an email to accept.",
       "accountCreated": "Staff account created successfully!",
       "emptyState": "No staff members yet. Add your first staff member!",
-      "editTitle": "Edit staff member"
+      "editTitle": "Edit staff member",
+      "status": {
+        "confirmed": "Confirmed",
+        "pending": "Pending Confirmation"
+      },
+      "table": {
+        "status": "Account Status"
+      }
     },
     "modal": {
       "addStaff": "Add Staff Member",
@@ -233,7 +241,7 @@
       "familyRemoved": "Family removed successfully!",
       "confirmDeleteChild": "Are you sure you want to delete this child?",
       "staffCreateSuccess": "Staff account created successfully!",
-      "staffInviteSuccess": "Invitation sent successfully! The user will receive an email to accept.",
+      "staffInviteSuccess": "Staff invitation sent successfully. The specialist will receive an email to activate their account.",
       "staffUpdateSuccess": "Staff member updated successfully!",
       "familyCreateSuccess": "Family account created successfully!",
       "familyInviteSuccess": "Invitation sent successfully! The family will receive an email to accept.",
@@ -286,7 +294,9 @@
       "staff": "Staff",
       "family": "Family",
       "expired": "Expired",
-      "noInvites": "No pending invitations"
+      "noInvites": "No pending invitations",
+      "cancel": "Cancel",
+      "cancelConfirm": "Are you sure you want to cancel this invitation?"
     },
     "importExport": {
       "import": "Import",
@@ -503,6 +513,98 @@
       "cancel": "Cancel Invitation",
       "leaderDetails": "Leader Details",
       "pending": "Pending Approval"
+    }
+  },
+  "specialistDashboard": {
+    "title": "Specialist Dashboard",
+    "roles": {
+      "psychologist": "Psychologist",
+      "speech_therapist": "Speech Therapist",
+      "occupational_therapist": "Occupational Therapist",
+      "doctor": "Doctor",
+      "volunteer": "Volunteer",
+      "other": "Other"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "children": "Children",
+      "myPlans": "My Plans"
+    },
+    "stats": {
+      "orgChildren": "Org Children",
+      "orgChildrenDesc": "In your organization",
+      "privatePatients": "Private Patients",
+      "privatePatientsDesc": "Your own patients",
+      "pecsBoards": "PECS Boards",
+      "pecsBoardsDesc": "Communication boards",
+      "teacchTrackers": "TEACCH Trackers",
+      "teacchTrackersDesc": "Structured goals"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "addPrivateFamily": "Add Private Family",
+      "addPrivateFamilyDesc": "Register a new family and their children",
+      "viewChildren": "View Children",
+      "viewChildrenDesc": "Select a child to create plans",
+      "myPlans": "My Plans",
+      "myPlansDesc": "View all your created plans"
+    },
+    "gettingStarted": "Getting Started",
+    "noChildrenTip": "No children found. You can add your own private patients using the 'Add Private Child' button above, or ask your Organization Leader to add children.",
+    "recentPlans": "Recent Plans",
+    "sidebar": {
+      "title": "Children",
+      "noChildren": "No children found.",
+      "noChildrenSub": "Add a private child or ask the org leader to add children.",
+      "organization": "Organization",
+      "privatePatients": "My Private Patients",
+      "addPrivateFamily": "Add Private Family"
+    },
+    "childDetail": {
+      "privatePatient": "Private Patient",
+      "createPecs": "Create PECS Board",
+      "startTeacch": "Start TEACCH Tracker",
+      "skillTracker": "Skill Mastery Tracker",
+      "assignGames": "Assign Activities",
+      "activePlans": "Active Plans for",
+      "noPlans": "No plans yet",
+      "noPlansSub": "Create a PECS board, TEACCH tracker, or Skill Mastery exercise using the buttons above.",
+      "selectChild": "Select a child",
+      "selectChildSub": "Choose a child from the sidebar to view their plans and create new PECS, TEACCH, or Skill Tracker exercises."
+    },
+    "myPlansTab": {
+      "title": "All My Plans",
+      "refresh": "Refresh",
+      "noPlans": "No plans created yet",
+      "noPlansSub": "Go to the Children tab, select a child, and create a PECS board or TEACCH tracker to get started.",
+      "goToChildren": "Go to Children"
+    },
+    "modal": {
+      "title": "Add Private Child",
+      "subtitle": "This child will be linked to your specialist account, not to an organization.",
+      "fullName": "Full Name *",
+      "dob": "Date of Birth *",
+      "gender": "Gender *",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "diagnosis": "Diagnosis",
+      "notes": "Notes",
+      "cancel": "Cancel",
+      "add": "Add Child",
+      "adding": "Adding..."
+    },
+    "planCard": {
+      "phase": "Phase",
+      "delete": "Delete"
+    },
+    "messages": {
+      "deleteConfirm": "Are you sure you want to delete this plan?",
+      "deleteSuccess": "Plan deleted successfully.",
+      "deleteError": "Failed to delete plan.",
+      "addError": "Please fill in the child's name and date of birth.",
+      "addSuccess": "Child added successfully!",
+      "inviteNotSupported": "Inviting existing families is not yet supported for private practice."
     }
   }
 }
