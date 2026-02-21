@@ -70,7 +70,7 @@ function TEACCHTrackerCreator() {
     const currentCat = TEACCH_CATEGORIES.find(c => c.id === selectedCategory);
 
     const addGoal = (text) => {
-        const goalText = text || newGoalText;
+        const goalText = (text || newGoalText).trim();
         if (!goalText) return;
         setGoals([...goals, {
             id: Date.now().toString(),

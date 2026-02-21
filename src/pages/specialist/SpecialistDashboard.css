@@ -506,6 +506,8 @@
     border-radius: 10px;
     border: 1px solid #cbd5e1;
     font-size: 0.95rem;
+    color: #1e293b;
+    background-color: #ffffff;
     transition: border-color 0.2s;
 }
 

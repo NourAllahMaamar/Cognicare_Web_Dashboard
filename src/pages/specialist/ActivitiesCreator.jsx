@@ -65,7 +65,7 @@ function ActivitiesCreator() {
                 boardData: {}
             };
 
-            const response = await fetch(`${API_BASE_URL}/specialized-plans/pecs/create`, {
+            const response = await fetch(`${API_BASE_URL}/specialized-plans`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
