@@ -26,23 +26,25 @@ function ActivitiesCreator() {
 
         const fetchChildDetails = async () => {
             try {
-                // Fetching children array and finding the specific child
-                const response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (response.ok) {
-                    const children = await response.json();
-                    const targetChild = children.find(c => c._id === childId);
-                    if (targetChild) {
-                        setChildName(targetChild.fullName);
-                    } else {
-                        setChildName('Unknown Child');
-                        setError('Child not found in your organization.');
-                    }
+                const [orgRes, privateRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/organization/my-organization/children`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE_URL}/children/specialist/my-children`, { headers: { 'Authorization': `Bearer ${token}` } })
+                ]);
+                const orgChildren = orgRes.ok ? await orgRes.json() : [];
+                const privateChildren = privateRes.ok ? await privateRes.json() : [];
+                const allChildren = [...(Array.isArray(orgChildren) ? orgChildren : []), ...(Array.isArray(privateChildren) ? privateChildren : [])];
+                const targetChild = allChildren.find(c => c._id === childId);
+                if (targetChild) {
+                    setChildName(targetChild.fullName);
+                    setError('');
+                } else {
+                    setChildName('Unknown Child');
+                    setError(t('specialistDashboard.messages.childNotFound') || 'Child not found.');
                 }
             } catch (err) {
                 console.error("Error fetching child details:", err);
                 setChildName('Unknown Child');
+                setError(t('specialistDashboard.messages.fetchError') || 'Failed to load child.');
             }
         };
 
@@ -53,16 +55,19 @@ function ActivitiesCreator() {
 
     const handleSave = async (e) => {
         e.preventDefault();
+        if (!childId) {
+            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
+            return;
+        }
         setLoading(true);
         setError('');
 
         try {
             const planData = {
                 childId,
-                title,
-                description,
                 type: 'Activity',
-                boardData: {}
+                title,
+                content: { description, boardData: {} }
             };
 
             const response = await fetch(`${API_BASE_URL}/specialized-plans`, {

@@ -27,22 +27,25 @@ function SkillTrackerCreator() {
 
         const fetchChildDetails = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (response.ok) {
-                    const children = await response.json();
-                    const targetChild = children.find(c => c._id === childId);
-                    if (targetChild) {
-                        setChildName(targetChild.fullName);
-                    } else {
-                        setChildName('Unknown Child');
-                        setError('Child not found in your organization.');
-                    }
+                const [orgRes, privateRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/organization/my-organization/children`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE_URL}/children/specialist/my-children`, { headers: { 'Authorization': `Bearer ${token}` } })
+                ]);
+                const orgChildren = orgRes.ok ? await orgRes.json() : [];
+                const privateChildren = privateRes.ok ? await privateRes.json() : [];
+                const allChildren = [...(Array.isArray(orgChildren) ? orgChildren : []), ...(Array.isArray(privateChildren) ? privateChildren : [])];
+                const targetChild = allChildren.find(c => c._id === childId);
+                if (targetChild) {
+                    setChildName(targetChild.fullName);
+                    setError('');
+                } else {
+                    setChildName('Unknown Child');
+                    setError(t('specialistDashboard.messages.childNotFound') || 'Child not found.');
                 }
             } catch (err) {
                 console.error("Error fetching child details:", err);
                 setChildName('Unknown Child');
+                setError(t('specialistDashboard.messages.fetchError') || 'Failed to load child.');
             }
         };
 
@@ -58,20 +61,24 @@ function SkillTrackerCreator() {
     };
 
     const getSuccessCount = () => {
-        return trials.filter(t => t === 'passed').length;
+        return trials.filter(tr => tr === 'passed').length;
     };
 
     const isMastered = getSuccessCount() >= 8;
 
     const handleSave = async (e) => {
         e.preventDefault();
+        if (!childId) {
+            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
+            return;
+        }
         setLoading(true);
         setError('');
 
         try {
             const planData = {
                 childId,
-                type: 'PECS',
+                type: 'SkillTracker',
                 title,
                 content: {
                     subType: 'SkillTracker',

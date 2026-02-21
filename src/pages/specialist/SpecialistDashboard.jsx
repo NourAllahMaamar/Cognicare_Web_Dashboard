@@ -247,14 +247,26 @@ function SpecialistDashboard() {
         switch (type) {
             case 'PECS': return '#6366f1';
             case 'TEACCH': return '#f59e0b';
-            default: return '#10b981';
+            case 'SkillTracker': return '#10b981';
+            case 'Activity': return '#ec4899';
+            default: return '#64748b';
+        }
+    };
+
+    const planTypeLabel = (type) => {
+        switch (type) {
+            case 'PECS': return 'PECS';
+            case 'TEACCH': return 'TEACCH';
+            case 'SkillTracker': return t('specialistDashboard.childDetail.skillTracker') || 'Skill Tracker';
+            case 'Activity': return t('specialistDashboard.childDetail.assignGames') || 'Activity';
+            default: return type || 'Plan';
         }
     };
 
     const PlanCard = ({ plan, showChild = false }) => (
         <div className="sp-plan-card">
             <div className="sp-plan-badge" style={{ background: badgeColor(plan.type) }}>
-                {plan.type}
+                {planTypeLabel(plan.type)}
             </div>
             <h4 className="sp-plan-title">{plan.title}</h4>
             {showChild && plan.childId && (

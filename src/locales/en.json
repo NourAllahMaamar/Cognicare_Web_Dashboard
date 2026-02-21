@@ -604,7 +604,9 @@
       "deleteError": "Failed to delete plan.",
       "addError": "Please fill in the child's name and date of birth.",
       "addSuccess": "Child added successfully!",
-      "inviteNotSupported": "Inviting existing families is not yet supported for private practice."
+      "inviteNotSupported": "Inviting existing families is not yet supported for private practice.",
+      "childNotFound": "Child not found.",
+      "fetchError": "Failed to load child."
     }
   }
 }

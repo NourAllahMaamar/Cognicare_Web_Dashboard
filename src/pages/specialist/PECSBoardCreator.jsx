@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Grainient from '../../components/Grainient';
@@ -65,8 +65,18 @@ function PECSBoardCreator() {
     const { t } = useTranslation();
     const token = localStorage.getItem('specialistToken');
 
+    useEffect(() => {
+        if (!token) {
+            navigate('/specialist/login');
+            return;
+        }
+        if (!childId) {
+            setError('Please select a child from the dashboard first.');
+        }
+    }, [token, childId, navigate]);
+
     const currentPhase = PECS_PHASES.find(p => p.id === selectedPhase);
-    const successCount = trials.filter(t => t === 'pass').length;
+    const successCount = trials.filter(tr => tr === 'pass').length;
     const isMastered = successCount >= 8;
 
     const addItem = () => {
@@ -91,6 +101,10 @@ function PECSBoardCreator() {
     };
 
     const handleSave = async () => {
+        if (!childId) {
+            setError('Please select a child from the dashboard first.');
+            return;
+        }
         if (!title || items.length === 0) {
             setError('Please provide a title and at least one picture card.');
             return;

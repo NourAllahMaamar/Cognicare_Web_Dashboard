@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Grainient from '../../components/Grainient';
@@ -67,6 +67,16 @@ function TEACCHTrackerCreator() {
     const { t } = useTranslation();
     const token = localStorage.getItem('specialistToken');
 
+    useEffect(() => {
+        if (!token) {
+            navigate('/specialist/login');
+            return;
+        }
+        if (!childId) {
+            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
+        }
+    }, [token, childId, navigate]);
+
     const currentCat = TEACCH_CATEGORIES.find(c => c.id === selectedCategory);
 
     const addGoal = (text) => {
@@ -90,6 +100,10 @@ function TEACCHTrackerCreator() {
     const removeGoal = (id) => setGoals(goals.filter(g => g.id !== id));
 
     const handleSave = async () => {
+        if (!childId) {
+            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
+            return;
+        }
         if (!title || goals.length === 0) {
             setError('Please provide a title and at least one goal.');
             return;
