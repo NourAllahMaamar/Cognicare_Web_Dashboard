@@ -35,7 +35,9 @@ function AdminDashboard() {
   const [loadingFraudAnalysis, setLoadingFraudAnalysis] = useState(false);
   const [rescanLoading, setRescanLoading] = useState(false);
   const [rescanError, setRescanError] = useState(null);
-  
+  const [showCertPreview, setShowCertPreview] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   // Reviewed organizations state
   const [reviewedOrganizations, setReviewedOrganizations] = useState([]);
   const [loadingReviewedOrgs, setLoadingReviewedOrgs] = useState(false);
@@ -823,6 +825,7 @@ function AdminDashboard() {
     const token = localStorage.getItem('adminToken');
     if (!token) return;
 
+    setIsRefreshing(true);
     setLoading(true);
     setLoadingOrganizations(true);
     setLoadingAllOrgs(true);
@@ -845,6 +848,7 @@ function AdminDashboard() {
       setError(t('dashboard.messages.refreshFailed'));
       setTimeout(() => setError(''), 3000);
     } finally {
+      setIsRefreshing(false);
       setLoading(false);
       setLoadingOrganizations(false);
       setLoadingAllOrgs(false);
@@ -865,7 +869,7 @@ function AdminDashboard() {
   const fetchFraudAnalysisForOrg = async (organizationId) => {
     setLoadingFraudAnalysis(true);
     setFraudAnalysisResult(null);
-    
+
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`${API_BASE_URL}/org-scan-ai/organization/${organizationId}/analyses`, {
@@ -1340,8 +1344,12 @@ function AdminDashboard() {
             <LanguageSwitcher />
             <div className="user-info">
               <span className="user-greeting">{t('dashboard.welcome')}, {user.fullName?.split(' ')[0]}</span>
-              <button onClick={handleRefresh} className="refresh-button" title={t('dashboard.refresh')}>
-                🔄 {t('dashboard.refresh')}
+              <button onClick={handleRefresh} className={`refresh-button${isRefreshing ? ' refreshing' : ''}`} title={t('dashboard.refresh')} disabled={isRefreshing}>
+                <svg className="refresh-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M21 3v5h-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {t('dashboard.refresh')}
               </button>
               <button onClick={handleLogout} className="logout-button">
                 {t('dashboard.logout')}
@@ -1815,11 +1823,15 @@ function AdminDashboard() {
             <div className="users-header">
               <h3 className="section-title">📧 {t('dashboard.invitations.title')}</h3>
               <button
-                className="add-user-btn"
+                className={`add-user-btn${loadingPendingInvites ? ' refreshing' : ''}`}
                 onClick={() => fetchPendingOrgInvitations()}
                 disabled={loadingPendingInvites}
               >
-                🔄 {t('dashboard.refresh')}
+                <svg className="refresh-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M21 3v5h-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {t('dashboard.refresh')}
               </button>
             </div>
 
@@ -1936,19 +1948,18 @@ function AdminDashboard() {
                   <h2>📋 {t('dashboard.organizations.pendingTitle')}</h2>
                   <button
                     onClick={refreshOrganizations}
-                    className="refresh-button"
+                    className={`refresh-button${loadingOrganizations ? ' refreshing' : ''}`}
                     disabled={loadingOrganizations}
                   >
-                    🔄 {t('dashboard.refresh')}
+                    <svg className="refresh-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M21 3v5h-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {t('dashboard.refresh')}
                   </button>
                 </div>
 
-                {loadingOrganizations && (
-                  <div className="loading-spinner">
-                    <div className="spinner"></div>
-                    <span>{t('dashboard.organizations.loading')}</span>
-                  </div>
-                )}
+
 
                 {!loadingOrganizations && pendingOrganizations.length === 0 && (
                   <div className="empty-state">
@@ -2046,19 +2057,18 @@ function AdminDashboard() {
                   <h2>📜 Review History</h2>
                   <button
                     onClick={() => fetchReviewedOrganizations(localStorage.getItem('adminToken'))}
-                    className="refresh-button"
+                    className={`refresh-button${loadingReviewedOrgs ? ' refreshing' : ''}`}
                     disabled={loadingReviewedOrgs}
                   >
-                    🔄 {t('dashboard.refresh')}
+                    <svg className="refresh-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M21 3v5h-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {t('dashboard.refresh')}
                   </button>
                 </div>
 
-                {loadingReviewedOrgs && (
-                  <div className="loading-spinner">
-                    <div className="spinner"></div>
-                    <span>Loading review history...</span>
-                  </div>
-                )}
+
 
                 {!loadingReviewedOrgs && reviewedOrganizations.length === 0 && (
                   <div className="empty-state">
@@ -2096,8 +2106,8 @@ function AdminDashboard() {
                             <span className="value">
                               {org.reviewedAt
                                 ? new Date(org.reviewedAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'), {
-                                    year: 'numeric', month: 'short', day: 'numeric'
-                                  })
+                                  year: 'numeric', month: 'short', day: 'numeric'
+                                })
                                 : 'N/A'}
                             </span>
                           </div>
@@ -2322,77 +2332,138 @@ function AdminDashboard() {
       {showReviewModal && reviewingOrg && (
         <div className="modal-overlay" onClick={() => setShowReviewModal(false)}>
           <div className="modal-content review-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>
-                {reviewDecision === 'approved' 
-                  ? `✅ ${t('dashboard.organizations.modal.approveTitle')}` 
-                  : reviewDecision === 'rejected' 
-                    ? `❌ ${t('dashboard.organizations.modal.rejectTitle')}`
-                    : `🔍 ${t('dashboard.organizations.modal.reviewTitle')}`}
-              </h3>
-              <button
-                className="close-modal"
-                onClick={() => setShowReviewModal(false)}
-              >
-                ×
-              </button>
+
+            {/* ── Modal Header ── */}
+            <div className="rm-header">
+              <div className="rm-org-avatar">
+                {reviewingOrg.organizationName?.charAt(0)?.toUpperCase() || '?'}
+              </div>
+              <div className="rm-header-info">
+                <h2 className="rm-org-name">{reviewingOrg.organizationName}</h2>
+                <span className="rm-status-badge pending">⏳ Pending Review</span>
+              </div>
+              <button className="rm-close" onClick={() => setShowReviewModal(false)}>✕</button>
             </div>
 
-            <div className="review-content">
-              <div className="org-summary">
-                <h4>{reviewingOrg.organizationName}</h4>
-                <p><strong>{t('dashboard.organizations.leader')}:</strong> {reviewingOrg.leaderFullName}</p>
-                <p><strong>{t('dashboard.modal.email')}:</strong> {reviewingOrg.leaderEmail}</p>
-                {reviewingOrg.description && (
-                  <p><strong>{t('dashboard.organizations.description')}:</strong> {reviewingOrg.description}</p>
-                )}
-              </div>
+            <div className="rm-body">
 
-              {/* AI Fraud Detection Results */}
-              <div className="certificate-upload-section">
-                <h4>🛡️ AI Fraud Detection Results</h4>
-                {reviewingOrg.certificateUrl && (
-                  <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
-                    <a href={reviewingOrg.certificateUrl} target="_blank" rel="noopener noreferrer" className="certificate-link">
-                      📄 View Certificate
-                    </a>
-                  </p>
-                )}
-                
+              {/* ── Organization Info ── */}
+              <section className="rm-section">
+                <h4 className="rm-section-title">🏢 Organization Details</h4>
+                <div className="rm-info-grid">
+                  <div className="rm-info-item">
+                    <span className="rm-info-label">Leader</span>
+                    <span className="rm-info-value">{reviewingOrg.leaderFullName || '—'}</span>
+                  </div>
+                  <div className="rm-info-item">
+                    <span className="rm-info-label">Email</span>
+                    <span className="rm-info-value">{reviewingOrg.leaderEmail || '—'}</span>
+                  </div>
+                  {reviewingOrg.leaderPhone && (
+                    <div className="rm-info-item">
+                      <span className="rm-info-label">Phone</span>
+                      <span className="rm-info-value">{reviewingOrg.leaderPhone}</span>
+                    </div>
+                  )}
+                  {reviewingOrg.description && (
+                    <div className="rm-info-item rm-info-full">
+                      <span className="rm-info-label">Description</span>
+                      <span className="rm-info-value">{reviewingOrg.description}</span>
+                    </div>
+                  )}
+                  {reviewingOrg.certificateUrl && (
+                    <div className="rm-info-item rm-info-full rm-cert-row">
+                      <span className="rm-info-label">Certificate</span>
+                      <div className="rm-cert-actions">
+                        <button
+                          className={`rm-cert-preview-btn ${showCertPreview ? 'active' : ''}`}
+                          onClick={() => setShowCertPreview(v => !v)}
+                        >
+                          {showCertPreview ? '✕ Close Preview' : '👁 Preview'}
+                        </button>
+                        <a href={reviewingOrg.certificateUrl} target="_blank" rel="noopener noreferrer" className="rm-cert-link">
+                          ⬇ Download
+                        </a>
+                      </div>
+                      {showCertPreview && (
+                        <div className="rm-cert-preview-panel">
+                          {/\.(jpe?g|png|gif|webp|bmp)$/i.test(reviewingOrg.certificateUrl) ? (
+                            <img
+                              src={reviewingOrg.certificateUrl}
+                              alt="Certificate"
+                              className="rm-cert-preview-img"
+                            />
+                          ) : (
+                            <iframe
+                              src={reviewingOrg.certificateUrl}
+                              className="rm-cert-preview-iframe"
+                              title="Certificate Preview"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* ── AI Fraud Detection ── */}
+              <section className="rm-section">
+                <h4 className="rm-section-title">🛡️ AI Fraud Detection</h4>
+
                 {loadingFraudAnalysis ? (
-                  <div className="fraud-result" style={{ padding: '2rem', textAlign: 'center' }}>
+                  <div className="rm-ai-loading">
                     <div className="spinner-small"></div>
-                    <p>Loading AI analysis results...</p>
+                    <span>Running AI analysis…</span>
                   </div>
                 ) : fraudAnalysisResult ? (
-                  <div className={`fraud-result risk-${fraudAnalysisResult.fraudRiskLevel?.toLowerCase()}`}>
-                    <div className="result-header">
-                      <h5>
-                        {fraudAnalysisResult.fraudRiskLevel === 'HIGH' && '🔴'}
-                        {fraudAnalysisResult.fraudRiskLevel === 'MEDIUM' && '🟡'}
-                        {fraudAnalysisResult.fraudRiskLevel === 'LOW' && '🟢'}
-                        {' '}AI Analysis: {fraudAnalysisResult.fraudRiskLevel} Risk
-                      </h5>
-                      <span className="risk-score">
-                        {(fraudAnalysisResult.fraudRiskScore * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                    
-                    <div className="result-details">
-                      <div className="detail-item">
-                        <span className="label">Similarity Score:</span>
-                        <span className="value">{(fraudAnalysisResult.similarityScore * 100).toFixed(1)}%</span>
+                  <div className={`rm-fraud-panel risk-${fraudAnalysisResult.fraudRiskLevel?.toLowerCase()}`}>
+                    {/* Risk header */}
+                    <div className="rm-fraud-header">
+                      <div className="rm-risk-badge">
+                        {fraudAnalysisResult.fraudRiskLevel === 'HIGH' && <span className="rm-risk-dot high"></span>}
+                        {fraudAnalysisResult.fraudRiskLevel === 'MEDIUM' && <span className="rm-risk-dot medium"></span>}
+                        {fraudAnalysisResult.fraudRiskLevel === 'LOW' && <span className="rm-risk-dot low"></span>}
+                        {fraudAnalysisResult.fraudRiskLevel} Risk
                       </div>
-                      <div className="detail-item">
-                        <span className="label">Flags Detected:</span>
-                        <span className="value">{fraudAnalysisResult.flags?.length || 0}</span>
+                      <div className="rm-risk-score">
+                        {(fraudAnalysisResult.fraudRiskScore * 100).toFixed(1)}%
                       </div>
                     </div>
 
+                    {/* Score bar */}
+                    <div className="rm-score-bar-track">
+                      <div
+                        className="rm-score-bar-fill"
+                        style={{ width: `${(fraudAnalysisResult.fraudRiskScore * 100).toFixed(1)}%` }}
+                      ></div>
+                    </div>
+
+                    {/* Stats row */}
+                    <div className="rm-fraud-stats">
+                      <div className="rm-fraud-stat">
+                        <span className="rm-fraud-stat-val">{(fraudAnalysisResult.similarityScore * 100).toFixed(1)}%</span>
+                        <span className="rm-fraud-stat-label">Similarity</span>
+                      </div>
+                      <div className="rm-fraud-stat">
+                        <span className="rm-fraud-stat-val">{fraudAnalysisResult.flags?.length || 0}</span>
+                        <span className="rm-fraud-stat-label">Flags</span>
+                      </div>
+                      {fraudAnalysisResult.createdAt && (
+                        <div className="rm-fraud-stat">
+                          <span className="rm-fraud-stat-val" style={{ fontSize: '0.75rem' }}>
+                            {new Date(fraudAnalysisResult.createdAt).toLocaleDateString()}
+                          </span>
+                          <span className="rm-fraud-stat-label">Analyzed</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Flags */}
                     {fraudAnalysisResult.flags && fraudAnalysisResult.flags.length > 0 && (
-                      <div className="flags-list">
-                        <strong>⚠️ Fraud Flags:</strong>
-                        <ul>
+                      <div className="rm-flags">
+                        <span className="rm-flags-title">⚠️ Fraud Flags</span>
+                        <ul className="rm-flags-list">
                           {fraudAnalysisResult.flags.map((flag, idx) => (
                             <li key={idx}>{flag}</li>
                           ))}
@@ -2400,43 +2471,26 @@ function AdminDashboard() {
                       </div>
                     )}
 
+                    {/* Extracted fields */}
                     {fraudAnalysisResult.extractedFields && (
-                      <details className="extracted-data">
+                      <details className="rm-extracted">
                         <summary>📋 Extracted Information</summary>
-                        <div className="extracted-grid">
-                          {fraudAnalysisResult.extractedFields.name && (
-                            <div><strong>Name:</strong> {fraudAnalysisResult.extractedFields.name}</div>
-                          )}
-                          {fraudAnalysisResult.extractedFields.registrationNumber && (
-                            <div><strong>Reg #:</strong> {fraudAnalysisResult.extractedFields.registrationNumber}</div>
-                          )}
-                          {fraudAnalysisResult.extractedFields.issuingAuthority && (
-                            <div><strong>Authority:</strong> {fraudAnalysisResult.extractedFields.issuingAuthority}</div>
-                          )}
-                          {fraudAnalysisResult.extractedFields.expirationDate && (
-                            <div><strong>Expiry:</strong> {fraudAnalysisResult.extractedFields.expirationDate}</div>
-                          )}
+                        <div className="rm-extracted-grid">
+                          {fraudAnalysisResult.extractedFields.name && <div><strong>Name:</strong> {fraudAnalysisResult.extractedFields.name}</div>}
+                          {fraudAnalysisResult.extractedFields.registrationNumber && <div><strong>Reg #:</strong> {fraudAnalysisResult.extractedFields.registrationNumber}</div>}
+                          {fraudAnalysisResult.extractedFields.issuingAuthority && <div><strong>Authority:</strong> {fraudAnalysisResult.extractedFields.issuingAuthority}</div>}
+                          {fraudAnalysisResult.extractedFields.expirationDate && <div><strong>Expiry:</strong> {fraudAnalysisResult.extractedFields.expirationDate}</div>}
                         </div>
                       </details>
                     )}
-                    
-                    {fraudAnalysisResult.createdAt && (
-                      <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', marginTop: '1rem' }}>
-                        Analyzed: {new Date(fraudAnalysisResult.createdAt).toLocaleString()}
-                      </p>
-                    )}
                   </div>
                 ) : reviewingOrg.certificateUrl ? (
-                  <div className="fraud-result" style={{ padding: '1.5rem', backgroundColor: 'rgba(255, 193, 7, 0.1)', border: '1px solid rgba(255, 193, 7, 0.3)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <p style={{ margin: 0, color: 'rgba(255, 193, 7, 1)' }}>
-                      ⚠️ Certificate uploaded but AI analysis not available
-                    </p>
-                    {rescanError && (
-                      <p style={{ margin: 0, color: 'rgba(255, 100, 100, 1)', fontSize: '0.85rem' }}>
-                        ❌ {rescanError}
-                      </p>
-                    )}
+                  <div className="rm-fraud-panel rm-fraud-warn">
+                    <p>⚠️ Certificate uploaded but AI analysis not yet available.</p>
+                    {rescanError && <p className="rm-rescan-error">❌ {rescanError}</p>}
                     <button
+                      className="rm-rescan-btn"
+                      disabled={rescanLoading}
                       onClick={async () => {
                         const token = localStorage.getItem('adminToken');
                         setRescanLoading(true);
@@ -2458,678 +2512,666 @@ function AdminDashboard() {
                           setRescanLoading(false);
                         }
                       }}
-                      disabled={rescanLoading}
-                      style={{
-                        alignSelf: 'flex-start',
-                        padding: '0.5rem 1.2rem',
-                        backgroundColor: rescanLoading ? 'rgba(255,255,255,0.1)' : 'rgba(255, 193, 7, 0.2)',
-                        border: '1px solid rgba(255, 193, 7, 0.6)',
-                        borderRadius: '8px',
-                        color: 'rgba(255, 193, 7, 1)',
-                        cursor: rescanLoading ? 'not-allowed' : 'pointer',
-                        fontWeight: '600',
-                        fontSize: '0.9rem',
-                      }}
                     >
-                      {rescanLoading ? '🔄 Scanning...' : '🤖 Rescan with AI'}
+                      {rescanLoading ? '🔄 Scanning…' : '🤖 Rescan with AI'}
                     </button>
                   </div>
                 ) : (
-                  <div className="fraud-result" style={{ padding: '1.5rem', backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
-                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)' }}>
-                      ℹ️ No certificate was uploaded during organization creation
-                    </p>
+                  <div className="rm-fraud-panel rm-fraud-none">
+                    <p>ℹ️ No certificate was uploaded during organization creation.</p>
                   </div>
                 )}
-              </div>
+              </section>
 
-              <div className="decision-section">
-                <label>
-                  <input
-                    type="radio"
-                    name="decision"
-                    value="approved"
-                    checked={reviewDecision === 'approved'}
-                    onChange={(e) => setReviewDecision(e.target.value)}
-                  />
-                  <span className="decision-label approve">
-                    ✅ {t('dashboard.organizations.approveThisOrg')}
-                  </span>
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="decision"
-                    value="rejected"
-                    checked={reviewDecision === 'rejected'}
-                    onChange={(e) => setReviewDecision(e.target.value)}
-                  />
-                  <span className="decision-label reject">
-                    ❌ {t('dashboard.organizations.rejectThisOrg')}
-                  </span>
-                </label>
-              </div>
-
-              {reviewDecision === 'rejected' && (
-                <div className="rejection-reason">
-                  <label htmlFor="rejectionReason">
-                    <strong>{t('dashboard.organizations.reasonForRejection')}</strong>
+              {/* ── Decision ── */}
+              <section className="rm-section">
+                <h4 className="rm-section-title">⚖️ Your Decision</h4>
+                <div className="rm-decision-row">
+                  <label className={`rm-decision-card approve ${reviewDecision === 'approved' ? 'selected' : ''}`}>
+                    <input type="radio" name="decision" value="approved"
+                      checked={reviewDecision === 'approved'}
+                      onChange={(e) => setReviewDecision(e.target.value)} />
+                    <span className="rm-decision-icon">✅</span>
+                    <span className="rm-decision-text">{t('dashboard.organizations.approveThisOrg')}</span>
                   </label>
-                  <textarea
-                    id="rejectionReason"
-                    value={rejectionReason}
-                    onChange={(e) => setRejectionReason(e.target.value)}
-                    placeholder={t('dashboard.organizations.rejectionPlaceholder')}
-                    rows={4}
-                    required
-                  />
+                  <label className={`rm-decision-card reject ${reviewDecision === 'rejected' ? 'selected' : ''}`}>
+                    <input type="radio" name="decision" value="rejected"
+                      checked={reviewDecision === 'rejected'}
+                      onChange={(e) => setReviewDecision(e.target.value)} />
+                    <span className="rm-decision-icon">❌</span>
+                    <span className="rm-decision-text">{t('dashboard.organizations.rejectThisOrg')}</span>
+                  </label>
                 </div>
-              )}
+
+                {reviewDecision === 'rejected' && (
+                  <div className="rm-rejection-reason">
+                    <label htmlFor="rejectionReason">{t('dashboard.organizations.reasonForRejection')}</label>
+                    <textarea
+                      id="rejectionReason"
+                      value={rejectionReason}
+                      onChange={(e) => setRejectionReason(e.target.value)}
+                      placeholder={t('dashboard.organizations.rejectionPlaceholder')}
+                      rows={3}
+                      required
+                    />
+                  </div>
+                )}
+              </section>
             </div>
 
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={() => setShowReviewModal(false)}
-              >
+            {/* ── Footer Actions ── */}
+            <div className="rm-footer">
+              <button className="rm-btn-cancel" onClick={() => setShowReviewModal(false)}>
                 {t('dashboard.modal.cancel')}
               </button>
               {reviewDecision && (
                 <button
-                  type="button"
-                  className={`submit-btn ${reviewDecision === 'rejected' ? 'reject-btn' : 'approve-btn'}`}
+                  className={`rm-btn-submit ${reviewDecision === 'rejected' ? 'reject' : 'approve'}`}
                   onClick={handleSubmitReview}
                 >
-                  {reviewDecision === 'approved' ? `✅ ${t('dashboard.organizations.approve')}` : `❌ ${t('dashboard.organizations.reject')}`}
+                  {reviewDecision === 'approved'
+                    ? `✅ ${t('dashboard.organizations.approve')}`
+                    : `❌ ${t('dashboard.organizations.reject')}`}
                 </button>
               )}
             </div>
           </div>
         </div>
       )}
+
+
 
       {/* Add/Edit User Modal */}
-      {(showAddUserModal || editingUser) && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editingUser ? t('dashboard.modal.editUser') : t('dashboard.modal.addUser')}</h3>
-              <button className="close-btn" onClick={closeModal}>✕</button>
-            </div>
-
-            {error && (
-              <div className="error-message">
-                <span className="error-icon">⚠️</span>
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={editingUser ? handleEditUser : handleAddUser}>
-              <div className="form-group">
-                <label htmlFor="fullName">{t('dashboard.modal.fullName')}</label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  required
-                />
+      {
+        (showAddUserModal || editingUser) && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>{editingUser ? t('dashboard.modal.editUser') : t('dashboard.modal.addUser')}</h3>
+                <button className="close-btn" onClick={closeModal}>✕</button>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="email">{t('dashboard.modal.email')}</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
+              {error && (
+                <div className="error-message">
+                  <span className="error-icon">⚠️</span>
+                  {error}
+                </div>
+              )}
 
-              <div className="form-group">
-                <label htmlFor="phone">{t('dashboard.modal.phone')}</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              {!editingUser && (
+              <form onSubmit={editingUser ? handleEditUser : handleAddUser}>
                 <div className="form-group">
-                  <label htmlFor="password">{t('dashboard.modal.password')}</label>
+                  <label htmlFor="fullName">{t('dashboard.modal.fullName')}</label>
                   <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
                     onChange={handleInputChange}
                     required
-                    minLength={6}
                   />
                 </div>
-              )}
 
-              <div className="form-group">
-                <label htmlFor="role">{t('dashboard.modal.role')}</label>
-                <select
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="family">{t('dashboard.roles.family')}</option>
-                  <option value="doctor">{t('dashboard.roles.doctor')}</option>
-                  <option value="volunteer">{t('dashboard.roles.volunteer')}</option>
-                  <option value="admin">{t('dashboard.roles.admin')}</option>
-                </select>
-              </div>
-
-              <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={closeModal}>
-                  {t('dashboard.modal.cancel')}
-                </button>
-                <button type="submit" className="submit-btn">
-                  {editingUser ? t('dashboard.modal.update') : t('dashboard.modal.create')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Organization Create/Edit Modal */}
-      {showOrgModal && (
-        <div className="modal-overlay" onClick={closeOrgModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editingOrg ? t('dashboard.organizations.edit') : t('dashboard.organizations.createOrgLeader')}</h3>
-              <button className="close-btn" onClick={closeOrgModal}>✕</button>
-            </div>
-
-            {error && (
-              <div className="error-message">
-                <span className="error-icon">⚠️</span>
-                {error}
-              </div>
-            )}
-
-            {/* Info Banner - Only show when creating */}
-            {!editingOrg && (
-              <div style={{
-                padding: '0 1.5rem',
-                marginBottom: '1rem'
-              }}>
-                <div style={{
-                  background: 'rgba(100, 200, 255, 0.15)',
-                  border: '1px solid rgba(100, 200, 255, 0.3)',
-                  borderRadius: '8px',
-                  padding: '0.75rem',
-                  fontSize: '0.8rem',
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  lineHeight: '1.5'
-                }}>
-                  <strong>📧 {t('dashboard.organizations.leadershipInvite')}</strong> {t('dashboard.organizations.leadershipInviteDetail')}
+                <div className="form-group">
+                  <label htmlFor="email">{t('dashboard.modal.email')}</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
-              </div>
-            )}
 
-            <form onSubmit={editingOrg ? handleUpdateOrg : handleCreateOrg}>
-              <div className="form-group">
-                <label htmlFor="organizationName">{t('dashboard.organizations.orgName')}</label>
-                <input
-                  type="text"
-                  id="organizationName"
-                  name="organizationName"
-                  value={orgFormData.organizationName}
-                  onChange={handleOrgInputChange}
-                  required
-                />
-              </div>
-
-              {/* Change Leader Section (edit mode only) */}
-              {editingOrg && (
-                <div className="change-leader-section">
-                  <div className="change-leader-header">
-                    <span>👤 {t('dashboard.organizations.currentLeader')}: <strong>{editingOrg.leaderId?.fullName || editingOrg.leaderId?.email || '—'}</strong></span>
-                    <button
-                      type="button"
-                      className="change-leader-toggle"
-                      onClick={() => { setShowChangeLeaderInput(!showChangeLeaderInput); setNewLeaderEmail(''); setError(''); }}
-                    >
-                      {showChangeLeaderInput ? '✕ Cancel' : '🔄 Change Leader'}
-                    </button>
-                  </div>
-                  {showChangeLeaderInput && (
-                    <div className="change-leader-input-row">
-                      <input
-                        type="email"
-                        placeholder="New leader email (must be existing user)"
-                        value={newLeaderEmail}
-                        onChange={(e) => setNewLeaderEmail(e.target.value)}
-                        className="change-leader-input"
-                      />
-                      <button
-                        type="button"
-                        className="submit-btn"
-                        onClick={handleChangeLeader}
-                        disabled={changingLeader || !newLeaderEmail.trim()}
-                        style={{ whiteSpace: 'nowrap', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
-                      >
-                        {changingLeader ? '⏳ Changing...' : '✓ Apply'}
-                      </button>
-                    </div>
-                  )}
+                <div className="form-group">
+                  <label htmlFor="phone">{t('dashboard.modal.phone')}</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
                 </div>
-              )}
 
-              {!editingOrg && (
-                <>
+                {!editingUser && (
                   <div className="form-group">
-                    <label htmlFor="leaderFullName">{t('dashboard.organizations.leaderName')}</label>
-                    <input
-                      type="text"
-                      id="leaderFullName"
-                      name="leaderFullName"
-                      value={orgFormData.leaderFullName}
-                      onChange={handleOrgInputChange}
-                      placeholder="e.g., John Doe"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="leaderEmail">{t('dashboard.organizations.leaderEmail')}</label>
-                    <input
-                      type="email"
-                      id="leaderEmail"
-                      name="leaderEmail"
-                      value={orgFormData.leaderEmail}
-                      onChange={handleOrgInputChange}
-                      placeholder="leader@example.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="leaderPhone">{t('dashboard.organizations.leaderPhone')}</label>
-                    <input
-                      type="tel"
-                      id="leaderPhone"
-                      name="leaderPhone"
-                      value={orgFormData.leaderPhone}
-                      onChange={handleOrgInputChange}
-                      placeholder="+1234567890"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="leaderPassword">{t('dashboard.organizations.initialPassword')}</label>
+                    <label htmlFor="password">{t('dashboard.modal.password')}</label>
                     <input
                       type="password"
-                      id="leaderPassword"
-                      name="leaderPassword"
-                      value={orgFormData.leaderPassword}
-                      onChange={handleOrgInputChange}
-                      placeholder={t('dashboard.organizations.passwordHelp')}
-                      required
-                      minLength={8}
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={closeOrgModal}>
-                  {t('dashboard.modal.cancel')}
-                </button>
-                <button type="submit" className="submit-btn">
-                  {editingOrg ? `✓ ${t('dashboard.organizations.edit')}` : `📧 ${t('dashboard.organizations.sendInvitation')}`}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Organization Members Modal */}
-      {selectedOrg && (
-        <div className="modal-overlay" onClick={() => setSelectedOrg(null)}>
-          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>👥 {t('dashboard.organizations.membersOf')} {selectedOrg.name}</h3>
-              <button className="close-btn" onClick={() => setSelectedOrg(null)}>✕</button>
-            </div>
-
-            {loadingMembers ? (
-              <div className="loading-container">
-                <div className="spinner-large"></div>
-              </div>
-            ) : (
-              <div style={{ padding: '0 2rem 2rem' }}>
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ color: 'white', marginBottom: '1rem' }}>{t('orgDashboard.tabs.staff')} ({orgMembers.staff?.length || 0})</h4>
-                  {orgMembers.staff?.length > 0 ? (
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                      gap: '1rem'
-                    }}>
-                      {orgMembers.staff.map(member => (
-                        <div key={member._id} style={{
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          padding: '1rem',
-                          borderRadius: '10px',
-                          border: '1px solid rgba(255, 255, 255, 0.1)'
-                        }}>
-                          <div style={{ fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>{member.fullName}</div>
-                          <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>{member.email}</div>
-                          <span className={`role-badge role-${member.role}`} style={{ display: 'inline-block' }}>
-                            {t(`dashboard.roles.${member.role}`)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>{t('dashboard.organizations.noStaff')}</p>
-                  )}
-                </div>
-
-                <div>
-                  <h4 style={{ color: 'white', marginBottom: '1rem' }}>{t('orgDashboard.tabs.families')} ({orgMembers.families?.length || 0})</h4>
-                  {orgMembers.families?.length > 0 ? (
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                      gap: '1rem'
-                    }}>
-                      {orgMembers.families.map(member => (
-                        <div key={member._id} style={{
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          padding: '1rem',
-                          borderRadius: '10px',
-                          border: '1px solid rgba(255, 255, 255, 0.1)'
-                        }}>
-                          <div style={{ fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>{member.fullName}</div>
-                          <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>{member.email}</div>
-                          <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)' }}>
-                            {t('orgDashboard.tabs.children')}: {member.childCount ?? member.childrenIds?.length ?? 0}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>{t('dashboard.organizations.noFamilies')}</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Family Create/Edit Modal */}
-      {showFamilyModal && (
-        <div className="modal-overlay" onClick={closeFamilyModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editingFamily ? '✏️ Edit Family' : '➕ Add Family'}</h3>
-              <button className="close-btn" onClick={closeFamilyModal}>✕</button>
-            </div>
-
-            {error && (
-              <div className="error-message"><span className="error-icon">⚠️</span>{error}</div>
-            )}
-
-            <form onSubmit={handleSaveFamily}>
-              <div className="form-group">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  value={familyFormData.fullName}
-                  onChange={(e) => setFamilyFormData({ ...familyFormData, fullName: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={familyFormData.email}
-                  onChange={(e) => setFamilyFormData({ ...familyFormData, email: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Phone</label>
-                <input
-                  type="tel"
-                  value={familyFormData.phone}
-                  onChange={(e) => setFamilyFormData({ ...familyFormData, phone: e.target.value })}
-                />
-              </div>
-              {!editingFamily && (
-                <>
-                  <div className="form-group">
-                    <label>Password</label>
-                    <input
-                      type="password"
-                      value={familyFormData.password}
-                      onChange={(e) => setFamilyFormData({ ...familyFormData, password: e.target.value })}
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
                       required
                       minLength={6}
                     />
                   </div>
-                  <div className="form-group">
-                    <label>Organization (optional)</label>
-                    <select
-                      value={familyFormData.organizationId}
-                      onChange={(e) => setFamilyFormData({ ...familyFormData, organizationId: e.target.value })}
-                    >
-                      <option value="">— No organization —</option>
-                      {organizations.map(org => (
-                        <option key={org._id} value={org._id}>{org.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-              {editingFamily && (
-                <div className="form-group" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem', marginTop: '0.5rem' }}>
-                  <label>🏢 Organization</label>
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <select
-                      className="form-input"
-                      style={{ flex: 1 }}
-                      value={assignOrgSelectedId}
-                      onChange={e => setAssignOrgSelectedId(e.target.value)}
-                    >
-                      <option value="">— No organization (remove) —</option>
-                      {organizations.map(org => (
-                        <option key={org._id} value={org._id}>{org.organizationName || org.name}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      className="submit-btn"
-                      style={{ whiteSpace: 'nowrap', padding: '0.5rem 1rem' }}
-                      disabled={assigningOrg}
-                      onClick={() => handleAssignOrg(editingFamily)}
-                    >
-                      {assigningOrg ? 'Saving…' : 'Apply'}
-                    </button>
-                  </div>
-                  {editingFamily.organizationId && (
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginTop: '0.35rem' }}>
-                      Current: {editingFamily.organizationId?.name || editingFamily.organizationId?.organizationName || editingFamily.organizationId}
-                    </p>
-                  )}
+                )}
+
+                <div className="form-group">
+                  <label htmlFor="role">{t('dashboard.modal.role')}</label>
+                  <select
+                    id="role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="family">{t('dashboard.roles.family')}</option>
+                    <option value="doctor">{t('dashboard.roles.doctor')}</option>
+                    <option value="volunteer">{t('dashboard.roles.volunteer')}</option>
+                    <option value="admin">{t('dashboard.roles.admin')}</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button type="button" className="cancel-btn" onClick={closeModal}>
+                    {t('dashboard.modal.cancel')}
+                  </button>
+                  <button type="submit" className="submit-btn">
+                    {editingUser ? t('dashboard.modal.update') : t('dashboard.modal.create')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Organization Create/Edit Modal */}
+      {
+        showOrgModal && (
+          <div className="modal-overlay" onClick={closeOrgModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>{editingOrg ? t('dashboard.organizations.edit') : t('dashboard.organizations.createOrgLeader')}</h3>
+                <button className="close-btn" onClick={closeOrgModal}>✕</button>
+              </div>
+
+              {error && (
+                <div className="error-message">
+                  <span className="error-icon">⚠️</span>
+                  {error}
                 </div>
               )}
-              <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={closeFamilyModal}>
-                  {t('dashboard.modal.cancel')}
-                </button>
-                <button type="submit" className="submit-btn">
-                  {editingFamily ? t('dashboard.modal.update') : t('dashboard.modal.create')}
-                </button>
-              </div>
-            </form>
+
+              {/* Info Banner - Only show when creating */}
+              {!editingOrg && (
+                <div style={{
+                  padding: '0 1.5rem',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{
+                    background: 'rgba(100, 200, 255, 0.15)',
+                    border: '1px solid rgba(100, 200, 255, 0.3)',
+                    borderRadius: '8px',
+                    padding: '0.75rem',
+                    fontSize: '0.8rem',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    lineHeight: '1.5'
+                  }}>
+                    <strong>📧 {t('dashboard.organizations.leadershipInvite')}</strong> {t('dashboard.organizations.leadershipInviteDetail')}
+                  </div>
+                </div>
+              )}
+
+              <form onSubmit={editingOrg ? handleUpdateOrg : handleCreateOrg}>
+                <div className="form-group">
+                  <label htmlFor="organizationName">{t('dashboard.organizations.orgName')}</label>
+                  <input
+                    type="text"
+                    id="organizationName"
+                    name="organizationName"
+                    value={orgFormData.organizationName}
+                    onChange={handleOrgInputChange}
+                    required
+                  />
+                </div>
+
+                {/* Change Leader Section (edit mode only) */}
+                {editingOrg && (
+                  <div className="change-leader-section">
+                    <div className="change-leader-header">
+                      <span>👤 {t('dashboard.organizations.currentLeader')}: <strong>{editingOrg.leaderId?.fullName || editingOrg.leaderId?.email || '—'}</strong></span>
+                      <button
+                        type="button"
+                        className="change-leader-toggle"
+                        onClick={() => { setShowChangeLeaderInput(!showChangeLeaderInput); setNewLeaderEmail(''); setError(''); }}
+                      >
+                        {showChangeLeaderInput ? '✕ Cancel' : '🔄 Change Leader'}
+                      </button>
+                    </div>
+                    {showChangeLeaderInput && (
+                      <div className="change-leader-input-row">
+                        <input
+                          type="email"
+                          placeholder="New leader email (must be existing user)"
+                          value={newLeaderEmail}
+                          onChange={(e) => setNewLeaderEmail(e.target.value)}
+                          className="change-leader-input"
+                        />
+                        <button
+                          type="button"
+                          className="submit-btn"
+                          onClick={handleChangeLeader}
+                          disabled={changingLeader || !newLeaderEmail.trim()}
+                          style={{ whiteSpace: 'nowrap', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
+                        >
+                          {changingLeader ? '⏳ Changing...' : '✓ Apply'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!editingOrg && (
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="leaderFullName">{t('dashboard.organizations.leaderName')}</label>
+                      <input
+                        type="text"
+                        id="leaderFullName"
+                        name="leaderFullName"
+                        value={orgFormData.leaderFullName}
+                        onChange={handleOrgInputChange}
+                        placeholder="e.g., John Doe"
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="leaderEmail">{t('dashboard.organizations.leaderEmail')}</label>
+                      <input
+                        type="email"
+                        id="leaderEmail"
+                        name="leaderEmail"
+                        value={orgFormData.leaderEmail}
+                        onChange={handleOrgInputChange}
+                        placeholder="leader@example.com"
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="leaderPhone">{t('dashboard.organizations.leaderPhone')}</label>
+                      <input
+                        type="tel"
+                        id="leaderPhone"
+                        name="leaderPhone"
+                        value={orgFormData.leaderPhone}
+                        onChange={handleOrgInputChange}
+                        placeholder="+1234567890"
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="leaderPassword">{t('dashboard.organizations.initialPassword')}</label>
+                      <input
+                        type="password"
+                        id="leaderPassword"
+                        name="leaderPassword"
+                        value={orgFormData.leaderPassword}
+                        onChange={handleOrgInputChange}
+                        placeholder={t('dashboard.organizations.passwordHelp')}
+                        required
+                        minLength={8}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="modal-actions">
+                  <button type="button" className="cancel-btn" onClick={closeOrgModal}>
+                    {t('dashboard.modal.cancel')}
+                  </button>
+                  <button type="submit" className="submit-btn">
+                    {editingOrg ? `✓ ${t('dashboard.organizations.edit')}` : `📧 ${t('dashboard.organizations.sendInvitation')}`}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
+
+      {/* Organization Members Modal */}
+      {
+        selectedOrg && (
+          <div className="modal-overlay" onClick={() => setSelectedOrg(null)}>
+            <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>👥 {t('dashboard.organizations.membersOf')} {selectedOrg.name}</h3>
+                <button className="close-btn" onClick={() => setSelectedOrg(null)}>✕</button>
+              </div>
+
+              {loadingMembers ? (
+                <div className="loading-container">
+                  <div className="spinner-large"></div>
+                </div>
+              ) : (
+                <div style={{ padding: '0 2rem 2rem' }}>
+                  <div style={{ marginBottom: '2rem' }}>
+                    <h4 style={{ color: 'white', marginBottom: '1rem' }}>{t('orgDashboard.tabs.staff')} ({orgMembers.staff?.length || 0})</h4>
+                    {orgMembers.staff?.length > 0 ? (
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                        gap: '1rem'
+                      }}>
+                        {orgMembers.staff.map(member => (
+                          <div key={member._id} style={{
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            padding: '1rem',
+                            borderRadius: '10px',
+                            border: '1px solid rgba(255, 255, 255, 0.1)'
+                          }}>
+                            <div style={{ fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>{member.fullName}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>{member.email}</div>
+                            <span className={`role-badge role-${member.role}`} style={{ display: 'inline-block' }}>
+                              {t(`dashboard.roles.${member.role}`)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>{t('dashboard.organizations.noStaff')}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 style={{ color: 'white', marginBottom: '1rem' }}>{t('orgDashboard.tabs.families')} ({orgMembers.families?.length || 0})</h4>
+                    {orgMembers.families?.length > 0 ? (
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                        gap: '1rem'
+                      }}>
+                        {orgMembers.families.map(member => (
+                          <div key={member._id} style={{
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            padding: '1rem',
+                            borderRadius: '10px',
+                            border: '1px solid rgba(255, 255, 255, 0.1)'
+                          }}>
+                            <div style={{ fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>{member.fullName}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>{member.email}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+                              {t('orgDashboard.tabs.children')}: {member.childCount ?? member.childrenIds?.length ?? 0}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>{t('dashboard.organizations.noFamilies')}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      {/* Family Create/Edit Modal */}
+      {
+        showFamilyModal && (
+          <div className="modal-overlay" onClick={closeFamilyModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>{editingFamily ? '✏️ Edit Family' : '➕ Add Family'}</h3>
+                <button className="close-btn" onClick={closeFamilyModal}>✕</button>
+              </div>
+
+              {error && (
+                <div className="error-message"><span className="error-icon">⚠️</span>{error}</div>
+              )}
+
+              <form onSubmit={handleSaveFamily}>
+                <div className="form-group">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    value={familyFormData.fullName}
+                    onChange={(e) => setFamilyFormData({ ...familyFormData, fullName: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={familyFormData.email}
+                    onChange={(e) => setFamilyFormData({ ...familyFormData, email: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Phone</label>
+                  <input
+                    type="tel"
+                    value={familyFormData.phone}
+                    onChange={(e) => setFamilyFormData({ ...familyFormData, phone: e.target.value })}
+                  />
+                </div>
+                {!editingFamily && (
+                  <>
+                    <div className="form-group">
+                      <label>Password</label>
+                      <input
+                        type="password"
+                        value={familyFormData.password}
+                        onChange={(e) => setFamilyFormData({ ...familyFormData, password: e.target.value })}
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Organization (optional)</label>
+                      <select
+                        value={familyFormData.organizationId}
+                        onChange={(e) => setFamilyFormData({ ...familyFormData, organizationId: e.target.value })}
+                      >
+                        <option value="">— No organization —</option>
+                        {organizations.map(org => (
+                          <option key={org._id} value={org._id}>{org.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
+                {editingFamily && (
+                  <div className="form-group" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem', marginTop: '0.5rem' }}>
+                    <label>🏢 Organization</label>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <select
+                        className="form-input"
+                        style={{ flex: 1 }}
+                        value={assignOrgSelectedId}
+                        onChange={e => setAssignOrgSelectedId(e.target.value)}
+                      >
+                        <option value="">— No organization (remove) —</option>
+                        {organizations.map(org => (
+                          <option key={org._id} value={org._id}>{org.organizationName || org.name}</option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="submit-btn"
+                        style={{ whiteSpace: 'nowrap', padding: '0.5rem 1rem' }}
+                        disabled={assigningOrg}
+                        onClick={() => handleAssignOrg(editingFamily)}
+                      >
+                        {assigningOrg ? 'Saving…' : 'Apply'}
+                      </button>
+                    </div>
+                    {editingFamily.organizationId && (
+                      <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginTop: '0.35rem' }}>
+                        Current: {editingFamily.organizationId?.name || editingFamily.organizationId?.organizationName || editingFamily.organizationId}
+                      </p>
+                    )}
+                  </div>
+                )}
+                <div className="modal-actions">
+                  <button type="button" className="cancel-btn" onClick={closeFamilyModal}>
+                    {t('dashboard.modal.cancel')}
+                  </button>
+                  <button type="submit" className="submit-btn">
+                    {editingFamily ? t('dashboard.modal.update') : t('dashboard.modal.create')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )
+      }
 
       {/* Children Management Modal */}
-      {showChildrenModal && selectedFamily && (
-        <div className="modal-overlay" onClick={() => { setShowChildrenModal(false); setSelectedFamily(null); }}>
-          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>👶 Children of {selectedFamily.fullName}</h3>
-              <button className="close-btn" onClick={() => { setShowChildrenModal(false); setSelectedFamily(null); }}>✕</button>
-            </div>
+      {
+        showChildrenModal && selectedFamily && (
+          <div className="modal-overlay" onClick={() => { setShowChildrenModal(false); setSelectedFamily(null); }}>
+            <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>👶 Children of {selectedFamily.fullName}</h3>
+                <button className="close-btn" onClick={() => { setShowChildrenModal(false); setSelectedFamily(null); }}>✕</button>
+              </div>
 
-            {error && (
-              <div className="error-message" style={{ margin: '0 2rem 1rem' }}><span className="error-icon">⚠️</span>{error}</div>
-            )}
-
-            <div style={{ padding: '0 2rem 2rem' }}>
-              {/* Children list */}
-              {loadingChildren ? (
-                <div className="loading-container"><div className="spinner-small"></div></div>
-              ) : (
-                <div style={{ marginBottom: '1.5rem' }}>
-                  {familyChildren.length === 0 && !showChildForm && (
-                    <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255,255,255,0.5)' }}>
-                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👶</div>
-                      <p>No children yet</p>
-                    </div>
-                  )}
-                  {familyChildren.map(child => (
-                    <div key={child._id} className="children-list-item">
-                      <div className="child-info">
-                        <strong>{child.fullName}</strong>
-                        <span style={{ fontSize: '0.8rem', opacity: 0.7, marginLeft: '0.5rem' }}>
-                          {child.gender} · {child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : ''}
-                        </span>
-                        {child.diagnosis && (
-                          <span style={{ fontSize: '0.75rem', color: 'rgba(255,150,100,0.9)', marginLeft: '0.5rem' }}>· {child.diagnosis}</span>
-                        )}
-                      </div>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                          className="card-action-btn edit"
-                          onClick={() => {
-                            setEditingChild(child);
-                            setChildFormData({
-                              fullName: child.fullName,
-                              dateOfBirth: child.dateOfBirth ? new Date(child.dateOfBirth).toISOString().split('T')[0] : '',
-                              gender: child.gender,
-                              diagnosis: child.diagnosis || '',
-                              medicalHistory: child.medicalHistory || '',
-                              allergies: child.allergies || '',
-                              medications: child.medications || '',
-                              notes: child.notes || ''
-                            });
-                            setShowChildForm(true);
-                          }}
-                          title="Edit child"
-                        >✏️</button>
-                        <button
-                          className="card-action-btn delete"
-                          onClick={() => handleDeleteChild(child._id)}
-                          title="Delete child"
-                        >🗑️</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              {error && (
+                <div className="error-message" style={{ margin: '0 2rem 1rem' }}><span className="error-icon">⚠️</span>{error}</div>
               )}
 
-              {/* Add/Edit child form toggle */}
-              {!showChildForm ? (
-                <button
-                  className="add-user-btn"
-                  style={{ width: '100%' }}
-                  onClick={() => { setShowChildForm(true); setEditingChild(null); setChildFormData({ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }); }}
-                >
-                  ➕ Add Child
-                </button>
-              ) : (
-                <div className="child-form-container">
-                  <h4 style={{ color: 'white', marginBottom: '1rem' }}>{editingChild ? '✏️ Edit Child' : '➕ New Child'}</h4>
-                  <form onSubmit={handleSaveChild}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                      <div className="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" value={childFormData.fullName}
-                          onChange={(e) => setChildFormData({ ...childFormData, fullName: e.target.value })} required />
+              <div style={{ padding: '0 2rem 2rem' }}>
+                {/* Children list */}
+                {loadingChildren ? (
+                  <div className="loading-container"><div className="spinner-small"></div></div>
+                ) : (
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    {familyChildren.length === 0 && !showChildForm && (
+                      <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255,255,255,0.5)' }}>
+                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👶</div>
+                        <p>No children yet</p>
                       </div>
-                      <div className="form-group">
-                        <label>Date of Birth *</label>
-                        <input type="date" value={childFormData.dateOfBirth}
-                          onChange={(e) => setChildFormData({ ...childFormData, dateOfBirth: e.target.value })} required />
+                    )}
+                    {familyChildren.map(child => (
+                      <div key={child._id} className="children-list-item">
+                        <div className="child-info">
+                          <strong>{child.fullName}</strong>
+                          <span style={{ fontSize: '0.8rem', opacity: 0.7, marginLeft: '0.5rem' }}>
+                            {child.gender} · {child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : ''}
+                          </span>
+                          {child.diagnosis && (
+                            <span style={{ fontSize: '0.75rem', color: 'rgba(255,150,100,0.9)', marginLeft: '0.5rem' }}>· {child.diagnosis}</span>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button
+                            className="card-action-btn edit"
+                            onClick={() => {
+                              setEditingChild(child);
+                              setChildFormData({
+                                fullName: child.fullName,
+                                dateOfBirth: child.dateOfBirth ? new Date(child.dateOfBirth).toISOString().split('T')[0] : '',
+                                gender: child.gender,
+                                diagnosis: child.diagnosis || '',
+                                medicalHistory: child.medicalHistory || '',
+                                allergies: child.allergies || '',
+                                medications: child.medications || '',
+                                notes: child.notes || ''
+                              });
+                              setShowChildForm(true);
+                            }}
+                            title="Edit child"
+                          >✏️</button>
+                          <button
+                            className="card-action-btn delete"
+                            onClick={() => handleDeleteChild(child._id)}
+                            title="Delete child"
+                          >🗑️</button>
+                        </div>
                       </div>
-                      <div className="form-group">
-                        <label>Gender *</label>
-                        <select value={childFormData.gender}
-                          onChange={(e) => setChildFormData({ ...childFormData, gender: e.target.value })}>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
-                        </select>
+                    ))}
+                  </div>
+                )}
+
+                {/* Add/Edit child form toggle */}
+                {!showChildForm ? (
+                  <button
+                    className="add-user-btn"
+                    style={{ width: '100%' }}
+                    onClick={() => { setShowChildForm(true); setEditingChild(null); setChildFormData({ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }); }}
+                  >
+                    ➕ Add Child
+                  </button>
+                ) : (
+                  <div className="child-form-container">
+                    <h4 style={{ color: 'white', marginBottom: '1rem' }}>{editingChild ? '✏️ Edit Child' : '➕ New Child'}</h4>
+                    <form onSubmit={handleSaveChild}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                          <label>Full Name *</label>
+                          <input type="text" value={childFormData.fullName}
+                            onChange={(e) => setChildFormData({ ...childFormData, fullName: e.target.value })} required />
+                        </div>
+                        <div className="form-group">
+                          <label>Date of Birth *</label>
+                          <input type="date" value={childFormData.dateOfBirth}
+                            onChange={(e) => setChildFormData({ ...childFormData, dateOfBirth: e.target.value })} required />
+                        </div>
+                        <div className="form-group">
+                          <label>Gender *</label>
+                          <select value={childFormData.gender}
+                            onChange={(e) => setChildFormData({ ...childFormData, gender: e.target.value })}>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label>Diagnosis</label>
+                          <input type="text" value={childFormData.diagnosis}
+                            onChange={(e) => setChildFormData({ ...childFormData, diagnosis: e.target.value })}
+                            placeholder="e.g. Autism" />
+                        </div>
+                        <div className="form-group">
+                          <label>Medical History</label>
+                          <input type="text" value={childFormData.medicalHistory}
+                            onChange={(e) => setChildFormData({ ...childFormData, medicalHistory: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                          <label>Allergies</label>
+                          <input type="text" value={childFormData.allergies}
+                            onChange={(e) => setChildFormData({ ...childFormData, allergies: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                          <label>Medications</label>
+                          <input type="text" value={childFormData.medications}
+                            onChange={(e) => setChildFormData({ ...childFormData, medications: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                          <label>Notes</label>
+                          <input type="text" value={childFormData.notes}
+                            onChange={(e) => setChildFormData({ ...childFormData, notes: e.target.value })} />
+                        </div>
                       </div>
-                      <div className="form-group">
-                        <label>Diagnosis</label>
-                        <input type="text" value={childFormData.diagnosis}
-                          onChange={(e) => setChildFormData({ ...childFormData, diagnosis: e.target.value })}
-                          placeholder="e.g. Autism" />
+                      <div className="modal-actions" style={{ paddingTop: 0 }}>
+                        <button type="button" className="cancel-btn"
+                          onClick={() => { setShowChildForm(false); setEditingChild(null); setError(''); }}>
+                          Cancel
+                        </button>
+                        <button type="submit" className="submit-btn">
+                          {editingChild ? 'Update Child' : 'Add Child'}
+                        </button>
                       </div>
-                      <div className="form-group">
-                        <label>Medical History</label>
-                        <input type="text" value={childFormData.medicalHistory}
-                          onChange={(e) => setChildFormData({ ...childFormData, medicalHistory: e.target.value })} />
-                      </div>
-                      <div className="form-group">
-                        <label>Allergies</label>
-                        <input type="text" value={childFormData.allergies}
-                          onChange={(e) => setChildFormData({ ...childFormData, allergies: e.target.value })} />
-                      </div>
-                      <div className="form-group">
-                        <label>Medications</label>
-                        <input type="text" value={childFormData.medications}
-                          onChange={(e) => setChildFormData({ ...childFormData, medications: e.target.value })} />
-                      </div>
-                      <div className="form-group">
-                        <label>Notes</label>
-                        <input type="text" value={childFormData.notes}
-                          onChange={(e) => setChildFormData({ ...childFormData, notes: e.target.value })} />
-                      </div>
-                    </div>
-                    <div className="modal-actions" style={{ paddingTop: 0 }}>
-                      <button type="button" className="cancel-btn"
-                        onClick={() => { setShowChildForm(false); setEditingChild(null); setError(''); }}>
-                        Cancel
-                      </button>
-                      <button type="submit" className="submit-btn">
-                        {editingChild ? 'Update Child' : 'Add Child'}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              )}
+                    </form>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
 
