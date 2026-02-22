@@ -6,8 +6,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // Proxy API requests to avoid CORS; use /api in your config for local dev
       '/api': {
+        target: 'https://cognicare-mobile-h4ct.onrender.com',
+        changeOrigin: true,
+        secure: true,
+      },
+      '/uploads': {
         target: 'https://cognicare-mobile-h4ct.onrender.com',
         changeOrigin: true,
         secure: true,

@@ -13,6 +13,8 @@ function SkillTrackerCreator() {
     const [childName, setChildName] = useState('Loading...');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [baselinePercent, setBaselinePercent] = useState(0);
+    const [targetPercent, setTargetPercent] = useState(80);
     const [trials, setTrials] = useState(Array(10).fill('pending')); // 'pending', 'passed', 'failed'
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -76,6 +78,8 @@ function SkillTrackerCreator() {
         setError('');
 
         try {
+            const successCount = getSuccessCount();
+            const currentPercent = Math.round((successCount / 10) * 100);
             const planData = {
                 childId,
                 type: 'SkillTracker',
@@ -85,7 +89,10 @@ function SkillTrackerCreator() {
                     description,
                     trials,
                     isMastered,
-                    successCount: getSuccessCount()
+                    successCount,
+                    baselinePercent: Number(baselinePercent) || 0,
+                    targetPercent: Number(targetPercent) || 80,
+                    currentPercent
                 }
             };
 
@@ -93,13 +100,21 @@ function SkillTrackerCreator() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    ...(token && { 'Authorization': `Bearer ${token}` }),
                 },
-                body: JSON.stringify(planData)
+                credentials: 'include',
+                body: JSON.stringify(planData),
             });
 
+            if (response.status === 401) {
+                localStorage.removeItem('specialistToken');
+                localStorage.removeItem('specialistUser');
+                setError('Session expired. Please log in again.');
+                setTimeout(() => navigate('/specialist/login'), 2000);
+                return;
+            }
             if (!response.ok) {
-                const errData = await response.json();
+                const errData = await response.json().catch(() => ({}));
                 throw new Error(errData.message || 'Failed to save skill tracker');
             }
 
@@ -133,10 +148,18 @@ function SkillTrackerCreator() {
             <main className="dashboard-main" style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
                 <div className="pecs-creator-container" style={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '1rem', marginBottom: '2rem' }}>
-                        <h2 style={{ color: '#1e293b', margin: 0 }}>Discrete Trial Training</h2>
-                        <div style={{ background: isMastered ? '#dcfce7' : '#f1f5f9', color: isMastered ? '#166534' : '#64748b', padding: '0.5rem 1rem', borderRadius: '2rem', fontWeight: 'bold' }}>
-                            {getSuccessCount()} / 10 | Status: {isMastered ? 'Mastered 🏆' : 'Learning'}
+                    <div style={{ borderBottom: '1px solid #eee', paddingBottom: '1rem', marginBottom: '2rem' }}>
+                        <h2 style={{ color: '#1e293b', margin: 0 }}>Skill Mastery Tracker</h2>
+                        <p style={{ color: '#64748b', margin: '0.5rem 0 0', fontSize: '0.9rem' }}>
+                            Track progress of specific skills (e.g. motor, communication) over time. Set baseline and target percentages and record trials.
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                            <div style={{ background: isMastered ? '#dcfce7' : '#f1f5f9', color: isMastered ? '#166534' : '#64748b', padding: '0.5rem 1rem', borderRadius: '2rem', fontWeight: 'bold' }}>
+                                {getSuccessCount()} / 10 | Status: {isMastered ? 'Mastered 🏆' : 'Learning'}
+                            </div>
+                            <div style={{ fontSize: '0.9rem', color: '#475569' }}>
+                                Progress: {Math.round((getSuccessCount() / 10) * 100)}% (baseline → target: {baselinePercent}% → {targetPercent}%)
+                            </div>
                         </div>
                     </div>
 
@@ -165,6 +188,41 @@ function SkillTrackerCreator() {
                                     rows={2}
                                     style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem', resize: 'vertical' }}
                                 />
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                            <div className="form-group">
+                                <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Baseline % (starting level)</label>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={100}
+                                    value={baselinePercent}
+                                    onChange={(e) => setBaselinePercent(Number(e.target.value) || 0)}
+                                    style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Target % (goal)</label>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={100}
+                                    value={targetPercent}
+                                    onChange={(e) => setTargetPercent(Number(e.target.value) || 80)}
+                                    style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '2rem' }}>
+                            <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Current progress (from trials)</label>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <div style={{ flex: 1, height: '12px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
+                                    <div style={{ height: '100%', width: `${(getSuccessCount() / 10) * 100}%`, background: isMastered ? '#22c55e' : '#6366f1', borderRadius: '6px', transition: 'width 0.3s' }} />
+                                </div>
+                                <span style={{ fontWeight: '600', color: '#334155', minWidth: '3rem' }}>{Math.round((getSuccessCount() / 10) * 100)}%</span>
                             </div>
                         </div>
 

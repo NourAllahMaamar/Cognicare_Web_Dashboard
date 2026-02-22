@@ -13,6 +13,8 @@ function ActivitiesCreator() {
     const [childName, setChildName] = useState('Loading...');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [parentInstructions, setParentInstructions] = useState('');
+    const [dueDate, setDueDate] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -48,9 +50,12 @@ function ActivitiesCreator() {
             }
         };
 
-        if (childId) {
-            fetchChildDetails();
+        if (!childId) {
+            setChildName('');
+            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
+            return;
         }
+        fetchChildDetails();
     }, [childId, token, navigate]);
 
     const handleSave = async (e) => {
@@ -67,20 +72,34 @@ function ActivitiesCreator() {
                 childId,
                 type: 'Activity',
                 title,
-                content: { description, boardData: {} }
+                content: {
+                    description,
+                    parentInstructions: parentInstructions || description,
+                    dueDate: dueDate || null,
+                    status: 'pending',
+                    boardData: {}
+                }
             };
 
             const response = await fetch(`${API_BASE_URL}/specialized-plans`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    ...(token && { 'Authorization': `Bearer ${token}` }),
                 },
-                body: JSON.stringify(planData)
+                credentials: 'include',
+                body: JSON.stringify(planData),
             });
 
+            if (response.status === 401) {
+                localStorage.removeItem('specialistToken');
+                localStorage.removeItem('specialistUser');
+                setError('Session expired. Please log in again.');
+                setTimeout(() => navigate('/specialist/login'), 2000);
+                return;
+            }
             if (!response.ok) {
-                const errData = await response.json();
+                const errData = await response.json().catch(() => ({}));
                 throw new Error(errData.message || 'Failed to save activity');
             }
 
@@ -130,13 +149,32 @@ function ActivitiesCreator() {
                         </div>
 
                         <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                            <label>Description & Instructions</label>
+                            <label>Description</label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Describe the activity or game..."
-                                rows={4}
+                                placeholder="Brief description of the activity..."
+                                rows={2}
                                 required
+                                style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                            />
+                        </div>
+                        <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                            <label>Instructions for parents</label>
+                            <textarea
+                                value={parentInstructions}
+                                onChange={(e) => setParentInstructions(e.target.value)}
+                                placeholder="Clear steps for parents to do this activity with the child at home..."
+                                rows={4}
+                                style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                            />
+                        </div>
+                        <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                            <label>Due date (optional)</label>
+                            <input
+                                type="date"
+                                value={dueDate}
+                                onChange={(e) => setDueDate(e.target.value)}
                                 style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
                             />
                         </div>

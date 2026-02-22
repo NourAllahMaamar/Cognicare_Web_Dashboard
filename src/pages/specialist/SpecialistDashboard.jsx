@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL, getUploadUrl } from '../../config';
 import '../org-leader/OrgLeaderDashboard.css';
 import './SpecialistDashboard.css';
 
@@ -30,7 +30,16 @@ function SpecialistDashboard() {
         children: []
     });
     const [addChildLoading, setAddChildLoading] = useState(false);
+    const [expandedPlanId, setExpandedPlanId] = useState(null);
+    const [planTypeFilter, setPlanTypeFilter] = useState('all'); // 'all' | 'PECS' | 'TEACCH' | 'SkillTracker' | 'Activity'
     const navigate = useNavigate();
+
+    const filteredChildPlans = planTypeFilter === 'all'
+        ? childPlans
+        : childPlans.filter(p => p.type === planTypeFilter);
+    const filteredMyPlans = planTypeFilter === 'all'
+        ? myPlans
+        : myPlans.filter(p => p.type === planTypeFilter);
     const { t } = useTranslation();
 
     const user = JSON.parse(localStorage.getItem('specialistUser') || '{}');
@@ -38,12 +47,21 @@ function SpecialistDashboard() {
 
     const allChildren = [...orgChildren, ...privateChildren];
 
+    const handleUnauthorized = useCallback(() => {
+        localStorage.removeItem('specialistToken');
+        localStorage.removeItem('specialistRefreshToken');
+        localStorage.removeItem('specialistUser');
+        navigate('/specialist/login');
+    }, [navigate]);
+
     // ── Fetch organization children ──
     const fetchOrgChildren = useCallback(async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                credentials: 'include',
             });
+            if (response.status === 401) { handleUnauthorized(); return; }
             if (response.ok) {
                 const data = await response.json();
                 setOrgChildren(Array.isArray(data) ? data.map(c => ({ ...c, _source: 'org' })) : []);
@@ -51,14 +69,16 @@ function SpecialistDashboard() {
         } catch (err) {
             console.error('Failed to fetch org children:', err);
         }
-    }, [token]);
+    }, [token, handleUnauthorized]);
 
     // ── Fetch private children ──
     const fetchPrivateChildren = useCallback(async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/children/specialist/my-children`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                credentials: 'include',
             });
+            if (response.status === 401) { handleUnauthorized(); return; }
             if (response.ok) {
                 const data = await response.json();
                 setPrivateChildren(Array.isArray(data) ? data.map(c => ({ ...c, _source: 'private' })) : []);
@@ -66,14 +86,16 @@ function SpecialistDashboard() {
         } catch (err) {
             console.error('Failed to fetch private children:', err);
         }
-    }, [token]);
+    }, [token, handleUnauthorized]);
 
     // ── Fetch MY plans ──
     const fetchMyPlans = useCallback(async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/specialized-plans/my-plans`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                credentials: 'include',
             });
+            if (response.status === 401) { handleUnauthorized(); return; }
             if (response.ok) {
                 const data = await response.json();
                 setMyPlans(Array.isArray(data) ? data : []);
@@ -81,17 +103,19 @@ function SpecialistDashboard() {
         } catch (err) {
             console.error('Failed to fetch my plans:', err);
         }
-    }, [token]);
+    }, [token, handleUnauthorized]);
 
     // ── Fetch plans for a specific child ──
     const fetchChildPlans = async (childId) => {
         try {
             const response = await fetch(`${API_BASE_URL}/specialized-plans/child/${childId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                credentials: 'include',
             });
+            if (response.status === 401) { handleUnauthorized(); return; }
             if (response.ok) {
                 const data = await response.json();
-                setChildPlans(data);
+                setChildPlans(Array.isArray(data) ? data : []);
             }
         } catch (err) {
             console.error('Failed to fetch child plans:', err);
@@ -104,13 +128,18 @@ function SpecialistDashboard() {
         try {
             const response = await fetch(`${API_BASE_URL}/specialized-plans/${planId}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                credentials: 'include',
             });
+            if (response.status === 401) { handleUnauthorized(); return; }
             if (response.ok) {
                 setSuccessMessage(t('specialistDashboard.messages.deleteSuccess'));
                 if (selectedChild) fetchChildPlans(selectedChild._id);
                 fetchMyPlans();
                 setTimeout(() => setSuccessMessage(''), 3000);
+            } else {
+                const data = await response.json().catch(() => ({}));
+                setError(data.message || t('specialistDashboard.messages.deleteError'));
             }
         } catch (err) {
             setError(t('specialistDashboard.messages.deleteError'));
@@ -263,30 +292,156 @@ function SpecialistDashboard() {
         }
     };
 
-    const PlanCard = ({ plan, showChild = false }) => (
-        <div className="sp-plan-card">
-            <div className="sp-plan-badge" style={{ background: badgeColor(plan.type) }}>
-                {planTypeLabel(plan.type)}
-            </div>
-            <h4 className="sp-plan-title">{plan.title}</h4>
-            {showChild && plan.childId && (
-                <p className="sp-plan-child">
-                    👶 {plan.childId.fullName || t('specialistDashboard.sidebar.title')}
+    const PlanCard = ({ plan, showChild = false }) => {
+        const isPECS = plan.type === 'PECS';
+        const isTEACCH = plan.type === 'TEACCH';
+        const isActivity = plan.type === 'Activity';
+        const isSkillTracker = plan.type === 'SkillTracker';
+        const isExpanded = expandedPlanId === plan._id;
+        const items = plan.content?.items || [];
+        const goals = plan.content?.goals || [];
+        const workSystem = plan.content?.workSystem || {};
+        return (
+            <div className="sp-plan-card">
+                <div className="sp-plan-badge" style={{ background: badgeColor(plan.type) }}>
+                    {planTypeLabel(plan.type)}
+                </div>
+                <h4 className="sp-plan-title">{plan.title}</h4>
+                {showChild && plan.childId && (
+                    <p className="sp-plan-child">
+                        👶 {plan.childId.fullName || t('specialistDashboard.sidebar.title')}
+                    </p>
+                )}
+                {plan.content?.phaseName && (
+                    <p className="sp-plan-child">📊 {plan.content.phaseName}</p>
+                )}
+                <p className="sp-plan-date">
+                    {new Date(plan.createdAt).toLocaleDateString()}
                 </p>
-            )}
-            {plan.content?.phase && (
-                <p className="sp-plan-child">📊 {t('specialistDashboard.planCard.phase')} {plan.content.phase}</p>
-            )}
-            <p className="sp-plan-date">
-                {new Date(plan.createdAt).toLocaleDateString()}
-            </p>
-            <div className="sp-plan-actions">
-                <button className="sp-btn-delete" onClick={() => handleDeletePlan(plan._id)}>
-                    🗑️ {t('specialistDashboard.planCard.delete')}
-                </button>
+                {isPECS && items.length > 0 && (
+                    <>
+                        <button
+                            type="button"
+                            className="sp-btn-view-board"
+                            onClick={() => setExpandedPlanId(isExpanded ? null : plan._id)}
+                        >
+                            {isExpanded ? '▼ Hide board' : '▶ View board & trials'}
+                        </button>
+                        {isExpanded && (
+                            <div className="sp-pecs-board-detail">
+                                <div className="sp-pecs-trial-legend">
+                                    <span><span className="sp-pecs-trial-dot pass">✓</span> Pass</span>
+                                    <span><span className="sp-pecs-trial-dot fail">✗</span> Fail</span>
+                                    <span><span className="sp-pecs-trial-dot empty">·</span> Not tested</span>
+                                </div>
+                                <div className="sp-pecs-detail-cards">
+                                    {items.map((item) => {
+                                        const rawTrials = item.trials || [];
+                                        const trials = [...rawTrials];
+                                        while (trials.length < 10) trials.push(null);
+                                        const passCount = trials.filter(tr => tr === 'pass').length;
+                                        const isMastered = passCount >= 8;
+                                        return (
+                                            <div key={item.id || item.label} className="sp-pecs-detail-card">
+                                                <img src={getUploadUrl(item.imageUrl) || item.imageUrl} alt={item.label} onError={(e) => { e.target.src = `https://via.placeholder.com/80?text=${encodeURIComponent(item.label || '')}`; }} />
+                                                <span className="sp-pecs-detail-label">{item.label}</span>
+                                                <div className="sp-pecs-detail-trials" aria-label={`Trial results for ${item.label}`}>
+                                                    {trials.slice(0, 10).map((t, i) => (
+                                                        <span key={i} className={`sp-pecs-trial-dot ${t === 'pass' ? 'pass' : t === 'fail' ? 'fail' : 'empty'}`} title={`Trial ${i + 1}: ${t === 'pass' ? 'Pass' : t === 'fail' ? 'Fail' : 'Not tested'}`}>
+                                                            {t === 'pass' ? '✓' : t === 'fail' ? '✗' : '·'}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                                <span className={`sp-pecs-detail-mastery ${isMastered ? 'mastered' : ''}`}>
+                                                    {passCount}/10 {isMastered && '🏆'}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+                {isTEACCH && (goals.length > 0 || workSystem.whatToDo) && (
+                    <>
+                        <button
+                            type="button"
+                            className="sp-btn-view-board"
+                            onClick={() => setExpandedPlanId(isExpanded ? null : plan._id)}
+                        >
+                            {isExpanded ? '▼ Hide details' : '▶ View goals & work system'}
+                        </button>
+                        {isExpanded && (
+                            <div className="sp-teacch-detail">
+                                {workSystem.whatToDo && (
+                                    <div className="sp-teacch-work-system">
+                                        <h4>Work System</h4>
+                                        <p><strong>What to do:</strong> {workSystem.whatToDo}</p>
+                                        <p><strong>How much:</strong> {workSystem.howMuch}</p>
+                                        <p><strong>When done:</strong> {workSystem.whenDone}</p>
+                                        <p><strong>What next:</strong> {workSystem.whatNext}</p>
+                                    </div>
+                                )}
+                                {goals.length > 0 && (
+                                    <div className="sp-teacch-goals">
+                                        <h4>Goals</h4>
+                                        {goals.map((g, i) => {
+                                            const progress = ((g.current - g.baseline) / (g.target - g.baseline) * 100) || 0;
+                                            return (
+                                                <div key={g.id || i} className="sp-teacch-goal-row">
+                                                    <span className="sp-teacch-goal-text">{g.text}</span>
+                                                    <div className="sp-teacch-goal-bar-wrap">
+                                                        <div className="goal-progress-bar">
+                                                            <div className="progress-fill" style={{ width: `${Math.min(100, Math.max(0, progress))}%` }} />
+                                                        </div>
+                                                        <span className="sp-teacch-goal-pct">{g.current ?? g.baseline}% → {g.target}%</span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </>
+                )}
+                {isActivity && (plan.content?.description || plan.content?.dueDate) && (
+                    <div className="sp-plan-activity-desc-wrap">
+                        {plan.content.description && <p className="sp-plan-activity-desc">{plan.content.description}</p>}
+                        {plan.content?.dueDate && <p className="sp-plan-activity-due">Due: {plan.content.dueDate}</p>}
+                        {plan.content?.status && <span className={`sp-plan-activity-status status-${plan.content.status}`}>{plan.content.status}</span>}
+                    </div>
+                )}
+                {isSkillTracker && plan.content && (
+                    <div className="sp-skill-summary">
+                        <span>{plan.content.successCount ?? 0}/10 trials</span>
+                        {plan.content.isMastered && <span className="mastered">🏆 Mastered</span>}
+                        {(plan.content.baselinePercent != null || plan.content.targetPercent != null) && (
+                            <div className="sp-skill-progress-wrap">
+                                <div className="goal-progress-bar">
+                                    <div
+                                        className="progress-fill skill-fill"
+                                        style={{
+                                            width: `${Math.min(100, Math.max(0, plan.content.currentPercent ?? (plan.content.successCount ?? 0) * 10))}%`
+                                        }}
+                                    />
+                                </div>
+                                <span className="sp-skill-pct">
+                                    {plan.content.baselinePercent ?? 0}% → {plan.content.targetPercent ?? 80}% (current: {plan.content.currentPercent ?? (plan.content.successCount ?? 0) * 10}%)
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                )}
+                <div className="sp-plan-actions">
+                    <button className="sp-btn-delete" onClick={() => handleDeletePlan(plan._id)}>
+                        🗑️ {t('specialistDashboard.planCard.delete')}
+                    </button>
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     // ── Sidebar Child List ──
     const ChildList = ({ children, label }) => (
@@ -505,15 +660,28 @@ function SpecialistDashboard() {
 
                                         <div className="sp-section">
                                             <h3 className="sp-section-title">{t('specialistDashboard.childDetail.activePlans')} {selectedChild.fullName}</h3>
-                                            {childPlans.length === 0 ? (
+                                            <div className="sp-plan-filter">
+                                                <span className="sp-filter-label">Filter:</span>
+                                                {['all', 'PECS', 'TEACCH', 'SkillTracker', 'Activity'].map(type => (
+                                                    <button
+                                                        key={type}
+                                                        type="button"
+                                                        className={`sp-filter-btn ${planTypeFilter === type ? 'active' : ''}`}
+                                                        onClick={() => setPlanTypeFilter(type)}
+                                                    >
+                                                        {type === 'all' ? 'All' : type === 'SkillTracker' ? 'Skill' : type === 'Activity' ? 'Activity' : type}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            {filteredChildPlans.length === 0 ? (
                                                 <div className="sp-empty-state">
                                                     <div className="sp-empty-icon">📝</div>
-                                                    <h3>{t('specialistDashboard.childDetail.noPlans')}</h3>
-                                                    <p>{t('specialistDashboard.childDetail.noPlansSub')}</p>
+                                                    <h3>{planTypeFilter === 'all' ? t('specialistDashboard.childDetail.noPlans') : `No ${planTypeFilter} plans`}</h3>
+                                                    <p>{planTypeFilter === 'all' ? t('specialistDashboard.childDetail.noPlansSub') : `Try "All" or create a ${planTypeFilter} plan.`}</p>
                                                 </div>
                                             ) : (
                                                 <div className="sp-plans-grid">
-                                                    {childPlans.map(plan => (
+                                                    {filteredChildPlans.map(plan => (
                                                         <PlanCard key={plan._id} plan={plan} />
                                                     ))}
                                                 </div>
@@ -540,18 +708,36 @@ function SpecialistDashboard() {
                                     🔄 {t('specialistDashboard.myPlansTab.refresh')}
                                 </button>
                             </div>
-                            {myPlans.length === 0 ? (
+                            <div className="sp-plan-filter">
+                                <span className="sp-filter-label">Filter:</span>
+                                {['all', 'PECS', 'TEACCH', 'SkillTracker', 'Activity'].map(type => (
+                                    <button
+                                        key={type}
+                                        type="button"
+                                        className={`sp-filter-btn ${planTypeFilter === type ? 'active' : ''}`}
+                                        onClick={() => setPlanTypeFilter(type)}
+                                    >
+                                        {type === 'all' ? 'All' : type === 'SkillTracker' ? 'Skill' : type === 'Activity' ? 'Activity' : type}
+                                    </button>
+                                ))}
+                            </div>
+                            {filteredMyPlans.length === 0 ? (
                                 <div className="sp-empty-state">
                                     <div className="sp-empty-icon">📋</div>
-                                    <h3>{t('specialistDashboard.myPlansTab.noPlans')}</h3>
-                                    <p>{t('specialistDashboard.myPlansTab.noPlansSub')}</p>
-                                    <button className="sp-btn sp-btn-pecs" onClick={() => setActiveTab('children')} style={{ marginTop: '1rem' }}>
-                                        👶 {t('specialistDashboard.myPlansTab.goToChildren')}
-                                    </button>
+                                    <h3>{planTypeFilter === 'all' ? t('specialistDashboard.myPlansTab.noPlans') : `No ${planTypeFilter} plans`}</h3>
+                                    <p>{planTypeFilter === 'all' ? t('specialistDashboard.myPlansTab.noPlansSub') : `Try "All" or create a ${planTypeFilter} plan.`}</p>
+                                    {planTypeFilter !== 'all' && (
+                                        <button className="sp-btn sp-btn-pecs" onClick={() => setPlanTypeFilter('all')} style={{ marginTop: '1rem' }}>Show all</button>
+                                    )}
+                                    {planTypeFilter === 'all' && (
+                                        <button className="sp-btn sp-btn-pecs" onClick={() => setActiveTab('children')} style={{ marginTop: '1rem' }}>
+                                            👶 {t('specialistDashboard.myPlansTab.goToChildren')}
+                                        </button>
+                                    )}
                                 </div>
                             ) : (
                                 <div className="sp-plans-grid">
-                                    {myPlans.map(plan => (
+                                    {filteredMyPlans.map(plan => (
                                         <PlanCard key={plan._id} plan={plan} showChild={true} />
                                     ))}
                                 </div>

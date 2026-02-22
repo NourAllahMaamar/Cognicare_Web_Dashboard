@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Grainient from '../../components/Grainient';
 import { API_BASE_URL } from '../../config';
+import teacchHeaderImg from '../../assets/teacch-header.png';
 import './SpecialistDashboard.css';
 
 const TEACCH_CATEGORIES = [
@@ -114,8 +114,9 @@ function TEACCHTrackerCreator() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    ...(token && { 'Authorization': `Bearer ${token}` }),
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     childId,
                     type: 'TEACCH',
@@ -127,10 +128,17 @@ function TEACCHTrackerCreator() {
                     }
                 })
             });
+            if (response.status === 401) {
+                localStorage.removeItem('specialistToken');
+                localStorage.removeItem('specialistUser');
+                setError('Session expired. Please log in again.');
+                setTimeout(() => navigate('/specialist/login'), 2000);
+                return;
+            }
             if (response.ok) {
                 navigate('/specialist/dashboard');
             } else {
-                const data = await response.json();
+                const data = await response.json().catch(() => ({}));
                 throw new Error(data.message || 'Failed to save');
             }
         } catch (err) {
@@ -142,12 +150,16 @@ function TEACCHTrackerCreator() {
 
     return (
         <div className="teacch-creator-page">
-            <Grainient color1="#f59e0b" color2="#10b981" color3="#6366f1" timeSpeed={0.25} warpStrength={0.5} />
+            <div
+                className="creator-page-bg"
+                style={{ backgroundImage: `url(${teacchHeaderImg})` }}
+                aria-hidden="true"
+            />
 
             <div className="creator-content">
                 <header className="creator-header">
                     <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-                    <h1>🎯 TEACCH Structured Teaching Tracker</h1>
+                    <h1>TEACCH Structured Teaching Tracker</h1>
                     <button className="save-btn" onClick={handleSave} disabled={loading}>
                         {loading ? 'Saving...' : '💾 Save Tracker'}
                     </button>
