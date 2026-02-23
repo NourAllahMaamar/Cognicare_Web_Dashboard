@@ -106,6 +106,11 @@ function AdminDashboard() {
   const [reviewingAnalysis, setReviewingAnalysis] = useState(null);
   const [analysisReviewNotes, setAnalysisReviewNotes] = useState('');
 
+  // Progress AI summary (admin)
+  const [progressAiSummary, setProgressAiSummary] = useState(null);
+  const [progressAiLoading, setProgressAiLoading] = useState(false);
+  const [progressAiError, setProgressAiError] = useState('');
+
   const navigate = useNavigate();
 
   // Handle session expiration
@@ -194,6 +199,33 @@ function AdminDashboard() {
       setLoading(false);
     }
   }, [handleSessionExpired, refreshAccessToken, t]);
+
+  const fetchProgressAiSummary = useCallback(async (token) => {
+    setProgressAiLoading(true);
+    setProgressAiError('');
+    try {
+      const authToken = token || localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/progress-ai/admin/summary`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+      if (response.ok) {
+        const data = await response.json();
+        setProgressAiSummary(data);
+      } else {
+        const err = await response.json().catch(() => ({}));
+        setProgressAiError(err.message || `HTTP ${response.status}`);
+      }
+    } catch (err) {
+      setProgressAiError(err?.message || 'Failed to load');
+    } finally {
+      setProgressAiLoading(false);
+    }
+  }, [handleSessionExpired]);
 
   // Fetch pending organizations
   const fetchPendingOrganizations = useCallback(async (token) => {
@@ -809,10 +841,11 @@ function AdminDashboard() {
       fetchPendingOrgInvitations(token);
       fetchFamilies(token);
       fetchAllFraudData();
+      fetchProgressAiSummary(token);
     } catch {
       navigate('/admin/login');
     }
-  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchReviewedOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations, fetchFamilies, fetchAllFraudData]);
+  }, [navigate, fetchUsers, fetchPendingOrganizations, fetchReviewedOrganizations, fetchAllOrganizations, fetchPendingOrgInvitations, fetchFamilies, fetchAllFraudData, fetchProgressAiSummary]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -839,7 +872,8 @@ function AdminDashboard() {
         fetchAllOrganizations(token),
         fetchPendingOrgInvitations(token),
         fetchFamilies(token),
-        fetchAllFraudData()
+        fetchAllFraudData(),
+        fetchProgressAiSummary(token)
       ]);
       setSuccessMessage(t('dashboard.messages.refreshed'));
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -1490,6 +1524,42 @@ function AdminDashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Progress AI – Résumé global (admin) */}
+            <section className="dashboard-section" style={{ marginTop: 24 }}>
+              <h3 className="section-title">🤖 Progress AI – Résumé global</h3>
+              {progressAiLoading && <p>Chargement…</p>}
+              {progressAiError && <p className="error-banner" style={{ padding: 8 }}>{progressAiError}</p>}
+              {!progressAiLoading && !progressAiError && progressAiSummary && (
+                <div className="stats-grid" style={{ marginTop: 12 }}>
+                  <div className="stat-card">
+                    <div className="stat-icon">📋</div>
+                    <div className="stat-info">
+                      <h3>Plans actifs</h3>
+                      <p className="stat-value">{progressAiSummary.totalPlans ?? 0}</p>
+                      <span className="stat-change">Total</span>
+                    </div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-icon">👶</div>
+                    <div className="stat-info">
+                      <h3>Enfants avec plans</h3>
+                      <p className="stat-value">{progressAiSummary.childrenWithPlansCount ?? 0}</p>
+                      <span className="stat-change">Anonymisé</span>
+                    </div>
+                  </div>
+                  {progressAiSummary.planCountByType && Object.entries(progressAiSummary.planCountByType).map(([type, count]) => (
+                    <div key={type} className="stat-card">
+                      <div className="stat-icon">📌</div>
+                      <div className="stat-info">
+                        <h3>{type}</h3>
+                        <p className="stat-value">{count}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
 
             <div className="dashboard-grid">
               <section className="dashboard-section">

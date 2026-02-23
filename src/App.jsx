@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Home from './pages/home/Home';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -13,6 +13,8 @@ import PECSBoardCreator from './pages/specialist/PECSBoardCreator';
 import TEACCHTrackerCreator from './pages/specialist/TEACCHTrackerCreator';
 import ActivitiesCreator from './pages/specialist/ActivitiesCreator';
 import SkillTrackerCreator from './pages/specialist/SkillTrackerCreator';
+import ProgressAIRecommendations from './pages/specialist/ProgressAIRecommendations';
+import OrgSpecialistDetail from './pages/org-leader/OrgSpecialistDetail';
 import './App.css'
 
 function App() {
@@ -55,6 +57,7 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/org/login" element={<OrgLeaderLogin />} />
         <Route path="/org/dashboard" element={<OrgLeaderDashboard />} />
+        <Route path="/org/specialist/:specialistId" element={<OrgSpecialistDetail />} />
         <Route path="/confirm-account" element={<ConfirmAccount />} />
         <Route path="/specialist/login" element={<SpecialistLogin />} />
         <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
@@ -62,6 +65,10 @@ function App() {
         <Route path="/specialist/teacch/create" element={<TEACCHTrackerCreator />} />
         <Route path="/specialist/activities" element={<ActivitiesCreator />} />
         <Route path="/specialist/skill-tracker" element={<SkillTrackerCreator />} />
+        <Route path="/specialist/ai-recommendations/:childId" element={<ProgressAIRecommendations />} />
+        {/* Healthcare routes: same as specialist dashboard (so /healthcare/dashboard is not blank) */}
+        <Route path="/healthcare" element={<Navigate to="/specialist/dashboard" replace />} />
+        <Route path="/healthcare/dashboard" element={<SpecialistDashboard />} />
       </Routes>
     </Router>
   )

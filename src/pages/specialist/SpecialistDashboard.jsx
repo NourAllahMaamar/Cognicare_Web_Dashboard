@@ -32,6 +32,8 @@ function SpecialistDashboard() {
     const [addChildLoading, setAddChildLoading] = useState(false);
     const [expandedPlanId, setExpandedPlanId] = useState(null);
     const [planTypeFilter, setPlanTypeFilter] = useState('all'); // 'all' | 'PECS' | 'TEACCH' | 'SkillTracker' | 'Activity'
+    const [activitySuggestions, setActivitySuggestions] = useState([]);
+    const [activitySuggestionsLoading, setActivitySuggestionsLoading] = useState(false);
     const navigate = useNavigate();
 
     const filteredChildPlans = planTypeFilter === 'all'
@@ -85,6 +87,27 @@ function SpecialistDashboard() {
             }
         } catch (err) {
             console.error('Failed to fetch private children:', err);
+        }
+    }, [token, handleUnauthorized]);
+
+    // ── Fetch activity suggestions (Progress AI) ──
+    const fetchActivitySuggestions = useCallback(async () => {
+        if (!token) return;
+        setActivitySuggestionsLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/progress-ai/activity-suggestions`, {
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include',
+            });
+            if (response.status === 401) { handleUnauthorized(); return; }
+            if (response.ok) {
+                const data = await response.json();
+                setActivitySuggestions(Array.isArray(data.suggestions) ? data.suggestions : []);
+            }
+        } catch (err) {
+            console.error('Failed to fetch activity suggestions:', err);
+        } finally {
+            setActivitySuggestionsLoading(false);
         }
     }, [token, handleUnauthorized]);
 
@@ -241,9 +264,9 @@ function SpecialistDashboard() {
             navigate('/specialist/login');
             return;
         }
-        Promise.all([fetchOrgChildren(), fetchPrivateChildren(), fetchMyPlans()])
+        Promise.all([fetchOrgChildren(), fetchPrivateChildren(), fetchMyPlans(), fetchActivitySuggestions()])
             .finally(() => setLoading(false));
-    }, [token, navigate, fetchOrgChildren, fetchPrivateChildren, fetchMyPlans]);
+    }, [token, navigate, fetchOrgChildren, fetchPrivateChildren, fetchMyPlans, fetchActivitySuggestions]);
 
     const handleChildSelect = (child) => {
         setSelectedChild(child);
@@ -568,6 +591,22 @@ function SpecialistDashboard() {
                                 </div>
                             </div>
 
+                            {/* Activity suggestions (Progress AI) */}
+                            <div className="sp-section">
+                                <h2 className="sp-section-title">💡 Suggestions d&apos;activités</h2>
+                                {activitySuggestionsLoading ? (
+                                    <p>Chargement…</p>
+                                ) : activitySuggestions.length > 0 ? (
+                                    <ul style={{ margin: 0, paddingLeft: 20 }}>
+                                        {activitySuggestions.map((s, i) => (
+                                            <li key={i} style={{ marginBottom: 8 }}>{s}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p style={{ color: '#64748b' }}>Aucune suggestion pour le moment.</p>
+                                )}
+                            </div>
+
                             {allChildren.length === 0 && (
                                 <div className="sp-tip-banner">
                                     <div className="sp-tip-icon">💡</div>
@@ -644,6 +683,13 @@ function SpecialistDashboard() {
                                         </div>
 
                                         <div className="sp-action-buttons">
+                                            <button
+                                                className="sp-btn sp-btn-pecs"
+                                                onClick={() => navigate(`/specialist/ai-recommendations/${selectedChild._id}`)}
+                                                style={{ backgroundColor: '#2D7DA1', color: '#fff' }}
+                                            >
+                                                🤖 Recommandations IA
+                                            </button>
                                             <button className="sp-btn sp-btn-pecs" onClick={() => navigate(`/specialist/pecs/create?childId=${selectedChild._id}`)}>
                                                 🖼️ {t('specialistDashboard.childDetail.createPecs')}
                                             </button>

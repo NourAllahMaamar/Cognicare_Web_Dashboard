@@ -57,6 +57,12 @@ function OrgLeaderDashboard() {
   const fileInputRef = useRef(null);
   const [openDropdown, setOpenDropdown] = useState(null); // 'staff' | 'families' | 'children' | null
 
+  // Progress AI – specialist summary (org leader)
+  const [progressAiSpecialistId, setProgressAiSpecialistId] = useState('');
+  const [progressAiSpecialistSummary, setProgressAiSpecialistSummary] = useState(null);
+  const [progressAiSummaryLoading, setProgressAiSummaryLoading] = useState(false);
+  const [progressAiSummaryError, setProgressAiSummaryError] = useState('');
+
   // Refresh access token using refresh token
   const refreshAccessToken = useCallback(async () => {
     try {
@@ -138,6 +144,45 @@ function OrgLeaderDashboard() {
       setStaff([]);
     } finally {
       setLoading(false);
+    }
+  }, [handleSessionExpired, refreshAccessToken]);
+
+  const fetchProgressAiSpecialistSummary = useCallback(async (specialistId) => {
+    if (!specialistId || specialistId.trim() === '') return;
+    setProgressAiSummaryLoading(true);
+    setProgressAiSummaryError('');
+    setProgressAiSpecialistSummary(null);
+    try {
+      let authToken = localStorage.getItem('orgLeaderToken');
+      let response = await fetch(`${API_BASE_URL}/progress-ai/org/specialist/${encodeURIComponent(specialistId.trim())}/summary`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          authToken = newToken;
+          response = await fetch(`${API_BASE_URL}/progress-ai/org/specialist/${encodeURIComponent(specialistId.trim())}/summary`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+            credentials: 'include',
+          });
+        }
+      }
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+      if (response.ok) {
+        const data = await response.json();
+        setProgressAiSpecialistSummary(data);
+      } else {
+        const err = await response.json().catch(() => ({}));
+        setProgressAiSummaryError(err.message || `HTTP ${response.status}`);
+      }
+    } catch (err) {
+      setProgressAiSummaryError(err?.message || 'Failed to load');
+    } finally {
+      setProgressAiSummaryLoading(false);
     }
   }, [handleSessionExpired, refreshAccessToken]);
 
@@ -1342,6 +1387,76 @@ function OrgLeaderDashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Progress AI – Résumé par spécialiste (org leader) */}
+            <section className="dashboard-section" style={{ marginTop: 24 }}>
+              <h3 className="section-title">🤖 Progress AI – Résumé par spécialiste</h3>
+              <p style={{ color: '#64748b', fontSize: 14, marginBottom: 12 }}>
+                Saisissez l’ID d’un spécialiste de votre organisation pour voir son résumé (plans, taux d’approbation, résultats améliorés).
+              </p>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                <input
+                  type="text"
+                  placeholder="ID du spécialiste"
+                  value={progressAiSpecialistId}
+                  onChange={(e) => setProgressAiSpecialistId(e.target.value)}
+                  style={{ padding: '8px 12px', minWidth: 200, borderRadius: 8, border: '1px solid #e2e8f0' }}
+                />
+                <button
+                  type="button"
+                  className="io-button"
+                  onClick={() => fetchProgressAiSpecialistSummary(progressAiSpecialistId)}
+                  disabled={progressAiSummaryLoading}
+                >
+                  {progressAiSummaryLoading ? 'Chargement…' : 'Voir résumé'}
+                </button>
+              </div>
+              {progressAiSummaryError && <p style={{ color: '#dc2626', marginTop: 8 }}>{progressAiSummaryError}</p>}
+              {progressAiSpecialistSummary && (
+                <div className="stats-grid" style={{ marginTop: 16 }}>
+                  <div className="stat-card">
+                    <div className="stat-icon">📋</div>
+                    <div className="stat-info">
+                      <h3>Plans</h3>
+                      <p className="stat-value">{progressAiSpecialistSummary.totalPlans ?? 0}</p>
+                    </div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-icon">👶</div>
+                    <div className="stat-info">
+                      <h3>Enfants</h3>
+                      <p className="stat-value">{progressAiSpecialistSummary.childrenCount ?? 0}</p>
+                    </div>
+                  </div>
+                  {progressAiSpecialistSummary.approvalRatePercent != null && (
+                    <div className="stat-card">
+                      <div className="stat-icon">✓</div>
+                      <div className="stat-info">
+                        <h3>Taux d’approbation</h3>
+                        <p className="stat-value">{progressAiSpecialistSummary.approvalRatePercent}%</p>
+                      </div>
+                    </div>
+                  )}
+                  {progressAiSpecialistSummary.resultsImprovedRatePercent != null && (
+                    <div className="stat-card">
+                      <div className="stat-icon">📈</div>
+                      <div className="stat-info">
+                        <h3>Résultats améliorés</h3>
+                        <p className="stat-value">{progressAiSpecialistSummary.resultsImprovedRatePercent}%</p>
+                      </div>
+                    </div>
+                  )}
+                  {progressAiSpecialistSummary.planCountByType && Object.entries(progressAiSpecialistSummary.planCountByType).map(([type, count]) => (
+                    <div key={type} className="stat-card">
+                      <div className="stat-info">
+                        <h3>{type}</h3>
+                        <p className="stat-value">{count}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
           </div>
         )}
 
@@ -1392,38 +1507,43 @@ function OrgLeaderDashboard() {
                 staff.map((member) => {
                   const memberId = member._id || member.id;
                   return (
-                    <div key={memberId} className="profile-card">
-                      <div className="card-header">
-                        <div className="card-avatar">
-                          {member.fullName?.[0]?.toUpperCase()}
-                          <span className={`card-role-badge ${member.role}`}>
-                            {t(`roles.${member.role}`) || member.role}
-                          </span>
+                    <div key={memberId} className="profile-card" style={{ cursor: 'pointer', position: 'relative' }}>
+                      <div
+                        onClick={() => navigate(`/org/specialist/${memberId}`)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="card-header">
+                          <div className="card-avatar">
+                            {member.fullName?.[0]?.toUpperCase()}
+                            <span className={`card-role-badge ${member.role}`}>
+                              {t(`roles.${member.role}`) || member.role}
+                            </span>
+                          </div>
+                          <h4 className="card-name">{member.fullName}</h4>
+                          <a href={`mailto:${member.email}`} className="card-email" onClick={(e) => e.stopPropagation()}>{member.email}</a>
                         </div>
-                        <h4 className="card-name">{member.fullName}</h4>
-                        <a href={`mailto:${member.email}`} className="card-email">{member.email}</a>
-                      </div>
 
-                      <div className="card-body">
-                        <div className="card-info-item">
-                          <span className="card-info-label">📞</span>
-                          <span>{member.phone || '—'}</span>
-                        </div>
-                        <div className="card-info-item">
-                          <span className="card-info-label">📅</span>
-                          <span>{new Date(member.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</span>
-                        </div>
-                        <div className="card-info-item">
-                          <span className="card-info-label">✅</span>
-                          <span className={`status-badge ${member.isConfirmed ? 'confirmed' : 'pending'}`}>
-                            {member.isConfirmed ? t('orgDashboard.staff.status.confirmed') : t('orgDashboard.staff.status.pending')}
-                          </span>
+                        <div className="card-body">
+                          <div className="card-info-item">
+                            <span className="card-info-label">📞</span>
+                            <span>{member.phone || '—'}</span>
+                          </div>
+                          <div className="card-info-item">
+                            <span className="card-info-label">📅</span>
+                            <span>{new Date(member.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : (i18n.language === 'fr' ? 'fr-FR' : 'en-US'))}</span>
+                          </div>
+                          <div className="card-info-item">
+                            <span className="card-info-label">✅</span>
+                            <span className={`status-badge ${member.isConfirmed ? 'confirmed' : 'pending'}`}>
+                              {member.isConfirmed ? t('orgDashboard.staff.status.confirmed') : t('orgDashboard.staff.status.pending')}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
                       <div className="card-footer">
                         <div className="card-date">{t('orgDashboard.staff.joined')}</div>
-                        <div className="card-actions">
+                        <div className="card-actions" onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => handleEditStaff(member)}
                             className="card-action-btn edit"
