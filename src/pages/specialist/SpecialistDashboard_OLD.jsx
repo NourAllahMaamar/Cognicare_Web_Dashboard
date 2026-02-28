@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { API_BASE_URL, getUploadUrl } from '../../config';
+import { cachedGet } from '../../apiClient';
 import '../org-leader/OrgLeaderDashboard.css';
 import './SpecialistDashboard.css';
 
@@ -59,16 +60,10 @@ function SpecialistDashboard() {
     // ── Fetch organization children ──
     const fetchOrgChildren = useCallback(async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/organization/my-organization/children`, {
-                headers: { 'Authorization': `Bearer ${token}` },
-                credentials: 'include',
-            });
-            if (response.status === 401) { handleUnauthorized(); return; }
-            if (response.ok) {
-                const data = await response.json();
-                setOrgChildren(Array.isArray(data) ? data.map(c => ({ ...c, _source: 'org' })) : []);
-            }
+            const data = await cachedGet('/organization/my-organization/children', { ttlMs: 60_000, token });
+            setOrgChildren(Array.isArray(data) ? data.map(c => ({ ...c, _source: 'org' })) : []);
         } catch (err) {
+            if (err.status === 401) { handleUnauthorized(); return; }
             console.error('Failed to fetch org children:', err);
         }
     }, [token, handleUnauthorized]);
@@ -76,16 +71,10 @@ function SpecialistDashboard() {
     // ── Fetch private children ──
     const fetchPrivateChildren = useCallback(async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/children/specialist/my-children`, {
-                headers: { 'Authorization': `Bearer ${token}` },
-                credentials: 'include',
-            });
-            if (response.status === 401) { handleUnauthorized(); return; }
-            if (response.ok) {
-                const data = await response.json();
-                setPrivateChildren(Array.isArray(data) ? data.map(c => ({ ...c, _source: 'private' })) : []);
-            }
+            const data = await cachedGet('/children/specialist/my-children', { ttlMs: 60_000, token });
+            setPrivateChildren(Array.isArray(data) ? data.map(c => ({ ...c, _source: 'private' })) : []);
         } catch (err) {
+            if (err.status === 401) { handleUnauthorized(); return; }
             console.error('Failed to fetch private children:', err);
         }
     }, [token, handleUnauthorized]);
@@ -95,16 +84,10 @@ function SpecialistDashboard() {
         if (!token) return;
         setActivitySuggestionsLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/progress-ai/activity-suggestions`, {
-                headers: { Authorization: `Bearer ${token}` },
-                credentials: 'include',
-            });
-            if (response.status === 401) { handleUnauthorized(); return; }
-            if (response.ok) {
-                const data = await response.json();
-                setActivitySuggestions(Array.isArray(data.suggestions) ? data.suggestions : []);
-            }
+            const data = await cachedGet('/progress-ai/activity-suggestions', { ttlMs: 30_000, token });
+            setActivitySuggestions(Array.isArray(data.suggestions) ? data.suggestions : []);
         } catch (err) {
+            if (err.status === 401) { handleUnauthorized(); return; }
             console.error('Failed to fetch activity suggestions:', err);
         } finally {
             setActivitySuggestionsLoading(false);

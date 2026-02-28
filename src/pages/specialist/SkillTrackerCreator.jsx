@@ -1,278 +1,173 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { API_BASE_URL } from '../../config';
-import './SpecialistDashboard.css';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
-function SkillTrackerCreator() {
-    const [searchParams] = useSearchParams();
-    const childId = searchParams.get('childId');
-    const navigate = useNavigate();
-    const { t } = useTranslation();
+const TRIALS_COUNT = 10;
+const MASTERY_THRESHOLD = 80;
 
-    const [childName, setChildName] = useState('Loading...');
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [baselinePercent, setBaselinePercent] = useState(0);
-    const [targetPercent, setTargetPercent] = useState(80);
-    const [trials, setTrials] = useState(Array(10).fill('pending')); // 'pending', 'passed', 'failed'
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+export default function SkillTrackerCreator() {
+  const [searchParams] = useSearchParams();
+  const childId = searchParams.get('childId');
+  const navigate = useNavigate();
+  const { authMutate } = useAuth('specialist');
 
-    const token = localStorage.getItem('specialistToken');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [baselinePercent, setBaselinePercent] = useState(0);
+  const [targetPercent, setTargetPercent] = useState(MASTERY_THRESHOLD);
+  const [trials, setTrials] = useState(Array(TRIALS_COUNT).fill(null));
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-    useEffect(() => {
-        if (!token) {
-            navigate('/specialist/login');
-            return;
-        }
+  useEffect(() => { if (!childId) setError('Please select a child first.'); }, [childId]);
 
-        const fetchChildDetails = async () => {
-            try {
-                const [orgRes, privateRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/organization/my-organization/children`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch(`${API_BASE_URL}/children/specialist/my-children`, { headers: { 'Authorization': `Bearer ${token}` } })
-                ]);
-                const orgChildren = orgRes.ok ? await orgRes.json() : [];
-                const privateChildren = privateRes.ok ? await privateRes.json() : [];
-                const allChildren = [...(Array.isArray(orgChildren) ? orgChildren : []), ...(Array.isArray(privateChildren) ? privateChildren : [])];
-                const targetChild = allChildren.find(c => c._id === childId);
-                if (targetChild) {
-                    setChildName(targetChild.fullName);
-                    setError('');
-                } else {
-                    setChildName('Unknown Child');
-                    setError(t('specialistDashboard.messages.childNotFound') || 'Child not found.');
-                }
-            } catch (err) {
-                console.error("Error fetching child details:", err);
-                setChildName('Unknown Child');
-                setError(t('specialistDashboard.messages.fetchError') || 'Failed to load child.');
-            }
-        };
+  const toggleTrial = (i) => {
+    const t = [...trials];
+    t[i] = t[i] === null ? 'pass' : t[i] === 'pass' ? 'fail' : null;
+    setTrials(t);
+  };
 
-        if (childId) {
-            fetchChildDetails();
-        }
-    }, [childId, token, navigate]);
+  const completedTrials = trials.filter(t => t !== null).length;
+  const passCount = trials.filter(t => t === 'pass').length;
+  const currentPercent = completedTrials > 0 ? Math.round((passCount / completedTrials) * 100) : 0;
+  const mastered = currentPercent >= targetPercent && completedTrials === TRIALS_COUNT;
 
-    const handleTrialChange = (index, status) => {
-        const newTrials = [...trials];
-        newTrials[index] = status;
-        setTrials(newTrials);
-    };
+  const handleSave = async () => {
+    if (!childId || !title) { setError('Title is required.'); return; }
+    setLoading(true);
+    try {
+      await authMutate('/specialized-plans', {
+        body: {
+          childId, type: 'SkillTracker', title,
+          content: { description, baselinePercent, targetPercent, trials, currentPercent, mastered, completedTrials, passCount },
+        },
+      });
+      setSuccess('Skill Tracker saved!');
+      setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
+    } catch (err) { setError(err.message); }
+    setLoading(false);
+  };
 
-    const getSuccessCount = () => {
-        return trials.filter(tr => tr === 'passed').length;
-    };
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
-    const isMastered = getSuccessCount() >= 8;
-
-    const handleSave = async (e) => {
-        e.preventDefault();
-        if (!childId) {
-            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
-            return;
-        }
-        setLoading(true);
-        setError('');
-
-        try {
-            const successCount = getSuccessCount();
-            const currentPercent = Math.round((successCount / 10) * 100);
-            const planData = {
-                childId,
-                type: 'SkillTracker',
-                title,
-                content: {
-                    subType: 'SkillTracker',
-                    description,
-                    trials,
-                    isMastered,
-                    successCount,
-                    baselinePercent: Number(baselinePercent) || 0,
-                    targetPercent: Number(targetPercent) || 80,
-                    currentPercent
-                }
-            };
-
-            const response = await fetch(`${API_BASE_URL}/specialized-plans`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token && { 'Authorization': `Bearer ${token}` }),
-                },
-                credentials: 'include',
-                body: JSON.stringify(planData),
-            });
-
-            if (response.status === 401) {
-                localStorage.removeItem('specialistToken');
-                localStorage.removeItem('specialistUser');
-                setError('Session expired. Please log in again.');
-                setTimeout(() => navigate('/specialist/login'), 2000);
-                return;
-            }
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.message || 'Failed to save skill tracker');
-            }
-
-            navigate('/specialist/dashboard');
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="org-dashboard">
-            <header className="dashboard-header">
-                <div className="header-content">
-                    <div className="header-left">
-                        <h1 className="dashboard-title">
-                            <img src="/src/assets/logo.png" alt="Logo" className="header-logo" />
-                            Skill Mastery Tracker
-                        </h1>
-                        <p className="dashboard-subtitle">For {childName}</p>
-                    </div>
-                    <div className="header-right">
-                        <button className="logout-button" onClick={() => navigate('/specialist/dashboard')}>
-                            Back to Dashboard
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <main className="dashboard-main" style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
-                <div className="pecs-creator-container" style={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}>
-
-                    <div style={{ borderBottom: '1px solid #eee', paddingBottom: '1rem', marginBottom: '2rem' }}>
-                        <h2 style={{ color: '#1e293b', margin: 0 }}>Skill Mastery Tracker</h2>
-                        <p style={{ color: '#64748b', margin: '0.5rem 0 0', fontSize: '0.9rem' }}>
-                            Track progress of specific skills (e.g. motor, communication) over time. Set baseline and target percentages and record trials.
-                        </p>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-                            <div style={{ background: isMastered ? '#dcfce7' : '#f1f5f9', color: isMastered ? '#166534' : '#64748b', padding: '0.5rem 1rem', borderRadius: '2rem', fontWeight: 'bold' }}>
-                                {getSuccessCount()} / 10 | Status: {isMastered ? 'Mastered 🏆' : 'Learning'}
-                            </div>
-                            <div style={{ fontSize: '0.9rem', color: '#475569' }}>
-                                Progress: {Math.round((getSuccessCount() / 10) * 100)}% (baseline → target: {baselinePercent}% → {targetPercent}%)
-                            </div>
-                        </div>
-                    </div>
-
-                    {error && <div className="error-message" style={{ background: '#fee2e2', color: '#b91c1c', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem' }}>{error}</div>}
-
-                    <form onSubmit={handleSave}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-                            <div className="form-group">
-                                <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Core Skill / Target</label>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="e.g., Selecting 'I Want' icon consistently"
-                                    required
-                                    style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Criteria & Notes</label>
-                                <textarea
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Prompting level, environment, specific materials..."
-                                    rows={2}
-                                    style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem', resize: 'vertical' }}
-                                />
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-                            <div className="form-group">
-                                <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Baseline % (starting level)</label>
-                                <input
-                                    type="number"
-                                    min={0}
-                                    max={100}
-                                    value={baselinePercent}
-                                    onChange={(e) => setBaselinePercent(Number(e.target.value) || 0)}
-                                    style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Target % (goal)</label>
-                                <input
-                                    type="number"
-                                    min={0}
-                                    max={100}
-                                    value={targetPercent}
-                                    onChange={(e) => setTargetPercent(Number(e.target.value) || 80)}
-                                    style={{ width: '100%', padding: '0.875rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
-                                />
-                            </div>
-                        </div>
-
-                        <div style={{ marginBottom: '2rem' }}>
-                            <label style={{ fontWeight: '600', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Current progress (from trials)</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <div style={{ flex: 1, height: '12px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
-                                    <div style={{ height: '100%', width: `${(getSuccessCount() / 10) * 100}%`, background: isMastered ? '#22c55e' : '#6366f1', borderRadius: '6px', transition: 'width 0.3s' }} />
-                                </div>
-                                <span style={{ fontWeight: '600', color: '#334155', minWidth: '3rem' }}>{Math.round((getSuccessCount() / 10) * 100)}%</span>
-                            </div>
-                        </div>
-
-                        <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                            <h3 style={{ marginTop: 0, color: '#334155', marginBottom: '1.5rem', textAlign: 'center' }}>10-Trial Mastery Grid (8/10 Rule)</h3>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
-                                {trials.map((status, index) => (
-                                    <div key={index} style={{ background: 'white', padding: '1rem', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                                        <div style={{ fontWeight: 'bold', color: '#94a3b8' }}>Trial {index + 1}</div>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleTrialChange(index, 'passed')}
-                                                style={{
-                                                    background: status === 'passed' ? '#22c55e' : '#f1f5f9',
-                                                    color: status === 'passed' ? 'white' : '#64748b',
-                                                    border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', transition: 'all 0.2s',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem'
-                                                }}
-                                            >✓</button>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleTrialChange(index, 'failed')}
-                                                style={{
-                                                    background: status === 'failed' ? '#ef4444' : '#f1f5f9',
-                                                    color: status === 'failed' ? 'white' : '#64748b',
-                                                    border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', transition: 'all 0.2s',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem'
-                                                }}
-                                            >✗</button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="creator-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee' }}>
-                            <button type="button" className="cancel-btn" onClick={() => navigate('/specialist/dashboard')} style={{ backgroundColor: '#f1f5f9', color: '#475569', padding: '0.875rem 2rem', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>
-                                Cancel
-                            </button>
-                            <button type="submit" className="save-btn" disabled={loading} style={{ backgroundColor: '#6366f1', color: 'white', padding: '0.875rem 2rem', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)' }}>
-                                {loading ? 'Saving Tracker...' : 'Save Tracker'}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </main>
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div>
+              <h1 className="text-xl font-bold">Skill Tracker</h1>
+              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) — 10-trial mastery</p>
+            </div>
+          </div>
+          <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
+            {loading ? 'Saving...' : 'Save Tracker'}
+          </button>
         </div>
-    );
-}
+      </div>
 
-export default SkillTrackerCreator;
+      <div className="max-w-5xl mx-auto px-6 py-6">
+        {error && <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium mb-4">{error}</div>}
+        {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium mb-4">{success}</div>}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left: Settings */}
+          <div className="space-y-4">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <label className="block text-sm font-bold mb-2">Skill Title</label>
+              <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Eye Contact on Request" className={inputCls} />
+            </div>
+
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <label className="block text-sm font-bold mb-2">Description</label>
+              <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder="Describe the target skill..." className={inputCls} />
+            </div>
+
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-sm font-bold mb-4">Percentages</h3>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-500">Baseline</span>
+                    <span className="font-bold">{baselinePercent}%</span>
+                  </div>
+                  <input type="range" min={0} max={100} value={baselinePercent} onChange={e => setBaselinePercent(Number(e.target.value))} className="w-full accent-slate-400" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-500">Target</span>
+                    <span className="font-bold text-success">{targetPercent}%</span>
+                  </div>
+                  <input type="range" min={0} max={100} value={targetPercent} onChange={e => setTargetPercent(Number(e.target.value))} className="w-full accent-success" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Trial Grid + Stats */}
+          <div className="space-y-4">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
+                <p className="text-2xl font-black text-primary">{passCount}<span className="text-sm font-normal text-slate-400">/{TRIALS_COUNT}</span></p>
+                <p className="text-xs text-slate-500 mt-1">Correct</p>
+              </div>
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
+                <p className={`text-2xl font-black ${currentPercent >= targetPercent ? 'text-success' : 'text-amber-500'}`}>{currentPercent}%</p>
+                <p className="text-xs text-slate-500 mt-1">Accuracy</p>
+              </div>
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
+                <p className="text-2xl font-black">{mastered ? '🏆' : '⏳'}</p>
+                <p className="text-xs text-slate-500 mt-1">{mastered ? 'Mastered!' : 'In Progress'}</p>
+              </div>
+            </div>
+
+            {/* Progress comparison bar */}
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-sm font-bold mb-3">Progress Comparison</h3>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs mb-1"><span>Baseline</span><span>{baselinePercent}%</span></div>
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-slate-400 rounded-full" style={{ width: `${baselinePercent}%` }} />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1"><span>Current</span><span className="font-bold">{currentPercent}%</span></div>
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full transition-all ${currentPercent >= targetPercent ? 'bg-success' : 'bg-primary'}`} style={{ width: `${currentPercent}%` }} />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1"><span>Target</span><span>{targetPercent}%</span></div>
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-success/30 rounded-full" style={{ width: `${targetPercent}%` }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trial Grid */}
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-sm font-bold mb-1">Trial Grid</h3>
+              <p className="text-xs text-slate-400 mb-4">Click: ✅ Pass → ❌ Fail → ⬜ Reset</p>
+              <div className="grid grid-cols-5 gap-3">
+                {trials.map((trial, i) => (
+                  <button key={i} onClick={() => toggleTrial(i)} className={`aspect-square rounded-xl text-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-all ${trial === 'pass' ? 'bg-success text-white shadow-lg shadow-success/20' : trial === 'fail' ? 'bg-error text-white shadow-lg shadow-error/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200'}`}>
+                    <span className="text-xl">{trial === 'pass' ? '✓' : trial === 'fail' ? '✗' : ''}</span>
+                    <span className="text-[10px] opacity-70">Trial {i + 1}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

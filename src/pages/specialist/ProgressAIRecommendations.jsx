@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../config';
-import '../org-leader/OrgLeaderDashboard.css';
-import './SpecialistDashboard.css';
+import { cachedGet } from '../../apiClient';
+import '../org-leader/OrgLeaderDashboard_OLD.css';
+import './SpecialistDashboard_OLD.css';
 
 export default function ProgressAIRecommendations() {
     const { childId } = useParams();
@@ -29,27 +30,16 @@ export default function ProgressAIRecommendations() {
         setLoading(true);
         setError('');
         try {
-            const res = await fetch(
-                `${API_BASE_URL}/progress-ai/child/${childId}/recommendations`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    credentials: 'include',
-                }
+            const json = await cachedGet(
+                `/progress-ai/child/${childId}/recommendations`,
+                { ttlMs: 30_000, token }
             );
-            if (res.status === 401) {
+            setData(json);
+        } catch (e) {
+            if (e.status === 401) {
                 handleUnauthorized();
                 return;
             }
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                const msg = res.status === 500
-                    ? 'Recommandations IA temporairement indisponibles. Vérifiez que le backend et la clé API (GEMINI_API_KEY) sont configurés.'
-                    : (err.message || `HTTP ${res.status}`);
-                throw new Error(msg);
-            }
-            const json = await res.json();
-            setData(json);
-        } catch (e) {
             setError(e.message || 'Failed to load recommendations');
             setData(null);
         } finally {

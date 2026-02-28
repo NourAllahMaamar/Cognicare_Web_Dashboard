@@ -1,299 +1,239 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { API_BASE_URL } from '../../config';
-import teacchHeaderImg from '../../assets/teacch-header.png';
-import './SpecialistDashboard.css';
+import { useAuth } from '../../hooks/useAuth';
 
-const TEACCH_CATEGORIES = [
-    { id: 'social_skills', label: 'Social Skills', icon: '🤝', color: '#6366f1' },
-    { id: 'communication', label: 'Communication', icon: '💬', color: '#f59e0b' },
-    { id: 'academics', label: 'Academics', icon: '📚', color: '#10b981' },
-    { id: 'life_skills', label: 'Life Skills', icon: '🏠', color: '#ec4899' },
-    { id: 'motor_skills', label: 'Motor Skills', icon: '💪', color: '#8b5cf6' },
+const CATEGORIES = [
+  { id: 'communication', label: 'Communication', icon: 'chat_bubble', color: 'text-blue-500' },
+  { id: 'social', label: 'Social Skills', icon: 'group', color: 'text-purple-500' },
+  { id: 'academic', label: 'Academic', icon: 'school', color: 'text-amber-500' },
+  { id: 'selfCare', label: 'Self-Care', icon: 'self_improvement', color: 'text-green-500' },
+  { id: 'motor', label: 'Motor Skills', icon: 'sports_handball', color: 'text-red-500' },
+  { id: 'behavior', label: 'Behavior', icon: 'psychology', color: 'text-cyan-500' },
 ];
 
 const GOAL_TEMPLATES = {
-    social_skills: [
-        'Initiates eye contact with a peer for 3 seconds',
-        'Takes turns during a game with minimal prompting',
-        'Greets familiar adults independently',
-        'Shares materials with peers during structured activities',
-    ],
-    communication: [
-        'Points to desired item from a choice of 3',
-        'Uses 2-word phrases to make requests',
-        'Follows 2-step instructions without visual cue',
-        'Labels common objects in the environment',
-    ],
-    academics: [
-        'Matches identical objects or pictures',
-        'Sorts items by color (3 colors)',
-        'Identifies own name in print',
-        'Counts objects up to 5 with 1:1 correspondence',
-    ],
-    life_skills: [
-        'Washes hands with visual schedule independently',
-        'Puts on/removes jacket independently',
-        'Cleans up workspace when directed',
-        'Uses utensils to eat independently',
-    ],
-    motor_skills: [
-        'Holds a pencil with correct tripod grip',
-        'Cuts along a straight line with scissors',
-        'Stacks 5+ blocks in a tower',
-        'Catches a ball from 3 feet away',
-    ],
+  communication: ['Follow 2-step instructions', 'Request items using words/pictures', 'Respond to greetings', 'Answer yes/no questions'],
+  social: ['Take turns in play', 'Maintain personal space', 'Identify emotions in others', 'Participate in group activities'],
+  academic: ['Sort objects by category', 'Match identical objects', 'Complete a 3-step task independently', 'Follow a visual schedule'],
+  selfCare: ['Wash hands independently', 'Put on/remove shoes', 'Use utensils during meals', 'Brush teeth with visual guide'],
+  motor: ['String beads', 'Cut with scissors on a line', 'Write first name', 'Catch a ball from 5 feet'],
+  behavior: ['Transition between activities with timer', 'Wait for 2 minutes', 'Accept changes in routine', 'Use a calm-down strategy'],
 };
 
-function TEACCHTrackerCreator() {
-    const [searchParams] = useSearchParams();
-    const childId = searchParams.get('childId');
-    const [title, setTitle] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('social_skills');
-    const [goals, setGoals] = useState([]);
-    const [newGoalText, setNewGoalText] = useState('');
-    const [newGoalBaseline, setNewGoalBaseline] = useState(0);
-    const [newGoalTarget, setNewGoalTarget] = useState(80);
-    const [workSystem, setWorkSystem] = useState({
-        whatToDo: '',
-        howMuch: '',
-        whenDone: '',
-        whatNext: ''
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-    const { t } = useTranslation();
-    const token = localStorage.getItem('specialistToken');
+export default function TEACCHTrackerCreator() {
+  const [searchParams] = useSearchParams();
+  const childId = searchParams.get('childId');
+  const navigate = useNavigate();
+  const { authMutate } = useAuth('specialist');
 
-    useEffect(() => {
-        if (!token) {
-            navigate('/specialist/login');
-            return;
-        }
-        if (!childId) {
-            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
-        }
-    }, [token, childId, navigate]);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('communication');
+  const [goals, setGoals] = useState([]);
+  const [customGoal, setCustomGoal] = useState('');
+  const [workSystem, setWorkSystem] = useState({ steps: [''], visualSchedule: true, leftToRight: true });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-    const currentCat = TEACCH_CATEGORIES.find(c => c.id === selectedCategory);
+  useEffect(() => { if (!childId) setError('Please select a child first.'); }, [childId]);
 
-    const addGoal = (text) => {
-        const goalText = (text || newGoalText).trim();
-        if (!goalText) return;
-        setGoals([...goals, {
-            id: Date.now().toString(),
-            text: goalText,
-            category: selectedCategory,
-            categoryLabel: currentCat?.label,
-            baseline: newGoalBaseline,
-            target: newGoalTarget,
-            current: newGoalBaseline,
-            measurement: 'Percentage of successful trials'
-        }]);
-        setNewGoalText('');
-        setNewGoalBaseline(0);
-        setNewGoalTarget(80);
-    };
+  const addGoal = (text) => {
+    if (!text || goals.find(g => g.text === text)) return;
+    setGoals([...goals, { id: Date.now().toString(), text, status: 'not_started', notes: '' }]);
+  };
 
-    const removeGoal = (id) => setGoals(goals.filter(g => g.id !== id));
+  const removeGoal = (id) => setGoals(goals.filter(g => g.id !== id));
 
-    const handleSave = async () => {
-        if (!childId) {
-            setError(t('specialistDashboard.messages.childNotFound') || 'Please select a child from the dashboard first.');
-            return;
-        }
-        if (!title || goals.length === 0) {
-            setError('Please provide a title and at least one goal.');
-            return;
-        }
-        setLoading(true);
-        try {
-            const response = await fetch(`${API_BASE_URL}/specialized-plans`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token && { 'Authorization': `Bearer ${token}` }),
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    childId,
-                    type: 'TEACCH',
-                    title,
-                    content: {
-                        goals,
-                        workSystem,
-                        categories: [...new Set(goals.map(g => g.category))],
-                    }
-                })
-            });
-            if (response.status === 401) {
-                localStorage.removeItem('specialistToken');
-                localStorage.removeItem('specialistUser');
-                setError('Session expired. Please log in again.');
-                setTimeout(() => navigate('/specialist/login'), 2000);
-                return;
-            }
-            if (response.ok) {
-                navigate('/specialist/dashboard');
-            } else {
-                const data = await response.json().catch(() => ({}));
-                throw new Error(data.message || 'Failed to save');
-            }
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const updateGoal = (id, field, value) => setGoals(goals.map(g => g.id === id ? { ...g, [field]: value } : g));
 
-    return (
-        <div className="teacch-creator-page">
-            <div
-                className="creator-page-bg"
-                style={{ backgroundImage: `url(${teacchHeaderImg})` }}
-                aria-hidden="true"
-            />
+  const addWorkStep = () => setWorkSystem({ ...workSystem, steps: [...workSystem.steps, ''] });
 
-            <div className="creator-content">
-                <header className="creator-header">
-                    <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-                    <h1>TEACCH Structured Teaching Tracker</h1>
-                    <button className="save-btn" onClick={handleSave} disabled={loading}>
-                        {loading ? 'Saving...' : '💾 Save Tracker'}
-                    </button>
-                </header>
+  const updateWorkStep = (i, val) => {
+    const steps = [...workSystem.steps];
+    steps[i] = val;
+    setWorkSystem({ ...workSystem, steps });
+  };
 
-                {error && <div className="error-message">{error}</div>}
+  const removeWorkStep = (i) => setWorkSystem({ ...workSystem, steps: workSystem.steps.filter((_, idx) => idx !== i) });
 
-                <div className="creator-main">
-                    {/* Left: Settings + Goals */}
-                    <div className="settings-panel">
-                        <div className="form-group">
-                            <label>Tracker Title</label>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="e.g., Week 5 Goals – Ahmed"
-                            />
-                        </div>
+  const handleSave = async () => {
+    if (!childId || !title || goals.length === 0) { setError('Title and at least one goal required.'); return; }
+    setLoading(true);
+    try {
+      await authMutate('/specialized-plans', {
+        body: { childId, type: 'TEACCH', title, content: { category, goals, workSystem } },
+      });
+      setSuccess('Tracker saved!');
+      setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
+    } catch (err) { setError(err.message); }
+    setLoading(false);
+  };
 
-                        {/* Category Selector */}
-                        <div className="form-group">
-                            <label>Goal Category</label>
-                            <div className="category-grid">
-                                {TEACCH_CATEGORIES.map(cat => (
-                                    <button
-                                        key={cat.id}
-                                        className={`category-btn ${selectedCategory === cat.id ? 'active' : ''}`}
-                                        style={{ '--cat-color': cat.color }}
-                                        onClick={() => setSelectedCategory(cat.id)}
-                                    >
-                                        <span>{cat.icon}</span>
-                                        <span>{cat.label}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+  const statusColors = { not_started: 'bg-slate-100 text-slate-500', in_progress: 'bg-amber-100 text-amber-700', mastered: 'bg-success/10 text-success' };
+  const statusLabels = { not_started: 'Not Started', in_progress: 'In Progress', mastered: 'Mastered' };
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
-                        {/* Work System */}
-                        <div className="work-system-box">
-                            <h3>📋 Work System (Structured Teaching)</h3>
-                            <p className="help-text">Define the 4 components of the TEACCH work system for this child.</p>
-                            <div className="form-group">
-                                <label>1. What to do?</label>
-                                <input type="text" value={workSystem.whatToDo} onChange={(e) => setWorkSystem({ ...workSystem, whatToDo: e.target.value })} placeholder="e.g., Complete matching activity" />
-                            </div>
-                            <div className="form-group">
-                                <label>2. How much?</label>
-                                <input type="text" value={workSystem.howMuch} onChange={(e) => setWorkSystem({ ...workSystem, howMuch: e.target.value })} placeholder="e.g., 5 items" />
-                            </div>
-                            <div className="form-group">
-                                <label>3. When am I done?</label>
-                                <input type="text" value={workSystem.whenDone} onChange={(e) => setWorkSystem({ ...workSystem, whenDone: e.target.value })} placeholder="e.g., When all items are placed in the box" />
-                            </div>
-                            <div className="form-group">
-                                <label>4. What comes next?</label>
-                                <input type="text" value={workSystem.whatNext} onChange={(e) => setWorkSystem({ ...workSystem, whatNext: e.target.value })} placeholder="e.g., Free play time" />
-                            </div>
-                        </div>
-
-                        {/* Add Goal */}
-                        <div className="add-goal-box">
-                            <h3>Add Goal</h3>
-
-                            {/* Template Suggestions */}
-                            <div className="template-list">
-                                <label>Quick Templates:</label>
-                                {GOAL_TEMPLATES[selectedCategory]?.map((tmpl, i) => (
-                                    <button key={i} className="template-btn" onClick={() => addGoal(tmpl)}>
-                                        + {tmpl}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="form-group">
-                                <label>Custom Goal</label>
-                                <textarea
-                                    value={newGoalText}
-                                    onChange={(e) => setNewGoalText(e.target.value)}
-                                    placeholder="Describe the target behavior..."
-                                    rows={2}
-                                />
-                            </div>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Baseline %</label>
-                                    <input type="number" min={0} max={100} value={newGoalBaseline} onChange={(e) => setNewGoalBaseline(Number(e.target.value))} />
-                                </div>
-                                <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Target %</label>
-                                    <input type="number" min={0} max={100} value={newGoalTarget} onChange={(e) => setNewGoalTarget(Number(e.target.value))} />
-                                </div>
-                            </div>
-                            <button className="add-btn" onClick={() => addGoal()}>+ Add Goal</button>
-                        </div>
-                    </div>
-
-                    {/* Right: Goals Preview */}
-                    <div className="board-preview">
-                        <h3>Goals ({goals.length})</h3>
-                        <div className="goals-list">
-                            {goals.map(goal => {
-                                const catInfo = TEACCH_CATEGORIES.find(c => c.id === goal.category);
-                                const progress = ((goal.current - goal.baseline) / (goal.target - goal.baseline) * 100) || 0;
-                                return (
-                                    <div key={goal.id} className="goal-item-card">
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span className="goal-category-tag" style={{ background: catInfo?.color }}>
-                                                {catInfo?.icon} {catInfo?.label}
-                                            </span>
-                                            <button className="remove-goal" onClick={() => removeGoal(goal.id)}>🗑️</button>
-                                        </div>
-                                        <p className="goal-text">{goal.text}</p>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#64748b', marginBottom: '0.25rem' }}>
-                                            <span>Baseline: {goal.baseline}%</span>
-                                            <span>Target: {goal.target}%</span>
-                                        </div>
-                                        <div className="goal-progress-bar">
-                                            <div className="progress-fill" style={{ width: `${Math.min(100, Math.max(0, progress))}%` }} />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            {goals.length === 0 && (
-                                <p className="empty-preview">
-                                    Select a category and add goals using templates or custom text.
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                </div>
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div>
+              <h1 className="text-xl font-bold">TEACCH Tracker</h1>
+              <p className="text-xs text-slate-500">Treatment and Education of Autistic and Communication Handicapped Children</p>
             </div>
+          </div>
+          <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
+            {loading ? 'Saving...' : 'Save Tracker'}
+          </button>
         </div>
-    );
-}
+      </div>
 
-export default TEACCHTrackerCreator;
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        {error && <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium mb-4">{error}</div>}
+        {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium mb-4">{success}</div>}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left: Setup */}
+          <div className="space-y-4">
+            {/* Title */}
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <label className="block text-sm font-bold mb-2">Plan Title</label>
+              <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Daily Living Skills" className={inputCls} />
+            </div>
+
+            {/* Category */}
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <label className="block text-sm font-bold mb-3">Category</label>
+              <div className="grid grid-cols-2 gap-2">
+                {CATEGORIES.map(c => (
+                  <button key={c.id} onClick={() => setCategory(c.id)} className={`flex items-center gap-2 p-3 rounded-xl text-xs font-bold transition-colors ${category === c.id ? 'bg-primary/10 text-primary border-2 border-primary' : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 border-2 border-transparent'}`}>
+                    <span className={`material-symbols-outlined text-sm ${c.color}`}>{c.icon}</span>
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Goal Templates */}
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-lg">auto_awesome</span>
+                Quick Add Goals
+              </h3>
+              <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                {(GOAL_TEMPLATES[category] || []).map(t => (
+                  <button key={t} onClick={() => addGoal(t)} disabled={goals.find(g => g.text === t)} className="w-full text-left p-2 rounded-lg text-xs hover:bg-primary/5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors truncate">
+                    + {t}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2 mt-3">
+                <input type="text" value={customGoal} onChange={e => setCustomGoal(e.target.value)} placeholder="Custom goal..." className={`${inputCls} flex-1`} />
+                <button onClick={() => { addGoal(customGoal); setCustomGoal(''); }} disabled={!customGoal} className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold disabled:opacity-50">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Center: Goals */}
+          <div className="space-y-4">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-lg font-bold mb-1">Goals ({goals.length})</h3>
+              <p className="text-xs text-slate-400 mb-4">Track progress for each goal</p>
+
+              {goals.length === 0 ? (
+                <div className="p-8 text-center text-slate-400">
+                  <span className="material-symbols-outlined text-3xl mb-2">flag</span>
+                  <p className="text-sm">Add goals from templates or write custom ones</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {goals.map(goal => (
+                    <div key={goal.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{goal.text}</p>
+                          <select value={goal.status} onChange={e => updateGoal(goal.id, 'status', e.target.value)} className="mt-2 px-3 py-1 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            {Object.entries(statusLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                          </select>
+                        </div>
+                        <button onClick={() => removeGoal(goal.id)} className="p-1 text-error hover:bg-error/5 rounded-lg">
+                          <span className="material-symbols-outlined text-sm">close</span>
+                        </button>
+                      </div>
+                      <input type="text" value={goal.notes} onChange={e => updateGoal(goal.id, 'notes', e.target.value)} placeholder="Notes..." className="mt-2 w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs" />
+                      {/* Status badge */}
+                      <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-bold ${statusColors[goal.status]}`}>
+                        {statusLabels[goal.status]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Work System */}
+          <div className="space-y-4">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-lg">view_list</span>
+                Work System
+              </h3>
+              <div className="flex gap-4 mb-4">
+                <label className="flex items-center gap-2 text-xs">
+                  <input type="checkbox" checked={workSystem.visualSchedule} onChange={e => setWorkSystem({ ...workSystem, visualSchedule: e.target.checked })} className="w-4 h-4 rounded text-primary" />
+                  Visual Schedule
+                </label>
+                <label className="flex items-center gap-2 text-xs">
+                  <input type="checkbox" checked={workSystem.leftToRight} onChange={e => setWorkSystem({ ...workSystem, leftToRight: e.target.checked })} className="w-4 h-4 rounded text-primary" />
+                  Left-to-Right
+                </label>
+              </div>
+              <div className="space-y-2">
+                {workSystem.steps.map((step, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</span>
+                    <input type="text" value={step} onChange={e => updateWorkStep(i, e.target.value)} placeholder={`Step ${i + 1}`} className={`${inputCls} flex-1`} />
+                    {workSystem.steps.length > 1 && (
+                      <button onClick={() => removeWorkStep(i)} className="p-1 text-error hover:bg-error/5 rounded-lg">
+                        <span className="material-symbols-outlined text-sm">close</span>
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button onClick={addWorkStep} className="w-full py-2 bg-primary/5 text-primary rounded-xl text-xs font-bold hover:bg-primary/10 transition-colors">
+                  + Add Step
+                </button>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <h3 className="text-sm font-bold mb-3">Summary</h3>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between"><span className="text-slate-500">Category</span><span className="font-bold">{CATEGORIES.find(c => c.id === category)?.label}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Goals</span><span className="font-bold">{goals.length}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Mastered</span><span className="font-bold text-success">{goals.filter(g => g.status === 'mastered').length}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">In Progress</span><span className="font-bold text-amber-500">{goals.filter(g => g.status === 'in_progress').length}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Work Steps</span><span className="font-bold">{workSystem.steps.filter(s => s).length}</span></div>
+              </div>
+              {goals.length > 0 && (
+                <div className="mt-3 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                  <div className="h-full bg-success transition-all" style={{ width: `${(goals.filter(g => g.status === 'mastered').length / goals.length) * 100}%` }} />
+                  <div className="h-full bg-amber-400 transition-all" style={{ width: `${(goals.filter(g => g.status === 'in_progress').length / goals.length) * 100}%` }} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
