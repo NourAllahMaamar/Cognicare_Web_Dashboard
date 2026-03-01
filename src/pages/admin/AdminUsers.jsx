@@ -132,7 +132,7 @@ export default function AdminUsers() {
                     <p className="text-xs text-slate-500 dark:text-text-muted">{u.email}</p>
                   </div>
                 </div>
-                <StatusBadge status={u.isVerified ? 'Active' : 'Pending'} />
+                <StatusBadge status={u.deletedAt ? 'Deleted' : u.isConfirmed ? 'Active' : 'Pending'} />
               </div>
 
               <div className="space-y-2 text-sm text-slate-500 dark:text-slate-400 mb-4">

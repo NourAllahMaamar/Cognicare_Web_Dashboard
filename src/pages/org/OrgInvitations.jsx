@@ -31,8 +31,15 @@ export default function OrgInvitations() {
     try {
       await authMutate(`/organization/my-organization/invitations/${inv._id}`, { method: 'DELETE' });
       setSuccess(t('orgDashboard.invitationCancelled', 'Invitation cancelled'));
-      loadInvitations();
-    } catch (err) { setError(err.message); }
+    } catch (err) {
+      // If invitation was already cancelled (e.g. by a re-invite), treat as success
+      if (err.status === 404) {
+        setSuccess(t('orgDashboard.invitationAlreadyCancelled', 'Invitation was already cancelled'));
+      } else {
+        setError(err.message);
+      }
+    }
+    loadInvitations();
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
@@ -59,15 +66,15 @@ export default function OrgInvitations() {
             <div key={inv._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${inv.type === 'staff' || inv.role === 'specialist' ? 'bg-primary/10 text-primary' : 'bg-purple-500/10 text-purple-500'}`}>
-                    <span className="material-symbols-outlined">{inv.type === 'staff' || inv.role === 'specialist' ? 'badge' : 'family_restroom'}</span>
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${inv.invitationType === 'staff' ? 'bg-primary/10 text-primary' : 'bg-purple-500/10 text-purple-500'}`}>
+                    <span className="material-symbols-outlined">{inv.invitationType === 'staff' ? 'badge' : 'family_restroom'}</span>
                   </div>
                   <div>
-                    <p className="font-bold text-sm">{inv.email}</p>
+                    <p className="font-bold text-sm">{inv.userEmail || inv.email}</p>
                     {inv.fullName && <p className="text-xs text-slate-500">{inv.fullName}</p>}
                   </div>
                 </div>
-                <StatusBadge status={inv.type || inv.role || 'staff'} />
+                <StatusBadge status={inv.invitationType || inv.type || 'staff'} />
               </div>
 
               <div className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400 mb-4">

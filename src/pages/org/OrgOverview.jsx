@@ -1,24 +1,61 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatCard from '../../components/ui/StatCard';
-import { API_BASE_URL } from '../../config';
+import {
+  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar,
+} from 'recharts';
+
+/* ─── colour palettes ─── */
+const PLAN_COLORS = ['#6366f1', '#06b6d4', '#f59e0b', '#10b981'];
+const FEEDBACK_COLORS = ['#10b981', '#f59e0b', '#ef4444'];
 
 export default function OrgOverview() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { authGet } = useAuth('orgLeader');
+
+  /* ─── data state ─── */
   const [staff, setStaff] = useState([]);
   const [families, setFamilies] = useState([]);
   const [children, setChildren] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Progress AI
-  const [specialistId, setSpecialistId] = useState('');
+  /* ─── progress-ai state ─── */
+  const [selectedSpecialist, setSelectedSpecialist] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
   const [aiSummary, setAiSummary] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
+  const searchRef = useRef(null);
 
+  /* ─── specialists filtered list ─── */
+  const specialists = useMemo(() =>
+    staff.filter(s =>
+      ['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'careProvider', 'other'].includes(s.role)
+    ), [staff]);
+
+  const filteredSpecialists = useMemo(() => {
+    if (!searchQuery.trim()) return specialists;
+    const q = searchQuery.toLowerCase();
+    return specialists.filter(s =>
+      (s.fullName || '').toLowerCase().includes(q) ||
+      (s.email || '').toLowerCase().includes(q)
+    );
+  }, [specialists, searchQuery]);
+
+  /* ─── close dropdown on outside click ─── */
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) setShowDropdown(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  /* ─── load org data ─── */
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
@@ -34,53 +71,112 @@ export default function OrgOverview() {
       setFamilies(Array.isArray(f) ? f : []);
       setChildren(Array.isArray(c) ? c : []);
       setInvitations(Array.isArray(inv) ? inv : []);
-    } catch {}
+    } catch { /* silent */ }
     setLoading(false);
   };
 
-  const fetchAiSummary = async () => {
-    if (!specialistId.trim()) return;
+  /* ─── fetch AI summary ─── */
+  const fetchAiSummary = async (specialist) => {
+    if (!specialist?._id) return;
+    setSelectedSpecialist(specialist);
+    setSearchQuery(specialist.fullName || specialist.email);
+    setShowDropdown(false);
     setAiLoading(true);
     setAiError('');
     try {
-      const data = await authGet(`/progress-ai/summary/specialist/${specialistId.trim()}`);
+      const data = await authGet(`/progress-ai/org/specialist/${specialist._id}/summary`);
       setAiSummary(data);
-    } catch (err) { setAiError(err.message); setAiSummary(null); }
+    } catch (err) {
+      setAiError(err.message);
+      setAiSummary(null);
+    }
     setAiLoading(false);
   };
 
   const countRole = (role) => staff.filter(s => s.role === role).length;
 
+  /* ─── chart data builders ─── */
+  const planChartData = useMemo(() => {
+    if (!aiSummary?.planCountByType) return [];
+    return Object.entries(aiSummary.planCountByType)
+      .filter(([, v]) => v > 0)
+      .map(([name, value]) => ({ name, value }));
+  }, [aiSummary]);
+
+  const feedbackChartData = useMemo(() => {
+    if (!aiSummary) return [];
+    return [
+      { name: t('orgDashboard.ai.approved', 'Approved'), value: aiSummary.approvedCount || 0 },
+      { name: t('orgDashboard.ai.modified', 'Modified'), value: aiSummary.modifiedCount || 0 },
+      { name: t('orgDashboard.ai.dismissed', 'Dismissed'), value: aiSummary.dismissedCount || 0 },
+    ].filter(d => d.value > 0);
+  }, [aiSummary, t]);
+
+  const rateData = useMemo(() => {
+    if (!aiSummary) return [];
+    return [
+      { name: t('orgDashboard.ai.improvementRate', 'Improvement'), value: aiSummary.resultsImprovedRatePercent || 0, fill: '#8b5cf6' },
+      { name: t('orgDashboard.ai.approvalRate', 'Approval'), value: aiSummary.approvalRatePercent || 0, fill: '#06b6d4' },
+    ];
+  }, [aiSummary, t]);
+
+  /* ─── role label helper ─── */
+  const roleLabel = (role) => {
+    const map = {
+      psychologist: t('roles.psychologist', 'Psychologist'),
+      speech_therapist: t('roles.speechTherapist', 'Speech Therapist'),
+      occupational_therapist: t('roles.occupationalTherapist', 'Occupational Therapist'),
+      doctor: t('roles.doctor', 'Doctor'),
+      careProvider: t('roles.caregiver', 'Caregiver'),
+      other: t('roles.other', 'Other'),
+    };
+    return map[role] || role;
+  };
+
+  /* ─── custom tooltip ─── */
+  const CustomTooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 shadow-lg text-sm">
+        <p className="font-semibold">{payload[0].name}</p>
+        <p className="text-primary font-bold">{payload[0].value}</p>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-6">
+      {/* Header */}
       <div>
         <h2 className="text-2xl font-bold">{t('orgDashboard.tabs.overview', 'Organization Overview')}</h2>
         <p className="text-slate-500 dark:text-text-muted mt-1">{t('orgDashboard.welcome', 'Welcome to your organization dashboard')}</p>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
       ) : (
         <>
-          {/* Stat Cards */}
+          {/* ─── Stat Cards ─── */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label={t('orgDashboard.totalStaff', 'Total Staff')} value={staff.length} icon="groups" />
-            <StatCard label={t('orgDashboard.families', 'Families')} value={families.length} icon="family_restroom" />
-            <StatCard label={t('orgDashboard.children', 'Children')} value={children.length} icon="child_care" />
-            <StatCard label={t('orgDashboard.invitations', 'Invitations')} value={invitations.length} icon="mail" />
+            <StatCard label={t('orgDashboard.stats.totalStaff', 'Total Staff')} value={staff.length} icon="groups" />
+            <StatCard label={t('orgDashboard.stats.totalFamilies', 'Families')} value={families.length} icon="family_restroom" />
+            <StatCard label={t('orgDashboard.stats.totalChildren', 'Children')} value={children.length} icon="child_care" />
+            <StatCard label={t('orgDashboard.stats.pendingInvites', 'Invitations')} value={invitations.length} icon="mail" />
           </div>
 
-          {/* Role Breakdown */}
+          {/* ─── Role Breakdown ─── */}
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
             {[
               { role: 'psychologist', icon: 'psychology', label: t('roles.psychologist', 'Psychologists') },
               { role: 'speech_therapist', icon: 'record_voice_over', label: t('roles.speechTherapist', 'Speech Therapists') },
               { role: 'occupational_therapist', icon: 'accessibility_new', label: t('roles.occupationalTherapist', 'Occupational Therapists') },
               { role: 'doctor', icon: 'medical_services', label: t('roles.doctor', 'Doctors') },
-              { role: 'volunteer', icon: 'volunteer_activism', label: t('roles.volunteer', 'Volunteers') },
+              { role: 'careProvider', icon: 'volunteer_activism', label: t('roles.caregiver', 'Caregivers') },
               { role: 'other', icon: 'person', label: t('roles.other', 'Other') },
             ].map(r => (
-              <div key={r.role} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
+              <div key={r.role} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center transition-transform hover:scale-105 hover:shadow-md">
                 <span className="material-symbols-outlined text-2xl text-primary mb-1">{r.icon}</span>
                 <p className="text-2xl font-black">{countRole(r.role)}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{r.label}</p>
@@ -88,43 +184,275 @@ export default function OrgOverview() {
             ))}
           </div>
 
-          {/* Progress AI Section */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
-            <h3 className="font-bold flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-primary">psychology</span>
-              {t('orgDashboard.progressAi', 'Progress AI Summary')}
-            </h3>
-            <div className="flex gap-3 mb-4">
-              <input value={specialistId} onChange={e => setSpecialistId(e.target.value)} placeholder={t('orgDashboard.enterSpecialistId', 'Enter specialist ID...')} className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
-              <button onClick={fetchAiSummary} disabled={aiLoading} className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">
-                {aiLoading ? '...' : t('common.fetch', 'Fetch')}
-              </button>
+          {/* ═══════════════════════════════════════════════════════
+              PROGRESS AI SECTION
+             ═══════════════════════════════════════════════════════ */}
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 transition-all">
+            {/* Section header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+                <span className="material-symbols-outlined text-xl">psychology</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">{t('orgDashboard.ai.title', 'Progress AI Insights')}</h3>
+                <p className="text-xs text-slate-500 dark:text-text-muted">{t('orgDashboard.ai.subtitle', 'Select a specialist to view AI-powered performance analytics')}</p>
+              </div>
             </div>
-            {aiError && <p className="text-sm text-error mb-3">{aiError}</p>}
-            {aiSummary && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 bg-primary/5 rounded-xl text-center">
-                  <p className="text-2xl font-black text-primary">{aiSummary.totalPlans || 0}</p>
-                  <p className="text-xs text-slate-500 mt-1">Total Plans</p>
+
+            {/* ─── Search by Name ─── */}
+            <div className="relative mb-6" ref={searchRef}>
+              <div className="flex gap-3">
+                <div className="relative flex-1">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => { setSearchQuery(e.target.value); setShowDropdown(true); setSelectedSpecialist(null); }}
+                    onFocus={() => setShowDropdown(true)}
+                    placeholder={t('orgDashboard.ai.searchPlaceholder', 'Search specialist by name...')}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all outline-none"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => { setSearchQuery(''); setSelectedSpecialist(null); setAiSummary(null); setAiError(''); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      <span className="material-symbols-outlined text-lg">close</span>
+                    </button>
+                  )}
                 </div>
-                <div className="p-4 bg-success/5 rounded-xl text-center">
-                  <p className="text-2xl font-black text-success">{aiSummary.childrenCount || 0}</p>
-                  <p className="text-xs text-slate-500 mt-1">Children</p>
+                {selectedSpecialist && (
+                  <button
+                    onClick={() => fetchAiSummary(selectedSpecialist)}
+                    disabled={aiLoading}
+                    className="px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 transition-all flex items-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                    {aiLoading ? t('common.loading', 'Loading...') : t('orgDashboard.ai.analyze', 'Analyze')}
+                  </button>
+                )}
+              </div>
+
+              {/* Dropdown */}
+              {showDropdown && !selectedSpecialist && (
+                <div className="absolute z-20 top-full mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                  {filteredSpecialists.length === 0 ? (
+                    <div className="px-4 py-6 text-center text-sm text-slate-400">
+                      <span className="material-symbols-outlined text-3xl mb-2 block">person_search</span>
+                      {t('orgDashboard.ai.noSpecialists', 'No specialists found')}
+                    </div>
+                  ) : (
+                    filteredSpecialists.map(s => (
+                      <button
+                        key={s._id}
+                        onClick={() => fetchAiSummary(s)}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-left border-b border-slate-100 dark:border-slate-700/50 last:border-0"
+                      >
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                          {(s.fullName || s.email || '?')[0].toUpperCase()}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-sm truncate">{s.fullName || s.email}</p>
+                          <p className="text-xs text-slate-400 truncate">{roleLabel(s.role)}{s.email ? ` · ${s.email}` : ''}</p>
+                        </div>
+                        <span className="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                      </button>
+                    ))
+                  )}
                 </div>
-                <div className="p-4 bg-amber-500/5 rounded-xl text-center">
-                  <p className="text-2xl font-black text-amber-500">{aiSummary.approvalRatePercent || 0}%</p>
-                  <p className="text-xs text-slate-500 mt-1">Approval Rate</p>
+              )}
+            </div>
+
+            {/* Error */}
+            {aiError && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl mb-4 text-sm text-red-600 dark:text-red-400">
+                <span className="material-symbols-outlined text-lg">error</span>
+                {aiError}
+              </div>
+            )}
+
+            {/* Loading skeleton */}
+            {aiLoading && (
+              <div className="space-y-4 animate-pulse">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                  ))}
                 </div>
-                <div className="p-4 bg-purple-500/5 rounded-xl text-center">
-                  <p className="text-2xl font-black text-purple-500">{aiSummary.resultsImprovedRatePercent || 0}%</p>
-                  <p className="text-xs text-slate-500 mt-1">Improvement Rate</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                  <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-xl" />
                 </div>
-                {aiSummary.planCountByType && Object.entries(aiSummary.planCountByType).map(([type, count]) => (
-                  <div key={type} className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-center">
-                    <p className="text-lg font-bold">{count}</p>
-                    <p className="text-xs text-slate-500 capitalize">{type}</p>
+              </div>
+            )}
+
+            {/* ─── AI Summary Results ─── */}
+            {aiSummary && !aiLoading && (
+              <div className="space-y-6 animate-in fade-in duration-500">
+                {/* Selected specialist badge */}
+                {selectedSpecialist && (
+                  <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                      {(selectedSpecialist.fullName || '?')[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">{selectedSpecialist.fullName}</p>
+                      <p className="text-xs text-slate-500">{roleLabel(selectedSpecialist.role)}</p>
+                    </div>
                   </div>
-                ))}
+                )}
+
+                {/* KPI Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/20 border border-indigo-200/50 dark:border-indigo-700/30">
+                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-indigo-200 dark:text-indigo-800/40">description</span>
+                    <p className="text-3xl font-black text-indigo-600 dark:text-indigo-400">{aiSummary.totalPlans || 0}</p>
+                    <p className="text-xs font-medium text-indigo-500/80 mt-1">{t('orgDashboard.ai.totalPlans', 'Total Plans')}</p>
+                  </div>
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/20 border border-emerald-200/50 dark:border-emerald-700/30">
+                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-emerald-200 dark:text-emerald-800/40">child_care</span>
+                    <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{aiSummary.childrenCount || 0}</p>
+                    <p className="text-xs font-medium text-emerald-500/80 mt-1">{t('orgDashboard.ai.childrenServed', 'Children Served')}</p>
+                  </div>
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/30 dark:to-cyan-800/20 border border-cyan-200/50 dark:border-cyan-700/30">
+                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-cyan-200 dark:text-cyan-800/40">thumb_up</span>
+                    <p className="text-3xl font-black text-cyan-600 dark:text-cyan-400">{aiSummary.approvalRatePercent || 0}<span className="text-lg">%</span></p>
+                    <p className="text-xs font-medium text-cyan-500/80 mt-1">{t('orgDashboard.ai.approvalRate', 'Approval Rate')}</p>
+                  </div>
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 border border-purple-200/50 dark:border-purple-700/30">
+                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-purple-200 dark:text-purple-800/40">trending_up</span>
+                    <p className="text-3xl font-black text-purple-600 dark:text-purple-400">{aiSummary.resultsImprovedRatePercent || 0}<span className="text-lg">%</span></p>
+                    <p className="text-xs font-medium text-purple-500/80 mt-1">{t('orgDashboard.ai.improvementRate', 'Improvement Rate')}</p>
+                  </div>
+                </div>
+
+                {/* Charts Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Plan Distribution Donut */}
+                  {planChartData.length > 0 && (
+                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/30">
+                      <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg">donut_large</span>
+                        {t('orgDashboard.ai.planDistribution', 'Plan Distribution')}
+                      </h4>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <PieChart>
+                          <Pie
+                            data={planChartData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={95}
+                            paddingAngle={4}
+                            dataKey="value"
+                            stroke="none"
+                          >
+                            {planChartData.map((_, i) => (
+                              <Cell key={i} fill={PLAN_COLORS[i % PLAN_COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend
+                            iconType="circle"
+                            iconSize={8}
+                            formatter={(value) => <span className="text-xs text-slate-600 dark:text-slate-300">{value}</span>}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+
+                  {/* Feedback Breakdown Bar Chart */}
+                  {feedbackChartData.length > 0 && (
+                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/30">
+                      <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg">bar_chart</span>
+                        {t('orgDashboard.ai.feedbackBreakdown', 'Feedback Breakdown')}
+                      </h4>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={feedbackChartData} barSize={40}>
+                          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                          <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                            {feedbackChartData.map((_, i) => (
+                              <Cell key={i} fill={FEEDBACK_COLORS[i % FEEDBACK_COLORS.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+                </div>
+
+                {/* Rate Gauges */}
+                {rateData.some(d => d.value > 0) && (
+                  <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/30">
+                    <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary text-lg">speed</span>
+                      {t('orgDashboard.ai.performanceGauges', 'Performance Gauges')}
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {rateData.map((item) => (
+                        <div key={item.name} className="flex flex-col items-center">
+                          <ResponsiveContainer width="100%" height={180}>
+                            <RadialBarChart
+                              cx="50%" cy="50%"
+                              innerRadius="60%" outerRadius="90%"
+                              startAngle={180} endAngle={0}
+                              data={[{ ...item, fill: item.fill }]}
+                            >
+                              <RadialBar
+                                background={{ fill: '#e2e8f0' }}
+                                dataKey="value"
+                                cornerRadius={10}
+                              />
+                            </RadialBarChart>
+                          </ResponsiveContainer>
+                          <div className="text-center -mt-16">
+                            <p className="text-2xl font-black" style={{ color: item.fill }}>{item.value}%</p>
+                            <p className="text-xs text-slate-500 font-medium mt-0.5">{item.name}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Total Feedback Summary */}
+                {(aiSummary.totalFeedback != null && aiSummary.totalFeedback > 0) && (
+                  <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/50 dark:border-slate-700/30">
+                    <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
+                      <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">reviews</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{t('orgDashboard.ai.totalFeedback', 'Total Feedback Collected')}</p>
+                      <p className="text-2xl font-black">{aiSummary.totalFeedback}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* AI Insight */}
+                {aiSummary.insight && (
+                  <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl border border-indigo-200/50 dark:border-indigo-700/30">
+                    <div className="flex items-start gap-3">
+                      <span className="material-symbols-outlined text-indigo-500 mt-0.5">auto_awesome</span>
+                      <div>
+                        <p className="text-sm font-semibold text-indigo-700 dark:text-indigo-300 mb-1">{t('orgDashboard.ai.insight', 'AI Insight')}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{aiSummary.insight}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!aiSummary && !aiLoading && !aiError && (
+              <div className="text-center py-10">
+                <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3 block">monitoring</span>
+                <p className="text-sm text-slate-400 dark:text-slate-500">{t('orgDashboard.ai.emptyState', 'Search for a specialist above to view their AI-powered progress analytics')}</p>
               </div>
             )}
           </div>

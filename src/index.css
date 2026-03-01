@@ -9,13 +9,13 @@
   --color-primary-light: #3B82F6;
   --color-primary-content: #ffffff;
 
-  /* Backgrounds */
+  /* Backgrounds - Light Mode */
   --color-bg-light: #F8FAFC;
   --color-bg-dark: #0F172A;
   --color-surface-light: #ffffff;
   --color-surface-dark: #1E293B;
 
-  /* Text */
+  /* Text - Light Mode */
   --color-text-main: #F1F5F9;
   --color-text-muted: #94A3B8;
 
@@ -29,7 +29,41 @@
   --font-mono: "JetBrains Mono", monospace;
 }
 
-/* ===== Glass Morphism ===== */
+/* ===== Light Mode (Default) ===== */
+:root {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #F1F5F9;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #94A3B8;
+  --border-color: #E2E8F0;
+  --hover-bg: #F1F5F9;
+  color-scheme: light;
+}
+
+/* ===== Dark Mode ===== */
+:root.dark {
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --bg-tertiary: #334155;
+  --text-primary: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-tertiary: #94A3B8;
+  --border-color: #334155;
+  --hover-bg: #1E293B;
+  color-scheme: dark;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* ===== Glass Morphism - Light Mode ===== */
 .glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
@@ -37,23 +71,28 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+/* ===== Glass Morphism - Dark Mode ===== */
 .dark .glass {
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* ===== Glass Card - Light Mode ===== */
 .glass-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(226, 232, 240, 0.8);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
 }
 
+/* ===== Glass Card - Dark Mode ===== */
 .dark .glass-card {
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
 }
 
 /* ===== Material Symbols ===== */
@@ -70,6 +109,7 @@
   scrollbar-width: none;
 }
 
+/* ===== Scrollbar - Light Mode ===== */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -84,23 +124,40 @@
   background: rgba(148, 163, 184, 0.5);
 }
 
+/* ===== Scrollbar - Dark Mode ===== */
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
+
 /* ===== Base Styles ===== */
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ===== Hero Gradient ===== */
+/* ===== Hero Gradient - Light Mode ===== */
 .hero-gradient {
   background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent),
               radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.05), transparent);
 }
 
+/* ===== Hero Gradient - Dark Mode ===== */
 .dark .hero-gradient {
   background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.15), transparent),
               radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.08), transparent);

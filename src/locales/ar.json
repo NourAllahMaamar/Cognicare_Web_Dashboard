@@ -78,7 +78,8 @@
     "signing": "جاري تسجيل الدخول...",
     "backToHome": "العودة إلى الرئيسية",
     "accessDenied": "تم رفض الوصول. مطلوب امتيازات المدير.",
-    "loginFailed": "فشل تسجيل الدخول"
+    "loginFailed": "فشل تسجيل الدخول",
+    "organizationPendingApproval": "تم تقديم طلب منظمتك بنجاح. يرجى انتظار موافقة المسؤول. ستتلقى إشعاراً عبر البريد الإلكتروني بمجرد مراجعة طلبك."
   },
   "orgLeaderLogin": {
     "title": "تسجيل دخول قائد المنظمة",
@@ -156,8 +157,28 @@
       "motorSkills": "دعم المهارات الحركية",
       "doctors": "الأطباء",
       "medicalProfessionals": "المتخصصون الطبيون",
-      "volunteers": "المتطوعون",
+      "caregivers": "مقدمو الرعاية",
       "communityHelpers": "مساعدو المجتمع"
+    },
+    "ai": {
+      "title": "تحليلات الذكاء الاصطناعي للتقدم",
+      "subtitle": "اختر متخصصاً لعرض تحليلات أدائه بالذكاء الاصطناعي",
+      "searchPlaceholder": "ابحث عن متخصص بالاسم...",
+      "analyze": "تحليل",
+      "noSpecialists": "لم يتم العثور على متخصصين",
+      "totalPlans": "إجمالي الخطط",
+      "childrenServed": "الأطفال المتابعون",
+      "approvalRate": "معدل الموافقة",
+      "improvementRate": "معدل التحسن",
+      "planDistribution": "توزيع الخطط",
+      "feedbackBreakdown": "تفصيل التقييمات",
+      "performanceGauges": "مقاييس الأداء",
+      "totalFeedback": "إجمالي التقييمات المجمعة",
+      "approved": "معتمد",
+      "modified": "معدّل",
+      "dismissed": "مرفوض",
+      "insight": "تحليل الذكاء الاصطناعي",
+      "emptyState": "ابحث عن متخصص أعلاه لعرض تحليلات تقدمه بالذكاء الاصطناعي"
     },
     "staff": {
       "title": "إدارة الموظفين",
@@ -212,7 +233,9 @@
       "diagnosis": "التشخيص",
       "allergies": "الحساسية",
       "medicalHistory": "التاريخ الطبي",
+      "medicalHistoryPlaceholder": "التاريخ الطبي المختصر...",
       "medications": "الأدوية الحالية",
+      "medicationsPlaceholder": "الأدوية النشطة...",
       "notes": "ملاحظات",
       "remove": "إزالة",
       "parentInfo": "معلومات ولي الأمر",
@@ -287,12 +310,11 @@
       "email": "البريد الإلكتروني",
       "sentDate": "تاريخ الإرسال",
       "type": "النوع",
+      "expires": "تاريخ الانتهاء",
       "status": "الحالة",
-      "actions": "الإجراءات",
       "staff": "موظف",
       "family": "عائلة",
       "expired": "منتهية",
-      "awaitingResponse": "في انتظار الرد",
       "cancel": "إلغاء",
       "cancelConfirm": "هل أنت متأكد أنك تريد إلغاء هذه الدعوة؟"
     },
@@ -377,7 +399,7 @@
       "regularUsers": "مستخدمون عاديون",
       "healthcareProviders": "مقدمو الرعاية الصحية",
       "medicalProfessionals": "متخصصون طبيون",
-      "volunteers": "المتطوعون",
+      "caregivers": "مقدمو الرعاية",
       "communityHelpers": "مساعدو المجتمع",
       "orgLeaders": "قادة المنظمات"
     },
@@ -426,7 +448,7 @@
     "roles": {
       "family": "عائلة",
       "doctor": "طبيب",
-      "volunteer": "متطوع",
+      "caregiver": "مقدم الرعاية",
       "admin": "مدير",
       "psychologist": "أخصائي نفسي",
       "speech_therapist": "معالج نطق",
@@ -520,7 +542,7 @@
       "speech_therapist": "معالج نطق",
       "occupational_therapist": "أخصائي علاج وظيفي",
       "doctor": "طبيب",
-      "volunteer": "متطوع",
+      "caregiver": "مقدم الرعاية",
       "other": "آخر"
     },
     "tabs": {
@@ -602,7 +624,59 @@
       "deleteError": "فشل في حذف الخطة.",
       "addError": "يرجى ملء اسم الطفل وتاريخ ميلاده.",
       "addSuccess": "تم إضافة الطفل بنجاح!",
-      "inviteNotSupported": "دعوة العائلات الموجودة غير مدعومة حالياً للممارسة الخاصة."
+      "inviteNotSupported": "دعوة العائلات الموجودة غير مدعومة حالياً للممارسة الخاصة.",
+      "childNotFound": "الطفل غير موجود.",
+      "fetchError": "فشل تحميل الطفل."
+    }
+  },
+  "caregiverApplications": {
+    "title": "طلبات مقدمي الرعاية",
+    "applicationsCount": "طلبات موجودة",
+    "refresh": "تحديث",
+    "filters": {
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "denied": "مرفوض"
+    },
+    "noApplications": "لا توجد طلبات",
+    "noApplicationsSub": {
+      "pending": "لا توجد طلبات معلقة للمراجعة حالياً.",
+      "approved": "لا توجد طلبات موافق عليها بعد.",
+      "denied": "لا توجد طلبات مرفوضة."
+    },
+    "unknownUser": "مستخدم غير معروف",
+    "requestedRole": "الدور",
+    "specialty": "التخصص",
+    "submittedOn": "تاريخ التقديم",
+    "documents": "المستندات",
+    "noDocuments": "لم يتم رفع أي مستندات",
+    "approve": "موافقة",
+    "deny": "رفض",
+    "denyTitle": "رفض الطلب",
+    "denialReason": "السبب",
+    "rejectionReasonLabel": "سبب الرفض",
+    "rejectionReasonRequired": "يرجى تقديم سبب الرفض.",
+    "rejectionPlaceholder": "اشرح سبب رفض هذا الطلب...",
+    "cancel": "إلغاء",
+    "confirmDeny": "تأكيد الرفض",
+    "reviewSuccess": "تم {{status}} الطلب بنجاح.",
+    "approved": "الموافقة على",
+    "denied": "رفض",
+    "openInNewTab": "فتح في علامة تبويب جديدة",
+    "roles": {
+      "caregiver": "مقدم رعاية",
+      "psychologist": "أخصائي نفسي",
+      "speechTherapist": "أخصائي نطق",
+      "occupationalTherapist": "معالج وظيفي",
+      "doctor": "طبيب",
+      "orgLeader": "قائد المنظمة",
+      "other": "أخرى"
+    },
+    "docTypes": {
+      "idCard": "بطاقة الهوية",
+      "certificate": "شهادة",
+      "diploma": "دبلوم",
+      "other": "مستند آخر"
     }
   }
 }

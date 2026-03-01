@@ -13,6 +13,7 @@ const AdminFamilies = lazy(() => import('./pages/admin/AdminFamilies'));
 const AdminFraudReview = lazy(() => import('./pages/admin/AdminFraudReview'));
 const AdminSystemHealth = lazy(() => import('./pages/admin/AdminSystemHealth'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
+const AdminCaregiverApplications = lazy(() => import('./pages/admin/AdminCaregiverApplications'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const OrgLayout = lazy(() => import('./pages/org/OrgLayout'));
 const OrgOverview = lazy(() => import('./pages/org/OrgOverview'));
@@ -95,6 +96,7 @@ function App() {
           <Route path="organizations" element={<AdminOrganizations />} />
           <Route path="families" element={<AdminFamilies />} />
           <Route path="reviews" element={<AdminFraudReview />} />
+          <Route path="caregiver-applications" element={<AdminCaregiverApplications />} />
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="system-health" element={<AdminSystemHealth />} />
           <Route path="settings" element={<SettingsPage />} />
