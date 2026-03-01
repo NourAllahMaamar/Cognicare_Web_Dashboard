@@ -157,8 +157,28 @@
       "motorSkills": "Motor skills support",
       "doctors": "Doctors",
       "medicalProfessionals": "Medical professionals",
-      "volunteers": "Volunteers",
+      "caregivers": "Caregivers",
       "communityHelpers": "Community helpers"
+    },
+    "ai": {
+      "title": "Progress AI Insights",
+      "subtitle": "Select a specialist to view AI-powered performance analytics",
+      "searchPlaceholder": "Search specialist by name...",
+      "analyze": "Analyze",
+      "noSpecialists": "No specialists found",
+      "totalPlans": "Total Plans",
+      "childrenServed": "Children Served",
+      "approvalRate": "Approval Rate",
+      "improvementRate": "Improvement Rate",
+      "planDistribution": "Plan Distribution",
+      "feedbackBreakdown": "Feedback Breakdown",
+      "performanceGauges": "Performance Gauges",
+      "totalFeedback": "Total Feedback Collected",
+      "approved": "Approved",
+      "modified": "Modified",
+      "dismissed": "Dismissed",
+      "insight": "AI Insight",
+      "emptyState": "Search for a specialist above to view their AI-powered progress analytics"
     },
     "staff": {
       "title": "Staff Management",
@@ -379,7 +399,7 @@
       "regularUsers": "Regular users",
       "healthcareProviders": "Healthcare Providers",
       "medicalProfessionals": "Medical professionals",
-      "volunteers": "Volunteers",
+      "caregivers": "Caregivers",
       "communityHelpers": "Community helpers",
       "orgLeaders": "Organization Leaders"
     },
@@ -428,7 +448,7 @@
     "roles": {
       "family": "Family",
       "doctor": "Doctor",
-      "volunteer": "Volunteer",
+      "caregiver": "Caregiver",
       "admin": "Admin",
       "psychologist": "Psychologist",
       "speech_therapist": "Speech Therapist",
@@ -522,7 +542,7 @@
       "speech_therapist": "Speech Therapist",
       "occupational_therapist": "Occupational Therapist",
       "doctor": "Doctor",
-      "volunteer": "Volunteer",
+      "caregiver": "Caregiver",
       "other": "Other"
     },
     "tabs": {
@@ -607,6 +627,56 @@
       "inviteNotSupported": "Inviting existing families is not yet supported for private practice.",
       "childNotFound": "Child not found.",
       "fetchError": "Failed to load child."
+    }
+  },
+  "caregiverApplications": {
+    "title": "Caregiver Applications",
+    "applicationsCount": "applications found",
+    "refresh": "Refresh",
+    "filters": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "denied": "Denied"
+    },
+    "noApplications": "No applications found",
+    "noApplicationsSub": {
+      "pending": "No pending applications to review right now.",
+      "approved": "No approved applications yet.",
+      "denied": "No denied applications."
+    },
+    "unknownUser": "Unknown User",
+    "requestedRole": "Role",
+    "specialty": "Specialty",
+    "submittedOn": "Submitted",
+    "documents": "Documents",
+    "noDocuments": "No documents uploaded",
+    "approve": "Approve",
+    "deny": "Deny",
+    "denyTitle": "Deny Application",
+    "denialReason": "Reason",
+    "rejectionReasonLabel": "Rejection Reason",
+    "rejectionReasonRequired": "Please provide a rejection reason.",
+    "rejectionPlaceholder": "Explain why this application is being denied...",
+    "cancel": "Cancel",
+    "confirmDeny": "Confirm Denial",
+    "reviewSuccess": "Application {{status}} successfully.",
+    "approved": "approved",
+    "denied": "denied",
+    "openInNewTab": "Open in new tab",
+    "roles": {
+      "caregiver": "Caregiver",
+      "psychologist": "Psychologist",
+      "speechTherapist": "Speech Therapist",
+      "occupationalTherapist": "Occupational Therapist",
+      "doctor": "Doctor",
+      "orgLeader": "Organization Leader",
+      "other": "Other"
+    },
+    "docTypes": {
+      "idCard": "ID Card",
+      "certificate": "Certificate",
+      "diploma": "Diploma",
+      "other": "Other Document"
     }
   }
 }

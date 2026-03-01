@@ -157,8 +157,28 @@
       "motorSkills": "Soutien aux habiletés motrices",
       "doctors": "Médecins",
       "medicalProfessionals": "Professionnels médicaux",
-      "volunteers": "Bénévoles",
+      "caregivers": "Intervenants",
       "communityHelpers": "Aides communautaires"
+    },
+    "ai": {
+      "title": "Analyses IA des Progrès",
+      "subtitle": "Sélectionnez un spécialiste pour voir ses analyses de performance par IA",
+      "searchPlaceholder": "Rechercher un spécialiste par nom...",
+      "analyze": "Analyser",
+      "noSpecialists": "Aucun spécialiste trouvé",
+      "totalPlans": "Total des Plans",
+      "childrenServed": "Enfants Suivis",
+      "approvalRate": "Taux d'Approbation",
+      "improvementRate": "Taux d'Amélioration",
+      "planDistribution": "Répartition des Plans",
+      "feedbackBreakdown": "Répartition des Retours",
+      "performanceGauges": "Jauges de Performance",
+      "totalFeedback": "Total des Retours Collectés",
+      "approved": "Approuvés",
+      "modified": "Modifiés",
+      "dismissed": "Rejetés",
+      "insight": "Analyse IA",
+      "emptyState": "Recherchez un spécialiste ci-dessus pour voir ses analyses de progrès par IA"
     },
     "staff": {
       "title": "Gestion du Personnel",
@@ -175,7 +195,14 @@
       "inviteSent": "Invitation envoyée avec succès ! L'utilisateur recevra un e-mail pour l'accepter.",
       "accountCreated": "Compte de personnel créé avec succès !",
       "emptyState": "Aucun membre du personnel pour le moment. Ajoutez votre premier membre !",
-      "editTitle": "Modifier le membre du personnel"
+      "editTitle": "Modifier le membre du personnel",
+      "status": {
+        "confirmed": "Confirmé",
+        "pending": "En attente de confirmation"
+      },
+      "table": {
+        "status": "État du compte"
+      }
     },
     "modal": {
       "addStaff": "Ajouter un membre du personnel",
@@ -206,7 +233,9 @@
       "diagnosis": "Diagnostic",
       "allergies": "Allergies",
       "medicalHistory": "Antécédents médicaux",
+      "medicalHistoryPlaceholder": "Brefs antécédents médicaux...",
       "medications": "Médicaments actuels",
+      "medicationsPlaceholder": "Médicaments actifs...",
       "notes": "Notes",
       "remove": "Retirer",
       "parentInfo": "Informations parentales",
@@ -281,13 +310,13 @@
       "email": "E-mail",
       "sentDate": "Date d'Envoi",
       "type": "Type",
+      "expires": "Expire le",
       "status": "Statut",
-      "actions": "Actions",
       "staff": "Personnel",
       "family": "Famille",
       "cancel": "Annuler l'Invitation",
       "expired": "Expiré",
-      "awaitingResponse": "en attente de réponse"
+      "cancelConfirm": "Êtes-vous sûr de vouloir annuler cette invitation?"
     },
     "importExport": {
       "import": "Importer",
@@ -370,7 +399,7 @@
       "regularUsers": "Utilisateurs réguliers",
       "healthcareProviders": "Professionnels de Santé",
       "medicalProfessionals": "Professionnels médicaux",
-      "volunteers": "Bénévoles",
+      "caregivers": "Intervenants",
       "communityHelpers": "Aides communautaires",
       "orgLeaders": "Leaders d'Organisation"
     },
@@ -419,7 +448,7 @@
     "roles": {
       "family": "Famille",
       "doctor": "Docteur",
-      "volunteer": "Bénévole",
+      "caregiver": "Intervenant",
       "admin": "Admin",
       "psychologist": "Psychologue",
       "speech_therapist": "Orthophoniste",
@@ -511,7 +540,7 @@
       "speech_therapist": "Orthophoniste",
       "occupational_therapist": "Ergothérapeute",
       "doctor": "Docteur",
-      "volunteer": "Bénévole",
+      "caregiver": "Intervenant",
       "other": "Autre"
     },
     "tabs": {
@@ -531,8 +560,8 @@
     },
     "quickActions": {
       "title": "Actions Rapides",
-      "addPrivateChild": "Ajouter un Enfant Privé",
-      "addPrivateChildDesc": "Ajouter un nouveau patient hors org",
+      "addPrivateFamily": "Ajouter une Famille Privée",
+      "addPrivateFamilyDesc": "Enregistrer une nouvelle famille et ses enfants",
       "viewChildren": "Voir les Enfants",
       "viewChildrenDesc": "Sélectionnez un enfant pour créer des plans",
       "myPlans": "Mes Plans",
@@ -547,7 +576,7 @@
       "noChildrenSub": "Ajoutez un enfant privé ou demandez au leader de l'org d'ajouter des enfants.",
       "organization": "Organisation",
       "privatePatients": "Mes Patients Privés",
-      "addPrivateChild": "Ajouter un Enfant Privé"
+      "addPrivateFamily": "Ajouter une Famille Privée"
     },
     "childDetail": {
       "privatePatient": "Patient Privé",
@@ -594,7 +623,58 @@
       "addError": "Veuillez remplir le nom et la date de naissance de l'enfant.",
       "addSuccess": "Enfant ajouté avec succès !",
       "childNotFound": "Enfant introuvable.",
-      "fetchError": "Échec du chargement de l'enfant."
+      "fetchError": "Échec du chargement de l'enfant.",
+      "inviteNotSupported": "L'invitation des familles existantes n'est pas encore prise en charge pour la pratique privée."
+    }
+  },
+  "caregiverApplications": {
+    "title": "Candidatures Intervenants",
+    "applicationsCount": "candidatures trouvées",
+    "refresh": "Actualiser",
+    "filters": {
+      "pending": "En attente",
+      "approved": "Approuvé",
+      "denied": "Refusé"
+    },
+    "noApplications": "Aucune candidature trouvée",
+    "noApplicationsSub": {
+      "pending": "Aucune candidature en attente à examiner.",
+      "approved": "Aucune candidature approuvée pour le moment.",
+      "denied": "Aucune candidature refusée."
+    },
+    "unknownUser": "Utilisateur inconnu",
+    "requestedRole": "Rôle",
+    "specialty": "Spécialité",
+    "submittedOn": "Soumis le",
+    "documents": "Documents",
+    "noDocuments": "Aucun document téléchargé",
+    "approve": "Approuver",
+    "deny": "Refuser",
+    "denyTitle": "Refuser la candidature",
+    "denialReason": "Motif",
+    "rejectionReasonLabel": "Motif du refus",
+    "rejectionReasonRequired": "Veuillez fournir un motif de refus.",
+    "rejectionPlaceholder": "Expliquez pourquoi cette candidature est refusée...",
+    "cancel": "Annuler",
+    "confirmDeny": "Confirmer le refus",
+    "reviewSuccess": "Candidature {{status}} avec succès.",
+    "approved": "approuvée",
+    "denied": "refusée",
+    "openInNewTab": "Ouvrir dans un nouvel onglet",
+    "roles": {
+      "caregiver": "Intervenant",
+      "psychologist": "Psychologue",
+      "speechTherapist": "Orthophoniste",
+      "occupationalTherapist": "Ergothérapeute",
+      "doctor": "Médecin",
+      "orgLeader": "Responsable d'organisation",
+      "other": "Autre"
+    },
+    "docTypes": {
+      "idCard": "Carte d'identité",
+      "certificate": "Certificat",
+      "diploma": "Diplôme",
+      "other": "Autre document"
     }
   }
 }
