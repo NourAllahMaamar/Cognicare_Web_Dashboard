@@ -42,7 +42,7 @@ export default function OrgChildren() {
   const exportChildren = () => {
     const data = children.map(c => ({
       'Child Name': c.fullName, DOB: dateFmt(c.dateOfBirth), Gender: c.gender || '',
-      'Parent Name': c.parent?.fullName || c.parentName || '', 'Parent Email': c.parent?.email || c.parentEmail || '',
+      'Parent Name': c.parentId?.fullName || c.parentName || '', 'Parent Email': c.parentId?.email || c.parentEmail || '',
       Diagnosis: c.diagnosis || '', 'Medical History': c.medicalHistory || '', Allergies: c.allergies || '',
       Medications: c.medications || '', Notes: c.notes || ''
     }));
@@ -55,7 +55,7 @@ export default function OrgChildren() {
 
   const filtered = children.filter(c => {
     const q = search.toLowerCase();
-    return !q || (c.fullName || '').toLowerCase().includes(q) || (c.diagnosis || '').toLowerCase().includes(q) || (c.parent?.fullName || '').toLowerCase().includes(q);
+    return !q || (c.fullName || '').toLowerCase().includes(q) || (c.diagnosis || '').toLowerCase().includes(q) || (c.parentId?.fullName || '').toLowerCase().includes(q);
   });
 
   return (
@@ -104,7 +104,7 @@ export default function OrgChildren() {
                 </div>
               </div>
               <div className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400">
-                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">person</span>{child.parent?.fullName || child.parentName || '—'}</p>
+                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">person</span>{child.parentId?.fullName || child.parentName || '—'}</p>
                 {child.diagnosis && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">medical_information</span>{child.diagnosis}</p>}
                 <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">cake</span>{dateFmt(child.dateOfBirth)}</p>
                 {child.allergies && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">warning</span>{child.allergies}</p>}
