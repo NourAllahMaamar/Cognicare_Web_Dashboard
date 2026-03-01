@@ -24,6 +24,7 @@ export default function AdminLayout() {
     { path: '/admin/dashboard/users', icon: 'group', label: 'Users' },
     { path: '/admin/dashboard/families', icon: 'family_restroom', label: 'Families' },
     { path: '/admin/dashboard/reviews', icon: 'shield', label: 'Org Reviews' },
+    { path: '/admin/dashboard/training', icon: 'school', label: 'Training Courses' },
     { path: '/admin/dashboard/analytics', icon: 'bar_chart', label: 'Analytics' },
     { path: '/admin/dashboard/system-health', icon: 'monitor_heart', label: 'System Health' },
   ];

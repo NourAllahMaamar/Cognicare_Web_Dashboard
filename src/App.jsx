@@ -11,6 +11,7 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminOrganizations = lazy(() => import('./pages/admin/AdminOrganizations'));
 const AdminFamilies = lazy(() => import('./pages/admin/AdminFamilies'));
 const AdminFraudReview = lazy(() => import('./pages/admin/AdminFraudReview'));
+const AdminTrainingCourses = lazy(() => import('./pages/admin/AdminTrainingCourses'));
 const AdminSystemHealth = lazy(() => import('./pages/admin/AdminSystemHealth'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
@@ -95,6 +96,7 @@ function App() {
           <Route path="organizations" element={<AdminOrganizations />} />
           <Route path="families" element={<AdminFamilies />} />
           <Route path="reviews" element={<AdminFraudReview />} />
+          <Route path="training" element={<AdminTrainingCourses />} />
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="system-health" element={<AdminSystemHealth />} />
           <Route path="settings" element={<SettingsPage />} />
