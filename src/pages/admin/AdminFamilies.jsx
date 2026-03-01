@@ -6,6 +6,7 @@ export default function AdminFamilies() {
   const { authGet, authMutate } = useAuth('admin');
 
   const [families, setFamilies] = useState([]);
+  const [allChildren, setAllChildren] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -35,17 +36,28 @@ export default function AdminFamilies() {
   const [assignOrgId, setAssignOrgId] = useState('');
   const [assignLoading, setAssignLoading] = useState(false);
 
+  // Helper to match children to families (parentId is populated as object)
+  const childBelongsToFamily = (child, familyId) => {
+    const pid = typeof child.parentId === 'object' && child.parentId?._id 
+      ? child.parentId._id.toString() 
+      : child.parentId?.toString();
+    const fid = familyId?.toString();
+    return pid === fid || child.familyId?.toString() === fid;
+  };
+
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [f, o] = await Promise.all([
+      const [f, o, c] = await Promise.all([
         authGet('/organization/admin/families').catch(() => []),
         authGet('/organization/all').catch(() => []),
+        authGet('/organization/admin/all-children').catch(() => []),
       ]);
       setFamilies(Array.isArray(f) ? f : []);
       setOrganizations(Array.isArray(o) ? o : []);
+      setAllChildren(Array.isArray(c) ? c : []);
     } catch {}
     setLoading(false);
   };
@@ -248,7 +260,7 @@ export default function AdminFamilies() {
                 </p>
                 <p className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">child_care</span>
-                  {fam.childrenCount ?? 0} children
+                  {allChildren.filter(c => childBelongsToFamily(c, fam._id)).length} children
                 </p>
               </div>
 
