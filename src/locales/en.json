@@ -678,5 +678,19 @@
       "diploma": "Diploma",
       "other": "Other Document"
     }
+  },
+  "confirmAccount": {
+    "title": "Activate Your Account",
+    "subtitle": "Please set a password for your new CogniCare account.",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "passwordPlaceholder": "Min 6 characters",
+    "confirmPlaceholder": "Repeat your password",
+    "activate": "Activate Account",
+    "activating": "Activating...",
+    "successTitle": "Account Activated!",
+    "successMessage": "Your account has been successfully confirmed. You will be redirected to the login page in a few seconds...",
+    "goToLogin": "Go to Login Now",
+    "backToHome": "Back to Home"
   }
 }

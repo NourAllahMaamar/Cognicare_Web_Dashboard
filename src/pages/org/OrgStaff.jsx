@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
@@ -54,7 +54,7 @@ export default function OrgStaff() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
-  // ── CRUD ──
+  // â”€â”€ CRUD â”€â”€
   const openAdd = () => {
     setEditingStaff(null);
     setModalMode('invite');
@@ -98,7 +98,7 @@ export default function OrgStaff() {
     } catch (err) { flash(err.message, 'error'); }
   };
 
-  // ── Import/Export ──
+  // â”€â”€ Import/Export â”€â”€
   const downloadTemplate = () => {
     const ws = XLSX.utils.aoa_to_sheet([['Full Name', 'Email', 'Phone', 'Role', 'Password']]);
     const wb = XLSX.utils.book_new();
@@ -168,7 +168,7 @@ export default function OrgStaff() {
     return !q || (s.fullName || '').toLowerCase().includes(q) || (s.email || '').toLowerCase().includes(q) || (s.role || '').toLowerCase().includes(q);
   });
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '—';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'â€”';
 
   return (
     <div className="flex flex-col gap-6">
@@ -180,11 +180,11 @@ export default function OrgStaff() {
         <div className="flex gap-3">
           {/* Import/Export Dropdown */}
           <div className="relative">
-            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
               <span className="material-symbols-outlined text-lg">import_export</span> {t('common.importExport', 'Import/Export')}
             </button>
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl z-20">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
                 <button onClick={exportStaff} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Staff</button>
                 <button onClick={openImport} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Staff</button>
                 <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
@@ -203,21 +203,21 @@ export default function OrgStaff() {
       {/* Search */}
       <div className="relative max-w-md">
         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('common.search', 'Search...')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('common.search', 'Search...')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
       {/* Staff Grid */}
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">groups</span>
           <p>{t('orgDashboard.noStaff', 'No staff members found')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map(s => (
-            <div key={s._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/org/dashboard/specialist/${s._id}`)}>
+            <div key={s._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/org/dashboard/specialist/${s._id}`)}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
@@ -252,7 +252,7 @@ export default function OrgStaff() {
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold">{modalMode === 'edit' ? t('orgDashboard.editStaff', 'Edit Staff') : t('orgDashboard.addStaff', 'Add Staff')}</h3>
               <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
@@ -268,27 +268,27 @@ export default function OrgStaff() {
             {modalMode === 'invite' ? (
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
-                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
             ) : (
               <div className="space-y-4">
-                <div><label className="block text-sm font-bold mb-1.5">{t('common.fullName', 'Full Name')} *</label><input value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                <div><label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')} *</label><input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                <div><label className="block text-sm font-bold mb-1.5">{t('common.phone', 'Phone')}</label><input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                <div><label className="block text-sm font-bold mb-1.5">{t('common.fullName', 'Full Name')} *</label><input value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                <div><label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')} *</label><input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                <div><label className="block text-sm font-bold mb-1.5">{t('common.phone', 'Phone')}</label><input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5">{t('common.role', 'Role')}</label>
-                  <select value={form.role} onChange={e => setForm({...form, role: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
+                  <select value={form.role} onChange={e => setForm({...form, role: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
                     {roles.map(r => <option key={r} value={r}>{t(`roles.${r}`, r)}</option>)}
                   </select>
                 </div>
                 {modalMode === 'create' && (
-                  <div><label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Min 6 characters" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                  <div><label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Min 6 characters" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
                 )}
               </div>
             )}
 
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('common.cancel', 'Cancel')}</button>
+              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('common.cancel', 'Cancel')}</button>
               <button onClick={handleSave} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{modalMode === 'edit' ? t('common.update', 'Update') : modalMode === 'invite' ? t('orgDashboard.sendInvite', 'Send Invite') : t('common.create', 'Create')}</button>
             </div>
           </div>
@@ -298,9 +298,9 @@ export default function OrgStaff() {
       {/* Import Modal */}
       {showImport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowImport(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Import Staff — Step {importStep}/3</h3>
+              <h3 className="text-lg font-bold">Import Staff â€” Step {importStep}/3</h3>
               <button onClick={() => setShowImport(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
@@ -316,7 +316,7 @@ export default function OrgStaff() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5">Default Password (for new accounts)</label>
-                  <input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder="Optional" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder="Optional" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
                 <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? 'Uploading...' : 'Upload & Preview'}</button>
               </div>
@@ -333,13 +333,13 @@ export default function OrgStaff() {
                         <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50">
                           <td className="p-2 font-medium">{m.excelHeader}</td>
                           <td className="p-2">
-                            <select value={m.dbField || ''} onChange={e => { const nm = [...importMappings]; nm[i] = { ...m, dbField: e.target.value }; setImportMappings(nm); }} className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs">
+                            <select value={m.dbField || ''} onChange={e => { const nm = [...importMappings]; nm[i] = { ...m, dbField: e.target.value }; setImportMappings(nm); }} className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
                               <option value="">Skip</option>
                               {(importPreview.availableFields || []).map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
                           </td>
                           <td className="p-2"><span className={`text-xs font-bold ${(m.confidence || 0) > 0.7 ? 'text-success' : 'text-amber-500'}`}>{Math.round((m.confidence || 0) * 100)}%</span></td>
-                          <td className="p-2 text-xs text-slate-400">{importPreview.sampleRows?.[0]?.[m.excelHeader] || '—'}</td>
+                          <td className="p-2 text-xs text-slate-400">{importPreview.sampleRows?.[0]?.[m.excelHeader] || 'â€”'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -359,7 +359,7 @@ export default function OrgStaff() {
                 {importResult.errors?.length > 0 && (
                   <div className="max-h-40 overflow-y-auto space-y-1">
                     {importResult.errors.map((err, i) => (
-                      <p key={i} className="text-xs text-error">Row {err.row}: {err.field} — {err.message}</p>
+                      <p key={i} className="text-xs text-error">Row {err.row}: {err.field} â€” {err.message}</p>
                     ))}
                   </div>
                 )}
@@ -372,3 +372,5 @@ export default function OrgStaff() {
     </div>
   );
 }
+
+

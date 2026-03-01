@@ -1,9 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../config';
 import { cachedGet } from '../../apiClient';
-import '../org-leader/OrgLeaderDashboard_OLD.css';
-import './SpecialistDashboard_OLD.css';
 
 export default function ProgressAIRecommendations() {
     const { childId } = useParams();
@@ -135,108 +133,144 @@ export default function ProgressAIRecommendations() {
     }
 
     return (
-        <div className="org-dashboard">
-            <header className="dashboard-header">
-                <div className="header-content">
-                    <div className="header-left">
+        <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
+            <header className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+                <div className="max-w-5xl mx-auto px-6 py-4">
+                    <div className="flex items-center gap-4">
                         <button
-                            type="button"
-                            className="back-button"
                             onClick={() => navigate('/specialist/dashboard')}
-                            style={{ marginRight: 12 }}
+                            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                         >
-                            ← Retour
+                            <span className="material-symbols-outlined">arrow_back</span>
                         </button>
-                        <h1 className="dashboard-title">Recommandations IA</h1>
-                        <p className="dashboard-subtitle">Enfant ID: {childId}</p>
+                        <div>
+                            <h1 className="text-xl font-bold">AI Recommendations</h1>
+                            <p className="text-sm text-slate-500 dark:text-text-muted">Child ID: {childId}</p>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            {error && <div className="error-banner">❌ {error}</div>}
+            {error && (
+                <div className="max-w-5xl mx-auto px-6 pt-6">
+                    <div className="p-4 bg-error/10 border border-error/20 text-error rounded-xl flex items-start gap-3">
+                        <span className="material-symbols-outlined text-lg shrink-0">error</span>
+                        <p className="text-sm font-medium">{error}</p>
+                    </div>
+                </div>
+            )}
 
             {loading && (
-                <div className="sp-overview" style={{ padding: 40, textAlign: 'center' }}>
-                    Chargement des recommandations…
+                <div className="max-w-5xl mx-auto px-6 py-16 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-slate-400 font-medium">Loading recommendationsâ€¦</p>
+                    </div>
                 </div>
             )}
 
             {!loading && data && (
-                <main className="dashboard-main" style={{ maxWidth: 800, margin: '0 auto' }}>
-                    <section className="sp-section">
-                        <h2 className="sp-section-title">Résumé</h2>
-                        <p style={{ whiteSpace: 'pre-wrap' }}>{data.summary}</p>
+                <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+                    <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+                        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary">summarize</span>
+                            Summary
+                        </h2>
+                        <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed">{data.summary}</p>
                     </section>
 
                     {data.milestones && (
-                        <section className="sp-section">
-                            <h2 className="sp-section-title">Jalons</h2>
-                            <p style={{ whiteSpace: 'pre-wrap' }}>{data.milestones}</p>
+                        <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+                            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">flag</span>
+                                Milestones
+                            </h2>
+                            <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed">{data.milestones}</p>
                         </section>
                     )}
 
                     {data.predictions && (
-                        <section className="sp-section">
-                            <h2 className="sp-section-title">Prédictions</h2>
-                            <p style={{ whiteSpace: 'pre-wrap' }}>{data.predictions}</p>
+                        <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+                            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">insights</span>
+                                Predictions
+                            </h2>
+                            <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed">{data.predictions}</p>
                         </section>
                     )}
 
-                    <section className="sp-section">
-                        <h2 className="sp-section-title">Recommandations par type de plan</h2>
+                    <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+                        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary">psychology</span>
+                            Recommendations by Plan Type
+                        </h2>
                         {(data.recommendations || []).length === 0 ? (
-                            <p>Aucune recommandation pour le moment.</p>
+                            <p className="text-slate-400 text-center py-8">No recommendations available at the moment.</p>
                         ) : (
-                            <ul style={{ listStyle: 'none', padding: 0 }}>
+                            <ul className="space-y-4">
                                 {(data.recommendations || []).map((rec, index) => (
                                     <li
                                         key={`${rec.planType}-${index}`}
-                                        style={{
-                                            border: '1px solid #e2e8f0',
-                                            borderRadius: 12,
-                                            padding: 16,
-                                            marginBottom: 12,
-                                        }}
+                                        className="border border-slate-300 dark:border-slate-700 rounded-xl p-4"
                                     >
-                                        <strong>[{rec.planType}]</strong>
-                                        <p style={{ margin: '8px 0' }}>{rec.text}</p>
+                                        <strong className="text-primary text-sm font-bold">[{rec.planType}]</strong>
+                                        <p className="text-slate-600 dark:text-slate-400 my-3 leading-relaxed">{rec.text}</p>
                                         {feedbackSent.has(index) ? (
-                                            <span style={{ color: 'green' }}>✓ Envoyé</span>
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/10 text-success rounded-lg text-sm font-medium">
+                                                <span className="material-symbols-outlined text-sm">check_circle</span>
+                                                Sent
+                                            </span>
                                         ) : pendingFeedback?.index === index ? (
-                                            <div style={{ marginTop: 12 }}>
+                                            <div className="mt-4 space-y-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                                                 {(pendingFeedback.action === 'approved' || pendingFeedback.action === 'modified') && (
                                                     <>
-                                                        <p>Résultats améliorés ?</p>
-                                                        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-                                                            <button
-                                                                type="button"
-                                                                className="sp-btn-delete"
-                                                                onClick={() => setResultsImproved(false)}
-                                                            >
-                                                                Non
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                className="sp-btn-view-board"
-                                                                onClick={() => setResultsImproved(true)}
-                                                            >
-                                                                Oui
-                                                            </button>
+                                                        <div>
+                                                            <p className="text-sm font-medium mb-2">Did the results improve?</p>
+                                                            <div className="flex gap-2">
+                                                                <button
+                                                                    onClick={() => setResultsImproved(false)}
+                                                                    className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                                                                >
+                                                                    No
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => setResultsImproved(true)}
+                                                                    className="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors"
+                                                                >
+                                                                    Yes
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                         {resultsImproved !== null && (
                                                             <>
-                                                                <p>Le retour du parent a-t-il été utile ?</p>
-                                                                <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-                                                                    <button type="button" onClick={() => setParentFeedbackHelpful('skip')}>Passer</button>
-                                                                    <button type="button" onClick={() => setParentFeedbackHelpful(false)}>Non</button>
-                                                                    <button type="button" onClick={() => setParentFeedbackHelpful(true)}>Oui</button>
+                                                                <div>
+                                                                    <p className="text-sm font-medium mb-2">Was the parent feedback helpful?</p>
+                                                                    <div className="flex gap-2">
+                                                                        <button 
+                                                                            onClick={() => setParentFeedbackHelpful('skip')}
+                                                                            className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                                                                        >
+                                                                            Skip
+                                                                        </button>
+                                                                        <button 
+                                                                            onClick={() => setParentFeedbackHelpful(false)}
+                                                                            className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                                                                        >
+                                                                            No
+                                                                        </button>
+                                                                        <button 
+                                                                            onClick={() => setParentFeedbackHelpful(true)}
+                                                                            className="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors"
+                                                                        >
+                                                                            Yes
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                                 <button
-                                                                    type="button"
-                                                                    className="sp-action-card"
                                                                     onClick={confirmPendingFeedback}
+                                                                    className="w-full px-4 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors"
                                                                 >
-                                                                    Envoyer
+                                                                    Send
                                                                 </button>
                                                             </>
                                                         )}
@@ -244,36 +278,32 @@ export default function ProgressAIRecommendations() {
                                                 )}
                                                 {pendingFeedback.action === 'dismissed' && (
                                                     <button
-                                                        type="button"
-                                                        className="sp-action-card"
                                                         onClick={confirmPendingFeedback}
+                                                        className="w-full px-4 py-2.5 bg-slate-200 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
                                                     >
-                                                        Confirmer ignorer
+                                                        Confirm Dismiss
                                                     </button>
                                                 )}
                                             </div>
                                         ) : (
-                                            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                                            <div className="flex gap-2 mt-3">
                                                 <button
-                                                    type="button"
-                                                    className="sp-btn-view-board"
                                                     onClick={() => handleApprove(index, rec.planType, rec.text)}
+                                                    className="px-4 py-2 bg-success/10 text-success text-sm font-bold rounded-lg hover:bg-success/20 transition-colors"
                                                 >
-                                                    Approuver
+                                                    Approve
                                                 </button>
                                                 <button
-                                                    type="button"
-                                                    className="sp-btn-delete"
                                                     onClick={() => handleModify(index, rec.planType, rec.text)}
+                                                    className="px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors"
                                                 >
-                                                    Modifier
+                                                    Modify
                                                 </button>
                                                 <button
-                                                    type="button"
-                                                    className="sp-btn-delete"
                                                     onClick={() => handleDismiss(index, rec.planType, rec.text)}
+                                                    className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                                 >
-                                                    Ignorer
+                                                    Dismiss
                                                 </button>
                                             </div>
                                         )}
@@ -287,3 +317,5 @@ export default function ProgressAIRecommendations() {
         </div>
     );
 }
+
+

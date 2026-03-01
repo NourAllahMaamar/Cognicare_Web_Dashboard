@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/ui/StatCard';
 import { useAuth } from '../../hooks/useAuth';
@@ -81,7 +81,7 @@ export default function AdminOverview() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
           onClick={() => navigate('/admin/dashboard/users')}
-          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary/30 transition-all group"
+          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
         >
           <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform">
             <span className="material-symbols-outlined">person_add</span>
@@ -93,7 +93,7 @@ export default function AdminOverview() {
         </button>
         <button
           onClick={() => navigate('/admin/dashboard/reviews')}
-          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary/30 transition-all group"
+          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
         >
           <div className="p-3 rounded-xl bg-warning/10 text-warning group-hover:scale-110 transition-transform">
             <span className="material-symbols-outlined">shield</span>
@@ -105,7 +105,7 @@ export default function AdminOverview() {
         </button>
         <button
           onClick={() => navigate('/admin/dashboard/system-health')}
-          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary/30 transition-all group"
+          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
         >
           <div className="p-3 rounded-xl bg-success/10 text-success group-hover:scale-110 transition-transform">
             <span className="material-symbols-outlined">monitor_heart</span>
@@ -118,7 +118,7 @@ export default function AdminOverview() {
       </div>
 
       {/* Role Distribution */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
         <h3 className="text-lg font-bold mb-6">User Distribution by Role</h3>
         <div className="space-y-4">
           {[
@@ -149,3 +149,4 @@ export default function AdminOverview() {
     </div>
   );
 }
+

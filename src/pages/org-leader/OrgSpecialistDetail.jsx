@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -44,7 +44,7 @@ export default function OrgSpecialistDetail() {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-4" />
-        <p className="text-sm text-slate-500 dark:text-text-muted">Loading specialist summary…</p>
+        <p className="text-sm text-slate-500 dark:text-text-muted">Loading specialist summaryâ€¦</p>
       </div>
     );
   }
@@ -64,8 +64,8 @@ export default function OrgSpecialistDetail() {
             <h2 className="text-2xl font-bold">AI Progress Summary</h2>
             {specialistInfo && (
               <p className="text-slate-500 dark:text-text-muted mt-0.5">
-                {specialistInfo.name} • <span className="capitalize">{specialistInfo.role?.replace(/_/g, ' ')}</span>
-                {specialistInfo.email && <span> • {specialistInfo.email}</span>}
+                {specialistInfo.name} â€¢ <span className="capitalize">{specialistInfo.role?.replace(/_/g, ' ')}</span>
+                {specialistInfo.email && <span> â€¢ {specialistInfo.email}</span>}
               </p>
             )}
           </div>
@@ -82,7 +82,7 @@ export default function OrgSpecialistDetail() {
       {statCards.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {statCards.map((s, i) => (
-            <div key={i} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div key={i} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <div className="flex items-center gap-3 mb-3">
                 <div className={`w-10 h-10 rounded-xl ${s.bg} ${s.text} flex items-center justify-center`}>
                   <span className="material-symbols-outlined">{s.icon}</span>
@@ -98,7 +98,7 @@ export default function OrgSpecialistDetail() {
 
       {/* Plans by Type */}
       {summary?.planCountByType && Object.keys(summary.planCountByType).length > 0 && (
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
           <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">category</span>
             Plans by Type
@@ -116,7 +116,7 @@ export default function OrgSpecialistDetail() {
 
       {/* Feedback Details */}
       {summary?.totalFeedback != null && summary.totalFeedback > 0 && (
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
           <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">rate_review</span>
             Feedback Details
@@ -155,7 +155,7 @@ export default function OrgSpecialistDetail() {
 
       {/* Empty state */}
       {!summary && !error && (
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-12 text-center">
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-12 text-center">
           <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3">analytics</span>
           <p className="text-slate-500 dark:text-text-muted">No data available for this specialist yet.</p>
         </div>
@@ -163,3 +163,4 @@ export default function OrgSpecialistDetail() {
     </div>
   );
 }
+

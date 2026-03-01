@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../context/ThemeContext';
@@ -6,7 +6,7 @@ import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
-/* ── Scroll reveal hook ── */
+/* â”€â”€ Scroll reveal hook â”€â”€ */
 function useReveal(threshold = 0.15) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -20,7 +20,7 @@ function useReveal(threshold = 0.15) {
   return [ref, visible];
 }
 
-/* ── Animated counter ── */
+/* â”€â”€ Animated counter â”€â”€ */
 function CountUp({ target, suffix = '', visible, duration = 1800 }) {
   const [val, setVal] = useState(0);
   useEffect(() => {
@@ -37,7 +37,7 @@ function CountUp({ target, suffix = '', visible, duration = 1800 }) {
   return <>{val}{suffix}</>;
 }
 
-/* ── Hero slides ── */
+/* â”€â”€ Hero slides â”€â”€ */
 const SLIDES = [
   {
     id: 'admin',
@@ -60,7 +60,7 @@ const SLIDES = [
     gradient: 'from-blue-700 to-blue-900',
     accent: '#3B82F6',
     rows: [
-      { type: 'badges', items: ['Phase III', '6 Cards', '🏆 2 Mastered'] },
+      { type: 'badges', items: ['Phase III', '6 Cards', 'ðŸ† 2 Mastered'] },
       { type: 'cards', count: 6 },
       { type: 'trials' },
     ],
@@ -93,7 +93,7 @@ const SLIDES = [
   },
 ];
 
-/* ── Mini renderers for slide content ── */
+/* â”€â”€ Mini renderers for slide content â”€â”€ */
 function SlideContent({ slide }) {
   return (
     <div className="space-y-2.5">
@@ -144,7 +144,7 @@ function SlideContent({ slide }) {
             <div key={ri} className="grid grid-cols-10 gap-0.5">
               {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className={`aspect-square rounded text-[7px] font-bold flex items-center justify-center ${i < 6 ? 'bg-emerald-400/40 text-emerald-200' : i < 8 ? 'bg-red-400/40 text-red-200' : 'bg-white/10 text-white/30'}`}>
-                  {i < 6 ? '✓' : i < 8 ? '✗' : ''}
+                  {i < 6 ? 'âœ“' : i < 8 ? 'âœ—' : ''}
                 </div>
               ))}
             </div>
@@ -191,7 +191,7 @@ function SlideContent({ slide }) {
   );
 }
 
-/* ════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 export default function LandingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -223,7 +223,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-bg-light dark:bg-bg-dark text-slate-900 dark:text-slate-100 font-display overflow-x-hidden">
 
-      {/* ── Header ── */}
+      {/* â”€â”€ Header â”€â”€ */}
       <header className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-lg">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -258,7 +258,7 @@ export default function LandingPage() {
 
       <main className="flex-1">
 
-        {/* ── Hero ── */}
+        {/* â”€â”€ Hero â”€â”€ */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 animate-pulse" style={{ animationDuration: '8s' }} />
@@ -292,7 +292,7 @@ export default function LandingPage() {
                     {t('landing.hero.cta', 'Get Started Free')}
                     <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                   </button>
-                  <button className="px-7 py-3.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2 text-sm shadow-sm">
+                  <button className="px-7 py-3.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2 text-sm shadow-sm">
                     <span className="material-symbols-outlined text-lg text-primary">play_circle</span>
                     {t('landing.hero.demo', 'Watch Demo')}
                   </button>
@@ -311,11 +311,11 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Right — Rotating Showcase */}
+              {/* Right â€” Rotating Showcase */}
               <div className="hidden lg:block">
                 <div className="relative">
                   <div className="absolute -inset-6 bg-primary/10 dark:bg-primary/5 blur-3xl rounded-full" />
-                  <div className="relative rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl shadow-primary/5 overflow-hidden bg-white dark:bg-surface-dark">
+                  <div className="relative rounded-2xl border border-slate-300 dark:border-slate-800 shadow-2xl shadow-primary/5 overflow-hidden bg-white dark:bg-surface-dark">
                     {/* Slide container */}
                     <div className="relative h-[340px]">
                       {SLIDES.map((slide, i) => (
@@ -357,7 +357,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Stats ── */}
+        {/* â”€â”€ Stats â”€â”€ */}
         <section ref={statsRef} className="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
             <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700 ${statsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -385,7 +385,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Three Portals ── */}
+        {/* â”€â”€ Three Portals â”€â”€ */}
         <section ref={portalRef} className="py-16 sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${portalVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -404,7 +404,7 @@ export default function LandingPage() {
                 { icon: 'admin_panel_settings', title: t('landing.roles.admin', 'Admin Console'), desc: t('landing.roles.adminDesc', 'Robust system controls, granular security monitoring, and user permission management.'), link: '/admin/login', gradient: 'from-slate-700 to-slate-900' },
               ].map((card, idx) => (
                 <div key={card.title} onClick={() => navigate(card.link)}
-                  className={`group p-6 sm:p-8 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer ${portalVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                  className={`group p-6 sm:p-8 rounded-2xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer ${portalVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                   style={{ transitionDelay: `${200 + idx * 100}ms` }}>
                   <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${card.gradient} flex items-center justify-center text-white mb-5 group-hover:scale-110 group-hover:shadow-lg transition-all`}>
                     <span className="material-symbols-outlined text-2xl">{card.icon}</span>
@@ -421,7 +421,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Features ── */}
+        {/* â”€â”€ Features â”€â”€ */}
         <section ref={featRef} className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900/50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -454,9 +454,9 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Right — Large brain network */}
+              {/* Right â€” Large brain network */}
               <div className={`order-first lg:order-last transition-all duration-700 delay-200 ${featVis ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                <div className="aspect-square bg-white dark:bg-surface-dark rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-center relative overflow-hidden">
+                <div className="aspect-square bg-white dark:bg-surface-dark rounded-3xl border border-slate-300 dark:border-slate-800 flex items-center justify-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10" />
                   <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 gap-6">
                     {/* Full-size brain network */}
@@ -516,7 +516,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── How It Works ── */}
+        {/* â”€â”€ How It Works â”€â”€ */}
         <section ref={stepsRef} className="py-16 sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className={`text-center mb-12 transition-all duration-700 ${stepsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -550,7 +550,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── CTA ── */}
+        {/* â”€â”€ CTA â”€â”€ */}
         <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="relative rounded-3xl bg-gradient-to-br from-primary via-blue-600 to-indigo-700 p-10 sm:p-16 text-center overflow-hidden">
@@ -580,7 +580,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ── Footer ── */}
+      {/* â”€â”€ Footer â”€â”€ */}
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12 mb-12">
@@ -631,3 +631,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+

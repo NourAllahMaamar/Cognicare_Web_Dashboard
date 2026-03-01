@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { API_BASE_URL, getUploadUrl } from '../../config';
 
@@ -52,7 +52,7 @@ export default function SpecialistPlans() {
           <h2 className="text-2xl font-bold">{t('specialistDashboard.tabs.myPlans', 'My Plans')}</h2>
           <p className="text-slate-500 dark:text-text-muted mt-1">{plans.length} total plans</p>
         </div>
-        <button onClick={loadPlans} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
+        <button onClick={loadPlans} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
           <span className="material-symbols-outlined text-lg">refresh</span> Refresh
         </button>
       </div>
@@ -63,7 +63,7 @@ export default function SpecialistPlans() {
       {/* Filter */}
       <div className="flex gap-2">
         {['all', 'PECS', 'TEACCH', 'SkillTracker', 'Activity'].map(f => (
-          <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors ${filter === f ? 'bg-primary text-white' : 'bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+          <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors ${filter === f ? 'bg-primary text-white' : 'bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
             {f === 'all' ? 'All' : f} {f !== 'all' && <span className="ml-1 text-xs opacity-70">({plans.filter(p => p.type === f).length})</span>}
           </button>
         ))}
@@ -73,14 +73,14 @@ export default function SpecialistPlans() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">assignment</span>
           <p>No plans found</p>
         </div>
       ) : (
         <div className="space-y-4">
           {filtered.map(plan => (
-            <div key={plan._id} className={`bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden`}>
+            <div key={plan._id} className={`bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden`}>
               <div className="p-5 cursor-pointer hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors" onClick={() => setExpandedPlan(expandedPlan === plan._id ? null : plan._id)}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ export default function SpecialistPlans() {
                     <div>
                       <span className="text-xs font-bold uppercase text-slate-400">{plan.type}</span>
                       <p className="font-bold">{plan.title || plan.name || plan.type}</p>
-                      <p className="text-sm text-slate-500">{plan.childName || plan.child?.fullName || '—'}</p>
+                      <p className="text-sm text-slate-500">{plan.childName || plan.child?.fullName || 'â€”'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -114,7 +114,7 @@ export default function SpecialistPlans() {
                                 <div className="flex gap-0.5 justify-center mt-1">
                                   {item.trials.slice(0, 10).map((t, j) => (
                                     <span key={j} className={`w-3 h-3 rounded-sm text-[8px] flex items-center justify-center font-bold ${t.pass ? 'bg-success/20 text-success' : t.pass === false ? 'bg-error/20 text-error' : 'bg-slate-100 dark:bg-slate-700 text-slate-400'}`}>
-                                      {t.pass ? '✓' : t.pass === false ? '✗' : '·'}
+                                      {t.pass ? 'âœ“' : t.pass === false ? 'âœ—' : 'Â·'}
                                     </span>
                                   ))}
                                 </div>
@@ -132,7 +132,7 @@ export default function SpecialistPlans() {
                           {['whatToDo', 'howMuch', 'whenDone', 'whatNext'].map(key => (
                             <div key={key} className="bg-white dark:bg-surface-dark rounded-lg p-3">
                               <p className="text-xs text-slate-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}</p>
-                              <p className="text-sm font-medium mt-0.5">{plan.workSystem[key] || '—'}</p>
+                              <p className="text-sm font-medium mt-0.5">{plan.workSystem[key] || 'â€”'}</p>
                             </div>
                           ))}
                         </div>
@@ -191,3 +191,5 @@ export default function SpecialistPlans() {
     </div>
   );
 }
+
+

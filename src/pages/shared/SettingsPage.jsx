@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import ThemeToggle from '../../components/ui/ThemeToggle';
@@ -61,7 +61,7 @@ export default function SettingsPage() {
     setTimeout(() => setPasswordMsg({ type: '', text: '' }), 4000);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors';
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors';
 
   return (
     <div className="flex flex-col gap-8 max-w-2xl">
@@ -71,7 +71,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Profile */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">person</span>
           {t('settings.profile', 'Profile')}
@@ -100,7 +100,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Password */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">lock</span>
           {t('settings.changePassword', 'Change Password')}
@@ -128,7 +128,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Appearance */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">palette</span>
           {t('settings.appearance', 'Appearance')}
@@ -152,7 +152,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Account Info */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">info</span>
           {t('settings.accountInfo', 'Account Information')}
@@ -164,7 +164,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
             <span className="text-slate-500">{t('settings.userId', 'User ID')}</span>
-            <span className="font-mono text-xs text-slate-400">{user?._id || user?.id || '—'}</span>
+            <span className="font-mono text-xs text-slate-400">{user?._id || user?.id || 'â€”'}</span>
           </div>
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-500">{t('settings.verified', 'Verified')}</span>
@@ -178,3 +178,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+

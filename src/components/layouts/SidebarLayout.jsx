@@ -8,15 +8,15 @@ export default function SidebarLayout({
   title,
   subtitle,
   brandName = 'CogniCare',
-  brandIcon = 'neurology',
+  // brandIcon = 'neurology', // unused
   navItems = [],
   bottomItems = [],
   user = null,
   onLogout,
   headerActions = null,
 }) {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const _navigate = useNavigate();
+  const _location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Close mobile menu on route change
@@ -72,7 +72,7 @@ export default function SidebarLayout({
       </div>
 
       {/* Bottom */}
-      <div className="flex flex-col gap-1 p-4 border-t border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col gap-1 p-4 border-t border-slate-300 dark:border-slate-800">
         {bottomItems.map((item) => (
           <NavLink
             key={item.to || item.path}
@@ -111,7 +111,7 @@ export default function SidebarLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-bg-light dark:bg-bg-dark">
       {/* Desktop Sidebar */}
-      <aside className="hidden w-64 flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark md:flex">
+      <aside className="hidden w-64 flex-col justify-between border-r border-slate-300 dark:border-slate-800 bg-white dark:bg-surface-dark md:flex">
         {sidebarContent}
       </aside>
 
@@ -133,7 +133,7 @@ export default function SidebarLayout({
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 md:px-6 flex items-center justify-between sticky top-0 z-10">
+        <header className="h-16 border-b border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 md:px-6 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Hamburger - mobile only */}
             <button

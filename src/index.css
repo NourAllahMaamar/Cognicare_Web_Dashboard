@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ===== Dark Mode Configuration for Tailwind v4 ===== */
+@variant dark (&:where(.dark, .dark *));
+
 /* ===== CogniCare Design System ===== */
 
 @theme {
@@ -9,13 +12,13 @@
   --color-primary-light: #3B82F6;
   --color-primary-content: #ffffff;
 
-  /* Backgrounds - Light Mode */
+  /* Backgrounds */
   --color-bg-light: #F8FAFC;
   --color-bg-dark: #0F172A;
   --color-surface-light: #ffffff;
   --color-surface-dark: #1E293B;
 
-  /* Text - Light Mode */
+  /* Text */
   --color-text-main: #F1F5F9;
   --color-text-muted: #94A3B8;
 

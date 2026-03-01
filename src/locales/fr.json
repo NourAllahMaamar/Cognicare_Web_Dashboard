@@ -676,5 +676,19 @@
       "diploma": "Diplôme",
       "other": "Autre document"
     }
+  },
+  "confirmAccount": {
+    "title": "Activer votre compte",
+    "subtitle": "Veuillez définir un mot de passe pour votre nouveau compte CogniCare.",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordPlaceholder": "Min 6 caractères",
+    "confirmPlaceholder": "Répétez votre mot de passe",
+    "activate": "Activer le compte",
+    "activating": "Activation en cours...",
+    "successTitle": "Compte activé !",
+    "successMessage": "Votre compte a été confirmé avec succès. Vous serez redirigé vers la page de connexion dans quelques secondes...",
+    "goToLogin": "Aller à la connexion maintenant",
+    "backToHome": "Retour à l'accueil"
   }
 }

@@ -1,0 +1,627 @@
+﻿
+> cognicare-web-dashboard@0.0.0 lint
+> eslint .
+
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\context\ThemeContext.jsx
+  31:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\hooks\useAuth.js
+  24:9  warning  The 'getToken' function makes the dependencies of useCallback Hook (at line 88) change on every render. To fix this, wrap the definition of 'getToken' in its own useCallback() Hook  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminAnalytics.jsx
+  10:21  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+   8 |   const [loading, setLoading] = useState(true);
+   9 |
+> 10 |   useEffect(() => { loadData(); }, []);
+     |                     ^^^^^^^^ `loadData` accessed before it is declared
+  11 |
+  12 |   const loadData = async () => {
+  13 |     setLoading(true);
+
+  10 |   useEffect(() => { loadData(); }, []);
+  11 |
+> 12 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 13 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 14 |     try {
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 28 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 29 |   };
+     | ^^^^^ `loadData` is declared here
+  30 |
+  31 |   // Compute role distribution from user data
+  32 |   const [roleData, setRoleData] = useState([]);  react-hooks/immutability
+  10:36  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/exhaustive-deps
+  49:6   warning  React Hook useEffect has a missing dependency: 'authGet'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminCaregiverApplications.jsx
+  18:45  warning  React Hook useEffect has a missing dependency: 'fetchApplications'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminFamilies.jsx
+  48:21  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  46 |   };
+  47 |
+> 48 |   useEffect(() => { loadData(); }, []);
+     |                     ^^^^^^^^ `loadData` accessed before it is declared
+  49 |
+  50 |   const loadData = async () => {
+  51 |     setLoading(true);
+
+  48 |   useEffect(() => { loadData(); }, []);
+  49 |
+> 50 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 51 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 52 |     try {
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 62 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 63 |   };
+     | ^^^^^ `loadData` is declared here
+  64 |
+  65 |   // ÔöÇÔöÇ Family CRUD ÔöÇÔöÇ
+  66 |   const openAddFamily = () => {  react-hooks/immutability
+  48:36  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminFraudReview.jsx
+  17:10  warning  'reviewDecision' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  21:21  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  19 |   const [aiHealth, setAiHealth] = useState(null);
+  20 |
+> 21 |   useEffect(() => { loadData(); }, []);
+     |                     ^^^^^^^^ `loadData` accessed before it is declared
+  22 |
+  23 |   const loadData = async () => {
+  24 |     setLoading(true);
+
+  21 |   useEffect(() => { loadData(); }, []);
+  22 |
+> 23 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 24 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 25 |     try {
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 36 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 37 |   };
+     | ^^^^^ `loadData` is declared here
+  38 |
+  39 |   const openReview = async (org) => {
+  40 |     setReviewingOrg(org);  react-hooks/immutability
+  21:36  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminLayout.jsx
+   1:31  warning  'useCallback' is defined but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+   9:9   warning  'location' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  18:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  16 |       return;
+  17 |     }
+> 18 |     setUser(u);
+     |     ^^^^^^^ Avoid calling setState() directly within an effect
+  19 |   }, []);
+  20 |
+  21 |   const navItems = [  react-hooks/set-state-in-effect
+  19:6   warning  React Hook useEffect has missing dependencies: 'getUser' and 'navigate'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminOrganizations.jsx
+  22:53  warning  React Hook useEffect has missing dependencies: 'fetchInvites' and 'fetchOrgs'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminOverview.jsx
+  12:10  warning  'progressAi' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                no-unused-vars
+  12:22  warning  'setProgressAi' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u             no-unused-vars
+  16:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminSystemHealth.jsx
+   6:11  warning  'authGet' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  10:21  error    Error: Cannot access variable before it is declared
+
+`loadHealth` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+   8 |   const [loading, setLoading] = useState(true);
+   9 |
+> 10 |   useEffect(() => { loadHealth(); }, []);
+     |                     ^^^^^^^^^^ `loadHealth` accessed before it is declared
+  11 |
+  12 |   const loadHealth = async () => {
+  13 |     setLoading(true);
+
+  10 |   useEffect(() => { loadHealth(); }, []);
+  11 |
+> 12 |   const loadHealth = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 13 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 14 |     try {
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 15 |       const res = await fetch(`${API_BASE_URL}/org-scan-ai/health`).catch(() => null);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 16 |       setAiHealth(res?.ok ? await res.json() : null);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 17 |     } catch {}
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 18 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 19 |   };
+     | ^^^^^ `loadHealth` is declared here
+  20 |
+  21 |   const services = [
+  22 |     { name: 'Backend API', icon: 'api', latency: '45 ms', load: 'Load: 25%', loadPct: 25, status: 'Online', color: 'bg-primary' },  react-hooks/immutability
+  32:17  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  30 |     if (i === 22) return 60; // simulated incident
+  31 |     if (i === 15) return 85; // minor dip
+> 32 |     return 95 + Math.random() * 5;
+     |                 ^^^^^^^^^^^^^ Cannot call impure function
+  33 |   });
+  34 |
+  35 |   const getBarColor = (pct) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/purity
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminTrainingCourses.jsx
+  20:5  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  18 |
+  19 |   useEffect(() => {
+> 20 |     loadData();
+     |     ^^^^^^^^ `loadData` accessed before it is declared
+  21 |   }, []);
+  22 |
+  23 |   const loadData = async () => {
+
+  21 |   }, []);
+  22 |
+> 23 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 24 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 25 |     setError('');
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 32 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 33 |   };
+     | ^^^^^ `loadData` is declared here
+  34 |
+  35 |   const openReview = (course) => {
+  36 |     setReviewing(course);  react-hooks/immutability
+  21:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\admin\AdminUsers.jsx
+  17:38  warning  React Hook useEffect has a missing dependency: 'fetchUsers'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\home\LandingPage.jsx
+  198:11  warning  'theme' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u  no-unused-vars
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org-leader\OrgLeaderDashboard_OLD.jsx
+  1222:14  warning  'err' is defined but never used  no-unused-vars
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org-leader\OrgSpecialistDetail.jsx
+  34:6  warning  React Hook useEffect has a missing dependency: 'authGet'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org\OrgChildren.jsx
+   1:31  warning  'useRef' is defined but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+  14:21  error    Error: Cannot access variable before it is declared
+
+`loadChildren` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  12 |   const [showDropdown, setShowDropdown] = useState(false);
+  13 |
+> 14 |   useEffect(() => { loadChildren(); }, []);
+     |                     ^^^^^^^^^^^^ `loadChildren` accessed before it is declared
+  15 |
+  16 |   const loadChildren = async () => {
+  17 |     setLoading(true);
+
+  14 |   useEffect(() => { loadChildren(); }, []);
+  15 |
+> 16 |   const loadChildren = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 17 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 18 |     try {
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 19 |       const data = await authGet('/organization/my-organization/children');
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 20 |       setChildren(Array.isArray(data) ? data : []);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 21 |     } catch {}
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 22 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 23 |   };
+     | ^^^^^ `loadChildren` is declared here
+  24 |
+  25 |   const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'ÔÇö';
+  26 |  react-hooks/immutability
+  14:40  warning  React Hook useEffect has a missing dependency: 'loadChildren'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
+  29:18  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  27 |   const calcAge = (dob) => {
+  28 |     if (!dob) return 'ÔÇö';
+> 29 |     const diff = Date.now() - new Date(dob).getTime();
+     |                  ^^^^^^^^^^ Cannot call impure function
+  30 |     const years = Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
+  31 |     return years > 0 ? `${years} yrs` : `${Math.floor(diff / (30.44 * 24 * 60 * 60 * 1000))} months`;
+  32 |   };                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/purity
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org\OrgFamilies.jsx
+  56:21  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  54 |   };
+  55 |
+> 56 |   useEffect(() => { loadData(); }, []);
+     |                     ^^^^^^^^ `loadData` accessed before it is declared
+  57 |
+  58 |   const loadData = async () => {
+  59 |     setLoading(true);
+
+  56 |   useEffect(() => { loadData(); }, []);
+  57 |
+> 58 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 59 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 60 |     try {
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 68 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 69 |   };
+     | ^^^^^ `loadData` is declared here
+  70 |
+  71 |   const flash = (msg, type = 'success') => {
+  72 |     if (type === 'error') setError(msg); else setSuccess(msg);  react-hooks/immutability
+  56:36  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org\OrgInvitations.jsx
+  14:21  error    Error: Cannot access variable before it is declared
+
+`loadInvitations` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  12 |   const [success, setSuccess] = useState('');
+  13 |
+> 14 |   useEffect(() => { loadInvitations(); }, []);
+     |                     ^^^^^^^^^^^^^^^ `loadInvitations` accessed before it is declared
+  15 |
+  16 |   const loadInvitations = async () => {
+  17 |     setLoading(true);
+
+  14 |   useEffect(() => { loadInvitations(); }, []);
+  15 |
+> 16 |   const loadInvitations = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 17 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 18 |     try {
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 19 |       const data = await authGet('/organization/my-organization/invitations');
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 20 |       setInvitations(Array.isArray(data) ? data : []);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 21 |     } catch {}
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 22 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 23 |   };
+     | ^^^^^ `loadInvitations` is declared here
+  24 |
+  25 |   const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'ÔÇö';
+  26 |  react-hooks/immutability
+  14:43  warning  React Hook useEffect has a missing dependency: 'loadInvitations'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org\OrgLayout.jsx
+  14:11  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  12 |     const stored = localStorage.getItem('orgLeaderUser');
+  13 |     if (!stored) { navigate('/org/login'); return; }
+> 14 |     try { setUser(JSON.parse(stored)); } catch { navigate('/org/login'); }
+     |           ^^^^^^^ Avoid calling setState() directly within an effect
+  15 |   }, []);
+  16 |
+  17 |   const handleLogout = () => {  react-hooks/set-state-in-effect
+  15:6   warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org\OrgOverview.jsx
+  59:21  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  57 |
+  58 |   /* ÔöÇÔöÇÔöÇ load org data ÔöÇÔöÇÔöÇ */
+> 59 |   useEffect(() => { loadData(); }, []);
+     |                     ^^^^^^^^ `loadData` accessed before it is declared
+  60 |
+  61 |   const loadData = async () => {
+  62 |     setLoading(true);
+
+  59 |   useEffect(() => { loadData(); }, []);
+  60 |
+> 61 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 62 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 63 |     try {
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 75 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 76 |   };
+     | ^^^^^ `loadData` is declared here
+  77 |
+  78 |   /* ÔöÇÔöÇÔöÇ fetch AI summary ÔöÇÔöÇÔöÇ */
+  79 |   const fetchAiSummary = async (specialist) => {  react-hooks/immutability
+  59:36  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\org\OrgStaff.jsx
+  41:21  error    Error: Cannot access variable before it is declared
+
+`loadStaff` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  39 |   const roles = ['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'volunteer', 'other'];
+  40 |
+> 41 |   useEffect(() => { loadStaff(); }, []);
+     |                     ^^^^^^^^^ `loadStaff` accessed before it is declared
+  42 |
+  43 |   const loadStaff = async () => {
+  44 |     setLoading(true);
+
+  41 |   useEffect(() => { loadStaff(); }, []);
+  42 |
+> 43 |   const loadStaff = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 44 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 45 |     try {
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 46 |       const data = await authGet('/organization/my-organization/staff');
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 47 |       setStaff(Array.isArray(data) ? data : []);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 48 |     } catch {}
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 49 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 50 |   };
+     | ^^^^^ `loadStaff` is declared here
+  51 |
+  52 |   const flash = (msg, type = 'success') => {
+  53 |     if (type === 'error') setError(msg); else setSuccess(msg);  react-hooks/immutability
+  41:37  warning  React Hook useEffect has a missing dependency: 'loadStaff'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\shared\SettingsPage.jsx
+   1:20  warning  'useEffect' is defined but never used. Allowed unused vars must match /^(_|[A-Z])/u        no-unused-vars
+  17:11  warning  'theme' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u   no-unused-vars
+  35:13  warning  'result' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u  no-unused-vars
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\ActivitiesCreator.jsx
+  22:35  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  20 |   const [success, setSuccess] = useState('');
+  21 |
+> 22 |   useEffect(() => { if (!childId) setError('Please select a child first.'); }, [childId]);
+     |                                   ^^^^^^^^ Avoid calling setState() directly within an effect
+  23 |
+  24 |   const addMaterial = () => {
+  25 |     if (!newMaterial) return;  react-hooks/set-state-in-effect
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\SkillTrackerCreator.jsx
+  23:35  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  21 |   const [success, setSuccess] = useState('');
+  22 |
+> 23 |   useEffect(() => { if (!childId) setError('Please select a child first.'); }, [childId]);
+     |                                   ^^^^^^^^ Avoid calling setState() directly within an effect
+  24 |
+  25 |   const toggleTrial = (i) => {
+  26 |     const t = [...trials];  react-hooks/set-state-in-effect
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\SpecialistChildren.jsx
+   5:10  warning  'getUploadUrl' is defined but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+  23:10  warning  'modalMode' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+  28:21  error    Error: Cannot access variable before it is declared
+
+`loadChildren` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  26 |   const [formLoading, setFormLoading] = useState(false);
+  27 |
+> 28 |   useEffect(() => { loadChildren(); }, []);
+     |                     ^^^^^^^^^^^^ `loadChildren` accessed before it is declared
+  29 |
+  30 |   const loadChildren = async () => {
+  31 |     setLoading(true);
+
+  28 |   useEffect(() => { loadChildren(); }, []);
+  29 |
+> 30 |   const loadChildren = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 31 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 32 |     try {
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 40 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 41 |   };
+     | ^^^^^ `loadChildren` is declared here
+  42 |
+  43 |   const selectChild = async (child) => {
+  44 |     setSelectedChild(child);  react-hooks/immutability
+  28:40  warning  React Hook useEffect has a missing dependency: 'loadChildren'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\SpecialistDashboard_OLD.jsx
+   23:12  warning  'editingFamily' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u              no-unused-vars
+  150:18  warning  'err' is defined but never used                                                                               no-unused-vars
+  188:11  warning  'handleExistingChildChange' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u  no-unused-vars
+  195:11  warning  'handleDeleteExistingChild' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u  no-unused-vars
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\SpecialistLayout.jsx
+  14:11  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  12 |     const stored = localStorage.getItem('specialistUser');
+  13 |     if (!stored) { navigate('/specialist/login'); return; }
+> 14 |     try { setUser(JSON.parse(stored)); } catch { navigate('/specialist/login'); }
+     |           ^^^^^^^ Avoid calling setState() directly within an effect
+  15 |   }, []);
+  16 |
+  17 |   const handleLogout = () => {  react-hooks/set-state-in-effect
+  15:6   warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\SpecialistOverview.jsx
+   7:24  warning  'getUploadUrl' is defined but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+  12:11  warning  'authGet' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-unused-vars
+  20:21  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  18 |   const [loading, setLoading] = useState(true);
+  19 |
+> 20 |   useEffect(() => { loadData(); }, []);
+     |                     ^^^^^^^^ `loadData` accessed before it is declared
+  21 |
+  22 |   const loadData = async () => {
+  23 |     setLoading(true);
+
+  20 |   useEffect(() => { loadData(); }, []);
+  21 |
+> 22 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 23 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 24 |     const token = localStorage.getItem('specialistToken');
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 38 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 39 |   };
+     | ^^^^^ `loadData` is declared here
+  40 |
+  41 |   const pecsCount = allPlans.filter(p => p.type === 'PECS').length;
+  42 |   const teacchCount = allPlans.filter(p => p.type === 'TEACCH').length;  react-hooks/immutability
+  25:11  warning  'user' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\SpecialistPlans.jsx
+  14:21  error  Error: Cannot access variable before it is declared
+
+`loadPlans` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  12 |   const [expandedPlan, setExpandedPlan] = useState(null);
+  13 |
+> 14 |   useEffect(() => { loadPlans(); }, []);
+     |                     ^^^^^^^^^ `loadPlans` accessed before it is declared
+  15 |
+  16 |   const loadPlans = async () => {
+  17 |     setLoading(true);
+
+  14 |   useEffect(() => { loadPlans(); }, []);
+  15 |
+> 16 |   const loadPlans = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 17 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 18 |     const token = localStorage.getItem('specialistToken');
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 19 |     try {
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 20 |       const res = await fetch(`${API_BASE_URL}/specialized-plans/my-plans`, { headers: { Authorization: `Bearer ${token}` } });
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 21 |       const data = await res.json();
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 22 |       setPlans(Array.isArray(data) ? data : []);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 23 |     } catch {}
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 24 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 25 |   };
+     | ^^^^^ `loadPlans` is declared here
+  26 |
+  27 |   const handleDelete = async (plan) => {
+  28 |     if (!confirm('Delete this plan?')) return;  react-hooks/immutability
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\src\pages\specialist\TEACCHTrackerCreator.jsx
+  42:31  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  40 |   const addGoal = (text) => {
+  41 |     if (!text || goals.find(g => g.text === text)) return;
+> 42 |     setGoals([...goals, { id: Date.now().toString(), text, status: 'not_started', notes: '' }]);
+     |                               ^^^^^^^^^^ Cannot call impure function
+  43 |   };
+  44 |
+  45 |   const removeGoal = (id) => setGoals(goals.filter(g => g.id !== id));  react-hooks/purity
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\test_api.js
+  1:14  error  'require' is not defined  no-undef
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\test_fetch.js
+  1:15  error    'require' is not defined                                                                no-undef
+  2:7   warning  'jwt' is assigned a value but never used. Allowed unused vars must match /^(_|[A-Z])/u  no-unused-vars
+  2:13  error    'require' is not defined                                                                no-undef
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\test_remote_api.js
+  1:15  error  'require' is not defined  no-undef
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\test_specialist_plans.js
+  163:3  error  'process' is not defined  no-undef
+
+C:\Users\maama\Desktop\PIM\Cognicare_Web_Dashboard\test_teacch.js
+  1:15  error  'require' is not defined  no-undef
+
+Ô£û 70 problems (27 errors, 43 warnings)
+

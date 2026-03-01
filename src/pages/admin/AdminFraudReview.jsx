@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { API_BASE_URL, getUploadUrl } from '../../config';
@@ -133,13 +133,13 @@ export default function AdminFraudReview() {
       ) : subTab === 'pending' ? (
         <div className="space-y-4">
           {pending.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
               <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
               <p>No pending reviews</p>
             </div>
           ) : (
             pending.map(org => (
-              <div key={org._id || org.organizationId} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <div key={org._id || org.organizationId} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
@@ -147,7 +147,7 @@ export default function AdminFraudReview() {
                     </div>
                     <div>
                       <p className="font-bold">{org.organizationName || org.name}</p>
-                      <p className="text-sm text-slate-500">{org.leaderName || org.leader?.fullName} • {org.leaderEmail || org.leader?.email}</p>
+                      <p className="text-sm text-slate-500">{org.leaderName || org.leader?.fullName} â€¢ {org.leaderEmail || org.leader?.email}</p>
                     </div>
                   </div>
                   <button onClick={() => openReview(org)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors">Review</button>
@@ -159,7 +159,7 @@ export default function AdminFraudReview() {
       ) : (
         <div className="space-y-3">
           {reviewed.map(org => (
-            <div key={org._id || org.organizationId} className="flex items-center justify-between bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+            <div key={org._id || org.organizationId} className="flex items-center justify-between bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                   <span className="material-symbols-outlined">corporate_fare</span>
@@ -177,7 +177,7 @@ export default function AdminFraudReview() {
             </div>
           ))}
           {reviewed.length === 0 && (
-            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800">No review history</div>
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">No review history</div>
           )}
         </div>
       )}
@@ -185,7 +185,7 @@ export default function AdminFraudReview() {
       {/* Review Modal */}
       {reviewingOrg && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setReviewingOrg(null)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">Review: {reviewingOrg.organizationName || reviewingOrg.name}</h3>
               <button onClick={() => setReviewingOrg(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
@@ -196,7 +196,7 @@ export default function AdminFraudReview() {
               <p className="text-sm"><strong>Leader:</strong> {reviewingOrg.leaderName || reviewingOrg.leader?.fullName}</p>
               <p className="text-sm"><strong>Email:</strong> {reviewingOrg.leaderEmail || reviewingOrg.leader?.email}</p>
               {reviewingOrg.certificateUrl && (
-                <a href={getUploadUrl(reviewingOrg.certificateUrl)} target="_blank" rel="noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">View Certificate →</a>
+                <a href={getUploadUrl(reviewingOrg.certificateUrl)} target="_blank" rel="noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">View Certificate â†’</a>
               )}
             </div>
 
@@ -260,9 +260,9 @@ export default function AdminFraudReview() {
 
             {/* Decision */}
             <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
-              <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder="Notes / rejection reason (optional)..." className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-20 focus:ring-2 focus:ring-primary" />
+              <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder="Notes / rejection reason (optional)..." className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-20 focus:ring-2 focus:ring-primary" />
               <div className="flex gap-3">
-                <button onClick={() => setReviewingOrg(null)} className="flex-1 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Skip</button>
+                <button onClick={() => setReviewingOrg(null)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Skip</button>
                 <button onClick={() => handleDecision('rejected')} className="flex-1 py-3 bg-error text-white rounded-xl font-bold text-sm hover:bg-error/90">Reject</button>
                 <button onClick={() => handleDecision('approved')} className="flex-1 py-3 bg-success text-white rounded-xl font-bold text-sm hover:bg-success/90">Approve</button>
               </div>
@@ -273,3 +273,5 @@ export default function AdminFraudReview() {
     </div>
   );
 }
+
+

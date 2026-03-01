@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { getUploadUrl } from '../../config';
@@ -87,7 +87,7 @@ export default function AdminCaregiverApplications() {
             {pendingCount} {t('caregiverApplications.applicationsCount')}
           </p>
         </div>
-        <button onClick={fetchApplications} className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+        <button onClick={fetchApplications} className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
           <span className="material-symbols-outlined text-lg">refresh</span>
           {t('caregiverApplications.refresh')}
         </button>
@@ -105,10 +105,10 @@ export default function AdminCaregiverApplications() {
             onClick={() => setFilter(s)}
             className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${filter === s
               ? 'bg-primary text-white shadow-lg shadow-primary/25'
-              : 'bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+              : 'bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
-            {s === 'pending' && '⏳ '}{s === 'approved' && '✅ '}{s === 'denied' && '❌ '}
+            {s === 'pending' && 'â³ '}{s === 'approved' && 'âœ… '}{s === 'denied' && 'âŒ '}
             {t(`caregiverApplications.filters.${s}`)}
           </button>
         ))}
@@ -120,7 +120,7 @@ export default function AdminCaregiverApplications() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
       ) : applications.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-5xl mb-3 block">folder_open</span>
           <p className="font-medium">{t('caregiverApplications.noApplications')}</p>
           <p className="text-sm mt-1">{t(`caregiverApplications.noApplicationsSub.${filter}`)}</p>
@@ -130,7 +130,7 @@ export default function AdminCaregiverApplications() {
           {applications.map((app) => {
             const user = app.user || {};
             return (
-              <div key={app.id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-lg transition-shadow">
+              <div key={app.id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden hover:shadow-lg transition-shadow">
                 {/* Header */}
                 <div className="p-5 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-start justify-between">
@@ -204,7 +204,7 @@ export default function AdminCaregiverApplications() {
                           <button
                             key={i}
                             onClick={() => setPreviewDoc(doc)}
-                            className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium hover:bg-primary/5 hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300"
+                            className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium hover:bg-primary/5 hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300"
                           >
                             <span className="material-symbols-outlined text-base text-primary">
                               {doc.mimeType?.includes('pdf') ? 'picture_as_pdf' : 'image'}
@@ -249,7 +249,7 @@ export default function AdminCaregiverApplications() {
       {/* Rejection Modal */}
       {reviewingApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setReviewingApp(null)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('caregiverApplications.denyTitle')}</h3>
               <button onClick={() => setReviewingApp(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -267,10 +267,10 @@ export default function AdminCaregiverApplications() {
               value={rejectionReason}
               onChange={e => setRejectionReason(e.target.value)}
               placeholder={t('caregiverApplications.rejectionPlaceholder')}
-              className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm resize-none h-24 focus:ring-2 focus:ring-primary mb-4"
+              className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm resize-none h-24 focus:ring-2 focus:ring-primary mb-4"
             />
             <div className="flex gap-3">
-              <button onClick={() => setReviewingApp(null)} className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <button onClick={() => setReviewingApp(null)} className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 {t('caregiverApplications.cancel')}
               </button>
               <button
@@ -287,7 +287,7 @@ export default function AdminCaregiverApplications() {
       {/* Document Preview Modal */}
       {previewDoc && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setPreviewDoc(null)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
               <div>
@@ -316,7 +316,7 @@ export default function AdminCaregiverApplications() {
               {previewDoc.mimeType?.includes('pdf') ? (
                 <iframe
                   src={getUploadUrl(previewDoc.url)}
-                  className="w-full h-[70vh] rounded-lg border border-slate-200 dark:border-slate-700"
+                  className="w-full h-[70vh] rounded-lg border border-slate-300 dark:border-slate-700"
                   title="Document Preview"
                 />
               ) : (
@@ -333,3 +333,5 @@ export default function AdminCaregiverApplications() {
     </div>
   );
 }
+
+

@@ -18,7 +18,14 @@ export default defineConfig(({ mode }) => {
     env.VITE_BACKEND_ORIGIN || 'http://localhost:3000'
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react({
+        babel: {
+          plugins: []  // Disable React Compiler
+        }
+      }),
+      tailwindcss()
+    ],
     build: {
       rollupOptions: {
         output: {

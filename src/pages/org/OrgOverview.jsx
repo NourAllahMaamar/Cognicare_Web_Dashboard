@@ -137,7 +137,7 @@ export default function OrgOverview() {
   const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 shadow-lg text-sm">
+      <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 shadow-lg text-sm">
         <p className="font-semibold">{payload[0].name}</p>
         <p className="text-primary font-bold">{payload[0].value}</p>
       </div>
@@ -176,7 +176,7 @@ export default function OrgOverview() {
               { role: 'careProvider', icon: 'volunteer_activism', label: t('roles.caregiver', 'Caregivers') },
               { role: 'other', icon: 'person', label: t('roles.other', 'Other') },
             ].map(r => (
-              <div key={r.role} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center transition-transform hover:scale-105 hover:shadow-md">
+              <div key={r.role} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center shadow-sm hover:shadow-lg transition-all hover:scale-105">
                 <span className="material-symbols-outlined text-2xl text-primary mb-1">{r.icon}</span>
                 <p className="text-2xl font-black">{countRole(r.role)}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{r.label}</p>
@@ -187,7 +187,7 @@ export default function OrgOverview() {
           {/* ═══════════════════════════════════════════════════════
               PROGRESS AI SECTION
              ═══════════════════════════════════════════════════════ */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 transition-all">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-md p-6 transition-all">
             {/* Section header */}
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
@@ -210,7 +210,7 @@ export default function OrgOverview() {
                     onChange={e => { setSearchQuery(e.target.value); setShowDropdown(true); setSelectedSpecialist(null); }}
                     onFocus={() => setShowDropdown(true)}
                     placeholder={t('orgDashboard.ai.searchPlaceholder', 'Search specialist by name...')}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all outline-none"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all outline-none"
                   />
                   {searchQuery && (
                     <button
@@ -235,7 +235,7 @@ export default function OrgOverview() {
 
               {/* Dropdown */}
               {showDropdown && !selectedSpecialist && (
-                <div className="absolute z-20 top-full mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                <div className="absolute z-20 top-full mt-1 w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
                   {filteredSpecialists.length === 0 ? (
                     <div className="px-4 py-6 text-center text-sm text-slate-400">
                       <span className="material-symbols-outlined text-3xl mb-2 block">person_search</span>
@@ -265,7 +265,7 @@ export default function OrgOverview() {
 
             {/* Error */}
             {aiError && (
-              <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl mb-4 text-sm text-red-600 dark:text-red-400">
+              <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-xl mb-4 text-sm text-red-600 dark:text-red-400">
                 <span className="material-symbols-outlined text-lg">error</span>
                 {aiError}
               </div>
@@ -291,7 +291,7 @@ export default function OrgOverview() {
               <div className="space-y-6 animate-in fade-in duration-500">
                 {/* Selected specialist badge */}
                 {selectedSpecialist && (
-                  <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                  <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-300 dark:border-indigo-800">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold">
                       {(selectedSpecialist.fullName || '?')[0].toUpperCase()}
                     </div>
@@ -304,22 +304,22 @@ export default function OrgOverview() {
 
                 {/* KPI Cards */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/20 border border-indigo-200/50 dark:border-indigo-700/30">
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/20 border border-indigo-300 dark:border-indigo-700/30 shadow-sm">
                     <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-indigo-200 dark:text-indigo-800/40">description</span>
                     <p className="text-3xl font-black text-indigo-600 dark:text-indigo-400">{aiSummary.totalPlans || 0}</p>
                     <p className="text-xs font-medium text-indigo-500/80 mt-1">{t('orgDashboard.ai.totalPlans', 'Total Plans')}</p>
                   </div>
-                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/20 border border-emerald-200/50 dark:border-emerald-700/30">
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/20 border border-emerald-300 dark:border-emerald-700/30 shadow-sm">
                     <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-emerald-200 dark:text-emerald-800/40">child_care</span>
                     <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{aiSummary.childrenCount || 0}</p>
                     <p className="text-xs font-medium text-emerald-500/80 mt-1">{t('orgDashboard.ai.childrenServed', 'Children Served')}</p>
                   </div>
-                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/30 dark:to-cyan-800/20 border border-cyan-200/50 dark:border-cyan-700/30">
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/30 dark:to-cyan-800/20 border border-cyan-300 dark:border-cyan-700/30 shadow-sm">
                     <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-cyan-200 dark:text-cyan-800/40">thumb_up</span>
                     <p className="text-3xl font-black text-cyan-600 dark:text-cyan-400">{aiSummary.approvalRatePercent || 0}<span className="text-lg">%</span></p>
                     <p className="text-xs font-medium text-cyan-500/80 mt-1">{t('orgDashboard.ai.approvalRate', 'Approval Rate')}</p>
                   </div>
-                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 border border-purple-200/50 dark:border-purple-700/30">
+                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 border border-purple-300 dark:border-purple-700/30 shadow-sm">
                     <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-purple-200 dark:text-purple-800/40">trending_up</span>
                     <p className="text-3xl font-black text-purple-600 dark:text-purple-400">{aiSummary.resultsImprovedRatePercent || 0}<span className="text-lg">%</span></p>
                     <p className="text-xs font-medium text-purple-500/80 mt-1">{t('orgDashboard.ai.improvementRate', 'Improvement Rate')}</p>
@@ -330,7 +330,7 @@ export default function OrgOverview() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Plan Distribution Donut */}
                   {planChartData.length > 0 && (
-                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/30">
+                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-300 dark:border-slate-700/30">
                       <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary text-lg">donut_large</span>
                         {t('orgDashboard.ai.planDistribution', 'Plan Distribution')}
@@ -364,7 +364,7 @@ export default function OrgOverview() {
 
                   {/* Feedback Breakdown Bar Chart */}
                   {feedbackChartData.length > 0 && (
-                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/30">
+                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-300 dark:border-slate-700/30">
                       <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary text-lg">bar_chart</span>
                         {t('orgDashboard.ai.feedbackBreakdown', 'Feedback Breakdown')}
@@ -388,7 +388,7 @@ export default function OrgOverview() {
 
                 {/* Rate Gauges */}
                 {rateData.some(d => d.value > 0) && (
-                  <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/30">
+                  <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-300 dark:border-slate-700/30">
                     <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
                       <span className="material-symbols-outlined text-primary text-lg">speed</span>
                       {t('orgDashboard.ai.performanceGauges', 'Performance Gauges')}
@@ -422,7 +422,7 @@ export default function OrgOverview() {
 
                 {/* Total Feedback Summary */}
                 {(aiSummary.totalFeedback != null && aiSummary.totalFeedback > 0) && (
-                  <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/50 dark:border-slate-700/30">
+                  <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-300 dark:border-slate-700/30">
                     <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
                       <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">reviews</span>
                     </div>

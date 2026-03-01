@@ -678,5 +678,19 @@
       "diploma": "دبلوم",
       "other": "مستند آخر"
     }
+  },
+  "confirmAccount": {
+    "title": "تفعيل حسابك",
+    "subtitle": "يرجى تعيين كلمة مرور لحساب CogniCare الجديد الخاص بك.",
+    "newPassword": "كلمة مرور جديدة",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "passwordPlaceholder": "6 أحرف على الأقل",
+    "confirmPlaceholder": "كرر كلمة المرور",
+    "activate": "تفعيل الحساب",
+    "activating": "جاري التفعيل...",
+    "successTitle": "تم تفعيل الحساب!",
+    "successMessage": "تم تأكيد حسابك بنجاح. سيتم إعادة توجيهك إلى صفحة تسجيل الدخول في غضون بضع ثوان...",
+    "goToLogin": "الانتقال إلى تسجيل الدخول الآن",
+    "backToHome": "العودة إلى الصفحة الرئيسية"
   }
 }

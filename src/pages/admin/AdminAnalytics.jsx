@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatCard from '../../components/ui/StatCard';
 
@@ -79,7 +79,7 @@ export default function AdminAnalytics() {
           <p className="text-slate-500 dark:text-text-muted mt-1">Real-time platform performance overview</p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
             <span className="material-symbols-outlined text-lg">calendar_today</span> Last 30 Days
           </button>
           <button className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
@@ -103,7 +103,7 @@ export default function AdminAnalytics() {
           {/* Charts Row */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
             {/* User Growth Chart */}
-            <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-bold">User Growth</h3>
@@ -140,7 +140,7 @@ export default function AdminAnalytics() {
             </div>
 
             {/* Activity Feed */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold">Activity Feed</h3>
                 <button className="text-xs text-primary font-bold hover:underline">View All</button>
@@ -184,7 +184,7 @@ export default function AdminAnalytics() {
           {/* Bottom Row: Plan Distribution + Users by Role */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             {/* Plan Distribution */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <h3 className="font-bold mb-4">Plan Distribution</h3>
               <div className="flex items-center gap-8">
                 <div className="relative w-32 h-32 flex-shrink-0">
@@ -224,7 +224,7 @@ export default function AdminAnalytics() {
             </div>
 
             {/* Users by Role */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <h3 className="font-bold mb-4">Users by Role</h3>
               <div className="space-y-4">
                 {(roleData.length > 0 ? roleData : [
@@ -251,3 +251,5 @@ export default function AdminAnalytics() {
     </div>
   );
 }
+
+

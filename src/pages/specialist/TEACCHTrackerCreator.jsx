@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -71,7 +71,7 @@ export default function TEACCHTrackerCreator() {
 
   const statusColors = { not_started: 'bg-slate-100 text-slate-500', in_progress: 'bg-amber-100 text-amber-700', mastered: 'bg-success/10 text-success' };
   const statusLabels = { not_started: 'Not Started', in_progress: 'In Progress', mastered: 'Mastered' };
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
@@ -101,13 +101,13 @@ export default function TEACCHTrackerCreator() {
           {/* Left: Setup */}
           <div className="space-y-4">
             {/* Title */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">Plan Title</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Daily Living Skills" className={inputCls} />
             </div>
 
             {/* Category */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-3">Category</label>
               <div className="grid grid-cols-2 gap-2">
                 {CATEGORIES.map(c => (
@@ -120,7 +120,7 @@ export default function TEACCHTrackerCreator() {
             </div>
 
             {/* Goal Templates */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">auto_awesome</span>
                 Quick Add Goals
@@ -143,7 +143,7 @@ export default function TEACCHTrackerCreator() {
 
           {/* Center: Goals */}
           <div className="space-y-4">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-lg font-bold mb-1">Goals ({goals.length})</h3>
               <p className="text-xs text-slate-400 mb-4">Track progress for each goal</p>
 
@@ -155,11 +155,11 @@ export default function TEACCHTrackerCreator() {
               ) : (
                 <div className="space-y-3">
                   {goals.map(goal => (
-                    <div key={goal.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div key={goal.id} className="p-4 rounded-xl border border-slate-300 dark:border-slate-700">
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
                           <p className="text-sm font-medium">{goal.text}</p>
-                          <select value={goal.status} onChange={e => updateGoal(goal.id, 'status', e.target.value)} className="mt-2 px-3 py-1 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                          <select value={goal.status} onChange={e => updateGoal(goal.id, 'status', e.target.value)} className="mt-2 px-3 py-1 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
                             {Object.entries(statusLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                           </select>
                         </div>
@@ -167,7 +167,7 @@ export default function TEACCHTrackerCreator() {
                           <span className="material-symbols-outlined text-sm">close</span>
                         </button>
                       </div>
-                      <input type="text" value={goal.notes} onChange={e => updateGoal(goal.id, 'notes', e.target.value)} placeholder="Notes..." className="mt-2 w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs" />
+                      <input type="text" value={goal.notes} onChange={e => updateGoal(goal.id, 'notes', e.target.value)} placeholder="Notes..." className="mt-2 w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       {/* Status badge */}
                       <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-bold ${statusColors[goal.status]}`}>
                         {statusLabels[goal.status]}
@@ -181,7 +181,7 @@ export default function TEACCHTrackerCreator() {
 
           {/* Right: Work System */}
           <div className="space-y-4">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">view_list</span>
                 Work System
@@ -215,7 +215,7 @@ export default function TEACCHTrackerCreator() {
             </div>
 
             {/* Summary */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3">Summary</h3>
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between"><span className="text-slate-500">Category</span><span className="font-bold">{CATEGORIES.find(c => c.id === category)?.label}</span></div>
@@ -237,3 +237,5 @@ export default function TEACCHTrackerCreator() {
     </div>
   );
 }
+
+

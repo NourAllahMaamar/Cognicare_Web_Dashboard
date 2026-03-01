@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 
@@ -78,7 +78,7 @@ export default function AdminTrainingCourses() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
       ) : courses.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           No training courses yet. Add courses via the scraper and API, then review them here.
         </div>
       ) : (
@@ -86,7 +86,7 @@ export default function AdminTrainingCourses() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="flex items-center justify-between bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4"
+              className="flex items-center justify-between bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -95,7 +95,7 @@ export default function AdminTrainingCourses() {
                 <div className="min-w-0">
                   <p className="font-bold text-sm truncate">{course.title}</p>
                   <p className="text-xs text-slate-500 truncate">
-                    {course.topics?.join(', ') || '—'} • Order: {course.order ?? 0}
+                    {course.topics?.join(', ') || 'â€”'} â€¢ Order: {course.order ?? 0}
                   </p>
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default function AdminTrainingCourses() {
                   rel="noreferrer"
                   className="text-sm text-primary hover:underline mt-1 inline-block"
                 >
-                  Source →
+                  Source â†’
                 </a>
               )}
             </div>
@@ -144,7 +144,7 @@ export default function AdminTrainingCourses() {
                 value={professionalComments}
                 onChange={(e) => setProfessionalComments(e.target.value)}
                 placeholder="Optional notes (e.g. needs clarification, approved for publication)"
-                className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-24"
+                className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-24"
               />
               <div className="flex gap-2">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -170,7 +170,7 @@ export default function AdminTrainingCourses() {
             <div className="p-6 border-t border-slate-200 dark:border-slate-800 flex gap-3">
               <button
                 onClick={() => setReviewing(null)}
-                className="flex-1 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
@@ -191,3 +191,5 @@ export default function AdminTrainingCourses() {
     </div>
   );
 }
+
+

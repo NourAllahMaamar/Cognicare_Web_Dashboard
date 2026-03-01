@@ -2,7 +2,7 @@ export default function StatCard({ label, value, icon, iconBg = 'bg-blue-50 dark
   const isPositive = trend && !trend.startsWith('-');
 
   return (
-    <div className={`bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm ${className}`}>
+    <div className={`bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-300 dark:border-slate-800 shadow-md hover:shadow-lg transition-shadow ${className}`}>
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium text-slate-500 dark:text-text-muted">{label}</span>

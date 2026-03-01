@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getUploadUrl } from '../../config';
 
 const PECS_PHASES = [
-  { id: 1, name: 'Phase I – Physical Exchange', description: 'The child learns to exchange a single picture for a highly desired item.', criteria: 'Child independently exchanges a picture with minimal prompting in 8/10 trials.', tips: 'Use highly motivating items. Two adults recommended.' },
-  { id: 2, name: 'Phase II – Distance & Persistence', description: 'The child travels to the communication partner and uses the picture across settings.', criteria: 'Child travels to book, selects picture, and approaches partner independently.', tips: 'Gradually increase distance. Practice in different rooms.' },
-  { id: 3, name: 'Phase III – Picture Discrimination', description: 'The child discriminates between two or more pictures.', criteria: 'Child consistently selects the correct picture from 5+ pictures in 8/10 trials.', tips: 'Start with preferred vs. non-preferred, then preferred vs. preferred.' },
-  { id: 4, name: 'Phase IV – Sentence Structure', description: 'The child constructs simple sentences using "I want" + item picture.', criteria: 'Child independently constructs "I want + [item]" sentence strips.', tips: 'Introduce the "I want" icon. Place on strip, then add item picture.' },
-  { id: 5, name: 'Phase V – Responsive Requesting', description: 'The child uses PECS to answer "What do you want?"', criteria: 'Child responds to "What do you want?" within 5 seconds.', tips: 'Begin with a delay between question and prompting.' },
-  { id: 6, name: 'Phase VI – Commenting', description: 'The child spontaneously comments on their environment.', criteria: 'Child spontaneously comments using sentence starters.', tips: 'Introduce starters: "I see", "I hear", "I have".' },
+  { id: 1, name: 'Phase I â€“ Physical Exchange', description: 'The child learns to exchange a single picture for a highly desired item.', criteria: 'Child independently exchanges a picture with minimal prompting in 8/10 trials.', tips: 'Use highly motivating items. Two adults recommended.' },
+  { id: 2, name: 'Phase II â€“ Distance & Persistence', description: 'The child travels to the communication partner and uses the picture across settings.', criteria: 'Child travels to book, selects picture, and approaches partner independently.', tips: 'Gradually increase distance. Practice in different rooms.' },
+  { id: 3, name: 'Phase III â€“ Picture Discrimination', description: 'The child discriminates between two or more pictures.', criteria: 'Child consistently selects the correct picture from 5+ pictures in 8/10 trials.', tips: 'Start with preferred vs. non-preferred, then preferred vs. preferred.' },
+  { id: 4, name: 'Phase IV â€“ Sentence Structure', description: 'The child constructs simple sentences using "I want" + item picture.', criteria: 'Child independently constructs "I want + [item]" sentence strips.', tips: 'Introduce the "I want" icon. Place on strip, then add item picture.' },
+  { id: 5, name: 'Phase V â€“ Responsive Requesting', description: 'The child uses PECS to answer "What do you want?"', criteria: 'Child responds to "What do you want?" within 5 seconds.', tips: 'Begin with a delay between question and prompting.' },
+  { id: 6, name: 'Phase VI â€“ Commenting', description: 'The child spontaneously comments on their environment.', criteria: 'Child spontaneously comments using sentence starters.', tips: 'Introduce starters: "I see", "I hear", "I have".' },
 ];
 
 const TRIALS_PER_CARD = 10;
@@ -89,7 +89,7 @@ export default function PECSBoardCreator() {
     setLoading(false);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
@@ -118,7 +118,7 @@ export default function PECSBoardCreator() {
         {/* Stepper */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {['Set Title', 'Select Phase', 'Add Cards', 'Track Trials', 'Save'].map((step, i) => (
-            <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold whitespace-nowrap">
+            <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 text-xs font-bold whitespace-nowrap">
               <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-black">{i + 1}</span>
               {step}
             </div>
@@ -129,13 +129,13 @@ export default function PECSBoardCreator() {
           {/* Left Settings Panel */}
           <div className="lg:col-span-2 space-y-4">
             {/* Title */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">Board Title</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Morning Routine Board" className={inputCls} />
             </div>
 
             {/* Phase Selector */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">PECS Phase</label>
               <select value={selectedPhase} onChange={e => setSelectedPhase(Number(e.target.value))} className={inputCls}>
                 {PECS_PHASES.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -156,7 +156,7 @@ export default function PECSBoardCreator() {
             </div>
 
             {/* Add Card */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">add_photo_alternate</span>
                 Add Picture Card
@@ -181,9 +181,9 @@ export default function PECSBoardCreator() {
 
           {/* Right: Board */}
           <div className="lg:col-span-3">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <h3 className="text-lg font-bold mb-1">Communication Board</h3>
-              <p className="text-xs text-slate-400 mb-4">{items.length} cards — Click trial cells: ✅ Pass → ❌ Fail → ⬜ Reset</p>
+              <p className="text-xs text-slate-400 mb-4">{items.length} cards â€” Click trial cells: âœ… Pass â†’ âŒ Fail â†’ â¬œ Reset</p>
 
               {items.length === 0 ? (
                 <div className="p-12 text-center text-slate-400">
@@ -201,7 +201,7 @@ export default function PECSBoardCreator() {
                             onError={e => { e.target.src = `https://via.placeholder.com/120?text=${encodeURIComponent(item.label)}`; }} />
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-sm truncate">{item.label}</p>
-                            <p className="text-xs text-slate-400">{pass}/{TRIALS_PER_CARD} {mastered ? '🏆 Mastered' : ''}</p>
+                            <p className="text-xs text-slate-400">{pass}/{TRIALS_PER_CARD} {mastered ? 'ðŸ† Mastered' : ''}</p>
                           </div>
                           <button onClick={() => removeItem(item.id)} className="p-1 text-error hover:bg-error/5 rounded-lg">
                             <span className="material-symbols-outlined text-sm">close</span>
@@ -210,7 +210,7 @@ export default function PECSBoardCreator() {
                         <div className="grid grid-cols-10 gap-1">
                           {(item.trials || []).map((trial, i) => (
                             <button key={i} onClick={() => toggleTrial(item.id, i)} className={`w-full aspect-square rounded-lg text-xs font-bold flex items-center justify-center transition-colors ${trial === 'pass' ? 'bg-success text-white' : trial === 'fail' ? 'bg-error text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200'}`}>
-                              {trial === 'pass' ? '✓' : trial === 'fail' ? '✗' : i + 1}
+                              {trial === 'pass' ? 'âœ“' : trial === 'fail' ? 'âœ—' : i + 1}
                             </button>
                           ))}
                         </div>
@@ -230,3 +230,5 @@ export default function PECSBoardCreator() {
     </div>
   );
 }
+
+

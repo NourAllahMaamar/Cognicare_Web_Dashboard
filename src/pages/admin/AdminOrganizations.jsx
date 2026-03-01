@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 
@@ -121,7 +121,7 @@ export default function AdminOrganizations() {
           </h3>
           <div className="space-y-2">
             {pendingInvites.map(inv => (
-              <div key={inv._id} className="flex items-center justify-between bg-white dark:bg-surface-dark p-3 rounded-lg border border-slate-200 dark:border-slate-800">
+              <div key={inv._id} className="flex items-center justify-between bg-white dark:bg-surface-dark p-3 rounded-lg border border-slate-300 dark:border-slate-800">
                 <div>
                   <p className="text-sm font-medium">{inv.organizationName}</p>
                   <p className="text-xs text-slate-500">{inv.leaderEmail}</p>
@@ -136,7 +136,7 @@ export default function AdminOrganizations() {
       {/* Search */}
       <div className="relative">
         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-        <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search organizations..." className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+        <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search organizations..." className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
       {/* Organizations Grid */}
@@ -145,7 +145,7 @@ export default function AdminOrganizations() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(org => (
-            <div key={org._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:border-primary/30 transition-colors">
+            <div key={org._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 hover:border-primary/30 transition-colors">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
@@ -171,7 +171,7 @@ export default function AdminOrganizations() {
               </div>
               {showChangeLeader === org._id && (
                 <div className="mt-3 flex gap-2">
-                  <input type="email" placeholder="New leader email" value={newLeaderEmail} onChange={e => setNewLeaderEmail(e.target.value)} className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs" />
+                  <input type="email" placeholder="New leader email" value={newLeaderEmail} onChange={e => setNewLeaderEmail(e.target.value)} className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                   <button onClick={() => handleChangeLeader(org._id)} className="px-3 py-2 bg-primary text-white rounded-lg text-xs font-bold">Save</button>
                   <button onClick={() => setShowChangeLeader(null)} className="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs">Cancel</button>
                 </div>
@@ -190,7 +190,7 @@ export default function AdminOrganizations() {
       {/* Invite Modal */}
       {showInviteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowInviteModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">Invite Organization Leader</h3>
               <button onClick={() => setShowInviteModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
@@ -205,11 +205,11 @@ export default function AdminOrganizations() {
               ].map(f => (
                 <div key={f.key}>
                   <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{f.label}</label>
-                  <input type={f.type} required value={inviteForm[f.key]} onChange={e => setInviteForm({ ...inviteForm, [f.key]: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <input type={f.type} required value={inviteForm[f.key]} onChange={e => setInviteForm({ ...inviteForm, [f.key]: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
               ))}
               <div className="flex gap-3 mt-2">
-                <button type="button" onClick={() => setShowInviteModal(false)} className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
+                <button type="button" onClick={() => setShowInviteModal(false)} className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
                 <button type="submit" className="flex-1 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">Send Invitation</button>
               </div>
             </form>
@@ -220,7 +220,7 @@ export default function AdminOrganizations() {
       {/* Members Modal */}
       {showMembersModal && selectedOrg && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowMembersModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{selectedOrg.name} - Members</h3>
               <button onClick={() => setShowMembersModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
@@ -263,3 +263,5 @@ export default function AdminOrganizations() {
     </div>
   );
 }
+
+

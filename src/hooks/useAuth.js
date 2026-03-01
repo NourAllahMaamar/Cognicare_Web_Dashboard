@@ -85,7 +85,7 @@ export function useAuth(role) {
     }
 
     return res;
-  }, [refreshAccessToken, handleSessionExpired]);
+  }, [getToken, refreshAccessToken, handleSessionExpired]);
 
   /**
    * Convenience: authenticated GET that returns parsed JSON.

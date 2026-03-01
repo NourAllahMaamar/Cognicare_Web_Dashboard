@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -45,7 +45,7 @@ export default function ActivitiesCreator() {
     setLoading(false);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
   const priorityColors = { low: 'bg-blue-100 text-blue-700 border-blue-200', medium: 'bg-amber-100 text-amber-700 border-amber-200', high: 'bg-error/10 text-error border-error/20' };
 
   return (
@@ -74,19 +74,19 @@ export default function ActivitiesCreator() {
 
         <div className="space-y-4">
           {/* Title */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2">Activity Title</label>
             <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Color Matching Game" className={inputCls} />
           </div>
 
           {/* Description */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2">Description</label>
             <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder="Describe the activity and its therapeutic purpose..." className={inputCls} />
           </div>
 
           {/* Parent Instructions */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-lg">family_restroom</span>
               Parent Instructions
@@ -96,13 +96,13 @@ export default function ActivitiesCreator() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Due Date */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">Due Date</label>
               <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className={inputCls} />
             </div>
 
             {/* Priority */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">Priority</label>
               <div className="flex gap-2">
                 {['low', 'medium', 'high'].map(p => (
@@ -115,7 +115,7 @@ export default function ActivitiesCreator() {
           </div>
 
           {/* Materials */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-lg">inventory_2</span>
               Materials Needed
@@ -140,7 +140,7 @@ export default function ActivitiesCreator() {
 
           {/* Preview */}
           {title && (
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">preview</span>
                 Preview
@@ -161,3 +161,5 @@ export default function ActivitiesCreator() {
     </div>
   );
 }
+
+

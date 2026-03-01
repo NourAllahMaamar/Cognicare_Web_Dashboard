@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -49,7 +49,7 @@ export default function SkillTrackerCreator() {
     setLoading(false);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
@@ -62,7 +62,7 @@ export default function SkillTrackerCreator() {
             </button>
             <div>
               <h1 className="text-xl font-bold">Skill Tracker</h1>
-              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) — 10-trial mastery</p>
+              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) â€” 10-trial mastery</p>
             </div>
           </div>
           <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
@@ -78,17 +78,17 @@ export default function SkillTrackerCreator() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left: Settings */}
           <div className="space-y-4">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">Skill Title</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Eye Contact on Request" className={inputCls} />
             </div>
 
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <label className="block text-sm font-bold mb-2">Description</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder="Describe the target skill..." className={inputCls} />
             </div>
 
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-4">Percentages</h3>
               <div className="space-y-4">
                 <div>
@@ -113,22 +113,22 @@ export default function SkillTrackerCreator() {
           <div className="space-y-4">
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center">
                 <p className="text-2xl font-black text-primary">{passCount}<span className="text-sm font-normal text-slate-400">/{TRIALS_COUNT}</span></p>
                 <p className="text-xs text-slate-500 mt-1">Correct</p>
               </div>
-              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center">
                 <p className={`text-2xl font-black ${currentPercent >= targetPercent ? 'text-success' : 'text-amber-500'}`}>{currentPercent}%</p>
                 <p className="text-xs text-slate-500 mt-1">Accuracy</p>
               </div>
-              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
-                <p className="text-2xl font-black">{mastered ? '🏆' : '⏳'}</p>
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center">
+                <p className="text-2xl font-black">{mastered ? 'ðŸ†' : 'â³'}</p>
                 <p className="text-xs text-slate-500 mt-1">{mastered ? 'Mastered!' : 'In Progress'}</p>
               </div>
             </div>
 
             {/* Progress comparison bar */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3">Progress Comparison</h3>
               <div className="space-y-3">
                 <div>
@@ -153,13 +153,13 @@ export default function SkillTrackerCreator() {
             </div>
 
             {/* Trial Grid */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-1">Trial Grid</h3>
-              <p className="text-xs text-slate-400 mb-4">Click: ✅ Pass → ❌ Fail → ⬜ Reset</p>
+              <p className="text-xs text-slate-400 mb-4">Click: âœ… Pass â†’ âŒ Fail â†’ â¬œ Reset</p>
               <div className="grid grid-cols-5 gap-3">
                 {trials.map((trial, i) => (
                   <button key={i} onClick={() => toggleTrial(i)} className={`aspect-square rounded-xl text-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-all ${trial === 'pass' ? 'bg-success text-white shadow-lg shadow-success/20' : trial === 'fail' ? 'bg-error text-white shadow-lg shadow-error/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200'}`}>
-                    <span className="text-xl">{trial === 'pass' ? '✓' : trial === 'fail' ? '✗' : ''}</span>
+                    <span className="text-xl">{trial === 'pass' ? 'âœ“' : trial === 'fail' ? 'âœ—' : ''}</span>
                     <span className="text-[10px] opacity-70">Trial {i + 1}</span>
                   </button>
                 ))}
@@ -171,3 +171,5 @@ export default function SkillTrackerCreator() {
     </div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { API_BASE_URL } from '../../config';
 
@@ -60,7 +60,7 @@ export default function AdminSystemHealth() {
           {/* Service Status Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {services.map(svc => (
-              <div key={svc.name} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 relative overflow-hidden">
+              <div key={svc.name} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 relative overflow-hidden">
                 <span className="material-symbols-outlined absolute -right-4 -top-4 text-7xl text-slate-100 dark:text-slate-800/50">{svc.icon}</span>
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
@@ -83,7 +83,7 @@ export default function AdminSystemHealth() {
           {/* Uptime + Maintenance */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
             {/* Uptime Chart */}
-            <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary">monitoring</span>
@@ -105,7 +105,7 @@ export default function AdminSystemHealth() {
             </div>
 
             {/* Upcoming Maintenance */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center gap-2 mb-6">
                 <span className="material-symbols-outlined text-primary">schedule</span>
                 <h3 className="font-bold">Upcoming Maintenance</h3>
@@ -136,7 +136,7 @@ export default function AdminSystemHealth() {
           </div>
 
           {/* Audit Log */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">manage_search</span>
@@ -187,3 +187,4 @@ export default function AdminSystemHealth() {
     </div>
   );
 }
+
