@@ -43,6 +43,16 @@ export default function OrgFamilies() {
   const [defaultPassword, setDefaultPassword] = useState('');
   const fileRef = useRef(null);
 
+  // parentId is populated by backend as { _id, fullName, email }, so extract the raw ID
+  const childBelongsToFamily = (child, familyId) => {
+    // Handle both populated (object with _id) and raw ObjectId/string formats
+    const pid = typeof child.parentId === 'object' && child.parentId?._id 
+      ? child.parentId._id.toString() 
+      : child.parentId?.toString();
+    const fid = familyId?.toString();
+    return pid === fid || child.familyId?.toString() === fid;
+  };
+
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
@@ -81,7 +91,7 @@ export default function OrgFamilies() {
     setEditingFamily(fam);
     setModalMode('edit');
     setForm({ fullName: fam.fullName || '', email: fam.email || '', phone: fam.phone || '', password: '' });
-    setExistingChildren(allChildren.filter(c => c.parentId === fam._id || c.familyId === fam._id));
+    setExistingChildren(allChildren.filter(c => childBelongsToFamily(c, fam._id)));
     setFormChildren([]);
     setChildrenToDelete([]);
     setShowModal(true);
@@ -161,7 +171,7 @@ export default function OrgFamilies() {
   const exportData = () => {
     const data = families.map(f => ({
       'Full Name': f.fullName, Email: f.email, Phone: f.phone || '',
-      'Children Count': f.childrenCount ?? allChildren.filter(c => c.parentId === f._id || c.familyId === f._id).length,
+      'Children Count': f.childrenCount ?? allChildren.filter(c => childBelongsToFamily(c, f._id)).length,
       Joined: dateFmt(f.createdAt)
     }));
     const ws = XLSX.utils.json_to_sheet(data);
@@ -272,7 +282,7 @@ export default function OrgFamilies() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map(fam => {
-            const famChildren = allChildren.filter(c => c.parentId === fam._id || c.familyId === fam._id);
+            const famChildren = allChildren.filter(c => childBelongsToFamily(c, fam._id));
             return (
               <div key={fam._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow">
                 <div className="flex items-start justify-between mb-3">
@@ -385,11 +395,11 @@ export default function OrgFamilies() {
               <h3 className="text-lg font-bold">Children of {viewFamily.fullName}</h3>
               <button onClick={() => setViewFamily(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
-            {allChildren.filter(c => c.parentId === viewFamily._id || c.familyId === viewFamily._id).length === 0 ? (
+            {allChildren.filter(c => childBelongsToFamily(c, viewFamily._id)).length === 0 ? (
               <p className="text-center text-slate-400 py-8">No children</p>
             ) : (
               <div className="space-y-3">
-                {allChildren.filter(c => c.parentId === viewFamily._id || c.familyId === viewFamily._id).map(child => (
+                {allChildren.filter(c => childBelongsToFamily(c, viewFamily._id)).map(child => (
                   <div key={child._id} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4">
                     <p className="font-bold text-sm">{child.fullName}</p>
                     <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
