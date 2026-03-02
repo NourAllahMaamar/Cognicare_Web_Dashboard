@@ -164,7 +164,7 @@ export default function ProgressAIRecommendations() {
                 <div className="max-w-5xl mx-auto px-6 py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
                         <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-                        <p className="text-sm text-slate-400 font-medium">Loading recommendationsâ€¦</p>
+                        <p className="text-sm text-slate-400 font-medium">Loading recommendations"¦</p>
                     </div>
                 </div>
             )}

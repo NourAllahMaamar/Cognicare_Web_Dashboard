@@ -94,7 +94,7 @@ export default function SpecialistChildren() {
     switch (type) { case 'PECS': return 'bg-blue-500'; case 'TEACCH': return 'bg-purple-500'; case 'SkillTracker': return 'bg-success'; case 'Activity': return 'bg-amber-500'; default: return 'bg-slate-500'; }
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'â€”';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
 
   const allChildren = [...orgChildren, ...privateChildren];
 
@@ -130,7 +130,7 @@ export default function SpecialistChildren() {
                     <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm truncate">{child.fullName}</p>
-                      <p className="text-xs text-slate-400">{child.diagnosis || 'â€”'}</p>
+                      <p className="text-xs text-slate-400">{child.diagnosis || '"”'}</p>
                     </div>
                   </button>
                 ))}
@@ -150,7 +150,7 @@ export default function SpecialistChildren() {
                     <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm truncate">{child.fullName}</p>
-                      <p className="text-xs text-slate-400">{child.diagnosis || 'â€”'}</p>
+                      <p className="text-xs text-slate-400">{child.diagnosis || '"”'}</p>
                     </div>
                   </button>
                 ))}
@@ -174,7 +174,7 @@ export default function SpecialistChildren() {
                   <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl">{(selectedChild.fullName || '?')[0].toUpperCase()}</div>
                   <div>
                     <h3 className="text-xl font-bold">{selectedChild.fullName}</h3>
-                    <p className="text-sm text-slate-500">{selectedChild.gender || 'â€”'} â€¢ {dateFmt(selectedChild.dateOfBirth)}</p>
+                    <p className="text-sm text-slate-500">{selectedChild.gender || '"”'} • {dateFmt(selectedChild.dateOfBirth)}</p>
                     {selectedChild.diagnosis && <p className="text-sm text-primary mt-0.5">{selectedChild.diagnosis}</p>}
                   </div>
                 </div>
@@ -249,7 +249,7 @@ export default function SpecialistChildren() {
                             <div className="mt-2 space-y-1.5">
                               <div className="flex items-center gap-2 text-xs text-slate-500">
                                 <span className="material-symbols-outlined text-xs">grid_view</span>
-                                Phase {c.phase || 'â€”'} â€¢ {c.items.length} cards
+                                Phase {c.phase || '"”'} • {c.items.length} cards
                               </div>
                               <div className="flex gap-1 flex-wrap">
                                 {c.items.map((item, idx) => (

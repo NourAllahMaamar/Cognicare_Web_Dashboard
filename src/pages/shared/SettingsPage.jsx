@@ -164,7 +164,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
             <span className="text-slate-500">{t('settings.userId', 'User ID')}</span>
-            <span className="font-mono text-xs text-slate-400">{user?._id || user?.id || 'â€”'}</span>
+            <span className="font-mono text-xs text-slate-400">{user?._id || user?.id || '"”'}</span>
           </div>
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-500">{t('settings.verified', 'Verified')}</span>

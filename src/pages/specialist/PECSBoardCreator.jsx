@@ -4,12 +4,12 @@ import { useAuth } from '../../hooks/useAuth';
 import { getUploadUrl } from '../../config';
 
 const PECS_PHASES = [
-  { id: 1, name: 'Phase I â€“ Physical Exchange', description: 'The child learns to exchange a single picture for a highly desired item.', criteria: 'Child independently exchanges a picture with minimal prompting in 8/10 trials.', tips: 'Use highly motivating items. Two adults recommended.' },
-  { id: 2, name: 'Phase II â€“ Distance & Persistence', description: 'The child travels to the communication partner and uses the picture across settings.', criteria: 'Child travels to book, selects picture, and approaches partner independently.', tips: 'Gradually increase distance. Practice in different rooms.' },
-  { id: 3, name: 'Phase III â€“ Picture Discrimination', description: 'The child discriminates between two or more pictures.', criteria: 'Child consistently selects the correct picture from 5+ pictures in 8/10 trials.', tips: 'Start with preferred vs. non-preferred, then preferred vs. preferred.' },
-  { id: 4, name: 'Phase IV â€“ Sentence Structure', description: 'The child constructs simple sentences using "I want" + item picture.', criteria: 'Child independently constructs "I want + [item]" sentence strips.', tips: 'Introduce the "I want" icon. Place on strip, then add item picture.' },
-  { id: 5, name: 'Phase V â€“ Responsive Requesting', description: 'The child uses PECS to answer "What do you want?"', criteria: 'Child responds to "What do you want?" within 5 seconds.', tips: 'Begin with a delay between question and prompting.' },
-  { id: 6, name: 'Phase VI â€“ Commenting', description: 'The child spontaneously comments on their environment.', criteria: 'Child spontaneously comments using sentence starters.', tips: 'Introduce starters: "I see", "I hear", "I have".' },
+  { id: 1, name: 'Phase I "“ Physical Exchange', description: 'The child learns to exchange a single picture for a highly desired item.', criteria: 'Child independently exchanges a picture with minimal prompting in 8/10 trials.', tips: 'Use highly motivating items. Two adults recommended.' },
+  { id: 2, name: 'Phase II "“ Distance & Persistence', description: 'The child travels to the communication partner and uses the picture across settings.', criteria: 'Child travels to book, selects picture, and approaches partner independently.', tips: 'Gradually increase distance. Practice in different rooms.' },
+  { id: 3, name: 'Phase III "“ Picture Discrimination', description: 'The child discriminates between two or more pictures.', criteria: 'Child consistently selects the correct picture from 5+ pictures in 8/10 trials.', tips: 'Start with preferred vs. non-preferred, then preferred vs. preferred.' },
+  { id: 4, name: 'Phase IV "“ Sentence Structure', description: 'The child constructs simple sentences using "I want" + item picture.', criteria: 'Child independently constructs "I want + [item]" sentence strips.', tips: 'Introduce the "I want" icon. Place on strip, then add item picture.' },
+  { id: 5, name: 'Phase V "“ Responsive Requesting', description: 'The child uses PECS to answer "What do you want?"', criteria: 'Child responds to "What do you want?" within 5 seconds.', tips: 'Begin with a delay between question and prompting.' },
+  { id: 6, name: 'Phase VI "“ Commenting', description: 'The child spontaneously comments on their environment.', criteria: 'Child spontaneously comments using sentence starters.', tips: 'Introduce starters: "I see", "I hear", "I have".' },
 ];
 
 const TRIALS_PER_CARD = 10;
@@ -183,7 +183,7 @@ export default function PECSBoardCreator() {
           <div className="lg:col-span-3">
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <h3 className="text-lg font-bold mb-1">Communication Board</h3>
-              <p className="text-xs text-slate-400 mb-4">{items.length} cards â€” Click trial cells: âœ… Pass â†’ âŒ Fail â†’ â¬œ Reset</p>
+              <p className="text-xs text-slate-400 mb-4">{items.length} cards "” Click trial cells: âœ… Pass â†’ âŒ Fail â†’ â¬œ Reset</p>
 
               {items.length === 0 ? (
                 <div className="p-12 text-center text-slate-400">

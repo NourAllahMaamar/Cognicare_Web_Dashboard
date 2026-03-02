@@ -64,7 +64,7 @@ function AdminLogin() {
             <span className="material-symbols-outlined text-3xl">admin_panel_settings</span>
           </div>
           <h2 className="text-3xl font-black text-white mb-4">System Administration</h2>
-          <p className="text-slate-300 text-sm leading-relaxed">Full platform oversight â€” manage organizations, users, fraud review, and system health from a single powerful console.</p>
+          <p className="text-slate-300 text-sm leading-relaxed">Full platform oversight "” manage organizations, users, fraud review, and system health from a single powerful console.</p>
           <div className="flex gap-4 justify-center mt-10">
             {['shield', 'monitoring', 'analytics'].map(icon => (
               <div key={icon} className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">
@@ -121,7 +121,7 @@ function AdminLogin() {
                 <label htmlFor="password" className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('adminLogin.password', 'Password')}</label>
                 <input
                   type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required autoComplete="current-password"
+                  placeholder="••••••••" required autoComplete="current-password"
                   className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate-400"
                 />
               </div>

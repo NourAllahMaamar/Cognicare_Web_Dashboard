@@ -73,7 +73,7 @@ export default function OrgFamilies() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'â€”';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
 
   // â”€â”€ Family CRUD â”€â”€
   const openAdd = () => {
@@ -404,9 +404,9 @@ export default function OrgFamilies() {
                     <p className="font-bold text-sm">{child.fullName}</p>
                     <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
                       <span>{child.gender}</span>
-                      <span>â€¢</span>
+                      <span>•</span>
                       <span>{dateFmt(child.dateOfBirth)}</span>
-                      {child.diagnosis && <><span>â€¢</span><span>{child.diagnosis}</span></>}
+                      {child.diagnosis && <><span>•</span><span>{child.diagnosis}</span></>}
                     </div>
                   </div>
                 ))}
@@ -421,7 +421,7 @@ export default function OrgFamilies() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowImport(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Import {importType === 'families_children' ? 'Families + Children' : 'Families'} â€” Step {importStep}/3</h3>
+              <h3 className="text-lg font-bold">Import {importType === 'families_children' ? 'Families + Children' : 'Families'} "” Step {importStep}/3</h3>
               <button onClick={() => setShowImport(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 

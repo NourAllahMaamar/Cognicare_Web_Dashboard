@@ -421,9 +421,9 @@ export default function AdminFamilies() {
                           <p className="font-bold text-sm">{child.fullName}</p>
                           <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                             <span>{child.gender}</span>
-                            <span>â€¢</span>
-                            <span>{child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : 'â€”'}</span>
-                            {child.diagnosis && <><span>â€¢</span><span>{child.diagnosis}</span></>}
+                            <span>•</span>
+                            <span>{child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : '"”'}</span>
+                            {child.diagnosis && <><span>•</span><span>{child.diagnosis}</span></>}
                           </div>
                         </div>
                         <div className="flex gap-2">

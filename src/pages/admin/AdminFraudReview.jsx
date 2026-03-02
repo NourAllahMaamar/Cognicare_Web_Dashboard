@@ -147,7 +147,7 @@ export default function AdminFraudReview() {
                     </div>
                     <div>
                       <p className="font-bold">{org.organizationName || org.name}</p>
-                      <p className="text-sm text-slate-500">{org.leaderName || org.leader?.fullName} â€¢ {org.leaderEmail || org.leader?.email}</p>
+                      <p className="text-sm text-slate-500">{org.leaderName || org.leader?.fullName} • {org.leaderEmail || org.leader?.email}</p>
                     </div>
                   </div>
                   <button onClick={() => openReview(org)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors">Review</button>

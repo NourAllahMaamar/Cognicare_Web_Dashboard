@@ -123,7 +123,7 @@ export default function SpecialistOverview() {
                       <span className="text-xs font-bold uppercase text-slate-400">{plan.type}</span>
                     </div>
                     <p className="font-bold text-sm mb-1">{plan.title || plan.name || plan.type}</p>
-                    <p className="text-xs text-slate-400">{plan.childName || plan.child?.fullName || 'â€”'}</p>
+                    <p className="text-xs text-slate-400">{plan.childName || plan.child?.fullName || '"”'}</p>
                   </div>
                 ))}
               </div>

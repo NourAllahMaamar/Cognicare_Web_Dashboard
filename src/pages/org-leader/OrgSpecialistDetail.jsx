@@ -44,7 +44,7 @@ export default function OrgSpecialistDetail() {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-4" />
-        <p className="text-sm text-slate-500 dark:text-text-muted">Loading specialist summaryâ€¦</p>
+        <p className="text-sm text-slate-500 dark:text-text-muted">Loading specialist summary"¦</p>
       </div>
     );
   }
@@ -64,8 +64,8 @@ export default function OrgSpecialistDetail() {
             <h2 className="text-2xl font-bold">AI Progress Summary</h2>
             {specialistInfo && (
               <p className="text-slate-500 dark:text-text-muted mt-0.5">
-                {specialistInfo.name} â€¢ <span className="capitalize">{specialistInfo.role?.replace(/_/g, ' ')}</span>
-                {specialistInfo.email && <span> â€¢ {specialistInfo.email}</span>}
+                {specialistInfo.name} • <span className="capitalize">{specialistInfo.role?.replace(/_/g, ' ')}</span>
+                {specialistInfo.email && <span> • {specialistInfo.email}</span>}
               </p>
             )}
           </div>

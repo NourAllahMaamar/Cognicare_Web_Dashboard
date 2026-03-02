@@ -95,7 +95,7 @@ export default function AdminTrainingCourses() {
                 <div className="min-w-0">
                   <p className="font-bold text-sm truncate">{course.title}</p>
                   <p className="text-xs text-slate-500 truncate">
-                    {course.topics?.join(', ') || 'â€”'} â€¢ Order: {course.order ?? 0}
+                    {course.topics?.join(', ') || '"”'} • Order: {course.order ?? 0}
                   </p>
                 </div>
               </div>

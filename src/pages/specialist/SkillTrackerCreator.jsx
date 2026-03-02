@@ -62,7 +62,7 @@ export default function SkillTrackerCreator() {
             </button>
             <div>
               <h1 className="text-xl font-bold">Skill Tracker</h1>
-              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) â€” 10-trial mastery</p>
+              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) "” 10-trial mastery</p>
             </div>
           </div>
           <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">

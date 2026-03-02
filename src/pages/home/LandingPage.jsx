@@ -311,7 +311,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Right â€” Rotating Showcase */}
+              {/* Right "” Rotating Showcase */}
               <div className="hidden lg:block">
                 <div className="relative">
                   <div className="absolute -inset-6 bg-primary/10 dark:bg-primary/5 blur-3xl rounded-full" />
@@ -454,7 +454,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Right â€” Large brain network */}
+              {/* Right "” Large brain network */}
               <div className={`order-first lg:order-last transition-all duration-700 delay-200 ${featVis ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
                 <div className="aspect-square bg-white dark:bg-surface-dark rounded-3xl border border-slate-300 dark:border-slate-800 flex items-center justify-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10" />

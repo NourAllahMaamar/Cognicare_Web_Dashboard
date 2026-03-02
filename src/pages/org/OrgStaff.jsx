@@ -168,7 +168,7 @@ export default function OrgStaff() {
     return !q || (s.fullName || '').toLowerCase().includes(q) || (s.email || '').toLowerCase().includes(q) || (s.role || '').toLowerCase().includes(q);
   });
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'â€”';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
 
   return (
     <div className="flex flex-col gap-6">
@@ -300,7 +300,7 @@ export default function OrgStaff() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowImport(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Import Staff â€” Step {importStep}/3</h3>
+              <h3 className="text-lg font-bold">Import Staff "” Step {importStep}/3</h3>
               <button onClick={() => setShowImport(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
@@ -339,7 +339,7 @@ export default function OrgStaff() {
                             </select>
                           </td>
                           <td className="p-2"><span className={`text-xs font-bold ${(m.confidence || 0) > 0.7 ? 'text-success' : 'text-amber-500'}`}>{Math.round((m.confidence || 0) * 100)}%</span></td>
-                          <td className="p-2 text-xs text-slate-400">{importPreview.sampleRows?.[0]?.[m.excelHeader] || 'â€”'}</td>
+                          <td className="p-2 text-xs text-slate-400">{importPreview.sampleRows?.[0]?.[m.excelHeader] || '"”'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -359,7 +359,7 @@ export default function OrgStaff() {
                 {importResult.errors?.length > 0 && (
                   <div className="max-h-40 overflow-y-auto space-y-1">
                     {importResult.errors.map((err, i) => (
-                      <p key={i} className="text-xs text-error">Row {err.row}: {err.field} â€” {err.message}</p>
+                      <p key={i} className="text-xs text-error">Row {err.row}: {err.field} "” {err.message}</p>
                     ))}
                   </div>
                 )}

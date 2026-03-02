@@ -101,7 +101,7 @@ function OrgLeaderLogin() {
             <span className="material-symbols-outlined text-3xl">leaderboard</span>
           </div>
           <h2 className="text-3xl font-black text-white mb-4">Organization Portal</h2>
-          <p className="text-purple-100/80 text-sm leading-relaxed">Manage your organization â€” oversee staff, families, children, and track progress with AI-powered insights across your care network.</p>
+          <p className="text-purple-100/80 text-sm leading-relaxed">Manage your organization "” oversee staff, families, children, and track progress with AI-powered insights across your care network.</p>
           <div className="flex gap-4 justify-center mt-10">
             {['groups', 'family_restroom', 'trending_up'].map(icon => (
               <div key={icon} className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">
@@ -161,7 +161,7 @@ function OrgLeaderLogin() {
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('orgLeaderLogin.password', 'Password')}</label>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required autoComplete="current-password" className={inputCls} />
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required autoComplete="current-password" className={inputCls} />
                 </div>
                 <button type="submit" disabled={loading} className="w-full py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed transition-all text-sm flex items-center justify-center gap-2">
                   {loading ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{t('orgLeaderLogin.loggingIn', 'Signing in...')}</> : t('orgLeaderLogin.loginButton', 'Sign In')}
@@ -200,7 +200,7 @@ function OrgLeaderLogin() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('orgLeaderLogin.password', 'Password')}</label>
-                      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required autoComplete="new-password" minLength={6} className={inputCls} />
+                      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required autoComplete="new-password" minLength={6} className={inputCls} />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -269,7 +269,7 @@ function OrgLeaderLogin() {
             {/* Footer links */}
             <div className="flex items-center justify-center gap-3 mt-6 text-xs text-slate-400">
               <button onClick={() => navigate('/admin/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.adminLink', 'Admin Login')}</button>
-              <span>â€¢</span>
+              <span>•</span>
               <button onClick={() => navigate('/specialist/login')} className="hover:text-primary transition-colors">Specialist Login</button>
             </div>
           </div>
