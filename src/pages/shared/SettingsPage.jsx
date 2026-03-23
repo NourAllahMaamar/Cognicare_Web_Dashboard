@@ -1,9 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
-import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
 
 function detectRole(pathname) {
@@ -14,7 +13,6 @@ function detectRole(pathname) {
 
 export default function SettingsPage() {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const { pathname } = useLocation();
   const role = detectRole(pathname);
   const { getUser, authMutate } = useAuth(role);
@@ -32,7 +30,7 @@ export default function SettingsPage() {
     if (!profileForm.fullName.trim()) { setProfileMsg({ type: 'error', text: 'Name is required' }); return; }
     setProfileLoading(true);
     try {
-      const result = await authMutate('/auth/profile', { method: 'PATCH', body: { fullName: profileForm.fullName.trim(), phone: profileForm.phone.trim() } });
+      await authMutate('/auth/profile', { method: 'PATCH', body: { fullName: profileForm.fullName.trim(), phone: profileForm.phone.trim() } });
       // Update stored user
       const keys = { admin: 'adminUser', orgLeader: 'orgLeaderUser', specialist: 'specialistUser' };
       const stored = JSON.parse(localStorage.getItem(keys[role]) || '{}');

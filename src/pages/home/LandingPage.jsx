@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../../context/ThemeContext';
+
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import logo from '../../assets/app_logo_withoutbackground.png';
@@ -195,7 +195,6 @@ function SlideContent({ slide }) {
 export default function LandingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   /* Carousel */

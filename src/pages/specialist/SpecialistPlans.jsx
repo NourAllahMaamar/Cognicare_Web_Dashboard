@@ -1,9 +1,11 @@
 ﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { API_BASE_URL, getUploadUrl } from '../../config';
+import { useAuth } from '../../hooks/useAuth';
+import { getTypeColor, getTypeBg } from '../../utils/planUtils';
 
 export default function SpecialistPlans() {
   const { t } = useTranslation();
+  const { authGet, authFetch } = useAuth('specialist');
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -15,10 +17,8 @@ export default function SpecialistPlans() {
 
   const loadPlans = async () => {
     setLoading(true);
-    const token = localStorage.getItem('specialistToken');
     try {
-      const res = await fetch(`${API_BASE_URL}/specialized-plans/my-plans`, { headers: { Authorization: `Bearer ${token}` } });
-      const data = await res.json();
+      const data = await authGet('/specialized-plans/my-plans');
       setPlans(Array.isArray(data) ? data : []);
     } catch {}
     setLoading(false);
@@ -26,9 +26,8 @@ export default function SpecialistPlans() {
 
   const handleDelete = async (plan) => {
     if (!confirm('Delete this plan?')) return;
-    const token = localStorage.getItem('specialistToken');
     try {
-      await fetch(`${API_BASE_URL}/specialized-plans/${plan._id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      await authFetch(`/specialized-plans/${plan._id}`, { method: 'DELETE' });
       setSuccess('Plan deleted');
       loadPlans();
     } catch (err) { setError(err.message); }
@@ -36,14 +35,6 @@ export default function SpecialistPlans() {
   };
 
   const filtered = filter === 'all' ? plans : plans.filter(p => p.type === filter);
-
-  const getTypeColor = (type) => {
-    switch (type) { case 'PECS': return 'bg-blue-500'; case 'TEACCH': return 'bg-purple-500'; case 'SkillTracker': return 'bg-success'; case 'Activity': return 'bg-amber-500'; default: return 'bg-slate-500'; }
-  };
-
-  const getTypeBg = (type) => {
-    switch (type) { case 'PECS': return 'bg-blue-500/5'; case 'TEACCH': return 'bg-purple-500/5'; case 'SkillTracker': return 'bg-success/5'; case 'Activity': return 'bg-amber-500/5'; default: return 'bg-slate-500/5'; }
-  };
 
   return (
     <div className="flex flex-col gap-6">

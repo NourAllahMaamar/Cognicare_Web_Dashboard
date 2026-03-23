@@ -9,7 +9,6 @@ export default function AdminOverview() {
   const [stats, setStats] = useState({ users: [], orgs: [], pending: [] });
   const [loading, setLoading] = useState(true);
   const [aiHealth, setAiHealth] = useState(null);
-  const [progressAi, setProgressAi] = useState(null);
 
   useEffect(() => {
     loadData();

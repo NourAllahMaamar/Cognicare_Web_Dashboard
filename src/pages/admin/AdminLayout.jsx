@@ -1,12 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function AdminLayout() {
   const { getUser, logout } = useAuth('admin');
   const navigate = useNavigate();
-  const location = useLocation();
   const [user, setUser] = useState(null);
 
   useEffect(() => {

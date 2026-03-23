@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'audit-*.js', 'audit-*.mjs']),
+  globalIgnores(['dist', 'audit-*.js', 'audit-*.mjs', 'test*.js', '**/*_OLD.*']),
   {
     files: ['**/*.config.js', 'test*.js'],
     languageOptions: {

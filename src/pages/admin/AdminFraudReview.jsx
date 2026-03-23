@@ -14,7 +14,6 @@ export default function AdminFraudReview() {
   const [reviewingOrg, setReviewingOrg] = useState(null);
   const [fraudAnalysis, setFraudAnalysis] = useState(null);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
-  const [reviewDecision, setReviewDecision] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
   const [aiHealth, setAiHealth] = useState(null);
 
@@ -38,7 +37,6 @@ export default function AdminFraudReview() {
 
   const openReview = async (org) => {
     setReviewingOrg(org);
-    setReviewDecision('');
     setRejectionReason('');
     setLoadingAnalysis(true);
     try {

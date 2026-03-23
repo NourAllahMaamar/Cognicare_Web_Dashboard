@@ -17,6 +17,19 @@ export default defineConfig(({ mode }) => {
   const backendOrigin =
     env.VITE_BACKEND_ORIGIN || 'http://localhost:3000'
 
+  const csp = [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "frame-ancestors 'none'",
+    "form-action 'self'",
+    "object-src 'none'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com data:",
+    "img-src 'self' data: blob: https:",
+    `connect-src 'self' ${backendOrigin} https: http: ws: wss:`,
+  ].join('; ')
+
   return {
     plugins: [
       react({
@@ -37,6 +50,13 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      headers: {
+        'Content-Security-Policy': csp,
+        'X-Frame-Options': 'DENY',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      },
       proxy: {
         '/api': {
           target: backendOrigin,

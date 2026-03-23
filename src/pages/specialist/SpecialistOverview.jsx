@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatCard from '../../components/ui/StatCard';
-import { cachedGet } from '../../apiClient';
-import { API_BASE_URL, getUploadUrl } from '../../config';
+import { getTypeColor } from '../../utils/planUtils';
 
 export default function SpecialistOverview() {
   const { t } = useTranslation();
@@ -21,14 +20,12 @@ export default function SpecialistOverview() {
 
   const loadData = async () => {
     setLoading(true);
-    const token = localStorage.getItem('specialistToken');
-    const user = JSON.parse(localStorage.getItem('specialistUser') || '{}');
     try {
       const [orgC, privC, plans, sug] = await Promise.all([
-        cachedGet('/organization/my-organization/children', { ttlMs: 60000, token }).catch(() => []),
-        cachedGet('/children/specialist/my-children', { ttlMs: 60000, token }).catch(() => []),
-        fetch(`${API_BASE_URL}/specialized-plans/my-plans`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()).catch(() => []),
-        cachedGet('/progress-ai/activity-suggestions', { ttlMs: 30000, token }).catch(() => []),
+        authGet('/organization/my-organization/children', { ttl: 60_000 }).catch(() => []),
+        authGet('/children/specialist/my-children', { ttl: 60_000 }).catch(() => []),
+        authGet('/specialized-plans/my-plans').catch(() => []),
+        authGet('/progress-ai/activity-suggestions', { ttl: 30_000 }).catch(() => []),
       ]);
       setOrgChildren(Array.isArray(orgC) ? orgC : []);
       setPrivateChildren(Array.isArray(privC) ? privC : []);
@@ -42,16 +39,6 @@ export default function SpecialistOverview() {
   const teacchCount = allPlans.filter(p => p.type === 'TEACCH').length;
 
   const recentPlans = allPlans.slice(0, 6);
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'PECS': return 'bg-blue-500';
-      case 'TEACCH': return 'bg-purple-500';
-      case 'SkillTracker': return 'bg-success';
-      case 'Activity': return 'bg-amber-500';
-      default: return 'bg-slate-500';
-    }
-  };
 
   return (
     <div className="flex flex-col gap-6">

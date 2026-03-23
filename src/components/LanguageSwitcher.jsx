@@ -8,12 +8,13 @@ const languages = [
 ];
 
 export default function LanguageSwitcher({ variant = 'default' }) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [animating, setAnimating] = useState(false);
   const ref = useRef(null);
 
-  const current = languages.find(l => l.code === i18n.language) || languages[0];
+  const activeCode = (i18n.language || 'en').split('-')[0];
+  const current = languages.find(l => l.code === activeCode) || languages[0];
 
   useEffect(() => {
     const handler = (e) => {
@@ -65,7 +66,7 @@ export default function LanguageSwitcher({ variant = 'default' }) {
       } ${i18n.dir() === 'rtl' ? 'left-0' : 'right-0'}`}>
         <div className="p-1.5">
           <p className="px-3 pt-2 pb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            Language
+            {t('language.select')}
           </p>
           {languages.map((lang) => {
             const isActive = current.code === lang.code;

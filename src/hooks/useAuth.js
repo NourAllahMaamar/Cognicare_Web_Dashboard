@@ -1,10 +1,18 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
+import { recordApiMetric } from '../utils/performanceMonitor';
 
 /* ── In-memory GET cache (shared across all useAuth instances) ── */
 const _getCache = new Map();
 const CACHE_TTL = 60_000; // 60 seconds default
+
+function createCorrelationId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+}
 
 /**
  * Reusable auth hook for role-based dashboard sessions.
@@ -66,26 +74,58 @@ export function useAuth(role) {
   const authFetch = useCallback(async (path, options = {}) => {
     const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
     let token = getToken();
+    const correlationId = createCorrelationId();
+    const startedAt = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    const method = (options.method || 'GET').toUpperCase();
+    let status = 0;
+    let ok = false;
+    let retried = false;
+    let errorMessage;
 
     const doFetch = (t) => fetch(url, {
       ...options,
       headers: {
         ...options.headers,
+        'X-Correlation-Id': correlationId,
         ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
       },
     });
 
-    let res = await doFetch(token);
+    try {
+      let res = await doFetch(token);
+      status = res.status;
+      ok = res.ok;
 
-    if (res.status === 401) {
-      const newToken = await refreshAccessToken();
-      if (!newToken) return res;
-      res = await doFetch(newToken);
-      if (res.status === 401) { handleSessionExpired(); }
+      if (res.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) return res;
+        retried = true;
+        res = await doFetch(newToken);
+        status = res.status;
+        ok = res.ok;
+        if (res.status === 401) { handleSessionExpired(); }
+      }
+
+      return res;
+    } catch (err) {
+      errorMessage = err?.message || 'Network error';
+      throw err;
+    } finally {
+      const endedAt = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+      recordApiMetric({
+        role,
+        method,
+        path,
+        correlationId,
+        status,
+        ok,
+        retried,
+        durationMs: Math.round(endedAt - startedAt),
+        route: typeof window !== 'undefined' ? window.location.pathname : '',
+        error: errorMessage,
+      });
     }
-
-    return res;
-  }, [getToken, refreshAccessToken, handleSessionExpired]);
+  }, [getToken, refreshAccessToken, handleSessionExpired, role]);
 
   /**
    * Convenience: authenticated GET that returns parsed JSON.

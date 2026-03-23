@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
-import { getUploadUrl } from '../../config';
+import { getTypeColor, dateFmt as fmtDate } from '../../utils/planUtils';
 
 export default function SpecialistChildren() {
   const { t, i18n } = useTranslation();
@@ -20,7 +20,6 @@ export default function SpecialistChildren() {
 
   // Add family modal
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState('create');
   const [familyForm, setFamilyForm] = useState({ fullName: '', email: '', phone: '', password: '' });
   const [formChildren, setFormChildren] = useState([]);
   const [formLoading, setFormLoading] = useState(false);
@@ -65,7 +64,6 @@ export default function SpecialistChildren() {
 
   // â”€â”€ Family CRUD â”€â”€
   const openAddFamily = () => {
-    setModalMode('create');
     setFamilyForm({ fullName: '', email: '', phone: '', password: '' });
     setFormChildren([{ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
     setShowModal(true);
@@ -90,13 +88,9 @@ export default function SpecialistChildren() {
 
   const filteredPlans = planFilter === 'all' ? childPlans : childPlans.filter(p => p.type === planFilter);
 
-  const getTypeColor = (type) => {
-    switch (type) { case 'PECS': return 'bg-blue-500'; case 'TEACCH': return 'bg-purple-500'; case 'SkillTracker': return 'bg-success'; case 'Activity': return 'bg-amber-500'; default: return 'bg-slate-500'; }
-  };
-
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
-
   const allChildren = [...orgChildren, ...privateChildren];
+
+  const dateFmt = (d) => fmtDate(d, i18n.language);
 
   return (
     <div className="flex flex-col gap-6">
