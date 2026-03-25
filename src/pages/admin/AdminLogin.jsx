@@ -1,9 +1,10 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
+import { parseJsonResponse } from '../../utils/parseJsonResponse';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
 function AdminLogin() {
@@ -26,7 +27,10 @@ function AdminLogin() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const data = await parseJsonResponse(
+        response,
+        t('dashboard.messages.loginFailed'),
+      );
 
       if (!response.ok) {
         throw new Error(data.message || t('dashboard.messages.loginFailed'));
@@ -64,7 +68,7 @@ function AdminLogin() {
             <span className="material-symbols-outlined text-3xl">admin_panel_settings</span>
           </div>
           <h2 className="text-3xl font-black text-white mb-4">System Administration</h2>
-          <p className="text-slate-300 text-sm leading-relaxed">Full platform oversight "” manage organizations, users, fraud review, and system health from a single powerful console.</p>
+          <p className="text-slate-300 text-sm leading-relaxed">Full platform oversight — manage organizations, users, fraud review, and system health from a single powerful console.</p>
           <div className="flex gap-4 justify-center mt-10">
             {['shield', 'monitoring', 'analytics'].map(icon => (
               <div key={icon} className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">

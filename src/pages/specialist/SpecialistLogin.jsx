@@ -1,9 +1,10 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
+import { parseJsonResponse } from '../../utils/parseJsonResponse';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
 function SpecialistLogin() {
@@ -26,13 +27,24 @@ function SpecialistLogin() {
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await response.json();
+            const data = await parseJsonResponse(
+                response,
+                t('dashboard.messages.loginFailed'),
+            );
 
             if (!response.ok) {
                 throw new Error(data.message || t('dashboard.messages.loginFailed'));
             }
 
-            const specialistRoles = ['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'volunteer'];
+            const specialistRoles = [
+                'careProvider',
+                'psychologist',
+                'speech_therapist',
+                'occupational_therapist',
+                'doctor',
+                'volunteer',
+                'other',
+            ];
             if (!specialistRoles.includes(data.user.role)) {
                 throw new Error('Access denied. This login is for specialists only.');
             }

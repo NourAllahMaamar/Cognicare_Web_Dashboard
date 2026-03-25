@@ -627,6 +627,48 @@
       "inviteNotSupported": "L'invitation des familles existantes n'est pas encore prise en charge pour la pratique privée."
     }
   },
+  "specialistChildren": {
+    "behaviorAnalytics": "Comportement"
+  },
+  "behaviorAnalytics": {
+    "title": "Analyse du comportement",
+    "subtitle": "Engagement et tâches",
+    "loading": "Chargement…",
+    "allTaskTypes": "Tous les types",
+    "range": {
+      "7d": "7 jours",
+      "30d": "30 jours",
+      "90d": "90 jours"
+    },
+    "consent": {
+      "title": "Consentement familial",
+      "on": "La famille a accepté l'analyse comportementale assistée par l'IA. Les données servent à l'engagement et aux décisions thérapeutiques.",
+      "off": "Le suivi est désactivé par défaut. La famille doit l'activer dans l'application mobile avant toute collecte."
+    },
+    "kpi": {
+      "events": "Événements (période)",
+      "confidence": "Confiance des données",
+      "note": "Qualité",
+      "ok": "Les graphiques combinent complétions, abandons, réessais et retours éventuels."
+    },
+    "charts": {
+      "engagement": "Engagement quotidien",
+      "score": "Score d'engagement",
+      "emotion": "Réponses inférées",
+      "tasks": "Performance par type",
+      "completed": "Terminé",
+      "abandoned": "Abandonné"
+    },
+    "empty": {
+      "series": "Aucune donnée sur cette période.",
+      "emotion": "Pas encore de libellés.",
+      "tasks": "Aucune répartition."
+    },
+    "ai": {
+      "title": "Insights et recommandations IA"
+    },
+    "footer": "Les libellés sont des heuristiques, pas des diagnostics. Interpréter avec prudence si peu de données."
+  },
   "caregiverApplications": {
     "title": "Candidatures Intervenants",
     "applicationsCount": "candidatures trouvées",

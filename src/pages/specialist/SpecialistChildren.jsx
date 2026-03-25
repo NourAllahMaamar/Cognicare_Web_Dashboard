@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
@@ -173,9 +173,12 @@ export default function SpecialistChildren() {
                   </div>
                 </div>
                 {/* Action buttons */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                   <button onClick={() => navigate(`/specialist/ai-recommendations/${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-primary/5 rounded-xl text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
                     <span className="material-symbols-outlined text-lg">auto_awesome</span>AI Recs
+                  </button>
+                  <button onClick={() => navigate(`/specialist/behavior-analytics/${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-indigo-500/5 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 transition-colors">
+                    <span className="material-symbols-outlined text-lg">analytics</span>{t('specialistChildren.behaviorAnalytics', 'Behavior')}
                   </button>
                   <button onClick={() => navigate(`/specialist/pecs/create?childId=${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-blue-500/5 rounded-xl text-xs font-bold text-blue-500 hover:bg-blue-500/10 transition-colors">
                     <span className="material-symbols-outlined text-lg">grid_view</span>PECS

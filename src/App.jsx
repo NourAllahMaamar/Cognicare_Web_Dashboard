@@ -34,6 +34,7 @@ const TEACCHTrackerCreator = lazy(() => import('./pages/specialist/TEACCHTracker
 const ActivitiesCreator = lazy(() => import('./pages/specialist/ActivitiesCreator'));
 const SkillTrackerCreator = lazy(() => import('./pages/specialist/SkillTrackerCreator'));
 const ProgressAIRecommendations = lazy(() => import('./pages/specialist/ProgressAIRecommendations'));
+const SpecialistBehaviorAnalytics = lazy(() => import('./pages/specialist/SpecialistBehaviorAnalytics'));
 const SettingsPage = lazy(() => import('./pages/shared/SettingsPage'));
 const NotFound = lazy(() => import('./pages/shared/NotFound'));
 const ConfirmAccount = lazy(() => import('./pages/ConfirmAccount'));
@@ -132,6 +133,7 @@ function App() {
         <Route path="/specialist/activities" element={<ActivitiesCreator />} />
         <Route path="/specialist/skill-tracker" element={<SkillTrackerCreator />} />
         <Route path="/specialist/ai-recommendations/:childId" element={<ProgressAIRecommendations />} />
+        <Route path="/specialist/behavior-analytics/:childId" element={<SpecialistBehaviorAnalytics />} />
 
         {/* Misc */}
         <Route path="/confirm-account" element={<ConfirmAccount />} />

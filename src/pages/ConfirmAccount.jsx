@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { API_BASE_URL } from '../config';
@@ -14,8 +14,25 @@ const ConfirmAccount = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [loginPath, setLoginPath] = useState('/org/login');
     const navigate = useNavigate();
     const { t } = useTranslation();
+
+    const resolveLoginPath = (role) => {
+        const specialistRoles = [
+            'careProvider',
+            'doctor',
+            'psychologist',
+            'speech_therapist',
+            'occupational_therapist',
+            'volunteer',
+            'other',
+        ];
+        if (role === 'admin') return '/admin/login';
+        if (role === 'organization_leader') return '/org/login';
+        if (specialistRoles.includes(role)) return '/specialist/login';
+        return '/org/login';
+    };
 
     useEffect(() => {
         const t = searchParams.get('token');
@@ -55,9 +72,11 @@ const ConfirmAccount = () => {
                 throw new Error(data.message || 'Failed to activate account. The link may have expired.');
             }
 
+            const nextLoginPath = resolveLoginPath(data?.role);
+            setLoginPath(nextLoginPath);
             setSuccess(true);
             setTimeout(() => {
-                navigate('/org/login');
+                navigate(nextLoginPath);
             }, 3000);
         } catch (err) {
             setError(err.message || 'Failed to activate account.');
@@ -81,7 +100,7 @@ const ConfirmAccount = () => {
                             {t('confirmAccount.successMessage', 'Your account has been successfully confirmed. You will be redirected to the login page in a few seconds...')}
                         </p>
                         <button 
-                            onClick={() => navigate('/org/login')}
+                            onClick={() => navigate(loginPath)}
                             className="w-full px-6 py-3.5 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:bg-primary-dark hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-[0.97]"
                         >
                             {t('confirmAccount.goToLogin', 'Go to Login Now')}

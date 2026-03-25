@@ -1,9 +1,10 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
+import { parseJsonResponse } from '../../utils/parseJsonResponse';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
 function OrgLeaderLogin() {
@@ -34,7 +35,7 @@ function OrgLeaderLogin() {
     setError(''); setSuccess(''); setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-      const data = await response.json();
+      const data = await parseJsonResponse(response, t('dashboard.messages.loginFailed'));
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.loginFailed'));
       if (data.user.role !== 'organization_leader') throw new Error(t('orgLeaderLogin.accessDenied'));
       localStorage.setItem('orgLeaderToken', data.accessToken);
@@ -50,7 +51,7 @@ function OrgLeaderLogin() {
     try {
       if (!certificatePdf) { setError(t('orgLeaderLogin.certificateRequired', 'Organization certificate (PDF) is required')); setLoading(false); return; }
       const response = await fetch(`${API_BASE_URL}/auth/send-verification-code`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
-      const data = await response.json();
+      const data = await parseJsonResponse(response, t('dashboard.messages.verificationCodeFailed'));
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.verificationCodeFailed'));
       setCodeSent(true);
     } catch (err) { setError(err.message); } finally { setLoading(false); }
@@ -70,7 +71,7 @@ function OrgLeaderLogin() {
       formData.append('verificationCode', verificationCode);
       if (certificatePdf) formData.append('certificate', certificatePdf);
       const response = await fetch(`${API_BASE_URL}/auth/signup`, { method: 'POST', body: formData });
-      const data = await response.json();
+      const data = await parseJsonResponse(response, t('dashboard.messages.signupFailed'));
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.signupFailed'));
       if (data.requiresApproval) {
         setSuccess(data.message || t('dashboard.messages.orgCreatedPending'));

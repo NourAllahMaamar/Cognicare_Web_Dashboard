@@ -1,7 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/ui/StatCard';
 import { useAuth } from '../../hooks/useAuth';
+import { API_BASE_URL } from '../../config';
 
 export default function AdminOverview() {
   const { authGet } = useAuth('admin');
@@ -24,8 +25,8 @@ export default function AdminOverview() {
         authGet('/organization/admin/families').catch(() => []),
       ]);
 
-      // AI health - no auth needed
-      const aiRes = await fetch('/api/v1/org-scan-ai/health').catch(() => null);
+      // AI health - no auth needed (use API_BASE_URL so prod / preview builds hit the real backend)
+      const aiRes = await fetch(`${API_BASE_URL}/org-scan-ai/health`).catch(() => null);
       const aiData = aiRes?.ok ? await aiRes.json() : null;
 
       setStats({ users: Array.isArray(users) ? users : [], orgs: Array.isArray(orgs) ? orgs : [], pending: Array.isArray(pending) ? pending : [], families: Array.isArray(families) ? families : [] });

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
@@ -77,7 +77,7 @@ export default function OrgStaff() {
         flash(t('orgDashboard.staffUpdated', 'Staff updated'));
       } else if (modalMode === 'invite') {
         if (!inviteEmail) { flash('Email is required', 'error'); return; }
-        await authMutate('/organization/my-organization/staff/invite', { body: { email: inviteEmail, role: 'specialist' } });
+        await authMutate('/organization/my-organization/staff/invite', { body: { email: inviteEmail, role: 'other' } });
         flash(t('orgDashboard.invitationSent', 'Invitation sent'));
       } else {
         if (!form.fullName || !form.email || !form.password) { flash('Name, email, and password are required', 'error'); return; }
@@ -269,6 +269,9 @@ export default function OrgStaff() {
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
                 <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  {t('orgDashboard.inviteExistingStaffOnly', 'Invites are currently for existing accounts. Use Create to add brand-new staff accounts.')}
+                </p>
               </div>
             ) : (
               <div className="space-y-4">

@@ -629,6 +629,48 @@
       "fetchError": "Failed to load child."
     }
   },
+  "specialistChildren": {
+    "behaviorAnalytics": "Behavior"
+  },
+  "behaviorAnalytics": {
+    "title": "Behavior analytics",
+    "subtitle": "Engagement & task insights",
+    "loading": "Loading analytics…",
+    "allTaskTypes": "All task types",
+    "range": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "90d": "90 days"
+    },
+    "consent": {
+      "title": "Family consent",
+      "on": "This family has opted in to AI-assisted behavior analysis. Data is used to surface engagement patterns and support therapy decisions.",
+      "off": "Behavior tracking is off by default. The family must opt in from the mobile app before interaction data is collected or analyzed."
+    },
+    "kpi": {
+      "events": "Events (period)",
+      "confidence": "Data confidence",
+      "note": "Quality",
+      "ok": "Charts reflect inferred engagement labels from task events (completions, abandonments, retries, and optional emoji feedback)."
+    },
+    "charts": {
+      "engagement": "Daily engagement",
+      "score": "Engagement score",
+      "emotion": "Inferred response mix",
+      "tasks": "Task type performance",
+      "completed": "Completed",
+      "abandoned": "Abandoned"
+    },
+    "empty": {
+      "series": "No series data in this range.",
+      "emotion": "No emotion labels yet.",
+      "tasks": "No task breakdown."
+    },
+    "ai": {
+      "title": "AI insights & recommendations"
+    },
+    "footer": "Behavior labels are heuristic summaries, not clinical diagnoses. When data is sparse, interpret trends cautiously."
+  },
   "caregiverApplications": {
     "title": "Caregiver Applications",
     "applicationsCount": "applications found",

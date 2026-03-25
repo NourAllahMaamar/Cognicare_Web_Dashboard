@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
@@ -335,6 +335,9 @@ export default function OrgFamilies() {
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
                 <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  {t('orgDashboard.inviteExistingFamilyOnly', 'Invites currently work for existing family accounts. Use Create to add a brand-new family account.')}
+                </p>
               </div>
             ) : (
               <>
