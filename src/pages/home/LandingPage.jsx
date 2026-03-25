@@ -219,6 +219,79 @@ export default function LandingPage() {
     { label: t('landing.nav.admins', 'Admins'), to: '/admin/login' },
   ];
 
+  const statsItems = [
+    { label: t('landing.stats.families', 'Families Supported'), target: 500, suffix: '+', trend: '+15%', icon: 'family_restroom' },
+    { label: t('landing.stats.partners', 'Clinical Partners'), target: 120, suffix: '+', trend: '+8%', icon: 'handshake' },
+    { label: t('landing.stats.accuracy', 'Success Rate'), target: 98, suffix: '%', trend: '+2%', icon: 'verified' },
+  ];
+
+  const portalItems = [
+    {
+      icon: 'corporate_fare',
+      title: t('landing.platform.portals.org.title', 'For Organizations'),
+      desc: t('landing.platform.portals.org.desc', 'Manage staff, oversee family progress, and get AI-driven insights on organizational performance.'),
+      to: '/org/login',
+    },
+    {
+      icon: 'school',
+      title: t('landing.platform.portals.specialist.title', 'For Specialists'),
+      desc: t('landing.platform.portals.specialist.desc', 'Create PECS & TEACCH plans, track child development, and collaborate with families in a secure environment.'),
+      to: '/specialist/login',
+    },
+    {
+      icon: 'family_restroom',
+      title: t('landing.platform.portals.family.title', 'For Families'),
+      desc: t('landing.platform.portals.family.desc', 'Access care plans, communicate with specialists, and stay engaged in your child’s cognitive health journey.'),
+      to: '/login',
+    },
+  ];
+
+  const featureItems = [
+    {
+      icon: 'neurology',
+      title: t('landing.features.ai.title', 'AI-Powered Insights'),
+      desc: t('landing.features.ai.desc', 'Leverage advanced analytics to track progress, identify patterns, and receive actionable recommendations for better outcomes.'),
+    },
+    {
+      icon: 'wysiwyg',
+      title: t('landing.features.pecs.title', 'PECS & TEACCH Tools'),
+      desc: t('landing.features.pecs.desc', 'Utilize industry-standard frameworks like Picture Exchange Communication System and TEACCH for structured, visual learning.'),
+    },
+    {
+      icon: 'security',
+      title: t('landing.features.secure.title', 'Secure & Compliant'),
+      desc: t('landing.features.secure.desc', 'Built with data privacy at its core, ensuring all patient and organizational data is encrypted and handled with the utmost care.'),
+    },
+    {
+      icon: 'hub',
+      title: t('landing.features.collaboration.title', 'Collaborative Hub'),
+      desc: t('landing.features.collaboration.desc', 'A unified platform connecting organization leaders, specialists, and families for seamless communication and care coordination.'),
+    },
+  ];
+
+  const stepItems = [
+    {
+      icon: 'person_add',
+      title: t('landing.steps.step1.title', '1. Create Your Account'),
+      desc: t('landing.steps.step1.desc', 'Sign up as an organization, specialist, or family member to get started.'),
+    },
+    {
+      icon: 'group',
+      title: t('landing.steps.step2.title', '2. Build Your Network'),
+      desc: t('landing.steps.step2.desc', 'Invite staff, connect with families, and establish your care ecosystem.'),
+    },
+    {
+      icon: 'checklist',
+      title: t('landing.steps.step3.title', '3. Create & Manage Plans'),
+      desc: t('landing.steps.step3.desc', 'Develop personalized PECS and TEACCH plans tailored to individual needs.'),
+    },
+    {
+      icon: 'monitoring',
+      title: t('landing.steps.step4.title', '4. Track & Analyze'),
+      desc: t('landing.steps.step4.desc', 'Monitor progress in real-time and use AI insights to optimize care strategies.'),
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-bg-light dark:bg-bg-dark text-slate-900 dark:text-slate-100 font-display overflow-x-hidden">
 
@@ -236,7 +309,7 @@ export default function LandingPage() {
               ))}
             </nav>
             <div className="flex items-center gap-1.5">
-              <LanguageSwitcher />
+              <LanguageSwitcher variant="landing" />
               <ThemeToggle />
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                 <span className="material-symbols-outlined">{mobileMenuOpen ? 'close' : 'menu'}</span>
@@ -305,7 +378,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400">
-                    <span className="font-bold text-slate-700 dark:text-slate-200">500+</span> professionals trust CogniCare
+                    <span className="font-bold text-slate-700 dark:text-slate-200">500+</span> {t('landing.hero.trust', 'professionals trust CogniCare')}
                   </div>
                 </div>
               </div>
@@ -360,11 +433,7 @@ export default function LandingPage() {
         <section ref={statsRef} className="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
             <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700 ${statsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              {[
-                { label: t('landing.stats.families', 'Families Supported'), target: 500, suffix: '+', trend: '+15%', icon: 'family_restroom' },
-                { label: t('landing.stats.partners', 'Clinical Partners'), target: 120, suffix: '+', trend: '+8%', icon: 'handshake' },
-                { label: t('landing.stats.accuracy', 'Success Rate'), target: 98, suffix: '%', trend: '+2%', icon: 'verified' },
-              ].map((stat, idx) => (
+              {statsItems.map((stat, idx) => (
                 <div key={stat.label} className="flex items-center gap-5 p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40" style={{ transitionDelay: `${idx * 100}ms` }}>
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <span className="material-symbols-outlined text-xl">{stat.icon}</span>
@@ -397,23 +466,17 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { icon: 'leaderboard', title: t('landing.roles.org', 'Org Leader Portal'), desc: t('landing.roles.orgDesc', 'High-level strategic oversight, resource allocation, and organizational performance management.'), link: '/org/login', gradient: 'from-purple-500 to-indigo-600' },
-                { icon: 'medical_services', title: t('landing.roles.pro', 'Professional Suite'), desc: t('landing.roles.proDesc', 'Specialized clinical tools for deep patient care, automated assessments, and therapy planning.'), link: '/specialist/login', gradient: 'from-blue-500 to-cyan-500' },
-                { icon: 'admin_panel_settings', title: t('landing.roles.admin', 'Admin Console'), desc: t('landing.roles.adminDesc', 'Robust system controls, granular security monitoring, and user permission management.'), link: '/admin/login', gradient: 'from-slate-700 to-slate-900' },
-              ].map((card, idx) => (
-                <div key={card.title} onClick={() => navigate(card.link)}
-                  className={`group p-6 sm:p-8 rounded-2xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer ${portalVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                  style={{ transitionDelay: `${200 + idx * 100}ms` }}>
-                  <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${card.gradient} flex items-center justify-center text-white mb-5 group-hover:scale-110 group-hover:shadow-lg transition-all`}>
-                    <span className="material-symbols-outlined text-2xl">{card.icon}</span>
+              {portalItems.map((portal, idx) => (
+                <div key={portal.title} className={`p-8 rounded-3xl border border-slate-200 dark:border-slate-800 transition-all duration-700 ${portalVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${idx * 100}ms` }}>
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-5">
+                    <span className="material-symbols-outlined text-2xl">{portal.icon}</span>
                   </div>
-                  <h3 className="text-lg font-bold mb-2">{card.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-5">{card.desc}</p>
-                  <span className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold group-hover:gap-2.5 transition-all">
-                    {t('landing.learnMore', 'Get Started')}
-                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                  </span>
+                  <h3 className="text-lg font-bold mb-2">{portal.title}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-5 leading-relaxed">{portal.desc}</p>
+                  <button onClick={() => navigate(portal.to)} className="group font-bold text-primary text-sm flex items-center gap-2">
+                    {t('landing.platform.cta', 'Learn More')}
+                    <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                  </button>
                 </div>
               ))}
             </div>
@@ -423,126 +486,48 @@ export default function LandingPage() {
         {/* â”€â”€ Features â”€â”€ */}
         <section ref={featRef} className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900/50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              {/* Features list */}
-              <div className={`flex flex-col gap-8 transition-all duration-700 ${featVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                <div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight mb-3">
-                    {t('landing.features.title', 'Advanced Features')}
-                  </h2>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-                    {t('landing.features.subtitle', 'Pioneering tools designed to improve outcomes and simplify cognitive health tracking.')}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-5">
-                  {[
-                    { icon: 'psychology', title: t('landing.features.ai', 'AI-Driven Insights'), desc: t('landing.features.aiDesc', 'Our algorithms analyze behavior patterns to predict cognitive trends and enable early intervention.'), color: 'from-blue-500 to-primary' },
-                    { icon: 'monitoring', title: t('landing.features.tracking', 'Real-time Tracking'), desc: t('landing.features.trackingDesc', 'Monitor patient progress and cognitive markers in real-time with instant alerts for families and care teams.'), color: 'from-emerald-500 to-teal-600' },
-                    { icon: 'shield', title: t('landing.features.security', 'Secure & Compliant'), desc: t('landing.features.securityDesc', 'Enterprise-grade security ensuring all data is encrypted and managed with the highest standards.'), color: 'from-purple-500 to-indigo-600' },
-                  ].map((f, idx) => (
-                    <div key={f.title} className="group flex gap-4 p-4 rounded-xl hover:bg-white dark:hover:bg-surface-dark hover:shadow-md transition-all" style={{ transitionDelay: `${idx * 80}ms` }}>
-                      <div className={`h-11 w-11 shrink-0 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform`}>
-                        <span className="material-symbols-outlined text-xl">{f.icon}</span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold mb-1">{f.title}</h4>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{f.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right "” Large brain network */}
-              <div className={`order-first lg:order-last transition-all duration-700 delay-200 ${featVis ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                <div className="aspect-square bg-white dark:bg-surface-dark rounded-3xl border border-slate-300 dark:border-slate-800 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10" />
-                  <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 gap-6">
-                    {/* Full-size brain network */}
-                    <svg viewBox="0 0 200 200" className="w-full h-full max-w-[320px] max-h-[320px] opacity-90">
-                      <defs>
-                        <radialGradient id="nodeGlow2" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
-                        </radialGradient>
-                        <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.4" />
-                          <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.2" />
-                        </linearGradient>
-                      </defs>
-                      {/* Lines */}
-                      {[[100,40,50,85],[100,40,150,85],[100,40,100,100],[50,85,100,100],[150,85,100,100],[50,85,25,130],[150,85,175,130],[100,100,70,150],[100,100,130,150],[25,130,70,150],[175,130,130,150],[70,150,100,175],[130,150,100,175],[25,130,50,85],[175,130,150,85]].map(([x1,y1,x2,y2],i) => (
-                        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="url(#lineGrad)" strokeWidth="1.5" />
-                      ))}
-                      {/* Nodes */}
-                      {[{x:100,y:40,r:10,p:true},{x:50,y:85,r:7},{x:150,y:85,r:7},{x:100,y:100,r:9,p:true},{x:25,y:130,r:6},{x:175,y:130,r:6},{x:70,y:150,r:6},{x:130,y:150,r:6},{x:100,y:175,r:7,p:true}].map((n,i) => (
-                        <g key={i}>
-                          <circle cx={n.x} cy={n.y} r={n.r*3} fill="url(#nodeGlow2)" />
-                          <circle cx={n.x} cy={n.y} r={n.r} fill={n.p ? '#2563EB' : '#93c5fd'} opacity={n.p ? 1 : 0.7} />
-                          <circle cx={n.x} cy={n.y} r={n.r-2.5} fill="white" opacity="0.25" />
-                        </g>
-                      ))}
-                      {/* Pulse on primary nodes */}
-                      {[[100,40,3],[100,100,2.5],[100,175,3.5]].map(([cx,cy,dur],i) => (
-                        <circle key={`p${i}`} cx={cx} cy={cy} r="10" fill="none" stroke="#2563EB" strokeWidth="1.5" opacity="0.15">
-                          <animate attributeName="r" values="10;25;10" dur={`${dur}s`} repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.25;0;0.25" dur={`${dur}s`} repeatCount="indefinite" />
-                        </circle>
-                      ))}
-                      {/* Floating data particles */}
-                      {[{cx:30,cy:60,dur:'4s'},{cx:170,cy:55,dur:'3.5s'},{cx:55,cy:165,dur:'5s'},{cx:145,cy:170,dur:'4.5s'}].map((p,i) => (
-                        <circle key={`d${i}`} cx={p.cx} cy={p.cy} r="2" fill="#2563EB" opacity="0.3">
-                          <animate attributeName="cy" values={`${p.cy};${p.cy-15};${p.cy}`} dur={p.dur} repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.3;0.6;0.3" dur={p.dur} repeatCount="indefinite" />
-                        </circle>
-                      ))}
-                    </svg>
-                    {/* Labels */}
-                    <div className="flex gap-2 flex-wrap justify-center">
-                      {[
-                        t('landing.features.ai_label1', 'Pattern Analysis'),
-                        t('landing.features.ai_label2', 'Early Detection'),
-                        t('landing.features.ai_label3', 'Smart Alerts'),
-                        t('landing.features.ai_label4', 'Predictive Care'),
-                      ].map(label => (
-                        <span key={label} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">{label}</span>
-                      ))}
-                    </div>
+            <div className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${featVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight mb-3">
+                {t('landing.features.title', 'Comprehensive Care, Simplified')}
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
+                {t('landing.features.subtitle', 'CogniCare provides a robust suite of tools designed to support every aspect of cognitive health management.')}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featureItems.map((feat, idx) => (
+                <div key={feat.title} className={`p-6 rounded-2xl transition-all duration-700 ${featVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${idx * 100}ms` }}>
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                    <span className="material-symbols-outlined">{feat.icon}</span>
                   </div>
+                  <h3 className="text-base font-bold mb-1.5">{feat.title}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{feat.desc}</p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* â”€â”€ How It Works â”€â”€ */}
+        {/* â”€â”€ How it works â”€â”€ */}
         <section ref={stepsRef} className="py-16 sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className={`text-center mb-12 transition-all duration-700 ${stepsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${stepsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight mb-3">
-                {t('landing.howItWorks.title', 'How It Works')}
+                {t('landing.steps.title', 'Get Started in Minutes')}
               </h2>
-              <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm sm:text-base">
-                {t('landing.howItWorks.subtitle', 'Get started in four simple steps and transform your care workflow.')}
+              <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
+                {t('landing.steps.subtitle', 'Our streamlined onboarding process makes it easy to get your entire organization up and running.')}
               </p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-              {/* Connecting line (desktop) */}
-              <div className="hidden lg:block absolute top-12 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20" />
-              {[
-                { icon: 'corporate_fare', title: t('landing.steps.s1', 'Create Organization'), desc: t('landing.steps.s1d', 'Register your org with a certificate and get verified within 24 hours.') },
-                { icon: 'group_add', title: t('landing.steps.s2', 'Add Your Team'), desc: t('landing.steps.s2d', 'Invite specialists, import staff via Excel, and manage family enrollments.') },
-                { icon: 'monitoring', title: t('landing.steps.s3', 'Start Tracking'), desc: t('landing.steps.s3d', 'Create PECS boards, TEACCH trackers, and skill assessments for each child.') },
-                { icon: 'auto_awesome', title: t('landing.steps.s4', 'AI-Powered Insights'), desc: t('landing.steps.s4d', 'Get AI-driven recommendations, progress reports, and early intervention alerts.') },
-              ].map((step, idx) => (
-                <div key={step.title} className={`relative flex flex-col items-center text-center transition-all duration-700 ${stepsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${200 + idx * 120}ms` }}>
-                  <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center text-2xl font-black mb-4 shadow-lg shadow-primary/20 relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+              {stepItems.map((step, idx) => (
+                <div key={step.title} className={`relative transition-all duration-700 ${stepsVis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${idx * 100}ms` }}>
+                  {idx < 3 && <div className="hidden lg:block absolute top-7 left-full w-full border-t-2 border-dashed border-slate-300 dark:border-slate-700" />}
+                  <div className="w-14 h-14 rounded-2xl bg-white dark:bg-surface-dark border-2 border-slate-200 dark:border-slate-800 flex items-center justify-center text-primary mb-4">
                     <span className="material-symbols-outlined text-2xl">{step.icon}</span>
                   </div>
-                  <span className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-2 text-[10px] font-black text-primary bg-primary/10 w-5 h-5 rounded-full flex items-center justify-center">{idx + 1}</span>
-                  <h4 className="font-bold mb-1.5">{step.title}</h4>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-[220px]">{step.desc}</p>
+                  <h3 className="text-base font-bold mb-1.5">{step.title}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{step.desc}</p>
                 </div>
               ))}
             </div>
@@ -550,79 +535,36 @@ export default function LandingPage() {
         </section>
 
         {/* â”€â”€ CTA â”€â”€ */}
-        <section className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="relative rounded-3xl bg-gradient-to-br from-primary via-blue-600 to-indigo-700 p-10 sm:p-16 text-center overflow-hidden">
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-                <div className="absolute bottom-0 left-0 w-60 h-60 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
-              </div>
-              <div className="relative z-10">
-                <img src={logo} alt="CogniCare" className="h-16 w-16 mx-auto mb-6 rounded-2xl object-contain bg-white/10 p-2" />
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white mb-4">
-                  {t('landing.cta.title', 'Ready to Transform Care?')}
-                </h2>
-                <p className="text-white/80 max-w-lg mx-auto mb-8 text-sm sm:text-base">
-                  {t('landing.cta.subtitle', 'Join hundreds of organizations already using CogniCare to improve cognitive health outcomes.')}
-                </p>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  <button onClick={() => navigate('/org/login?mode=signup')} className="px-8 py-3.5 bg-white text-primary font-bold rounded-xl hover:bg-slate-50 transition-all shadow-lg text-sm">
-                    {t('landing.cta.signup', 'Create Free Account')}
-                  </button>
-                  <button onClick={() => navigate('/admin/login')} className="px-8 py-3.5 bg-white/15 text-white font-bold rounded-xl hover:bg-white/25 border border-white/20 transition-all text-sm">
-                    {t('landing.cta.contact', 'Contact Sales')}
-                  </button>
-                </div>
-              </div>
+        <section className="py-16 sm:py-24">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div className="relative rounded-3xl bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 p-10 sm:p-16 text-center overflow-hidden">
+              <div className="absolute -top-16 -right-16 w-48 h-48 bg-primary/20 rounded-full blur-2xl" />
+              <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-primary/20 rounded-full blur-2xl" />
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight mb-4">
+                {t('landing.cta.title', 'Ready to Transform Cognitive Care?')}
+              </h2>
+              <p className="text-primary/80 dark:text-primary/90 max-w-xl mx-auto mb-8">
+                {t('landing.cta.subtitle', 'Join hundreds of organizations and professionals who are leveraging CogniCare to provide better, more efficient cognitive health services.')}
+              </p>
+              <button onClick={() => navigate('/org/login')} className="group px-7 py-3.5 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:bg-primary-dark hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-[0.97] text-sm flex items-center gap-2 mx-auto">
+                {t('landing.hero.cta', 'Get Started Free')}
+                <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
             </div>
           </div>
         </section>
       </main>
 
       {/* â”€â”€ Footer â”€â”€ */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12 mb-12">
-            <div className="col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2.5 mb-4">
-                <img src={logo} alt="CogniCare" className="h-9 w-9 rounded-lg object-contain" />
-                <span className="font-bold">CogniCare</span>
-              </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {t('landing.footer.desc', 'Leading the way in collaborative cognitive health management through technology and empathy.')}
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold mb-4">{t('landing.footer.product', 'Product')}</h4>
-              <ul className="flex flex-col gap-3 text-sm text-slate-500 dark:text-slate-400">
-                <li><button onClick={() => navigate('/org/login')} className="hover:text-primary transition-colors">{t('landing.nav.orgLeaders', 'Organizations')}</button></li>
-                <li><button onClick={() => navigate('/specialist/login')} className="hover:text-primary transition-colors">{t('landing.nav.professionals', 'Professionals')}</button></li>
-                <li><button onClick={() => navigate('/admin/login')} className="hover:text-primary transition-colors">{t('landing.nav.admins', 'Admins')}</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold mb-4">{t('landing.footer.resources', 'Resources')}</h4>
-              <ul className="flex flex-col gap-3 text-sm text-slate-500 dark:text-slate-400">
-                <li><a className="hover:text-primary transition-colors" href="#">{t('landing.footer.docs', 'Documentation')}</a></li>
-                <li><a className="hover:text-primary transition-colors" href="#">{t('landing.footer.help', 'Help Center')}</a></li>
-                <li><a className="hover:text-primary transition-colors" href="#">{t('landing.footer.security', 'Security')}</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold mb-4">{t('landing.footer.contact', 'Contact')}</h4>
-              <ul className="flex flex-col gap-3 text-sm text-slate-500 dark:text-slate-400">
-                <li><a className="hover:text-primary transition-colors" href="#">{t('landing.footer.support', 'Support')}</a></li>
-                <li><a className="hover:text-primary transition-colors" href="#">{t('landing.footer.sales', 'Sales')}</a></li>
-                <li><a className="hover:text-primary transition-colors" href="#">{t('landing.footer.press', 'Press')}</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t border-slate-200 dark:border-slate-800 gap-4">
-            <p className="text-xs text-slate-400">&copy; 2026 CogniCare Systems. All rights reserved.</p>
-            <div className="flex gap-4 text-slate-400">
-              <a className="hover:text-primary transition-colors" href="#"><span className="material-symbols-outlined text-xl">public</span></a>
-              <a className="hover:text-primary transition-colors" href="#"><span className="material-symbols-outlined text-xl">mail</span></a>
-              <a className="hover:text-primary transition-colors" href="#"><span className="material-symbols-outlined text-xl">share</span></a>
+      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              &copy; {new Date().getFullYear()} CogniCare. {t('footer.copyright', 'All rights reserved.')}
+            </p>
+            <div className="flex gap-4">
+              <a href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-primary">{t('footer.privacy', 'Privacy Policy')}</a>
+              <a href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-primary">{t('footer.contact', 'Contact Us')}</a>
             </div>
           </div>
         </div>

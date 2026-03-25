@@ -844,5 +844,90 @@
     "successMessage": "Votre compte a été confirmé avec succès. Vous serez redirigé vers la page de connexion dans quelques secondes...",
     "goToLogin": "Aller à la connexion maintenant",
     "backToHome": "Retour à l'accueil"
+  },
+  "landing": {
+    "nav": {
+      "orgLeaders": "Organisations",
+      "professionals": "Professionnels",
+      "admins": "Admins"
+    },
+    "hero": {
+      "badge": "Approuvé par 120+ Partenaires Cliniques",
+      "title1": "Soutenir la",
+      "titleHighlight": "Santé Cognitive",
+      "title2": "Ensemble",
+      "subtitle": "Donner aux familles et aux professionnels de la santé des outils d'IA avancés pour une gestion transparente des soins cognitifs et des informations en temps réel.",
+      "cta": "Commencer Gratuitement",
+      "demo": "Voir la Démo",
+      "trust": "professionnels font confiance à CogniCare"
+    },
+    "stats": {
+      "families": "Familles Soutenues",
+      "partners": "Partenaires Cliniques",
+      "accuracy": "Taux de Réussite"
+    },
+    "platform": {
+      "title": "Une Plateforme, Trois Tableaux de Bord",
+      "subtitle": "Des expériences connectées de manière transparente et adaptées à chaque partie prenante du parcours de soins cognitifs.",
+      "cta": "En Savoir Plus",
+      "portals": {
+        "org": {
+          "title": "Pour les Organisations",
+          "desc": "Gérez le personnel, supervisez les progrès des familles et obtenez des informations basées sur l'IA sur les performances organisationnelles."
+        },
+        "specialist": {
+          "title": "Pour les Spécialistes",
+          "desc": "Créez des plans PECS & TEACCH, suivez le développement de l'enfant et collaborez avec les familles dans un environnement sécurisé."
+        },
+        "family": {
+          "title": "Pour les Familles",
+          "desc": "Accédez aux plans de soins, communiquez avec les spécialistes et restez engagé dans le parcours de santé cognitive de votre enfant."
+        }
+      }
+    },
+    "features": {
+      "title": "Des Soins Complets, Simplifiés",
+      "subtitle": "CogniCare fournit une suite robuste d'outils conçus pour soutenir chaque aspect de la gestion de la santé cognitive.",
+      "ai": {
+        "title": "Informations par l'IA",
+        "desc": "Tirez parti des analyses avancées pour suivre les progrès, identifier les modèles et recevoir des recommandations exploitables pour de meilleurs résultats."
+      },
+      "pecs": {
+        "title": "Outils PECS & TEACCH",
+        "desc": "Utilisez des cadres standard de l'industrie comme le Système de Communication par Échange d'Images et TEACCH pour un apprentissage structuré et visuel."
+      },
+      "secure": {
+        "title": "Sécurisé & Conforme",
+        "desc": "Construit avec la confidentialité des données au cœur, garantissant que toutes les données des patients et de l'organisation sont cryptées et traitées avec le plus grand soin."
+      },
+      "collaboration": {
+        "title": "Hub Collaboratif",
+        "desc": "Une plateforme unifiée reliant les dirigeants d'organisation, les spécialistes et les familles pour une communication et une coordination des soins transparentes."
+      }
+    },
+    "steps": {
+      "title": "Commencez en Quelques Minutes",
+      "subtitle": "Notre processus d'intégration simplifié facilite la mise en route de toute votre organisation.",
+      "step1": {
+        "title": "1. Créez Votre Compte",
+        "desc": "Inscrivez-vous en tant qu'organisation, spécialiste ou membre de la famille pour commencer."
+      },
+      "step2": {
+        "title": "2. Construisez Votre Réseau",
+        "desc": "Invitez du personnel, connectez-vous avec les familles et établissez votre écosystème de soins."
+      },
+      "step3": {
+        "title": "3. Créez & Gérez les Plans",
+        "desc": "Développez des plans PECS et TEACCH personnalisés adaptés aux besoins individuels."
+      },
+      "step4": {
+        "title": "4. Suivez & Analysez",
+        "desc": "Surveillez les progrès en temps réel et utilisez les informations de l'IA pour optimiser les stratégies de soins."
+      }
+    },
+    "cta": {
+      "title": "Prêt à Transformer les Soins Cognitifs ?",
+      "subtitle": "Rejoignez des centaines d'organisations et de professionnels qui tirent parti de CogniCare pour fournir des services de santé cognitive meilleurs et plus efficaces."
+    }
   }
 }

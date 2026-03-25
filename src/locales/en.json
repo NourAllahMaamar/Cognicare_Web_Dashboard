@@ -846,5 +846,90 @@
     "successMessage": "Your account has been successfully confirmed. You will be redirected to the login page in a few seconds...",
     "goToLogin": "Go to Login Now",
     "backToHome": "Back to Home"
+  },
+  "landing": {
+    "nav": {
+      "orgLeaders": "Organizations",
+      "professionals": "Professionals",
+      "admins": "Admins"
+    },
+    "hero": {
+      "badge": "Trusted by 120+ Clinical Partners",
+      "title1": "Supporting",
+      "titleHighlight": "Cognitive Health",
+      "title2": "Together",
+      "subtitle": "Empowering families and healthcare professionals with advanced AI tools for seamless cognitive care management and real-time insights.",
+      "cta": "Get Started Free",
+      "demo": "Watch Demo",
+      "trust": "professionals trust CogniCare"
+    },
+    "stats": {
+      "families": "Families Supported",
+      "partners": "Clinical Partners",
+      "accuracy": "Success Rate"
+    },
+    "platform": {
+      "title": "One Platform, Three Dashboards",
+      "subtitle": "Seamlessly connected experiences tailored for every stakeholder in the cognitive care journey.",
+      "cta": "Learn More",
+      "portals": {
+        "org": {
+          "title": "For Organizations",
+          "desc": "Manage staff, oversee family progress, and get AI-driven insights on organizational performance."
+        },
+        "specialist": {
+          "title": "For Specialists",
+          "desc": "Create PECS & TEACCH plans, track child development, and collaborate with families in a secure environment."
+        },
+        "family": {
+          "title": "For Families",
+          "desc": "Access care plans, communicate with specialists, and stay engaged in your child’s cognitive health journey."
+        }
+      }
+    },
+    "features": {
+      "title": "Comprehensive Care, Simplified",
+      "subtitle": "CogniCare provides a robust suite of tools designed to support every aspect of cognitive health management.",
+      "ai": {
+        "title": "AI-Powered Insights",
+        "desc": "Leverage advanced analytics to track progress, identify patterns, and receive actionable recommendations for better outcomes."
+      },
+      "pecs": {
+        "title": "PECS & TEACCH Tools",
+        "desc": "Utilize industry-standard frameworks like Picture Exchange Communication System and TEACCH for structured, visual learning."
+      },
+      "secure": {
+        "title": "Secure & Compliant",
+        "desc": "Built with data privacy at its core, ensuring all patient and organizational data is encrypted and handled with the utmost care."
+      },
+      "collaboration": {
+        "title": "Collaborative Hub",
+        "desc": "A unified platform connecting organization leaders, specialists, and families for seamless communication and care coordination."
+      }
+    },
+    "steps": {
+      "title": "Get Started in Minutes",
+      "subtitle": "Our streamlined onboarding process makes it easy to get your entire organization up and running.",
+      "step1": {
+        "title": "1. Create Your Account",
+        "desc": "Sign up as an organization, specialist, or family member to get started."
+      },
+      "step2": {
+        "title": "2. Build Your Network",
+        "desc": "Invite staff, connect with families, and establish your care ecosystem."
+      },
+      "step3": {
+        "title": "3. Create & Manage Plans",
+        "desc": "Develop personalized PECS and TEACCH plans tailored to individual needs."
+      },
+      "step4": {
+        "title": "4. Track & Analyze",
+        "desc": "Monitor progress in real-time and use AI insights to optimize care strategies."
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Cognitive Care?",
+      "subtitle": "Join hundreds of organizations and professionals who are leveraging CogniCare to provide better, more efficient cognitive health services."
+    }
   }
 }
