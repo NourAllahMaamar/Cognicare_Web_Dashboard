@@ -6,28 +6,12 @@ on:
       - main
       - develop
       - 'v1-*'
-    paths:
-      - src/**
-      - public/**
-      - package.json
-      - package-lock.json
-      - vite.config.*
-      - eslint.config.*
-      - tailwind.config.*
-      - .github/workflows/ci.yml
+      - 'feature/**'
   pull_request:
     branches:
       - main
       - develop
-    paths:
-      - src/**
-      - public/**
-      - package.json
-      - package-lock.json
-      - vite.config.*
-      - eslint.config.*
-      - tailwind.config.*
-      - .github/workflows/ci.yml
+      - 'v1-*'
   workflow_dispatch:
 
 permissions:
