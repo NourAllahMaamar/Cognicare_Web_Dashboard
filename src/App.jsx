@@ -50,6 +50,37 @@ function PageLoader() {
   );
 }
 
+function isSpecialistRole(role) {
+  if (!role) return false;
+  const normalized = String(role).toLowerCase();
+  return (
+    normalized === 'careprovider' ||
+    normalized === 'volunteer' ||
+    normalized === 'psychologist' ||
+    normalized === 'speech_therapist' ||
+    normalized === 'occupational_therapist' ||
+    normalized === 'doctor' ||
+    normalized === 'other'
+  );
+}
+
+function RequireSpecialistAuth({ children }) {
+  const rawUser = localStorage.getItem('specialistUser');
+  const token = localStorage.getItem('specialistToken');
+  if (!rawUser || !token) {
+    return <Navigate to="/specialist/login" replace />;
+  }
+  try {
+    const user = JSON.parse(rawUser);
+    if (!isSpecialistRole(user?.role)) {
+      return <Navigate to="/specialist/login" replace />;
+    }
+    return children;
+  } catch {
+    return <Navigate to="/specialist/login" replace />;
+  }
+}
+
 function App() {
   const { i18n } = useTranslation();
 
@@ -128,12 +159,54 @@ function App() {
           <Route path="plans" element={<SpecialistPlans />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
-        <Route path="/specialist/pecs/create" element={<PECSBoardCreator />} />
-        <Route path="/specialist/teacch/create" element={<TEACCHTrackerCreator />} />
-        <Route path="/specialist/activities" element={<ActivitiesCreator />} />
-        <Route path="/specialist/skill-tracker" element={<SkillTrackerCreator />} />
-        <Route path="/specialist/ai-recommendations/:childId" element={<ProgressAIRecommendations />} />
-        <Route path="/specialist/behavior-analytics/:childId" element={<SpecialistBehaviorAnalytics />} />
+        <Route
+          path="/specialist/pecs/create"
+          element={(
+            <RequireSpecialistAuth>
+              <PECSBoardCreator />
+            </RequireSpecialistAuth>
+          )}
+        />
+        <Route
+          path="/specialist/teacch/create"
+          element={(
+            <RequireSpecialistAuth>
+              <TEACCHTrackerCreator />
+            </RequireSpecialistAuth>
+          )}
+        />
+        <Route
+          path="/specialist/activities"
+          element={(
+            <RequireSpecialistAuth>
+              <ActivitiesCreator />
+            </RequireSpecialistAuth>
+          )}
+        />
+        <Route
+          path="/specialist/skill-tracker"
+          element={(
+            <RequireSpecialistAuth>
+              <SkillTrackerCreator />
+            </RequireSpecialistAuth>
+          )}
+        />
+        <Route
+          path="/specialist/ai-recommendations/:childId"
+          element={(
+            <RequireSpecialistAuth>
+              <ProgressAIRecommendations />
+            </RequireSpecialistAuth>
+          )}
+        />
+        <Route
+          path="/specialist/behavior-analytics/:childId"
+          element={(
+            <RequireSpecialistAuth>
+              <SpecialistBehaviorAnalytics />
+            </RequireSpecialistAuth>
+          )}
+        />
 
         {/* Misc */}
         <Route path="/confirm-account" element={<ConfirmAccount />} />

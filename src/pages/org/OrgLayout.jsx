@@ -11,7 +11,16 @@ export default function OrgLayout() {
   useEffect(() => {
     const stored = localStorage.getItem('orgLeaderUser');
     if (!stored) { navigate('/org/login'); return; }
-    try { setUser(JSON.parse(stored)); } catch { navigate('/org/login'); }
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed?.role !== 'organization_leader') {
+        navigate('/org/login');
+        return;
+      }
+      setUser(parsed);
+    } catch {
+      navigate('/org/login');
+    }
   }, []);
 
   const handleLogout = () => {

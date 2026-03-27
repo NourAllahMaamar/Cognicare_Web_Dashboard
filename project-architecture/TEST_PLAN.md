@@ -54,3 +54,20 @@ For each: load page with valid token (mock API or test backend), assert table/ch
 - Reliance on live API for manual QA.
 
 **Automate first:** Playwright: three logins + one mutation per role against staging API.
+
+---
+
+## Verification status (release-hardening)
+
+**Canonical cross-workspace matrix:** [`../../project-architecture/TEST_PLAN.md`](../../project-architecture/TEST_PLAN.md) (repo root `project-architecture/`).
+
+**Web-specific evidence (manual / MCP):**
+
+| When | What | Doc |
+|------|------|-----|
+| 2026-03-27 | Credentialed smoke: admin, org leader, specialist → dashboards (Vite proxy to Render) | [`../architecture/bilan/2026-03-27-mcp-web-credentialed-smoke.md`](../architecture/bilan/2026-03-27-mcp-web-credentialed-smoke.md) |
+| 2026-03-27 | Deep routes: specialist children/plans/PECS create, admin users, org staff | same bilan |
+
+**Still gaps for this repo:** no Playwright/Cypress in `package.json`; org signup + PDF/approval path needs dedicated QA; token-refresh and logout-storage checks remain E2E candidates.
+
+**Dev against staging API:** set `VITE_BACKEND_ORIGIN` to the deployed API origin (see `vite.config.js`); do not commit secrets or real `.env` values.

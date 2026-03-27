@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 
@@ -153,14 +153,16 @@ export default function AdminOrganizations() {
                   </div>
                   <div>
                     <p className="font-bold text-sm">{org.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-text-muted">{org.leader?.fullName || 'No leader'}</p>
+                    <p className="text-xs text-slate-500 dark:text-text-muted">
+                      {org.leader?.fullName || org.leaderId?.fullName || 'No leader'}
+                    </p>
                   </div>
                 </div>
                 <StatusBadge status={org.status || 'Active'} />
               </div>
               <div className="flex gap-4 text-xs text-slate-500 dark:text-text-muted mb-4">
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">badge</span>{org.staff?.length || 0} staff</span>
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">family_restroom</span>{org.families?.length || 0} families</span>
+                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">badge</span>{org.staff?.length || org.staffIds?.length || 0} staff</span>
+                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">family_restroom</span>{org.families?.length || org.familyIds?.length || 0} families</span>
               </div>
               <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-3">
                 <button onClick={() => viewMembers(org)} className="text-xs text-primary font-medium hover:underline">View Members</button>

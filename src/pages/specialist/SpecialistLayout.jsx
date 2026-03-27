@@ -8,10 +8,32 @@ export default function SpecialistLayout() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
+  const isAllowedRole = (role) => {
+    const normalized = String(role ?? '').toLowerCase();
+    return (
+      normalized === 'careprovider' ||
+      normalized === 'volunteer' ||
+      normalized === 'psychologist' ||
+      normalized === 'speech_therapist' ||
+      normalized === 'occupational_therapist' ||
+      normalized === 'doctor' ||
+      normalized === 'other'
+    );
+  };
+
   useEffect(() => {
     const stored = localStorage.getItem('specialistUser');
     if (!stored) { navigate('/specialist/login'); return; }
-    try { setUser(JSON.parse(stored)); } catch { navigate('/specialist/login'); }
+    try {
+      const parsed = JSON.parse(stored);
+      if (!isAllowedRole(parsed?.role)) {
+        navigate('/specialist/login');
+        return;
+      }
+      setUser(parsed);
+    } catch {
+      navigate('/specialist/login');
+    }
   }, []);
 
   const handleLogout = () => {

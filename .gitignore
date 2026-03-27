@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Session / dated QA markdown — keep local; keep README, AGENTS, project-architecture/, architecture/* core
+architecture/bilan/202*.md
+TRANSLATION_QUALITY_REPORT.md
+TESTING_CHECKLIST.md
+IMAGE_PROMPTS.md
