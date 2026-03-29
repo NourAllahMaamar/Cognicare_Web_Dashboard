@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -62,7 +62,7 @@ export default function SkillTrackerCreator() {
             </button>
             <div>
               <h1 className="text-xl font-bold">Skill Tracker</h1>
-              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) "” 10-trial mastery</p>
+              <p className="text-xs text-slate-500">Discrete Trial Training (DTT) - 10-trial mastery</p>
             </div>
           </div>
           <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
@@ -122,7 +122,11 @@ export default function SkillTrackerCreator() {
                 <p className="text-xs text-slate-500 mt-1">Accuracy</p>
               </div>
               <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center">
-                <p className="text-2xl font-black">{mastered ? 'ðŸ†' : 'â³'}</p>
+                <p className="text-2xl font-black">
+                  <span className="material-symbols-outlined">
+                    {mastered ? 'emoji_events' : 'hourglass_top'}
+                  </span>
+                </p>
                 <p className="text-xs text-slate-500 mt-1">{mastered ? 'Mastered!' : 'In Progress'}</p>
               </div>
             </div>
@@ -155,11 +159,15 @@ export default function SkillTrackerCreator() {
             {/* Trial Grid */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-1">Trial Grid</h3>
-              <p className="text-xs text-slate-400 mb-4">Click: âœ… Pass â†’ âŒ Fail â†’ â¬œ Reset</p>
+              <p className="text-xs text-slate-400 mb-4">
+                Click: Pass {'->'} Fail {'->'} Reset
+              </p>
               <div className="grid grid-cols-5 gap-3">
                 {trials.map((trial, i) => (
                   <button key={i} onClick={() => toggleTrial(i)} className={`aspect-square rounded-xl text-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-all ${trial === 'pass' ? 'bg-success text-white shadow-lg shadow-success/20' : trial === 'fail' ? 'bg-error text-white shadow-lg shadow-error/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200'}`}>
-                    <span className="text-xl">{trial === 'pass' ? 'âœ“' : trial === 'fail' ? 'âœ—' : ''}</span>
+                    <span className="text-xs font-black tracking-wide">
+                      {trial === 'pass' ? 'PASS' : trial === 'fail' ? 'FAIL' : ''}
+                    </span>
                     <span className="text-[10px] opacity-70">Trial {i + 1}</span>
                   </button>
                 ))}

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { getUploadUrl } from '../../config';
@@ -108,8 +108,16 @@ export default function AdminCaregiverApplications() {
               : 'bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
-            {s === 'pending' && 'â³ '}{s === 'approved' && 'âœ… '}{s === 'denied' && 'âŒ '}
-            {t(`caregiverApplications.filters.${s}`)}
+            <span className="inline-flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-base leading-none">
+                {s === 'pending'
+                  ? 'pending_actions'
+                  : s === 'approved'
+                    ? 'check_circle'
+                    : 'cancel'}
+              </span>
+              <span>{t(`caregiverApplications.filters.${s}`)}</span>
+            </span>
           </button>
         ))}
       </div>

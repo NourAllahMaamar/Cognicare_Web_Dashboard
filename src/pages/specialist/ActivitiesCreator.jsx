@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -6,7 +6,7 @@ export default function ActivitiesCreator() {
   const [searchParams] = useSearchParams();
   const childId = searchParams.get('childId');
   const navigate = useNavigate();
-  const { authMutate } = useAuth('specialist');
+  const { authMutate, authFetch } = useAuth('specialist');
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -15,6 +15,9 @@ export default function ActivitiesCreator() {
   const [priority, setPriority] = useState('medium');
   const [materials, setMaterials] = useState([]);
   const [newMaterial, setNewMaterial] = useState('');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -45,6 +48,57 @@ export default function ActivitiesCreator() {
     setLoading(false);
   };
 
+  const handleGenerateActivity = async () => {
+    const prompt = aiPrompt.trim();
+    if (!prompt) return;
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const res = await authFetch('/chatbot/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message:
+            `Generate one therapy/home activity for an autistic child. Context: ${prompt}. ` +
+            'Return strictly JSON with keys: title, description, parentInstructions, materials (array), priority (low|medium|high).',
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const raw = String(data?.reply || '').trim();
+      const cleaned = raw.replace(/```json\s*/gi, '').replace(/```/g, '').trim();
+
+      let parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch {
+        parsed = null;
+      }
+
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.title) setTitle(String(parsed.title).slice(0, 120));
+        if (parsed.description) setDescription(String(parsed.description).slice(0, 600));
+        if (parsed.parentInstructions) {
+          setParentInstructions(String(parsed.parentInstructions).slice(0, 800));
+        }
+        if (Array.isArray(parsed.materials)) {
+          setMaterials(parsed.materials.filter(Boolean).map((m) => String(m).slice(0, 80)));
+        }
+        if (['low', 'medium', 'high'].includes(parsed.priority)) {
+          setPriority(parsed.priority);
+        }
+      } else {
+        // Fallback if model doesn't return JSON
+        setDescription(raw.slice(0, 600));
+      }
+      setAiPrompt('');
+    } catch (err) {
+      setAiError(err.message || 'Failed to generate activity');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
   const priorityColors = { low: 'bg-blue-100 text-blue-700 border-blue-200', medium: 'bg-amber-100 text-amber-700 border-amber-200', high: 'bg-error/10 text-error border-error/20' };
 
@@ -73,6 +127,29 @@ export default function ActivitiesCreator() {
         {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium mb-4">{success}</div>}
 
         <div className="space-y-4">
+          {/* AI Generator */}
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <label className="block text-sm font-bold mb-2 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-lg">auto_awesome</span>
+              Generate activity with AI
+            </label>
+            <textarea
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              rows={3}
+              placeholder="Describe the child need, context, and objective (e.g. transitions at home, waiting tolerance, communication requests)..."
+              className={inputCls}
+            />
+            {aiError && <p className="text-xs text-error mt-2">{aiError}</p>}
+            <button
+              onClick={handleGenerateActivity}
+              disabled={!aiPrompt.trim() || aiLoading}
+              className="mt-3 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold disabled:opacity-50"
+            >
+              {aiLoading ? 'Generating...' : 'Generate'}
+            </button>
+          </div>
+
           {/* Title */}
           <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2">Activity Title</label>

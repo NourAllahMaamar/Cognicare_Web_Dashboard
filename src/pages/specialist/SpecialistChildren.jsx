@@ -62,7 +62,7 @@ export default function SpecialistChildren() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
-  // â”€â”€ Family CRUD â”€â”€
+  // Family CRUD
   const openAddFamily = () => {
     setFamilyForm({ fullName: '', email: '', phone: '', password: '' });
     setFormChildren([{ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
@@ -124,7 +124,7 @@ export default function SpecialistChildren() {
                     <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm truncate">{child.fullName}</p>
-                      <p className="text-xs text-slate-400">{child.diagnosis || '"”'}</p>
+                      <p className="text-xs text-slate-400">{child.diagnosis || '—'}</p>
                     </div>
                   </button>
                 ))}
@@ -144,7 +144,7 @@ export default function SpecialistChildren() {
                     <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm truncate">{child.fullName}</p>
-                      <p className="text-xs text-slate-400">{child.diagnosis || '"”'}</p>
+                      <p className="text-xs text-slate-400">{child.diagnosis || '—'}</p>
                     </div>
                   </button>
                 ))}
@@ -168,7 +168,7 @@ export default function SpecialistChildren() {
                   <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl">{(selectedChild.fullName || '?')[0].toUpperCase()}</div>
                   <div>
                     <h3 className="text-xl font-bold">{selectedChild.fullName}</h3>
-                    <p className="text-sm text-slate-500">{selectedChild.gender || '"”'} • {dateFmt(selectedChild.dateOfBirth)}</p>
+                    <p className="text-sm text-slate-500">{selectedChild.gender || '—'} • {dateFmt(selectedChild.dateOfBirth)}</p>
                     {selectedChild.diagnosis && <p className="text-sm text-primary mt-0.5">{selectedChild.diagnosis}</p>}
                   </div>
                 </div>
@@ -246,13 +246,23 @@ export default function SpecialistChildren() {
                             <div className="mt-2 space-y-1.5">
                               <div className="flex items-center gap-2 text-xs text-slate-500">
                                 <span className="material-symbols-outlined text-xs">grid_view</span>
-                                Phase {c.phase || '"”'} • {c.items.length} cards
+                                Phase {c.phase || '—'} • {c.items.length} cards
                               </div>
                               <div className="flex gap-1 flex-wrap">
                                 {c.items.map((item, idx) => (
                                   <span key={idx} className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${item.mastered ? 'bg-success/10 text-success' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}>
-                                    {item.label} {item.mastered ? 'ðŸ†' : `${item.pass || 0}/10`}
+                                    {item.label} {item.mastered ? 'Mastered' : `${item.pass || 0}/10`}
                                   </span>
+                                ))}
+                              </div>
+                              <div className="space-y-1 mt-2">
+                                {c.items.map((item, idx) => (
+                                  <div key={`${item.label}-${idx}`} className="text-[10px] text-slate-500">
+                                    <span className="font-bold">{item.label}:</span>{' '}
+                                    {(item.trials || [])
+                                      .map((t) => (t === true || t === 'pass' ? 'PASS' : t === false || t === 'fail' ? 'FAIL' : '—'))
+                                      .join(' | ')}
+                                  </div>
                                 ))}
                               </div>
                               {c.items.length > 0 && (
@@ -275,6 +285,20 @@ export default function SpecialistChildren() {
                                 <div className="h-full bg-success transition-all" style={{ width: `${(c.goals.filter(g => g.status === 'mastered').length / c.goals.length) * 100}%` }} />
                                 <div className="h-full bg-amber-400 transition-all" style={{ width: `${(c.goals.filter(g => g.status === 'in_progress').length / c.goals.length) * 100}%` }} />
                               </div>
+                              <div className="space-y-1 mt-1">
+                                {c.goals.slice(0, 6).map((g, idx) => (
+                                  <div key={`${g.id || idx}`} className="text-[11px] text-slate-600 dark:text-slate-300">
+                                    <span className="font-bold">{g.text}</span>{' '}
+                                    <span className="text-slate-400">
+                                      [{g.status || 'not_started'}]
+                                      {typeof g.current === 'number' && typeof g.target === 'number'
+                                        ? ` ${g.current}/${g.target}`
+                                        : ''}
+                                    </span>
+                                    {g.notes ? <span className="text-slate-400"> - {g.notes}</span> : null}
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
 
@@ -285,13 +309,21 @@ export default function SpecialistChildren() {
                                 <span className="text-slate-400">Baseline: {c.baselinePercent || 0}%</span>
                                 <span className={`font-bold ${(c.currentPercent || 0) >= (c.targetPercent || 80) ? 'text-success' : 'text-primary'}`}>Current: {c.currentPercent || 0}%</span>
                                 <span className="text-slate-400">Target: {c.targetPercent || 80}%</span>
-                                {c.mastered && <span className="text-success font-bold">ðŸ† Mastered</span>}
+                                {c.mastered && <span className="text-success font-bold">Mastered</span>}
                               </div>
                               <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                 <div className="absolute h-full bg-slate-300 dark:bg-slate-600 rounded-full" style={{ width: `${c.baselinePercent || 0}%` }} />
                                 <div className={`absolute h-full rounded-full transition-all ${(c.currentPercent || 0) >= (c.targetPercent || 80) ? 'bg-success' : 'bg-primary'}`} style={{ width: `${c.currentPercent || 0}%` }} />
                                 <div className="absolute top-0 h-full w-0.5 bg-success/70" style={{ left: `${c.targetPercent || 80}%` }} title={`Target: ${c.targetPercent || 80}%`} />
                               </div>
+                              {Array.isArray(c.trials) && c.trials.length > 0 && (
+                                <div className="text-[10px] text-slate-500">
+                                  Trials:{' '}
+                                  {c.trials
+                                    .map((t) => (t === true || t === 'pass' ? 'PASS' : t === false || t === 'fail' ? 'FAIL' : '—'))
+                                    .join(' | ')}
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -304,6 +336,12 @@ export default function SpecialistChildren() {
                               {c.dueDate && <span className="text-slate-400">Due: {dateFmt(c.dueDate)}</span>}
                               {c.materials?.length > 0 && <span className="text-slate-400">{c.materials.length} materials</span>}
                               {c.parentInstructions && <span className="text-primary flex items-center gap-1"><span className="material-symbols-outlined text-xs">family_restroom</span>Has parent instructions</span>}
+                            </div>
+                          )}
+                          {plan.type === 'Activity' && (
+                            <div className="mt-2 text-[11px] text-slate-600 dark:text-slate-300 space-y-1">
+                              {c.description ? <p><span className="font-bold">What specialist set:</span> {c.description}</p> : null}
+                              {c.parentInstructions ? <p><span className="font-bold">Instructions given:</span> {c.parentInstructions}</p> : null}
                             </div>
                           )}
                         </div>

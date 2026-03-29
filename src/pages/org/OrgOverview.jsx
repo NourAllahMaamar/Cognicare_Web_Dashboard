@@ -326,6 +326,29 @@ export default function OrgOverview() {
                   </div>
                 </div>
 
+                {/* Operational depth */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700/30">
+                    <p className="text-xs text-slate-500">{t('orgDashboard.ai.recentFeedback30d', 'Feedback (last 30 days)')}</p>
+                    <p className="text-2xl font-black mt-1">{aiSummary.recentFeedback30d || 0}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700/30 lg:col-span-2">
+                    <p className="text-xs text-slate-500">{t('orgDashboard.ai.topChildFocus', 'Most followed child')}</p>
+                    <p className="text-base font-bold mt-1">
+                      {(aiSummary.childrenDetails && aiSummary.childrenDetails[0]?.childName) || t('orgDashboard.ai.noData', 'No data yet')}
+                    </p>
+                    {aiSummary.childrenDetails && aiSummary.childrenDetails[0] && (
+                      <p className="text-xs text-slate-500 mt-1">
+                        {aiSummary.childrenDetails[0].planCount} {t('orgDashboard.ai.totalPlans', 'Total Plans')} -{' '}
+                        {Object.entries(aiSummary.childrenDetails[0].planCountByType || {})
+                          .filter(([, v]) => v > 0)
+                          .map(([k, v]) => `${k}: ${v}`)
+                          .join(' | ')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
                 {/* Charts Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Plan Distribution Donut */}
@@ -429,6 +452,35 @@ export default function OrgOverview() {
                     <div>
                       <p className="text-sm font-semibold">{t('orgDashboard.ai.totalFeedback', 'Total Feedback Collected')}</p>
                       <p className="text-2xl font-black">{aiSummary.totalFeedback}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Children coverage details */}
+                {Array.isArray(aiSummary.childrenDetails) && aiSummary.childrenDetails.length > 0 && (
+                  <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-5 border border-slate-300 dark:border-slate-700/30">
+                    <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary text-lg">groups</span>
+                      {t('orgDashboard.ai.childrenCoverage', 'Children coverage details')}
+                    </h4>
+                    <div className="space-y-2">
+                      {aiSummary.childrenDetails.slice(0, 8).map((row) => (
+                        <div key={row.childId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 bg-white dark:bg-slate-900/40">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold truncate">{row.childName}</p>
+                            <p className="text-xs text-slate-500 truncate">
+                              {Object.entries(row.planCountByType || {})
+                                .filter(([, v]) => v > 0)
+                                .map(([k, v]) => `${k}: ${v}`)
+                                .join(' | ')}
+                            </p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="text-lg font-black">{row.planCount}</p>
+                            <p className="text-[11px] text-slate-500">{t('orgDashboard.ai.totalPlans', 'Total Plans')}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}

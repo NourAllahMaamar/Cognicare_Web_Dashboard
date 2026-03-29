@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -24,12 +24,15 @@ export default function TEACCHTrackerCreator() {
   const [searchParams] = useSearchParams();
   const childId = searchParams.get('childId');
   const navigate = useNavigate();
-  const { authMutate } = useAuth('specialist');
+  const { authMutate, authFetch } = useAuth('specialist');
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('communication');
   const [goals, setGoals] = useState([]);
   const [customGoal, setCustomGoal] = useState('');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
   const [workSystem, setWorkSystem] = useState({ steps: [''], visualSchedule: true, leftToRight: true });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -67,6 +70,48 @@ export default function TEACCHTrackerCreator() {
       setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
+  };
+
+  const extractGoalFromReply = (reply) => {
+    if (!reply) return '';
+    const cleaned = reply
+      .replace(/^[-*]\s*/gm, '')
+      .replace(/^["']|["']$/g, '')
+      .trim();
+    const firstLine = cleaned.split('\n').find((line) => line.trim()) || '';
+    return firstLine.slice(0, 180).trim();
+  };
+
+  const handleGenerateGoal = async () => {
+    const prompt = aiPrompt.trim();
+    if (!prompt) return;
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const categoryLabel =
+        CATEGORIES.find((c) => c.id === category)?.label || category;
+      const res = await authFetch('/chatbot/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Generate exactly one short TEACCH goal for category "${categoryLabel}" for child context: ${prompt}. Return only the goal text without numbering.`,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const generated = extractGoalFromReply(data?.reply);
+      if (!generated) {
+        throw new Error('No goal generated');
+      }
+      addGoal(generated);
+      setAiPrompt('');
+    } catch (err) {
+      setAiError(err.message || 'Failed to generate goal');
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const statusColors = { not_started: 'bg-slate-100 text-slate-500', in_progress: 'bg-amber-100 text-amber-700', mastered: 'bg-success/10 text-success' };
@@ -136,6 +181,27 @@ export default function TEACCHTrackerCreator() {
                 <input type="text" value={customGoal} onChange={e => setCustomGoal(e.target.value)} placeholder="Custom goal..." className={`${inputCls} flex-1`} />
                 <button onClick={() => { addGoal(customGoal); setCustomGoal(''); }} disabled={!customGoal} className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold disabled:opacity-50">
                   Add
+                </button>
+              </div>
+              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <label className="block text-xs font-bold mb-2">
+                  AI goal prompt
+                </label>
+                <textarea
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  placeholder="Describe child need (e.g. transitions, waiting, classroom routine)..."
+                  className={`${inputCls} min-h-[72px] resize-none`}
+                />
+                {aiError && (
+                  <p className="text-xs text-error mt-2">{aiError}</p>
+                )}
+                <button
+                  onClick={handleGenerateGoal}
+                  disabled={!aiPrompt.trim() || aiLoading}
+                  className="mt-2 w-full px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold disabled:opacity-50"
+                >
+                  {aiLoading ? 'Generating...' : 'Generate goal with AI'}
                 </button>
               </div>
             </div>

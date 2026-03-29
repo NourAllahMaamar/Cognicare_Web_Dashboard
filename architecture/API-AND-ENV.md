@@ -25,6 +25,8 @@ So the browser calls `http://localhost:5173/api/v1/...` and Vite forwards to `ht
 
 **Important:** If `VITE_BACKEND_ORIGIN` points to an unreachable host, login and API calls may fail silently or appear as “no redirect” after login. Align the backend port with your actual API process (`vite.config.js` and `config.js` both default to port 3000; keep `VITE_BACKEND_ORIGIN` aligned with your active backend process).
 
+**If you see Vite `http proxy error … ECONNREFUSED`:** nothing is listening at `VITE_BACKEND_ORIGIN` (often local Nest is stopped). Either start the API on that host/port **or** set `VITE_BACKEND_ORIGIN` in `.env.local` to the Render origin (same host Flutter uses by default — see mobile doc above).
+
 ## Environment variables (names only)
 
 | Variable | Role |
@@ -45,3 +47,9 @@ Organization signup request submission should return promptly; automated certifi
 ## CSP (dev server)
 
 `vite.config.js` sets `Content-Security-Policy` and other security headers on the **dev** `server.headers`. `connect-src` includes `backendOrigin` so the browser can talk to the API when needed beyond same-origin proxy behavior.
+
+## Related — Flutter mobile (not Vite)
+
+The **mobile app** does not use `VITE_BACKEND_ORIGIN`. It uses `AppConstants.baseUrl` in `cognicare/frontend`.  
+Workspace overview: [`../../project-architecture/MOBILE_API_ORIGINS.md`](../../project-architecture/MOBILE_API_ORIGINS.md)  
+Full switch guide (local Nest vs Render, Android emulator `10.0.2.2`): [`../../cognicare/frontend/architecture/MOBILE_API_BASE_URL.md`](../../cognicare/frontend/architecture/MOBILE_API_BASE_URL.md)

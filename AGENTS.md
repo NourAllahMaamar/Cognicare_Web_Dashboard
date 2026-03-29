@@ -127,6 +127,7 @@ Cross-surface and release status live outside this repo’s root:
 - **Web-focused checklist (this app):** [`project-architecture/TEST_PLAN.md`](project-architecture/TEST_PLAN.md)
 - **MCP / manual web evidence:** [`architecture/bilan/`](architecture/bilan/) (e.g. `2026-03-27-mcp-web-credentialed-smoke.md`)
 - **Ad-hoc full-app QA notes:** [`../full-app-qa-workspace/`](../full-app-qa-workspace/) (regression checklist, execution report)
+- **Flutter API origin (local vs Render):** [`../project-architecture/MOBILE_API_ORIGINS.md`](../project-architecture/MOBILE_API_ORIGINS.md) — this web app uses `VITE_BACKEND_ORIGIN` only; mobile uses `cognicare/frontend` `AppConstants.baseUrl`.
 
 `cognicare-web/` at the workspace root is a **symlink** to this directory; edit here only.
 
