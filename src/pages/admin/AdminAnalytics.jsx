@@ -1,8 +1,10 @@
 ﻿import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatCard from '../../components/ui/StatCard';
 
 export default function AdminAnalytics() {
+  const { t } = useTranslation();
   const { authGet } = useAuth('admin');
   const [stats, setStats] = useState({ users: 0, orgs: 0, families: 0, pending: 0 });
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,12 @@ export default function AdminAnalytics() {
   }, []);
 
   // SVG line chart points (simulated growth data)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = [
+    t('adminAnalytics.months.jan'), t('adminAnalytics.months.feb'), t('adminAnalytics.months.mar'),
+    t('adminAnalytics.months.apr'), t('adminAnalytics.months.may'), t('adminAnalytics.months.jun'),
+    t('adminAnalytics.months.jul'), t('adminAnalytics.months.aug'), t('adminAnalytics.months.sep'),
+    t('adminAnalytics.months.oct'), t('adminAnalytics.months.nov'), t('adminAnalytics.months.dec')
+  ];
   const newUsers = [120, 180, 240, 310, 380, 420, 500, 560, 620, 700, 780, 850];
   const activeUsers = [80, 120, 160, 200, 260, 310, 370, 420, 480, 530, 600, 680];
 
@@ -66,24 +73,24 @@ export default function AdminAnalytics() {
 
   // Donut chart
   const planData = [
-    { name: 'PECS', pct: 45, color: '#2563EB' },
-    { name: 'TEACCH', pct: 30, color: '#7c3aed' },
-    { name: 'Activities', pct: 25, color: '#3b82f6' },
+    { name: t('adminAnalytics.planTypes.pecs'), pct: 45, color: '#2563EB' },
+    { name: t('adminAnalytics.planTypes.teacch'), pct: 30, color: '#7c3aed' },
+    { name: t('adminAnalytics.planTypes.activities'), pct: 25, color: '#3b82f6' },
   ];
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">System Analytics</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">Real-time platform performance overview</p>
+          <h2 className="text-2xl font-bold">{t('adminAnalytics.title')}</h2>
+          <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminAnalytics.subtitle')}</p>
         </div>
         <div className="flex gap-3">
           <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-            <span className="material-symbols-outlined text-lg">calendar_today</span> Last 30 Days
+            <span className="material-symbols-outlined text-lg">calendar_today</span> {t('adminAnalytics.last30Days')}
           </button>
           <button className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
-            <span className="material-symbols-outlined text-lg">download</span> Export Report
+            <span className="material-symbols-outlined text-lg">download</span> {t('adminAnalytics.exportReport')}
           </button>
         </div>
       </div>
@@ -94,10 +101,10 @@ export default function AdminAnalytics() {
         <>
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <StatCard label="Total Users" value={stats.users.toLocaleString()} icon="group" trend="+12.5%" />
-            <StatCard label="Organizations" value={stats.orgs.toLocaleString()} icon="corporate_fare" trend="+5.2%" />
-            <StatCard label="Families" value={stats.families.toLocaleString()} icon="family_restroom" trend="+8.1%" />
-            <StatCard label="Pending Reviews" value={stats.pending.toLocaleString()} icon="pending_actions" trend={stats.pending > 0 ? `${stats.pending} pending` : 'Clear'} />
+            <StatCard label={t('adminAnalytics.totalUsers')} value={stats.users.toLocaleString()} icon="group" trend="+12.5%" />
+            <StatCard label={t('adminAnalytics.organizations')} value={stats.orgs.toLocaleString()} icon="corporate_fare" trend="+5.2%" />
+            <StatCard label={t('adminAnalytics.families')} value={stats.families.toLocaleString()} icon="family_restroom" trend="+8.1%" />
+            <StatCard label={t('adminAnalytics.pendingReviews')} value={stats.pending.toLocaleString()} icon="pending_actions" trend={stats.pending > 0 ? `${stats.pending} ${t('adminAnalytics.pending')}` : t('adminAnalytics.clear')} />
           </div>
 
           {/* Charts Row */}
@@ -106,12 +113,12 @@ export default function AdminAnalytics() {
             <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-bold">User Growth</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">New registrations vs Active users (12 Months)</p>
+                  <h3 className="font-bold">{t('adminAnalytics.userGrowth')}</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">{t('adminAnalytics.userGrowthSubtitle')}</p>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary" /> New Users</span>
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-400" /> Active</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary" /> {t('adminAnalytics.newUsers')}</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-400" /> {t('adminAnalytics.active')}</span>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -142,18 +149,18 @@ export default function AdminAnalytics() {
             {/* Activity Feed */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold">Activity Feed</h3>
-                <button className="text-xs text-primary font-bold hover:underline">View All</button>
+                <h3 className="font-bold">{t('adminAnalytics.activityFeed')}</h3>
+                <button className="text-xs text-primary font-bold hover:underline">{t('adminAnalytics.viewAll')}</button>
               </div>
               <div className="relative">
                 <div className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-slate-100 dark:bg-slate-800" />
                 <div className="space-y-5">
                   {[
-                    { color: 'bg-primary', title: 'New Organization', desc: 'Sunshine Therapy registered', time: '2m ago' },
-                    { color: 'bg-amber-500', title: 'High Load Detected', desc: 'CPU spiked to 85% on server', time: '15m ago' },
-                    { color: 'bg-success', title: 'Payment Processed', desc: 'Monthly subscriptions renewed', time: '1h ago' },
-                    { color: 'bg-blue-500', title: 'Report Generated', desc: 'Q3 compliance report ready', time: '3h ago' },
-                    { color: 'bg-purple-500', title: 'Feature Deployed', desc: 'v2.4.0 rolled out to production', time: '5h ago' },
+                    { color: 'bg-primary', title: t('adminAnalytics.activities.newOrg.title'), desc: t('adminAnalytics.activities.newOrg.desc'), time: t('adminAnalytics.activities.newOrg.time') },
+                    { color: 'bg-amber-500', title: t('adminAnalytics.activities.highLoad.title'), desc: t('adminAnalytics.activities.highLoad.desc'), time: t('adminAnalytics.activities.highLoad.time') },
+                    { color: 'bg-success', title: t('adminAnalytics.activities.payment.title'), desc: t('adminAnalytics.activities.payment.desc'), time: t('adminAnalytics.activities.payment.time') },
+                    { color: 'bg-blue-500', title: t('adminAnalytics.activities.report.title'), desc: t('adminAnalytics.activities.report.desc'), time: t('adminAnalytics.activities.report.time') },
+                    { color: 'bg-purple-500', title: t('adminAnalytics.activities.feature.title'), desc: t('adminAnalytics.activities.feature.desc'), time: t('adminAnalytics.activities.feature.time') },
                   ].map((item, i) => (
                     <div key={i} className="relative pl-8">
                       <div className={`absolute left-0 top-1 w-6 h-6 rounded-full ${item.color} ring-4 ring-white dark:ring-surface-dark flex items-center justify-center`}>
@@ -169,13 +176,13 @@ export default function AdminAnalytics() {
 
               {/* System Health CTA */}
               <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20">
-                <p className="font-bold text-sm">System Health</p>
+                <p className="font-bold text-sm">{t('adminAnalytics.systemHealth')}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success"></span>
                   </span>
-                  <span className="text-xs font-bold text-success">All Systems Operational</span>
+                  <span className="text-xs font-bold text-success">{t('adminAnalytics.allSystemsOperational')}</span>
                 </div>
               </div>
             </div>
@@ -185,7 +192,7 @@ export default function AdminAnalytics() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             {/* Plan Distribution */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <h3 className="font-bold mb-4">Plan Distribution</h3>
+              <h3 className="font-bold mb-4">{t('adminAnalytics.planDistribution')}</h3>
               <div className="flex items-center gap-8">
                 <div className="relative w-32 h-32 flex-shrink-0">
                   <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
@@ -205,7 +212,7 @@ export default function AdminAnalytics() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                       <p className="text-lg font-black">{(stats.families * 1.5).toFixed(0)}</p>
-                      <p className="text-[10px] text-slate-400">Total</p>
+                      <p className="text-[10px] text-slate-400">{t('adminAnalytics.total')}</p>
                     </div>
                   </div>
                 </div>
@@ -225,7 +232,7 @@ export default function AdminAnalytics() {
 
             {/* Users by Role */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <h3 className="font-bold mb-4">Users by Role</h3>
+              <h3 className="font-bold mb-4">{t('adminAnalytics.usersByRole')}</h3>
               <div className="space-y-4">
                 {(roleData.length > 0 ? roleData : [
                   { role: 'admin', count: 2, pct: 5, color: '#2563EB' },
@@ -235,7 +242,7 @@ export default function AdminAnalytics() {
                 ]).map(r => (
                   <div key={r.role}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-medium capitalize">{r.role === 'orgLeader' ? 'Org Leaders' : r.role + 's'}</span>
+                      <span className="text-sm font-medium">{t(`adminAnalytics.roles.${r.role}`)}</span>
                       <span className="text-sm font-bold">{r.count.toLocaleString()}</span>
                     </div>
                     <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">

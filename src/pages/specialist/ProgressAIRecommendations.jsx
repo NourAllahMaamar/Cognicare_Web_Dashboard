@@ -1,11 +1,13 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { API_BASE_URL } from '../../config';
 import { cachedGet } from '../../apiClient';
 
 export default function ProgressAIRecommendations() {
     const { childId } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -90,7 +92,7 @@ export default function ProgressAIRecommendations() {
         setParentFeedbackHelpful(null);
     };
     const handleModify = (index, planType, originalText) => {
-        const edited = prompt('Modifier le texte (optionnel):', originalText);
+        const edited = prompt(t('progressAI.modifyPrompt'), originalText);
         if (edited === null) return;
         setPendingFeedback({
             index,
@@ -103,7 +105,7 @@ export default function ProgressAIRecommendations() {
         setParentFeedbackHelpful(null);
     };
     const handleDismiss = (index, planType, originalText) => {
-        if (!window.confirm('Ignorer cette recommandation ?')) return;
+        if (!window.confirm(t('progressAI.dismissConfirm'))) return;
         setPendingFeedback({ index, action: 'dismissed', planType, originalText });
     };
 
@@ -144,8 +146,8 @@ export default function ProgressAIRecommendations() {
                             <span className="material-symbols-outlined">arrow_back</span>
                         </button>
                         <div>
-                            <h1 className="text-xl font-bold">AI Recommendations</h1>
-                            <p className="text-sm text-slate-500 dark:text-text-muted">Child ID: {childId}</p>
+                            <h1 className="text-xl font-bold">{t('progressAI.title')}</h1>
+                            <p className="text-sm text-slate-500 dark:text-text-muted">{t('progressAI.childId')}: {childId}</p>
                         </div>
                     </div>
                 </div>
@@ -164,7 +166,7 @@ export default function ProgressAIRecommendations() {
                 <div className="max-w-5xl mx-auto px-6 py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
                         <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-                        <p className="text-sm text-slate-400 font-medium">Loading recommendations"¦</p>
+                        <p className="text-sm text-slate-400 font-medium">{t('progressAI.loading')}</p>
                     </div>
                 </div>
             )}
@@ -174,7 +176,7 @@ export default function ProgressAIRecommendations() {
                     <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
                         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary">summarize</span>
-                            Summary
+                            {t('progressAI.summary')}
                         </h2>
                         <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed">{data.summary}</p>
                     </section>
@@ -183,7 +185,7 @@ export default function ProgressAIRecommendations() {
                         <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
                             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">flag</span>
-                                Milestones
+                                {t('progressAI.milestones')}
                             </h2>
                             <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed">{data.milestones}</p>
                         </section>
@@ -193,7 +195,7 @@ export default function ProgressAIRecommendations() {
                         <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
                             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">insights</span>
-                                Predictions
+                                {t('progressAI.predictions')}
                             </h2>
                             <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed">{data.predictions}</p>
                         </section>
@@ -202,10 +204,10 @@ export default function ProgressAIRecommendations() {
                     <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
                         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary">psychology</span>
-                            Recommendations by Plan Type
+                            {t('progressAI.recommendationsByType')}
                         </h2>
                         {(data.recommendations || []).length === 0 ? (
-                            <p className="text-slate-400 text-center py-8">No recommendations available at the moment.</p>
+                            <p className="text-slate-400 text-center py-8">{t('progressAI.noRecommendations')}</p>
                         ) : (
                             <ul className="space-y-4">
                                 {(data.recommendations || []).map((rec, index) => (
@@ -218,51 +220,51 @@ export default function ProgressAIRecommendations() {
                                         {feedbackSent.has(index) ? (
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/10 text-success rounded-lg text-sm font-medium">
                                                 <span className="material-symbols-outlined text-sm">check_circle</span>
-                                                Sent
+                                                {t('progressAI.sent')}
                                             </span>
                                         ) : pendingFeedback?.index === index ? (
                                             <div className="mt-4 space-y-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                                                 {(pendingFeedback.action === 'approved' || pendingFeedback.action === 'modified') && (
                                                     <>
                                                         <div>
-                                                            <p className="text-sm font-medium mb-2">Did the results improve?</p>
+                                                            <p className="text-sm font-medium mb-2">{t('progressAI.resultsImproveQuestion')}</p>
                                                             <div className="flex gap-2">
                                                                 <button
                                                                     onClick={() => setResultsImproved(false)}
                                                                     className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
                                                                 >
-                                                                    No
+                                                                    {t('progressAI.no')}
                                                                 </button>
                                                                 <button
                                                                     onClick={() => setResultsImproved(true)}
                                                                     className="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors"
                                                                 >
-                                                                    Yes
+                                                                    {t('progressAI.yes')}
                                                                 </button>
                                                             </div>
                                                         </div>
                                                         {resultsImproved !== null && (
                                                             <>
                                                                 <div>
-                                                                    <p className="text-sm font-medium mb-2">Was the parent feedback helpful?</p>
+                                                                    <p className="text-sm font-medium mb-2">{t('progressAI.parentFeedbackQuestion')}</p>
                                                                     <div className="flex gap-2">
                                                                         <button 
                                                                             onClick={() => setParentFeedbackHelpful('skip')}
                                                                             className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                                                                         >
-                                                                            Skip
+                                                                            {t('progressAI.skip')}
                                                                         </button>
                                                                         <button 
                                                                             onClick={() => setParentFeedbackHelpful(false)}
                                                                             className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
                                                                         >
-                                                                            No
+                                                                            {t('progressAI.no')}
                                                                         </button>
                                                                         <button 
                                                                             onClick={() => setParentFeedbackHelpful(true)}
                                                                             className="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors"
                                                                         >
-                                                                            Yes
+                                                                            {t('progressAI.yes')}
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -270,7 +272,7 @@ export default function ProgressAIRecommendations() {
                                                                     onClick={confirmPendingFeedback}
                                                                     className="w-full px-4 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors"
                                                                 >
-                                                                    Send
+                                                                    {t('progressAI.send')}
                                                                 </button>
                                                             </>
                                                         )}
@@ -281,7 +283,7 @@ export default function ProgressAIRecommendations() {
                                                         onClick={confirmPendingFeedback}
                                                         className="w-full px-4 py-2.5 bg-slate-200 dark:bg-slate-700 text-sm font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
                                                     >
-                                                        Confirm Dismiss
+                                                        {t('progressAI.confirmDismiss')}
                                                     </button>
                                                 )}
                                             </div>
@@ -291,19 +293,19 @@ export default function ProgressAIRecommendations() {
                                                     onClick={() => handleApprove(index, rec.planType, rec.text)}
                                                     className="px-4 py-2 bg-success/10 text-success text-sm font-bold rounded-lg hover:bg-success/20 transition-colors"
                                                 >
-                                                    Approve
+                                                    {t('progressAI.approve')}
                                                 </button>
                                                 <button
                                                     onClick={() => handleModify(index, rec.planType, rec.text)}
                                                     className="px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors"
                                                 >
-                                                    Modify
+                                                    {t('progressAI.modify')}
                                                 </button>
                                                 <button
                                                     onClick={() => handleDismiss(index, rec.planType, rec.text)}
                                                     className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                                 >
-                                                    Dismiss
+                                                    {t('progressAI.dismiss')}
                                                 </button>
                                             </div>
                                         )}

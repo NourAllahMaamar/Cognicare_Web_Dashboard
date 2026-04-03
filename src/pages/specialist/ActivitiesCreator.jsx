@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function ActivitiesCreator() {
@@ -7,6 +8,7 @@ export default function ActivitiesCreator() {
   const childId = searchParams.get('childId');
   const navigate = useNavigate();
   const { authMutate } = useAuth('specialist');
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -19,7 +21,7 @@ export default function ActivitiesCreator() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => { if (!childId) setError('Please select a child first.'); }, [childId]);
+  useEffect(() => { if (!childId) setError(t('activitiesCreator.childRequired'));  }, [childId, t]);
 
   const addMaterial = () => {
     if (!newMaterial) return;
@@ -30,7 +32,7 @@ export default function ActivitiesCreator() {
   const removeMaterial = (i) => setMaterials(materials.filter((_, idx) => idx !== i));
 
   const handleSave = async () => {
-    if (!childId || !title) { setError('Title is required.'); return; }
+    if (!childId || !title) { setError(t('activitiesCreator.titleRequired')); return; }
     setLoading(true);
     try {
       await authMutate('/specialized-plans', {
@@ -58,12 +60,12 @@ export default function ActivitiesCreator() {
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-xl font-bold">Create Activity</h1>
-              <p className="text-xs text-slate-500">Assign a home or therapy activity</p>
+              <h1 className="text-xl font-bold">{t('activitiesCreator.title')}</h1>
+              <p className="text-xs text-slate-500">{t('activitiesCreator.subtitle')}</p>
             </div>
           </div>
           <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
-            {loading ? 'Saving...' : 'Save Activity'}
+            {loading ? t('activitiesCreator.saving') : t('activitiesCreator.saveActivity')}
           </button>
         </div>
       </div>
@@ -75,39 +77,39 @@ export default function ActivitiesCreator() {
         <div className="space-y-4">
           {/* Title */}
           <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-            <label className="block text-sm font-bold mb-2">Activity Title</label>
-            <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Color Matching Game" className={inputCls} />
+            <label className="block text-sm font-bold mb-2">{t('activitiesCreator.activityTitle')}</label>
+            <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder={t('activitiesCreator.titlePlaceholder')} className={inputCls} />
           </div>
 
           {/* Description */}
           <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-            <label className="block text-sm font-bold mb-2">Description</label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder="Describe the activity and its therapeutic purpose..." className={inputCls} />
+            <label className="block text-sm font-bold mb-2">{t('activitiesCreator.description')}</label>
+            <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder={t('activitiesCreator.descriptionPlaceholder')} className={inputCls} />
           </div>
 
           {/* Parent Instructions */}
           <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-lg">family_restroom</span>
-              Parent Instructions
+              {t('activitiesCreator.parentInstructions')}
             </label>
-            <textarea value={parentInstructions} onChange={e => setParentInstructions(e.target.value)} rows={4} placeholder="Step-by-step instructions for parents to follow at home..." className={inputCls} />
+            <textarea value={parentInstructions} onChange={e => setParentInstructions(e.target.value)} rows={4} placeholder={t('activitiesCreator.instructionsPlaceholder')} className={inputCls} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Due Date */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-              <label className="block text-sm font-bold mb-2">Due Date</label>
+              <label className="block text-sm font-bold mb-2">{t('activitiesCreator.dueDate')}</label>
               <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className={inputCls} />
             </div>
 
             {/* Priority */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-              <label className="block text-sm font-bold mb-2">Priority</label>
+              <label className="block text-sm font-bold mb-2">{t('activitiesCreator.priority')}</label>
               <div className="flex gap-2">
                 {['low', 'medium', 'high'].map(p => (
                   <button key={p} onClick={() => setPriority(p)} className={`flex-1 py-2.5 rounded-xl text-xs font-bold border-2 capitalize transition-colors ${priority === p ? priorityColors[p] : 'bg-slate-50 dark:bg-slate-800 border-transparent hover:bg-slate-100'}`}>
-                    {p}
+                    {t(`activitiesCreator.${p}`)}
                   </button>
                 ))}
               </div>
@@ -118,11 +120,11 @@ export default function ActivitiesCreator() {
           <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
             <label className="block text-sm font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-lg">inventory_2</span>
-              Materials Needed
+              {t('activitiesCreator.materialsNeeded')}
             </label>
             <div className="flex gap-2 mb-3">
-              <input type="text" value={newMaterial} onChange={e => setNewMaterial(e.target.value)} onKeyDown={e => e.key === 'Enter' && addMaterial()} placeholder="e.g., Colored blocks" className={`${inputCls} flex-1`} />
-              <button onClick={addMaterial} disabled={!newMaterial} className="px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold disabled:opacity-50">Add</button>
+              <input type="text" value={newMaterial} onChange={e => setNewMaterial(e.target.value)} onKeyDown={e => e.key === 'Enter' && addMaterial()} placeholder={t('activitiesCreator.materialPlaceholder')} className={`${inputCls} flex-1`} />
+              <button onClick={addMaterial} disabled={!newMaterial} className="px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold disabled:opacity-50">{t('activitiesCreator.add')}</button>
             </div>
             {materials.length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -143,15 +145,15 @@ export default function ActivitiesCreator() {
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">preview</span>
-                Preview
+                {t('activitiesCreator.preview')}
               </h3>
               <div className="p-4 bg-primary/5 rounded-xl space-y-2">
                 <h4 className="font-bold">{title}</h4>
                 {description && <p className="text-sm text-slate-600 dark:text-slate-300">{description}</p>}
                 <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-                  <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${priorityColors[priority]}`}>{priority}</span>
-                  {dueDate && <span>Due: {new Date(dueDate).toLocaleDateString()}</span>}
-                  {materials.length > 0 && <span>{materials.length} materials</span>}
+                  <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${priorityColors[priority]}`}>{t(`activitiesCreator.${priority}`)}</span>
+                  {dueDate && <span>{t('activitiesCreator.due')}: {new Date(dueDate).toLocaleDateString()}</span>}
+                  {materials.length > 0 && <span>{materials.length} {t('activitiesCreator.materials')}</span>}
                 </div>
               </div>
             </div>

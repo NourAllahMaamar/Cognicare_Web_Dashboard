@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { getUploadUrl } from '../../config';
 
@@ -20,6 +21,7 @@ export default function PECSBoardCreator() {
   const childId = searchParams.get('childId');
   const navigate = useNavigate();
   const { authFetch, authMutate } = useAuth('specialist');
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState('');
   const [selectedPhase, setSelectedPhase] = useState(1);
@@ -31,20 +33,20 @@ export default function PECSBoardCreator() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => { if (!childId) setError('Please select a child from the dashboard first.'); }, [childId]);
+  useEffect(() => { if (!childId) setError(t('pecsCreator.childRequired')); }, [childId, t]);
 
   const currentPhase = PECS_PHASES.find(p => p.id === selectedPhase);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith('image/')) { setError('Please select an image file.'); return; }
+    if (!file || !file.type.startsWith('image/')) { setError(t('pecsCreator.imageError')); return; }
     setUploadingImage(true);
     setError('');
     try {
       const fd = new FormData();
       fd.append('file', file);
       const res = await authFetch('/specialized-plans/upload-image', { method: 'POST', body: fd });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || 'Upload failed');
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || t('pecsCreator.uploadFailed'));
       const { imageUrl } = await res.json();
       setNewItemImage(imageUrl);
       setSuccess('Image uploaded');
@@ -78,8 +80,8 @@ export default function PECSBoardCreator() {
   };
 
   const handleSave = async () => {
-    if (!childId) { setError('No child selected.'); return; }
-    if (!title || items.length === 0) { setError('Title and at least one card required.'); return; }
+    if (!childId) { setError(t('pecsCreator.noChild')); return; }
+    if (!title || items.length === 0) { setError(t('pecsCreator.validationError')); return; }
     setLoading(true);
     try {
       await authMutate('/specialized-plans', { body: { childId, type: 'PECS', title, content: { phase: selectedPhase, phaseName: currentPhase.name, items: items.map(it => ({ ...it, ...getStats(it) })), criteria: currentPhase.criteria } } });
@@ -101,12 +103,12 @@ export default function PECSBoardCreator() {
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-xl font-bold">PECS Board Creator</h1>
-              <p className="text-xs text-slate-500">Picture Exchange Communication System</p>
+              <h1 className="text-xl font-bold">{t('pecsCreator.title')}</h1>
+              <p className="text-xs text-slate-500">{t('pecsCreator.subtitle')}</p>
             </div>
           </div>
           <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
-            {loading ? 'Saving...' : 'Save Board'}
+            {loading ? t('pecsCreator.saving') : t('pecsCreator.saveBoard')}
           </button>
         </div>
       </div>
@@ -117,7 +119,7 @@ export default function PECSBoardCreator() {
 
         {/* Stepper */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {['Set Title', 'Select Phase', 'Add Cards', 'Track Trials', 'Save'].map((step, i) => (
+          {[t('pecsCreator.stepTitle'), t('pecsCreator.stepPhase'), t('pecsCreator.stepCards'), t('pecsCreator.stepTrials'), t('pecsCreator.stepSave')].map((step, i) => (
             <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 text-xs font-bold whitespace-nowrap">
               <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-black">{i + 1}</span>
               {step}
@@ -130,13 +132,13 @@ export default function PECSBoardCreator() {
           <div className="lg:col-span-2 space-y-4">
             {/* Title */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-              <label className="block text-sm font-bold mb-2">Board Title</label>
-              <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Morning Routine Board" className={inputCls} />
+              <label className="block text-sm font-bold mb-2">{t('pecsCreator.boardTitle')}</label>
+              <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder={t('pecsCreator.titlePlaceholder')} className={inputCls} />
             </div>
 
             {/* Phase Selector */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-              <label className="block text-sm font-bold mb-2">PECS Phase</label>
+              <label className="block text-sm font-bold mb-2">{t('pecsCreator.phase')}</label>
               <select value={selectedPhase} onChange={e => setSelectedPhase(Number(e.target.value))} className={inputCls}>
                 {PECS_PHASES.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
@@ -145,11 +147,11 @@ export default function PECSBoardCreator() {
                   <p className="text-sm text-slate-600 dark:text-slate-300">{currentPhase.description}</p>
                   <div className="flex items-start gap-2 text-xs text-slate-500">
                     <span className="material-symbols-outlined text-primary text-sm mt-0.5">checklist</span>
-                    <span><strong>Criteria:</strong> {currentPhase.criteria}</span>
+                    <span><strong>{t('pecsCreator.criteria')}:</strong> {currentPhase.criteria}</span>
                   </div>
                   <div className="flex items-start gap-2 text-xs text-slate-500">
                     <span className="material-symbols-outlined text-warning text-sm mt-0.5">lightbulb</span>
-                    <span><strong>Tips:</strong> {currentPhase.tips}</span>
+                    <span><strong>{t('pecsCreator.tips')}:</strong> {currentPhase.tips}</span>
                   </div>
                 </div>
               )}
@@ -159,21 +161,21 @@ export default function PECSBoardCreator() {
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">add_photo_alternate</span>
-                Add Picture Card
+                {t('pecsCreator.addCard')}
               </h3>
               <div className="space-y-3">
-                <input type="text" value={newItemLabel} onChange={e => setNewItemLabel(e.target.value)} placeholder="Label (e.g., Apple)" className={inputCls} />
+                <input type="text" value={newItemLabel} onChange={e => setNewItemLabel(e.target.value)} placeholder={t('pecsCreator.labelPlaceholder')} className={inputCls} />
                 <div className="flex gap-2">
                   <label className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-primary/5 text-primary rounded-xl text-xs font-bold cursor-pointer hover:bg-primary/10 transition-colors">
                     <span className="material-symbols-outlined text-sm">upload</span>
-                    {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                    {uploadingImage ? t('pecsCreator.uploading') : t('pecsCreator.uploadImage')}
                     <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploadingImage} className="hidden" />
                   </label>
                 </div>
-                <input type="text" value={newItemImage} onChange={e => setNewItemImage(e.target.value)} placeholder="Or paste image URL" className={inputCls} />
+                <input type="text" value={newItemImage} onChange={e => setNewItemImage(e.target.value)} placeholder={t('pecsCreator.imageUrl')} className={inputCls} />
                 {newItemImage && <img src={getUploadUrl(newItemImage)} alt="Preview" className="w-16 h-16 rounded-lg object-cover" />}
                 <button onClick={addItem} disabled={!newItemLabel} className="w-full py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
-                  + Add to Board
+                  {t('pecsCreator.addToBoard')}
                 </button>
               </div>
             </div>
@@ -182,13 +184,13 @@ export default function PECSBoardCreator() {
           {/* Right: Board */}
           <div className="lg:col-span-3">
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <h3 className="text-lg font-bold mb-1">Communication Board</h3>
-              <p className="text-xs text-slate-400 mb-4">{items.length} cards "” Click trial cells: âœ… Pass â†’ âŒ Fail â†’ â¬œ Reset</p>
+              <h3 className="text-lg font-bold mb-1">{t('pecsCreator.board')}</h3>
+              <p className="text-xs text-slate-400 mb-4">{items.length} {t('pecsCreator.cards')} "" {t('pecsCreator.trialInstructions')}</p>
 
               {items.length === 0 ? (
                 <div className="p-12 text-center text-slate-400">
                   <span className="material-symbols-outlined text-4xl mb-2">grid_view</span>
-                  <p>Add picture cards to build the board</p>
+                  <p>{t('pecsCreator.emptyState')}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -201,7 +203,7 @@ export default function PECSBoardCreator() {
                             onError={e => { e.target.src = `https://via.placeholder.com/120?text=${encodeURIComponent(item.label)}`; }} />
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-sm truncate">{item.label}</p>
-                            <p className="text-xs text-slate-400">{pass}/{TRIALS_PER_CARD} {mastered ? 'ðŸ† Mastered' : ''}</p>
+                            <p className="text-xs text-slate-400">{pass}/{TRIALS_PER_CARD} {mastered ? `ðŸ† ${t('pecsCreator.mastered')}` : ''}</p>
                           </div>
                           <button onClick={() => removeItem(item.id)} className="p-1 text-error hover:bg-error/5 rounded-lg">
                             <span className="material-symbols-outlined text-sm">close</span>
