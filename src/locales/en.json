@@ -137,7 +137,8 @@
       "staff": "Staff Management",
       "families": "Families",
       "children": "Children",
-      "invitations": "Invitations"
+      "invitations": "Invitations",
+      "rneVerification": "RNE Verification"
     },
     "stats": {
       "totalStaff": "Total Staff",
@@ -679,6 +680,159 @@
       "other": "Other Document"
     }
   },
+  "rneVerification": {
+    "title": "RNE Verification",
+    "subtitle": "Automated AI-powered organization identity verification system",
+    "reset": "Start Over",
+    "phases": {
+      "upload": "Upload",
+      "processing": "AI Processing",
+      "analysis": "Analysis",
+      "voiceCall": "Voice Call",
+      "decision": "Decision"
+    },
+    "upload": {
+      "title": "Upload RNE Document",
+      "description": "Upload your official RNE registration document for AI-powered analysis and validation",
+      "dropTitle": "Drop your RNE document here",
+      "dropSubtitle": "PDF, JPG or PNG — up to 10 MB",
+      "browse": "Browse Files",
+      "fileReady": "Ready for AI analysis",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+216 XX XXX XXX",
+      "phoneHint": "An AI agent will call this number for identity verification",
+      "consentTitle": "Consent to AI Processing & Voice Verification",
+      "consentText": "I consent to AI analysis of the uploaded document and agree to receive an automated verification call. Data is processed securely and in compliance with privacy regulations.",
+      "submit": "Begin AI Verification",
+      "submitting": "Uploading..."
+    },
+    "info": {
+      "howItWorks": "How It Works",
+      "step1": "Upload your official RNE document",
+      "step2": "AI analyzes, validates, and extracts data",
+      "step3": "AI agent calls to confirm identity",
+      "step4": "Receive instant verification decision",
+      "security": "Secure & Compliant",
+      "securityText": "End-to-end encrypted. Compliant with GDPR and local data protection regulations.",
+      "accepted": "Accepted Formats",
+      "maxSize": "Maximum file size: 10 MB"
+    },
+    "processing": {
+      "title": "AI Analysis in Progress",
+      "seconds": "sec",
+      "doNotClose": "Please keep this page open during processing",
+      "encrypted": "Processing is end-to-end encrypted",
+      "stepsTitle": "Processing Pipeline",
+      "msg1": "Scanning document structure and layout...",
+      "msg2": "Extracting registration details with OCR...",
+      "msg3": "Cross-referencing with national registry...",
+      "msg4": "Running fraud detection algorithms...",
+      "msg5": "Generating validation score and report..."
+    },
+    "steps": {
+      "upload": "Document upload verified",
+      "ocr": "OCR & text extraction",
+      "entities": "Entity recognition & extraction",
+      "format": "Format & signature validation",
+      "registry": "National registry cross-check",
+      "fraud": "Fraud pattern detection",
+      "score": "Generating validation report"
+    },
+    "analysis": {
+      "title": "Document Analysis Complete",
+      "subtitle": "AI has successfully analyzed your RNE document",
+      "validationScore": "Validation Score",
+      "high": "High Confidence",
+      "medium": "Medium Confidence",
+      "low": "Low Confidence",
+      "proceedInfo": "Proceed to voice verification to finalize",
+      "extractedInfo": "Extracted Information",
+      "orgName": "Organization Name",
+      "regNumber": "Registration Number",
+      "regDate": "Registration Date",
+      "legalStatus": "Legal Status",
+      "legalStatusValue": "Non-profit Organization",
+      "address": "Address",
+      "addressValue": "Tunis, Tunisia",
+      "docQuality": "Document Quality",
+      "qualityGood": "Good",
+      "authenticity": "Authenticity Checks",
+      "proceedToCall": "Proceed to AI Voice Verification"
+    },
+    "checks": {
+      "format": "Document Format Valid",
+      "signatures": "Official Signatures Found",
+      "anomalies": "No Anomalies Detected",
+      "registry": "Registry Cross-Check",
+      "tampering": "Tampering Detection"
+    },
+    "call": {
+      "title": "AI Voice Verification",
+      "initiatingIn": "AI call initiating in...",
+      "preparingDesc": "An AI agent will call the provided number. Please ensure the phone is available and ready to answer.",
+      "ringing": "Ringing...",
+      "inProgress": "Call in progress — AI verification active",
+      "completed": "Call completed — analyzing responses...",
+      "verificationTopics": "Verification Topics",
+      "q1_label": "Organization name confirmation",
+      "q2_label": "Registration number verification",
+      "q3_label": "Legal representative identity",
+      "retryInfo": "If the call fails or goes unanswered, you will have the option to retry. Ensure the phone is reachable.",
+      "q1": "Hello, this is an automated AI verification call from CogniCare. Can you please confirm your organization name?",
+      "a1": "Yes, this is our organization. We submitted our RNE document for verification.",
+      "q2": "Thank you. Could you please provide or confirm your RNE registration number?",
+      "a2": "Our registration number matches what we submitted in the document.",
+      "q3": "Perfect. Can you confirm the full name of the authorized legal representative?",
+      "a3": "The legal representative information is as stated in the official registration documents."
+    },
+    "decision": {
+      "approvedBadge": "VERIFIED & APPROVED",
+      "rejectedBadge": "VERIFICATION FAILED",
+      "reviewBadge": "MANUAL REVIEW REQUIRED",
+      "approvedTitle": "Organization Verified!",
+      "rejectedTitle": "Verification Failed",
+      "reviewTitle": "Under Review",
+      "approvedDesc": "Your organization identity has been successfully verified. Your account is now fully activated.",
+      "rejectedDesc": "We were unable to verify your organization. Please review the rejection reason and try again.",
+      "reviewDesc": "Your submission requires manual review by our team. You will be notified within 24-48 hours.",
+      "scoreBreakdown": "Score Breakdown",
+      "docScore": "Document",
+      "callScore": "Voice Call",
+      "overall": "Overall Score",
+      "rejectionReason": "AI-Generated Rejection Reason",
+      "rejectedReason": "The submitted document could not be fully cross-referenced with the national registry. One or more extracted fields failed validation. Please ensure the document is current and unmodified.",
+      "reviewNotice": "Manual Review Initiated",
+      "reviewText": "Our compliance team will review your submission within 24–48 hours. You will receive an email notification with the final decision.",
+      "summary": "Verification Summary",
+      "sumDoc": "Document Submitted",
+      "sumAI": "AI Analysis Complete",
+      "sumCall": "Voice Verification",
+      "sumDecision": "Decision Rendered",
+      "notifyTitle": "Email Notification Sent",
+      "notifyText": "A verification report has been sent to your registered email address.",
+      "startNew": "New Verification",
+      "retry": "Retry Verification"
+    },
+    "errors": {
+      "fileRequired": "Please upload your RNE document",
+      "fileType": "Only PDF, JPG, or PNG files are accepted",
+      "fileSize": "File must be smaller than 10 MB",
+      "phoneInvalid": "Please enter a valid phone number"
+    },
+    "events": {
+      "uploading": "Uploading RNE document to secure server...",
+      "uploaded": "Document uploaded and queued for AI processing",
+      "uploadFallback": "Document received — starting AI pipeline",
+      "processingStart": "AI document analysis pipeline initiated",
+      "analysisComplete": "Document analysis completed successfully",
+      "scoreGenerated": "Validation score generated",
+      "callInitiating": "Initiating AI voice call...",
+      "callRinging": "Phone is ringing — awaiting answer...",
+      "callConnected": "Call connected — AI verification in progress",
+      "callEnded": "AI verification call completed successfully",
+      "decisionReached": "Final decision reached"
+    }
+  },
   "confirmAccount": {
     "title": "Activate Your Account",
     "subtitle": "Please set a password for your new CogniCare account.",
@@ -692,5 +846,321 @@
     "successMessage": "Your account has been successfully confirmed. You will be redirected to the login page in a few seconds...",
     "goToLogin": "Go to Login Now",
     "backToHome": "Back to Home"
+  },
+  "landing": {
+    "nav": {
+      "orgLeaders": "Organizations",
+      "professionals": "Professionals",
+      "admins": "Admins"
+    },
+    "hero": {
+      "badge": "Trusted by 120+ Clinical Partners",
+      "title1": "Supporting",
+      "titleHighlight": "Cognitive Health",
+      "title2": "Together",
+      "subtitle": "Empowering families and healthcare professionals with advanced AI tools for seamless cognitive care management and real-time insights.",
+      "cta": "Get Started Free",
+      "demo": "Watch Demo",
+      "trust": "professionals trust CogniCare"
+    },
+    "stats": {
+      "families": "Families Supported",
+      "partners": "Clinical Partners",
+      "accuracy": "Success Rate"
+    },
+    "platform": {
+      "title": "One Platform, Three Dashboards",
+      "subtitle": "Seamlessly connected experiences tailored for every stakeholder in the cognitive care journey.",
+      "cta": "Learn More",
+      "portals": {
+        "org": {
+          "title": "For Organizations",
+          "desc": "Manage staff, oversee family progress, and get AI-driven insights on organizational performance."
+        },
+        "specialist": {
+          "title": "For Specialists",
+          "desc": "Create PECS & TEACCH plans, track child development, and collaborate with families in a secure environment."
+        },
+        "family": {
+          "title": "For Families",
+          "desc": "Access care plans, communicate with specialists, and stay engaged in your child’s cognitive health journey."
+        }
+      }
+    },
+    "features": {
+      "title": "Comprehensive Care, Simplified",
+      "subtitle": "CogniCare provides a robust suite of tools designed to support every aspect of cognitive health management.",
+      "ai": {
+        "title": "AI-Powered Insights",
+        "desc": "Leverage advanced analytics to track progress, identify patterns, and receive actionable recommendations for better outcomes."
+      },
+      "pecs": {
+        "title": "PECS & TEACCH Tools",
+        "desc": "Utilize industry-standard frameworks like Picture Exchange Communication System and TEACCH for structured, visual learning."
+      },
+      "secure": {
+        "title": "Secure & Compliant",
+        "desc": "Built with data privacy at its core, ensuring all patient and organizational data is encrypted and handled with the utmost care."
+      },
+      "collaboration": {
+        "title": "Collaborative Hub",
+        "desc": "A unified platform connecting organization leaders, specialists, and families for seamless communication and care coordination."
+      }
+    },
+    "steps": {
+      "title": "Get Started in Minutes",
+      "subtitle": "Our streamlined onboarding process makes it easy to get your entire organization up and running.",
+      "step1": {
+        "title": "1. Create Your Account",
+        "desc": "Sign up as an organization, specialist, or family member to get started."
+      },
+      "step2": {
+        "title": "2. Build Your Network",
+        "desc": "Invite staff, connect with families, and establish your care ecosystem."
+      },
+      "step3": {
+        "title": "3. Create & Manage Plans",
+        "desc": "Develop personalized PECS and TEACCH plans tailored to individual needs."
+      },
+      "step4": {
+        "title": "4. Track & Analyze",
+        "desc": "Monitor progress in real-time and use AI insights to optimize care strategies."
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Cognitive Care?",
+      "subtitle": "Join hundreds of organizations and professionals who are leveraging CogniCare to provide better, more efficient cognitive health services."
+    }
+  },
+  "activitiesCreator": {
+    "title": "Create Activity",
+    "subtitle": "Assign a home or therapy activity",
+    "saving": "Saving...",
+    "saveActivity": "Save Activity",
+    "activityTitle": "Activity Title",
+    "titlePlaceholder": "e.g., Color Matching Game",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe the activity and its therapeutic purpose...",
+    "parentInstructions": "Parent Instructions",
+    "instructionsPlaceholder": "Step-by-step instructions for parents to follow at home...",
+    "dueDate": "Due Date",
+    "priority": "Priority",
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "materialsNeeded": "Materials Needed",
+    "materialPlaceholder": "e.g., Colored blocks",
+    "add": "Add",
+    "preview": "Preview",
+    "due": "Due",
+    "materials": "materials",
+    "childRequired": "Please select a child first.",
+    "titleRequired": "Title is required."
+  },
+  "pecsCreator": {
+    "title": "PECS Board Creator",
+    "subtitle": "Picture Exchange Communication System",
+    "saving": "Saving...",
+    "saveBoard": "Save Board",
+    "boardTitle": "Board Title",
+    "titlePlaceholder": "e.g., Morning Routine Board",
+    "pecsPhase": "PECS Phase",
+    "criteria": "Criteria",
+    "tips": "Tips",
+    "addCard": "Add Card",
+    "cardLabel": "Card Label",
+    "labelPlaceholder": "e.g., Water",
+    "uploadImage": "Upload Image",
+    "uploading": "Uploading...",
+    "imageUploaded": "Image uploaded",
+    "cardAdded": "Card added",
+    "removeCard": "Remove card",
+    "trackTrials": "Track Trials",
+    "pass": "pass",
+    "fail": "fail",
+    "mastered": "mastered",
+    "summary": "Summary",
+    "phase": "Phase",
+    "cards": "Cards",
+    "trialsCompleted": "Trials Completed",
+    "masteredCards": "Mastered Cards",
+    "childRequired": "Please select a child from the dashboard first.",
+    "titleCardRequired": "Title and at least one card required.",
+    "uploadFailed": "Upload failed",
+    "selectImage": "Please select an image file.",
+    "phases": {
+      "phase1": {
+        "name": "Phase I — Physical Exchange",
+        "description": "The child learns to exchange a single picture for a highly desired item.",
+        "criteria": "Child independently exchanges a picture with minimal prompting in 8/10 trials.",
+        "tips": "Use highly motivating items. Two adults recommended."
+      },
+      "phase2": {
+        "name": "Phase II — Distance & Persistence",
+        "description": "The child travels to the communication partner and uses the picture across settings.",
+        "criteria": "Child travels to book, selects picture, and approaches partner independently.",
+        "tips": "Gradually increase distance. Practice in different rooms."
+      },
+      "phase3": {
+        "name": "Phase III — Picture Discrimination",
+        "description": "The child discriminates between two or more pictures.",
+        "criteria": "Child consistently selects the correct picture from 5+ pictures in 8/10 trials.",
+        "tips": "Start with preferred vs. non-preferred, then preferred vs. preferred."
+      },
+      "phase4": {
+        "name": "Phase IV — Sentence Structure",
+        "description": "The child constructs simple sentences using \"I want\" + item picture.",
+        "criteria": "Child independently constructs \"I want + [item]\" sentence strips.",
+        "tips": "Introduce the \"I want\" icon. Place on strip, then add item picture."
+      },
+      "phase5": {
+        "name": "Phase V — Responsive Requesting",
+        "description": "The child uses PECS to answer \"What do you want?\"",
+        "criteria": "Child responds to \"What do you want?\" within 5 seconds.",
+        "tips": "Begin with a delay between question and prompting."
+      },
+      "phase6": {
+        "name": "Phase VI — Commenting",
+        "description": "The child spontaneously comments on their environment.",
+        "criteria": "Child spontaneously comments using sentence starters.",
+        "tips": "Introduce starters: \"I see\", \"I hear\", \"I have\"."
+      }
+    }
+  },
+  "skillTracker": {
+    "title": "Skill Tracker",
+    "subtitle": "Discrete Trial Training (DTT) — 10-trial mastery",
+    "saving": "Saving...",
+    "saveTracker": "Save Tracker",
+    "skillTitle": "Skill Title",
+    "titlePlaceholder": "e.g., Eye Contact on Request",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe the target skill...",
+    "percentages": "Percentages",
+    "baseline": "Baseline",
+    "target": "Target",
+    "correct": "Correct",
+    "accuracy": "Accuracy",
+    "mastered": "Mastered!",
+    "inProgress": "In Progress",
+    "progressComparison": "Progress Comparison",
+    "current": "Current",
+    "trialGrid": "Trial Grid",
+    "clickToToggle": "Click to toggle: Not Set → Pass → Fail → Not Set",
+    "childRequired": "Please select a child first.",
+    "titleRequired": "Title is required."
+  },
+  "teachCreator": {
+    "title": "TEACCH Tracker",
+    "subtitle": "Treatment and Education of Autistic and Communication Handicapped Children",
+    "saving": "Saving...",
+    "saveTracker": "Save Tracker",
+    "planTitle": "Plan Title",
+    "titlePlaceholder": "e.g., Daily Living Skills",
+    "category": "Category",
+    "quickAddGoals": "Quick Add Goals",
+    "customGoalPlaceholder": "Custom goal...",
+    "add": "Add",
+    "goals": "Goals",
+    "trackProgress": "Track progress for each goal",
+    "addGoalsPrompt": "Add goals from templates or write custom ones",
+    "notes": "Notes",
+    "notesPlaceholder": "Notes...",
+    "workSystem": "Work System",
+    "visualSchedule": "Visual Schedule",
+    "leftToRight": "Left-to-Right",
+    "step": "Step",
+    "addStep": "+ Add Step",
+    "summary": "Summary",
+    "inProgress": "In Progress",
+    "childRequired": "Please select a child first.",
+    "titleGoalRequired": "Title and at least one goal required.",
+    "categories": {
+      "communication": "Communication",
+      "social": "Social Skills",
+      "academic": "Academic",
+      "selfCare": "Self-Care",
+      "motor": "Motor Skills",
+      "behavior": "Behavior"
+    },
+    "status": {
+      "notStarted": "Not Started",
+      "inProgress": "In Progress",
+      "mastered": "Mastered"
+    }
+  },
+  "progressAI": {
+    "title": "AI Recommendations",
+    "childId": "Child ID",
+    "loading": "Loading recommendations…",
+    "summary": "Summary",
+    "milestones": "Milestones",
+    "predictions": "Predictions",
+    "recommendationsByType": "Recommendations by Plan Type",
+    "noRecommendations": "No recommendations available at the moment.",
+    "sent": "Sent",
+    "approve": "Approve",
+    "modify": "Modify",
+    "dismiss": "Dismiss",
+    "resultsImproved": "Did the results improve?",
+    "parentFeedbackHelpful": "Was the parent feedback helpful?",
+    "yes": "Yes",
+    "no": "No",
+    "skip": "Skip",
+    "send": "Send",
+    "confirmDismiss": "Confirm Dismiss",
+    "modifyPrompt": "Edit the text (optional):",
+    "dismissConfirm": "Dismiss this recommendation?",
+    "loadFailed": "Failed to load recommendations",
+    "feedbackFailed": "Failed to submit feedback"
+  },
+  "adminAnalytics": {
+    "title": "System Analytics",
+    "subtitle": "Real-time platform performance overview",
+    "last30Days": "Last 30 Days",
+    "exportReport": "Export Report",
+    "totalUsers": "Total Users",
+    "organizations": "Organizations",
+    "families": "Families",
+    "pendingReviews": "Pending Reviews",
+    "pending": "pending",
+    "clear": "Clear",
+    "userGrowth": "User Growth",
+    "userGrowthSubtitle": "New registrations vs Active users (12 Months)",
+    "newUsers": "New Users",
+    "active": "Active",
+    "activityFeed": "Activity Feed",
+    "viewAll": "View All",
+    "systemHealth": "System Health",
+    "allSystemsOperational": "All Systems Operational",
+    "planDistribution": "Plan Distribution",
+    "total": "Total",
+    "usersByRole": "Users by Role",
+    "orgLeaders": "Org Leaders",
+    "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+  },
+  "adminOverview": {
+    "title": "System Oversight",
+    "subtitle": "Monitor AI services health and review organization applications.",
+    "aiServicesOperational": "AI Services Operational",
+    "aiServicesDesc": "Gemini API and Embedding Model are running normally",
+    "totalUsers": "Total Users",
+    "organizations": "Organizations",
+    "families": "Families",
+    "pendingReviews": "Pending Reviews",
+    "families_plural": "families",
+    "pending_plural": "pending",
+    "reviews_plural": "reviews",
+    "awaiting": "awaiting",
+    "decision": "decision",
+    "manageUsers": "Manage Users",
+    "manageUsersDesc": "{{count}} total users",
+    "reviewOrganizations": "Review Organizations",
+    "reviewOrganizationsDesc": "{{count}} pending reviews",
+    "systemHealth": "System Health",
+    "systemHealthDesc": "All systems operational",
+    "userDistribution": "User Distribution by Role",
+    "volunteers": "Volunteers",
+    "doctors": "Doctors"
   }
 }

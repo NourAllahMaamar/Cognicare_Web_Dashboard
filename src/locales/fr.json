@@ -137,7 +137,8 @@
       "staff": "Gestion du personnel",
       "families": "Familles",
       "children": "Enfants",
-      "invitations": "Invitations"
+      "invitations": "Invitations",
+      "rneVerification": "Vérification RNE"
     },
     "stats": {
       "totalStaff": "Personnel Total",
@@ -677,6 +678,159 @@
       "other": "Autre document"
     }
   },
+  "rneVerification": {
+    "title": "Vérification RNE",
+    "subtitle": "Système automatisé de vérification d'identité des organisations par IA",
+    "reset": "Recommencer",
+    "phases": {
+      "upload": "Téléversement",
+      "processing": "Traitement IA",
+      "analysis": "Analyse",
+      "voiceCall": "Appel Vocal",
+      "decision": "Décision"
+    },
+    "upload": {
+      "title": "Téléverser le Document RNE",
+      "description": "Téléversez votre document d'immatriculation RNE officiel pour une analyse et validation par IA",
+      "dropTitle": "Déposez votre document RNE ici",
+      "dropSubtitle": "PDF, JPG ou PNG — jusqu'à 10 Mo",
+      "browse": "Parcourir les fichiers",
+      "fileReady": "Prêt pour l'analyse IA",
+      "phone": "Numéro de téléphone",
+      "phonePlaceholder": "+216 XX XXX XXX",
+      "phoneHint": "Un agent IA appellera ce numéro pour la vérification d'identité",
+      "consentTitle": "Consentement au traitement IA et à la vérification vocale",
+      "consentText": "Je consens à l'analyse IA du document téléversé et j'accepte de recevoir un appel de vérification automatisé. Les données sont traitées de manière sécurisée conformément aux réglementations sur la protection des données.",
+      "submit": "Lancer la vérification IA",
+      "submitting": "Téléversement..."
+    },
+    "info": {
+      "howItWorks": "Comment ça fonctionne",
+      "step1": "Téléversez votre document RNE officiel",
+      "step2": "L'IA analyse, valide et extrait les données",
+      "step3": "L'agent IA appelle pour confirmer l'identité",
+      "step4": "Recevez une décision de vérification instantanée",
+      "security": "Sécurisé et Conforme",
+      "securityText": "Chiffrement de bout en bout. Conforme au RGPD et aux réglementations locales.",
+      "accepted": "Formats acceptés",
+      "maxSize": "Taille maximale: 10 Mo"
+    },
+    "processing": {
+      "title": "Analyse IA en cours",
+      "seconds": "sec",
+      "doNotClose": "Veuillez garder cette page ouverte pendant le traitement",
+      "encrypted": "Le traitement est chiffré de bout en bout",
+      "stepsTitle": "Pipeline de traitement",
+      "msg1": "Numérisation de la structure du document...",
+      "msg2": "Extraction des détails d'enregistrement par OCR...",
+      "msg3": "Vérification croisée avec le registre national...",
+      "msg4": "Algorithmes de détection de fraude en cours...",
+      "msg5": "Génération du score de validation et du rapport..."
+    },
+    "steps": {
+      "upload": "Téléversement du document vérifié",
+      "ocr": "Extraction OCR et textuelle",
+      "entities": "Reconnaissance et extraction d'entités",
+      "format": "Validation du format et des signatures",
+      "registry": "Vérification croisée du registre national",
+      "fraud": "Détection de patterns frauduleux",
+      "score": "Génération du rapport de validation"
+    },
+    "analysis": {
+      "title": "Analyse du document terminée",
+      "subtitle": "L'IA a analysé avec succès votre document RNE",
+      "validationScore": "Score de validation",
+      "high": "Haute confiance",
+      "medium": "Confiance moyenne",
+      "low": "Faible confiance",
+      "proceedInfo": "Procédez à la vérification vocale pour finaliser",
+      "extractedInfo": "Informations extraites",
+      "orgName": "Nom de l'organisation",
+      "regNumber": "Numéro d'enregistrement",
+      "regDate": "Date d'enregistrement",
+      "legalStatus": "Statut juridique",
+      "legalStatusValue": "Organisation sans but lucratif",
+      "address": "Adresse",
+      "addressValue": "Tunis, Tunisie",
+      "docQuality": "Qualité du document",
+      "qualityGood": "Bonne",
+      "authenticity": "Contrôles d'authenticité",
+      "proceedToCall": "Procéder à la vérification vocale IA"
+    },
+    "checks": {
+      "format": "Format du document valide",
+      "signatures": "Signatures officielles trouvées",
+      "anomalies": "Aucune anomalie détectée",
+      "registry": "Vérification croisée du registre",
+      "tampering": "Détection de falsification"
+    },
+    "call": {
+      "title": "Vérification vocale IA",
+      "initiatingIn": "Appel IA en cours d'initiation...",
+      "preparingDesc": "Un agent IA appellera le numéro fourni. Assurez-vous que le téléphone est disponible.",
+      "ringing": "Sonnerie...",
+      "inProgress": "Appel en cours — vérification IA active",
+      "completed": "Appel terminé — analyse des réponses...",
+      "verificationTopics": "Sujets de vérification",
+      "q1_label": "Confirmation du nom de l'organisation",
+      "q2_label": "Vérification du numéro d'enregistrement",
+      "q3_label": "Identité du représentant légal",
+      "retryInfo": "Si l'appel échoue ou reste sans réponse, vous pourrez réessayer.",
+      "q1": "Bonjour, c'est un appel de vérification IA automatisé de CogniCare. Pouvez-vous confirmer le nom de votre organisation?",
+      "a1": "Oui, c'est bien notre organisation. Nous avons soumis notre document RNE pour vérification.",
+      "q2": "Merci. Pourriez-vous fournir ou confirmer votre numéro d'enregistrement RNE?",
+      "a2": "Notre numéro d'enregistrement correspond à ce que nous avons soumis dans le document.",
+      "q3": "Parfait. Pouvez-vous confirmer le nom complet du représentant légal autorisé?",
+      "a3": "Les informations sur le représentant légal sont telles qu'indiquées dans les documents officiels."
+    },
+    "decision": {
+      "approvedBadge": "VÉRIFIÉ ET APPROUVÉ",
+      "rejectedBadge": "VÉRIFICATION ÉCHOUÉE",
+      "reviewBadge": "RÉVISION MANUELLE REQUISE",
+      "approvedTitle": "Organisation vérifiée!",
+      "rejectedTitle": "Vérification échouée",
+      "reviewTitle": "En révision",
+      "approvedDesc": "L'identité de votre organisation a été vérifiée avec succès. Votre compte est maintenant entièrement activé.",
+      "rejectedDesc": "Nous n'avons pas pu vérifier votre organisation. Veuillez revoir la raison du rejet et réessayer.",
+      "reviewDesc": "Votre soumission nécessite une révision manuelle par notre équipe. Vous serez notifié sous 24-48 heures.",
+      "scoreBreakdown": "Détail des scores",
+      "docScore": "Document",
+      "callScore": "Appel vocal",
+      "overall": "Score global",
+      "rejectionReason": "Raison de rejet générée par IA",
+      "rejectedReason": "Le document soumis n'a pas pu être entièrement croisé avec le registre national. Un ou plusieurs champs extraits ont échoué à la validation.",
+      "reviewNotice": "Révision manuelle initiée",
+      "reviewText": "Notre équipe de conformité examinera votre soumission sous 24-48 heures. Vous recevrez une notification par email.",
+      "summary": "Résumé de vérification",
+      "sumDoc": "Document soumis",
+      "sumAI": "Analyse IA terminée",
+      "sumCall": "Vérification vocale",
+      "sumDecision": "Décision rendue",
+      "notifyTitle": "Notification email envoyée",
+      "notifyText": "Un rapport de vérification a été envoyé à votre adresse email enregistrée.",
+      "startNew": "Nouvelle vérification",
+      "retry": "Réessayer la vérification"
+    },
+    "errors": {
+      "fileRequired": "Veuillez téléverser votre document RNE",
+      "fileType": "Seuls les fichiers PDF, JPG ou PNG sont acceptés",
+      "fileSize": "Le fichier doit être inférieur à 10 Mo",
+      "phoneInvalid": "Veuillez entrer un numéro de téléphone valide"
+    },
+    "events": {
+      "uploading": "Téléversement du document RNE vers le serveur sécurisé...",
+      "uploaded": "Document téléversé et mis en file pour le traitement IA",
+      "uploadFallback": "Document reçu — démarrage du pipeline IA",
+      "processingStart": "Pipeline d'analyse IA du document initié",
+      "analysisComplete": "Analyse du document terminée avec succès",
+      "scoreGenerated": "Score de validation généré",
+      "callInitiating": "Initiation de l'appel vocal IA...",
+      "callRinging": "Le téléphone sonne — en attente de réponse...",
+      "callConnected": "Appel connecté — vérification IA en cours",
+      "callEnded": "Appel de vérification IA terminé avec succès",
+      "decisionReached": "Décision finale atteinte"
+    }
+  },
   "confirmAccount": {
     "title": "Activer votre compte",
     "subtitle": "Veuillez définir un mot de passe pour votre nouveau compte CogniCare.",
@@ -690,5 +844,321 @@
     "successMessage": "Votre compte a été confirmé avec succès. Vous serez redirigé vers la page de connexion dans quelques secondes...",
     "goToLogin": "Aller à la connexion maintenant",
     "backToHome": "Retour à l'accueil"
+  },
+  "landing": {
+    "nav": {
+      "orgLeaders": "Organisations",
+      "professionals": "Professionnels",
+      "admins": "Admins"
+    },
+    "hero": {
+      "badge": "Approuvé par 120+ Partenaires Cliniques",
+      "title1": "Soutenir la",
+      "titleHighlight": "Santé Cognitive",
+      "title2": "Ensemble",
+      "subtitle": "Donner aux familles et aux professionnels de la santé des outils d'IA avancés pour une gestion transparente des soins cognitifs et des informations en temps réel.",
+      "cta": "Commencer Gratuitement",
+      "demo": "Voir la Démo",
+      "trust": "professionnels font confiance à CogniCare"
+    },
+    "stats": {
+      "families": "Familles Soutenues",
+      "partners": "Partenaires Cliniques",
+      "accuracy": "Taux de Réussite"
+    },
+    "platform": {
+      "title": "Une Plateforme, Trois Tableaux de Bord",
+      "subtitle": "Des expériences connectées de manière transparente et adaptées à chaque partie prenante du parcours de soins cognitifs.",
+      "cta": "En Savoir Plus",
+      "portals": {
+        "org": {
+          "title": "Pour les Organisations",
+          "desc": "Gérez le personnel, supervisez les progrès des familles et obtenez des informations basées sur l'IA sur les performances organisationnelles."
+        },
+        "specialist": {
+          "title": "Pour les Spécialistes",
+          "desc": "Créez des plans PECS & TEACCH, suivez le développement de l'enfant et collaborez avec les familles dans un environnement sécurisé."
+        },
+        "family": {
+          "title": "Pour les Familles",
+          "desc": "Accédez aux plans de soins, communiquez avec les spécialistes et restez engagé dans le parcours de santé cognitive de votre enfant."
+        }
+      }
+    },
+    "features": {
+      "title": "Des Soins Complets, Simplifiés",
+      "subtitle": "CogniCare fournit une suite robuste d'outils conçus pour soutenir chaque aspect de la gestion de la santé cognitive.",
+      "ai": {
+        "title": "Informations par l'IA",
+        "desc": "Tirez parti des analyses avancées pour suivre les progrès, identifier les modèles et recevoir des recommandations exploitables pour de meilleurs résultats."
+      },
+      "pecs": {
+        "title": "Outils PECS & TEACCH",
+        "desc": "Utilisez des cadres standard de l'industrie comme le Système de Communication par Échange d'Images et TEACCH pour un apprentissage structuré et visuel."
+      },
+      "secure": {
+        "title": "Sécurisé & Conforme",
+        "desc": "Construit avec la confidentialité des données au cœur, garantissant que toutes les données des patients et de l'organisation sont cryptées et traitées avec le plus grand soin."
+      },
+      "collaboration": {
+        "title": "Hub Collaboratif",
+        "desc": "Une plateforme unifiée reliant les dirigeants d'organisation, les spécialistes et les familles pour une communication et une coordination des soins transparentes."
+      }
+    },
+    "steps": {
+      "title": "Commencez en Quelques Minutes",
+      "subtitle": "Notre processus d'intégration simplifié facilite la mise en route de toute votre organisation.",
+      "step1": {
+        "title": "1. Créez Votre Compte",
+        "desc": "Inscrivez-vous en tant qu'organisation, spécialiste ou membre de la famille pour commencer."
+      },
+      "step2": {
+        "title": "2. Construisez Votre Réseau",
+        "desc": "Invitez du personnel, connectez-vous avec les familles et établissez votre écosystème de soins."
+      },
+      "step3": {
+        "title": "3. Créez & Gérez les Plans",
+        "desc": "Développez des plans PECS et TEACCH personnalisés adaptés aux besoins individuels."
+      },
+      "step4": {
+        "title": "4. Suivez & Analysez",
+        "desc": "Surveillez les progrès en temps réel et utilisez les informations de l'IA pour optimiser les stratégies de soins."
+      }
+    },
+    "cta": {
+      "title": "Prêt à Transformer les Soins Cognitifs ?",
+      "subtitle": "Rejoignez des centaines d'organisations et de professionnels qui tirent parti de CogniCare pour fournir des services de santé cognitive meilleurs et plus efficaces."
+    }
+  },
+  "activitiesCreator": {
+    "title": "Créer une Activité",
+    "subtitle": "Assigner une activité à domicile ou thérapeutique",
+    "saving": "Enregistrement...",
+    "saveActivity": "Enregistrer l'Activité",
+    "activityTitle": "Titre de l'Activité",
+    "titlePlaceholder": "ex. : Jeu d'Association de Couleurs",
+    "description": "Description",
+    "descriptionPlaceholder": "Décrivez l'activité et son objectif thérapeutique...",
+    "parentInstructions": "Instructions pour les Parents",
+    "instructionsPlaceholder": "Instructions étape par étape à suivre par les parents à domicile...",
+    "dueDate": "Date d'Échéance",
+    "priority": "Priorité",
+    "low": "faible",
+    "medium": "moyen",
+    "high": "élevé",
+    "materialsNeeded": "Matériaux Nécessaires",
+    "materialPlaceholder": "ex. : Blocs colorés",
+    "add": "Ajouter",
+    "preview": "Aperçu",
+    "due": "Échéance",
+    "materials": "matériaux",
+    "childRequired": "Veuillez d'abord sélectionner un enfant.",
+    "titleRequired": "Le titre est requis."
+  },
+  "pecsCreator": {
+    "title": "Créateur de Tableau PECS",
+    "subtitle": "Système de Communication par Échange d'Images",
+    "saving": "Enregistrement...",
+    "saveBoard": "Enregistrer le Tableau",
+    "boardTitle": "Titre du Tableau",
+    "titlePlaceholder": "ex. : Routine du Matin",
+    "pecsPhase": "Phase PECS",
+    "criteria": "Critères",
+    "tips": "Conseils",
+    "addCard": "Ajouter une Carte",
+    "cardLabel": "Étiquette de la Carte",
+    "labelPlaceholder": "ex. : Eau",
+    "uploadImage": "Télécharger une Image",
+    "uploading": "Téléchargement...",
+    "imageUploaded": "Image téléchargée",
+    "cardAdded": "Carte ajoutée",
+    "removeCard": "Supprimer la carte",
+    "trackTrials": "Suivre les Essais",
+    "pass": "réussi",
+    "fail": "échoué",
+    "mastered": "maîtrisé",
+    "summary": "Résumé",
+    "phase": "Phase",
+    "cards": "Cartes",
+    "trialsCompleted": "Essais Terminés",
+    "masteredCards": "Cartes Maîtrisées",
+    "childRequired": "Veuillez d'abord sélectionner un enfant depuis le tableau de bord.",
+    "titleCardRequired": "Le titre et au moins une carte sont requis.",
+    "uploadFailed": "Échec du téléchargement",
+    "selectImage": "Veuillez sélectionner un fichier image.",
+    "phases": {
+      "phase1": {
+        "name": "Phase I — Échange Physique",
+        "description": "L'enfant apprend à échanger une seule image contre un objet très désiré.",
+        "criteria": "L'enfant échange une image de manière indépendante avec un minimum d'incitation dans 8/10 essais.",
+        "tips": "Utilisez des objets très motivants. Deux adultes recommandés."
+      },
+      "phase2": {
+        "name": "Phase II — Distance & Persistence",
+        "description": "L'enfant se déplace vers le partenaire de communication et utilise l'image dans différents contextes.",
+        "criteria": "L'enfant se déplace vers le livre, sélectionne l'image et approche le partenaire de manière indépendante.",
+        "tips": "Augmentez progressivement la distance. Pratiquez dans différentes pièces."
+      },
+      "phase3": {
+        "name": "Phase III — Discrimination d'Images",
+        "description": "L'enfant fait la distinction entre deux images ou plus.",
+        "criteria": "L'enfant sélectionne systématiquement la bonne image parmi 5+ images dans 8/10 essais.",
+        "tips": "Commencez avec préféré vs. non-préféré, puis préféré vs. préféré."
+      },
+      "phase4": {
+        "name": "Phase IV — Structure de Phrase",
+        "description": "L'enfant construit des phrases simples en util isant \"Je veux\" + image d'objet.",
+        "criteria": "L'enfant construit de manière indépendante des bandes de phrases \"Je veux + [objet]\".",
+        "tips": "Introduire l'icône \"Je veux\". Placer sur la bande, puis ajouter l'image de l'objet."
+      },
+      "phase5": {
+        "name": "Phase V — Demande Réactive",
+        "description": "L'enfant utilise PECS pour répondre à \"Que veux-tu ?\"",
+        "criteria": "L'enfant répond à \"Que veux-tu ?\" dans les 5 secondes.",
+        "tips": "Commencez avec un délai entre la question et l'incitation."
+      },
+      "phase6": {
+        "name": "Phase VI — Commentaires",
+        "description": "L'enfant commente spontanément son environnement.",
+        "criteria": "L'enfant commente spontanément en utilisant des débuts de phrases.",
+        "tips": "Introduire les débuts: \"Je vois\", \"J'entends\", \"J'ai\"."
+      }
+    }
+  },
+  "skillTracker": {
+    "title": "Suivi des Compétences",
+    "subtitle": "Entraînement par Essais Discrets (DTT) — maîtrise en 10 essais",
+    "saving": "Enregistrement...",
+    "saveTracker": "Enregistrer le Suivi",
+    "skillTitle": "Titre de la Compétence",
+    "titlePlaceholder": "ex. : Contact Visuel sur Demande",
+    "description": "Description",
+    "descriptionPlaceholder": "Décrivez la compétence cible...",
+    "percentages": "Pourcentages",
+    "baseline": "Base",
+    "target": "Cible",
+    "correct": "Correct",
+    "accuracy": "Précision",
+    "mastered": "Maîtrisé !",
+    "inProgress": "En Cours",
+    "progressComparison": "Comparaison des Progrès",
+    "current": "Actuel",
+    "trialGrid": "Grille des Essais",
+    "clickToToggle": "Cliquez pour basculer : Non Défini → Réussi → Échoué → Non Défini",
+    "childRequired": "Veuillez d'abord sélectionner un enfant.",
+    "titleRequired": "Le titre est requis."
+  },
+  "teachCreator": {
+    "title": "Suivi TEACCH",
+    "subtitle": "Traitement et Éducation des Enfants Autistes et Handicapés de la Communication",
+    "saving": "Enregistrement...",
+    "saveTracker": "Enregistrer le Suivi",
+    "planTitle": "Titre du Plan",
+    "titlePlaceholder": "ex. : Compétences de Vie Quotidienne",
+    "category": "Catégorie",
+    "quickAddGoals": "Ajouter Rapidement des Objectifs",
+    "customGoalPlaceholder": "Objectif personnalisé...",
+    "add": "Ajouter",
+    "goals": "Objectifs",
+    "trackProgress": "Suivre les progrès pour chaque objectif",
+    "addGoalsPrompt": "Ajoutez des objectifs à partir de modèles ou écrivez-en de personnalisés",
+    "notes": "Notes",
+    "notesPlaceholder": "Notes...",
+    "workSystem": "Système de Travail",
+    "visualSchedule": "Emploi du Temps Visuel",
+    "leftToRight": "Gauche à Droite",
+    "step": "Étape",
+    "addStep": "+ Ajouter une Étape",
+    "summary": "Résumé",
+    "inProgress": "En Cours",
+    "childRequired": "Veuillez d'abord sélectionner un enfant.",
+    "titleGoalRequired": "Le titre et au moins un objectif sont requis.",
+    "categories": {
+      "communication": "Communication",
+      "social": "Compétences Sociales",
+      "academic": "Académique",
+      "selfCare": "Soin Personnel",
+      "motor": "Habiletés Motrices",
+      "behavior": "Comportement"
+    },
+    "status": {
+      "notStarted": "Pas Commencé",
+      "inProgress": "En Cours",
+      "mastered": "Maîtrisé"
+    }
+  },
+  "progressAI": {
+    "title": "Recommandations IA",
+    "childId": "ID Enfant",
+    "loading": "Chargement des recommandations…",
+    "summary": "Résumé",
+    "milestones": "Jalons",
+    "predictions": "Prédictions",
+    "recommendationsByType": "Recommandations par Type de Plan",
+    "noRecommendations": "Aucune recommandation disponible pour le moment.",
+    "sent": "Envoyé",
+    "approve": "Approuver",
+    "modify": "Modifier",
+    "dismiss": "Rejeter",
+    "resultsImproved": "Les résultats se sont-ils améliorés ?",
+    "parentFeedbackHelpful": "Les commentaires des parents étaient-ils utiles ?",
+    "yes": "Oui",
+    "no": "Non",
+    "skip": "Ignorer",
+    "send": "Envoyer",
+    "confirmDismiss": "Confirmer le Rejet",
+    "modifyPrompt": "Modifier le texte (optionnel) :",
+    "dismissConfirm": "Rejeter cette recommandation ?",
+    "loadFailed": "Échec du chargement des recommandations",
+    "feedbackFailed": "Échec de l'envoi des commentaires"
+  },
+  "adminAnalytics": {
+    "title": "Analyses du Système",
+    "subtitle": "Aperçu des performances de la plateforme en temps réel",
+    "last30Days": "Derniers 30 Jours",
+    "exportReport": "Exporter le Rapport",
+    "totalUsers": "Utilisateurs Totaux",
+    "organizations": "Organisations",
+    "families": "Familles",
+    "pendingReviews": "Examens en Attente",
+    "pending": "en attente",
+    "clear": "Aucun",
+    "userGrowth": "Croissance des Utilisateurs",
+    "userGrowthSubtitle": "Nouvelles inscriptions vs Utilisateurs actifs (12 Mois)",
+    "newUsers": "Nouveaux Utilisateurs",
+    "active": "Actifs",
+    "activityFeed": "Flux d'Activité",
+    "viewAll": "Voir Tout",
+    "systemHealth": "Santé du  Système",
+    "allSystemsOperational": "Tous les Systèmes Opérationnels",
+    "planDistribution": "Distribution des Plans",
+    "total": "Total",
+    "usersByRole": "Utilisateurs par Rôle",
+    "orgLeaders": "Leaders d'Organisation",
+    "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"]
+  },
+  "adminOverview": {
+    "title": "Supervision du Système",
+    "subtitle": "Surveillez la santé des services IA et examinez les candidatures d'organisation.",
+    "aiServicesOperational": "Services IA Opérationnels",
+    "aiServicesDesc": "L'API Gemini et le modèle d'intégration fonctionnent normalement",
+    "totalUsers": "Utilisateurs Totaux",
+    "organizations": "Organisations",
+    "families": "Familles",
+    "pendingReviews": "Examens en Attente",
+    "families_plural": "familles",
+    "pending_plural": "en attente",
+    "reviews_plural": "examens",
+    "awaiting": "en attente de",
+    "decision": "décision",
+    "manageUsers": "Gérer les Utilisateurs",
+    "manageUsersDesc": "{{count}} utilisateurs au total",
+    "reviewOrganizations": "Examiner les Organisations",
+    "reviewOrganizationsDesc": "{{count}} examens en attente",
+    "systemHealth": "Santé du Système",
+    "systemHealthDesc": "Tous les systèmes opérationnels",
+    "userDistribution": "Distribution des Utilisateurs par Rôle",
+    "volunteers": "Bénévoles",
+    "doctors": "Médecins"
   }
 }

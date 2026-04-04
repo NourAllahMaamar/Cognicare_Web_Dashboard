@@ -27,6 +27,7 @@ export default function OrgLayout() {
     { to: '/org/dashboard/families', icon: 'family_restroom', label: t('orgDashboard.tabs.families', 'Families') },
     { to: '/org/dashboard/children', icon: 'child_care', label: t('orgDashboard.tabs.children', 'Children') },
     { to: '/org/dashboard/invitations', icon: 'mail', label: t('orgDashboard.tabs.invitations', 'Invitations') },
+    { to: '/org/dashboard/rne-verification', icon: 'fact_check', label: t('orgDashboard.tabs.rneVerification', 'RNE Verification') },
   ];
 
   const bottomItems = [
