@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatCard from '../../components/ui/StatCard';
 import { getTypeColor } from '../../utils/planUtils';
+import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
 
 export default function SpecialistOverview() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { authGet } = useAuth('specialist');
+  const { setUiContext } = useDashboardAssistantContext();
 
   const [orgChildren, setOrgChildren] = useState([]);
   const [privateChildren, setPrivateChildren] = useState([]);
@@ -39,6 +41,33 @@ export default function SpecialistOverview() {
   const teacchCount = allPlans.filter(p => p.type === 'TEACCH').length;
 
   const recentPlans = allPlans.slice(0, 6);
+
+  useEffect(() => {
+    setUiContext({
+      page: 'specialist-overview',
+      organizationChildren: orgChildren.length,
+      privateChildren: privateChildren.length,
+      totalPlans: allPlans.length,
+      pecsBoards: pecsCount,
+      teacchTrackers: teacchCount,
+      suggestionCount: suggestions.length,
+      topSuggestions: suggestions
+        .slice(0, 3)
+        .map((item) =>
+          typeof item === 'string'
+            ? item
+            : item?.suggestion || item?.text || 'Suggestion available',
+        ),
+    });
+  }, [
+    allPlans.length,
+    orgChildren.length,
+    pecsCount,
+    privateChildren.length,
+    setUiContext,
+    suggestions,
+    teacchCount,
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -121,4 +150,3 @@ export default function SpecialistOverview() {
     </div>
   );
 }
-

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatCard from '../../components/ui/StatCard';
+import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar,
@@ -14,6 +15,7 @@ const FEEDBACK_COLORS = ['#10b981', '#f59e0b', '#ef4444'];
 export default function OrgOverview() {
   const { t } = useTranslation();
   const { authGet } = useAuth('orgLeader');
+  const { setUiContext } = useDashboardAssistantContext();
 
   /* ─── data state ─── */
   const [staff, setStaff] = useState([]);
@@ -132,6 +134,39 @@ export default function OrgOverview() {
     };
     return map[role] || role;
   };
+
+  useEffect(() => {
+    setUiContext({
+      page: 'org-overview',
+      totalStaff: staff.length,
+      totalFamilies: families.length,
+      totalChildren: children.length,
+      invitations: invitations.length,
+      selectedSpecialist: selectedSpecialist
+        ? {
+            name: selectedSpecialist.fullName || '',
+            role: selectedSpecialist.role || '',
+          }
+        : null,
+      specialistSummary: aiSummary
+        ? {
+            totalPlans: aiSummary.totalPlans ?? 0,
+            childrenCount: aiSummary.childrenCount ?? 0,
+            approvalRatePercent: aiSummary.approvalRatePercent ?? 0,
+            resultsImprovedRatePercent:
+              aiSummary.resultsImprovedRatePercent ?? 0,
+          }
+        : null,
+    });
+  }, [
+    aiSummary,
+    children.length,
+    families.length,
+    invitations.length,
+    selectedSpecialist,
+    setUiContext,
+    staff.length,
+  ]);
 
   /* ─── custom tooltip ─── */
   const CustomTooltip = ({ active, payload }) => {

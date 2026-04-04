@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { useAuth } from '../../hooks/useAuth';
+import DashboardAssistant from '../../components/assistant/DashboardAssistant';
+import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
 
 export default function AdminLayout() {
   const { getUser, logout } = useAuth('admin');
@@ -34,30 +36,35 @@ export default function AdminLayout() {
   ];
 
   const headerActions = (
-    <button
-      onClick={() => window.location.reload()}
-      className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors"
-    >
-      <span className="material-symbols-outlined text-lg">refresh</span>
-      Refresh
-    </button>
+    <>
+      <DashboardAssistant role="admin" />
+      <button
+        onClick={() => window.location.reload()}
+        className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+      >
+        <span className="material-symbols-outlined text-lg">refresh</span>
+        Refresh
+      </button>
+    </>
   );
 
   if (!user) return null;
 
   return (
-    <SidebarLayout
-      title="System Oversight"
-      subtitle="Admin Console"
-      brandName="Admin Console"
-      brandIcon="admin_panel_settings"
-      navItems={navItems}
-      bottomItems={bottomItems}
-      user={user}
-      onLogout={logout}
-      headerActions={headerActions}
-    >
-      <Outlet />
-    </SidebarLayout>
+    <DashboardAssistantProvider>
+      <SidebarLayout
+        title="System Oversight"
+        subtitle="Admin Console"
+        brandName="Admin Console"
+        brandIcon="admin_panel_settings"
+        navItems={navItems}
+        bottomItems={bottomItems}
+        user={user}
+        onLogout={logout}
+        headerActions={headerActions}
+      >
+        <Outlet />
+      </SidebarLayout>
+    </DashboardAssistantProvider>
   );
 }
