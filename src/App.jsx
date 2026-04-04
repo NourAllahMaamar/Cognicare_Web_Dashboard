@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import PWAPrompt from './components/PWAPrompt';
 import './App.css';
 
 // Lazy-loaded pages — each becomes its own chunk
@@ -84,6 +85,7 @@ function App() {
 
   return (
     <Router>
+      <PWAPrompt />
       <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Landing */}

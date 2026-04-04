@@ -1629,5 +1629,12 @@
     "verified": "Vérifié",
     "yes": "Oui",
     "no": "Non"
+  },
+  "pwa": {
+    "offline": "Vous êtes actuellement hors ligne. Certaines fonctionnalités peuvent être indisponibles.",
+    "updateAvailable": "Mise à jour disponible",
+    "updateDesc": "Une nouvelle version de CogniCare est prête. Rechargez pour obtenir les dernières fonctionnalités.",
+    "later": "Plus tard",
+    "reload": "Recharger"
   }
 }
