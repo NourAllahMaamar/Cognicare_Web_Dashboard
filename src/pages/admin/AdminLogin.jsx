@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SEOHead from '../../components/SEOHead';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
@@ -51,6 +52,11 @@ function AdminLogin() {
 
   return (
     <div className="min-h-screen flex bg-bg-light dark:bg-bg-dark font-display">
+      <SEOHead
+        title="Admin Login"
+        description="Sign in to the CogniCare admin dashboard to manage users, organizations, and platform analytics."
+        path="/admin/login"
+      />
       {/* Left Branding Panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-primary/30 relative overflow-hidden flex-col items-center justify-center p-12">
         <div className="absolute inset-0 pointer-events-none">

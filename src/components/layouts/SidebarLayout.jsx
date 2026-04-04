@@ -15,6 +15,7 @@ export default function SidebarLayout({
   user = null,
   onLogout,
   headerActions = null,
+  seoHead = null,
 }) {
   const { t } = useTranslation();
   const _navigate = useNavigate();
@@ -112,6 +113,7 @@ export default function SidebarLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg-light dark:bg-bg-dark">
+      {seoHead}
       {/* Desktop Sidebar */}
       <aside className="hidden w-64 flex-col justify-between border-r border-slate-300 dark:border-slate-800 bg-white dark:bg-surface-dark md:flex">
         {sidebarContent}

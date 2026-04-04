@@ -1,0 +1,15 @@
+# CogniCare - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/dashboard
+Disallow: /org/dashboard
+Disallow: /specialist/dashboard
+Disallow: /specialist/pecs/
+Disallow: /specialist/teacch/
+Disallow: /specialist/activities
+Disallow: /specialist/skill-tracker
+Disallow: /specialist/ai-recommendations/
+Disallow: /confirm-account
+Disallow: /api/
+
+Sitemap: https://cognicare.app/sitemap.xml

@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SEOHead from '../components/SEOHead';
 import { API_BASE_URL } from '../config';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import ThemeToggle from '../components/ui/ThemeToggle';
@@ -94,6 +95,7 @@ const ConfirmAccount = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-bg-light dark:bg-bg-dark">
+            <SEOHead title="Confirm Account" path="/confirm-account" noindex />
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-6">
                 <button 

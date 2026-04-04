@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
+import SEOHead from '../../components/SEOHead';
 
 export default function OrgLayout() {
   const { t } = useTranslation();
@@ -47,6 +48,7 @@ export default function OrgLayout() {
       user={user}
       onLogout={handleLogout}
       headerActions={null}
+      seoHead={<SEOHead title="Organization Dashboard" path="/org/dashboard" noindex />}
     >
       <Outlet />
     </SidebarLayout>

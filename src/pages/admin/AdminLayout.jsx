@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
+import SEOHead from '../../components/SEOHead';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 
@@ -58,6 +59,7 @@ export default function AdminLayout() {
       user={user}
       onLogout={logout}
       headerActions={headerActions}
+      seoHead={<SEOHead title="Admin Dashboard" path="/admin/dashboard" noindex />}
     >
       <Outlet />
     </SidebarLayout>

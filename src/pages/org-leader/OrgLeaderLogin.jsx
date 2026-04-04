@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SEOHead from '../../components/SEOHead';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
@@ -88,6 +89,11 @@ function OrgLeaderLogin() {
 
   return (
     <div className="min-h-screen flex bg-bg-light dark:bg-bg-dark font-display">
+      <SEOHead
+        title="Organization Login"
+        description="Sign in or register your organization on CogniCare to manage staff, families, and autism care programs."
+        path="/org/login"
+      />
       {/* Left Branding Panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-900 via-indigo-800 to-primary/30 relative overflow-hidden flex-col items-center justify-center p-12">
         <div className="absolute inset-0 pointer-events-none">

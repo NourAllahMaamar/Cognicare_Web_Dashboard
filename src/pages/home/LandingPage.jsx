@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SEOHead from '../../components/SEOHead';
 
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
@@ -293,8 +294,33 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-bg-light dark:bg-bg-dark text-slate-900 dark:text-slate-100 font-display overflow-x-hidden">
-
+    <div className="min-h-screen flex flex-col bg-bg-light dark:bg-bg-dark text-slate-900 dark:text-slate-100 font-display overflow-x-hidden">      <SEOHead
+        path="/"
+        description="CogniCare empowers families, specialists, and organizations with AI-powered tools for autism care management, PECS &amp; TEACCH plans, and real-time progress tracking."
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'Organization',
+              name: 'CogniCare',
+              url: 'https://cognicare.app',
+              logo: 'https://cognicare.app/pwa-512x512.png',
+              description: 'A cognitive health platform for autism care.',
+              sameAs: [],
+            },
+            {
+              '@type': 'WebApplication',
+              name: 'CogniCare',
+              url: 'https://cognicare.app',
+              applicationCategory: 'HealthApplication',
+              operatingSystem: 'Web',
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+              description:
+                'Manage organizations, families, and specialized treatment plans with AI-powered insights for autism care.',
+            },
+          ],
+        }}
+      />
       {/* â”€â”€ Header â”€â”€ */}
       <header className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-lg">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

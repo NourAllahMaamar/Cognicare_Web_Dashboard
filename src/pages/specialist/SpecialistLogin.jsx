@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SEOHead from '../../components/SEOHead';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
@@ -50,6 +51,11 @@ function SpecialistLogin() {
 
     return (
         <div className="min-h-screen flex bg-bg-light dark:bg-bg-dark font-display">
+            <SEOHead
+              title="Specialist Login"
+              description="Sign in to the CogniCare specialist portal to manage PECS & TEACCH plans, track child progress, and collaborate with families."
+              path="/specialist/login"
+            />
             {/* Left Branding Panel */}
             <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-600/40 relative overflow-hidden flex-col items-center justify-center p-12">
                 <div className="absolute inset-0 pointer-events-none">

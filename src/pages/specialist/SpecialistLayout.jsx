@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
+import SEOHead from '../../components/SEOHead';
 
 export default function SpecialistLayout() {
   const { t } = useTranslation();
@@ -43,6 +44,7 @@ export default function SpecialistLayout() {
       bottomItems={bottomItems}
       user={user}
       onLogout={handleLogout}
+      seoHead={<SEOHead title="Specialist Dashboard" path="/specialist/dashboard" noindex />}
     >
       <Outlet />
     </SidebarLayout>

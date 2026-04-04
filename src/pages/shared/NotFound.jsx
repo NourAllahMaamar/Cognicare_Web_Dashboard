@@ -1,5 +1,6 @@
 ﻿import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SEOHead from '../../components/SEOHead';
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -7,6 +8,7 @@ export default function NotFound() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-light dark:bg-bg-dark px-4">
+      <SEOHead title="Page Not Found" noindex />
       <div className="text-center max-w-md">
         <div className="w-20 h-20 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
           <span className="material-symbols-outlined text-5xl">search_off</span>
