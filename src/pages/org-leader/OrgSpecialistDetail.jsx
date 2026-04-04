@@ -1,11 +1,13 @@
 ﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export default function OrgSpecialistDetail() {
   const { specialistId } = useParams();
   const navigate = useNavigate();
   const { authGet } = useAuth('orgLeader');
+  const { t } = useTranslation();
 
   const [summary, setSummary] = useState(null);
   const [specialistInfo, setSpecialistInfo] = useState(null);
@@ -26,7 +28,7 @@ export default function OrgSpecialistDetail() {
         const spec = Array.isArray(staff) ? staff.find(s => (s._id || s.id) === specialistId) : null;
         if (spec) setSpecialistInfo({ name: spec.fullName || 'Specialist', role: spec.role || 'specialist', email: spec.email || '', phone: spec.phone || '' });
       } catch (err) {
-        setError(err.message || 'Failed to load specialist data');
+        setError(err.message || t('orgSpecialist.errorLoad'));
       }
       setLoading(false);
     };
@@ -34,17 +36,17 @@ export default function OrgSpecialistDetail() {
   }, [specialistId]);
 
   const statCards = summary ? [
-    { icon: 'assignment', label: 'Total Plans', value: summary.totalPlans ?? 0, bg: 'bg-primary/10', text: 'text-primary' },
-    { icon: 'child_care', label: 'Children Followed', value: summary.childrenCount ?? 0, bg: 'bg-success/10', text: 'text-success' },
-    ...(summary.approvalRatePercent != null ? [{ icon: 'thumb_up', label: 'Approval Rate', value: `${summary.approvalRatePercent}%`, sub: `${summary.approvedCount ?? 0} of ${summary.totalFeedback ?? 0}`, bg: 'bg-warning/10', text: 'text-warning' }] : []),
-    ...(summary.resultsImprovedRatePercent != null ? [{ icon: 'trending_up', label: 'Improvement Rate', value: `${summary.resultsImprovedRatePercent}%`, sub: `${summary.resultsImprovedTrueCount ?? 0} confirmed`, bg: 'bg-success/10', text: 'text-success' }] : []),
+    { icon: 'assignment', label: t('orgSpecialist.totalPlans'), value: summary.totalPlans ?? 0, bg: 'bg-primary/10', text: 'text-primary' },
+    { icon: 'child_care', label: t('orgSpecialist.childrenFollowed'), value: summary.childrenCount ?? 0, bg: 'bg-success/10', text: 'text-success' },
+    ...(summary.approvalRatePercent != null ? [{ icon: 'thumb_up', label: t('orgSpecialist.approvalRate'), value: `${summary.approvalRatePercent}%`, sub: t('orgSpecialist.approvalSub', { approved: summary.approvedCount ?? 0, total: summary.totalFeedback ?? 0 }), bg: 'bg-warning/10', text: 'text-warning' }] : []),
+    ...(summary.resultsImprovedRatePercent != null ? [{ icon: 'trending_up', label: t('orgSpecialist.improvementRate'), value: `${summary.resultsImprovedRatePercent}%`, sub: t('orgSpecialist.improvementSub', { count: summary.resultsImprovedTrueCount ?? 0 }), bg: 'bg-success/10', text: 'text-success' }] : []),
   ] : [];
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-4" />
-        <p className="text-sm text-slate-500 dark:text-text-muted">Loading specialist summary"¦</p>
+        <p className="text-sm text-slate-500 dark:text-text-muted">{t('orgSpecialist.loading')}</p>
       </div>
     );
   }
@@ -54,14 +56,14 @@ export default function OrgSpecialistDetail() {
       {/* Back + Header */}
       <div>
         <button onClick={() => navigate('/org/dashboard/staff')} className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-primary transition-colors mb-4">
-          <span className="material-symbols-outlined text-lg">arrow_back</span> Back to Staff
+          <span className="material-symbols-outlined text-lg">arrow_back</span> {t('orgSpecialist.backToStaff')}
         </button>
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
             <span className="material-symbols-outlined text-3xl">smart_toy</span>
           </div>
           <div>
-            <h2 className="text-2xl font-bold">AI Progress Summary</h2>
+            <h2 className="text-2xl font-bold">{t('orgSpecialist.title')}</h2>
             {specialistInfo && (
               <p className="text-slate-500 dark:text-text-muted mt-0.5">
                 {specialistInfo.name} • <span className="capitalize">{specialistInfo.role?.replace(/_/g, ' ')}</span>
@@ -101,7 +103,7 @@ export default function OrgSpecialistDetail() {
         <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
           <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">category</span>
-            Plans by Type
+            {t('orgSpecialist.plansByType')}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {Object.entries(summary.planCountByType).map(([type, count]) => (
@@ -119,13 +121,13 @@ export default function OrgSpecialistDetail() {
         <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
           <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">rate_review</span>
-            Feedback Details
+            {t('orgSpecialist.feedbackDetails')}
           </h3>
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: 'Approved', value: summary.approvedCount ?? 0, color: 'text-success' },
-              { label: 'Modified', value: summary.modifiedCount ?? 0, color: 'text-warning' },
-              { label: 'Dismissed', value: summary.dismissedCount ?? 0, color: 'text-error' },
+            { label: t('orgSpecialist.approved'), value: summary.approvedCount ?? 0, color: 'text-success' },
+              { label: t('orgSpecialist.modified'), value: summary.modifiedCount ?? 0, color: 'text-warning' },
+              { label: t('orgSpecialist.dismissed'), value: summary.dismissedCount ?? 0, color: 'text-error' },
             ].map(fb => (
               <div key={fb.label} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 text-center">
                 <p className={`text-2xl font-black ${fb.color}`}>{fb.value}</p>
@@ -145,9 +147,9 @@ export default function OrgSpecialistDetail() {
               )}
             </div>
             <div className="flex justify-between mt-2 text-xs text-slate-400">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success inline-block" /> Approved</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning inline-block" /> Modified</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-error inline-block" /> Dismissed</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success inline-block" /> {t('orgSpecialist.approved')}</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning inline-block" /> {t('orgSpecialist.modified')}</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-error inline-block" /> {t('orgSpecialist.dismissed')}</span>
             </div>
           </div>
         </div>
@@ -157,7 +159,7 @@ export default function OrgSpecialistDetail() {
       {!summary && !error && (
         <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-12 text-center">
           <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3">analytics</span>
-          <p className="text-slate-500 dark:text-text-muted">No data available for this specialist yet.</p>
+          <p className="text-slate-500 dark:text-text-muted">{t('orgSpecialist.noData')}</p>
         </div>
       )}
     </div>

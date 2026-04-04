@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ThemeToggle from '../ui/ThemeToggle';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
@@ -15,6 +16,7 @@ export default function SidebarLayout({
   onLogout,
   headerActions = null,
 }) {
+  const { t } = useTranslation();
   const _navigate = useNavigate();
   const _location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -90,7 +92,7 @@ export default function SidebarLayout({
             className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-error hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors w-full"
           >
             <span className="material-symbols-outlined text-[20px]">logout</span>
-            <span>Log Out</span>
+            <span>{t('common.logout', 'Log Out')}</span>
           </button>
         )}
         {user && (

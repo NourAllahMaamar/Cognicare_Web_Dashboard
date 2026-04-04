@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Admin: review and approve/reject autism training courses.
@@ -8,6 +9,7 @@ import StatusBadge from '../../components/ui/StatusBadge';
  */
 export default function AdminTrainingCourses() {
   const { authGet, authMutate } = useAuth('admin');
+  const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,7 @@ export default function AdminTrainingCourses() {
       const list = await authGet('/training/admin/courses');
       setCourses(Array.isArray(list) ? list : []);
     } catch (err) {
-      setError(err.message || 'Failed to load training courses');
+      setError(err.message || t('adminTraining.noCoursesYet'));
     }
     setLoading(false);
   };
@@ -48,7 +50,7 @@ export default function AdminTrainingCourses() {
           professionalComments: professionalComments.trim() || undefined,
         },
       });
-      setSuccess(approveDecision ? 'Course approved' : 'Course marked as needs clarification');
+      setSuccess(approveDecision ? t('adminTraining.courseApproved') : t('adminTraining.courseNeedsWork'));
       setReviewing(null);
       loadData();
     } catch (err) {
@@ -60,9 +62,9 @@ export default function AdminTrainingCourses() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold">Training Courses (Autism)</h2>
+        <h2 className="text-2xl font-bold">{t('adminTraining.title')}</h2>
         <p className="text-slate-500 dark:text-text-muted mt-1">
-          Review scraped training content. Approve to make visible in the app for caregivers.
+          {t('adminTraining.subtitle')}
         </p>
       </div>
 
@@ -79,7 +81,7 @@ export default function AdminTrainingCourses() {
         </div>
       ) : courses.length === 0 ? (
         <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
-          No training courses yet. Add courses via the scraper and API, then review them here.
+          {t('adminTraining.noCoursesYet')}
         </div>
       ) : (
         <div className="space-y-3">
@@ -95,7 +97,7 @@ export default function AdminTrainingCourses() {
                 <div className="min-w-0">
                   <p className="font-bold text-sm truncate">{course.title}</p>
                   <p className="text-xs text-slate-500 truncate">
-                    {course.topics?.join(', ') || '"”'} • Order: {course.order ?? 0}
+                    {course.topics?.join(', ') || '""'} • {t('adminTraining.orderLabel')} {course.order ?? 0}
                   </p>
                 </div>
               </div>
@@ -105,7 +107,7 @@ export default function AdminTrainingCourses() {
                   onClick={() => openReview(course)}
                   className="text-sm text-primary font-medium hover:underline"
                 >
-                  Review
+                  {t('adminTraining.review')}
                 </button>
               </div>
             </div>
@@ -124,7 +126,7 @@ export default function AdminTrainingCourses() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6 border-b border-slate-200 dark:border-slate-800">
-              <h3 className="text-lg font-bold">Review: {reviewing.title}</h3>
+              <h3 className="text-lg font-bold">{t('adminTraining.reviewModalTitle', { title: reviewing.title })}</h3>
               {reviewing.sourceUrl && (
                 <a
                   href={reviewing.sourceUrl}
@@ -132,18 +134,18 @@ export default function AdminTrainingCourses() {
                   rel="noreferrer"
                   className="text-sm text-primary hover:underline mt-1 inline-block"
                 >
-                  Source â†’
+                  {t('adminTraining.source')}
                 </a>
               )}
             </div>
             <div className="p-6 overflow-y-auto flex-1">
               <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
-                Professional comments
+                {t('adminTraining.professionalComments')}
               </label>
               <textarea
                 value={professionalComments}
                 onChange={(e) => setProfessionalComments(e.target.value)}
-                placeholder="Optional notes (e.g. needs clarification, approved for publication)"
+                placeholder={t('adminTraining.commentsPlaceholder')}
                 className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-24"
               />
               <div className="flex gap-2">
@@ -154,7 +156,7 @@ export default function AdminTrainingCourses() {
                     checked={approveDecision === true}
                     onChange={() => setApproveDecision(true)}
                   />
-                  <span className="text-sm font-medium">Approve</span>
+                  <span className="text-sm font-medium">{t('adminTraining.optionApprove')}</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -163,7 +165,7 @@ export default function AdminTrainingCourses() {
                     checked={approveDecision === false}
                     onChange={() => setApproveDecision(false)}
                   />
-                  <span className="text-sm font-medium">Needs clarification</span>
+                  <span className="text-sm font-medium">{t('adminTraining.optionNeedsWork')}</span>
                 </label>
               </div>
             </div>
@@ -172,7 +174,7 @@ export default function AdminTrainingCourses() {
                 onClick={() => setReviewing(null)}
                 className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
               >
-                Cancel
+                {t('adminTraining.cancel')}
               </button>
               <button
                 onClick={handleApprove}
@@ -182,7 +184,7 @@ export default function AdminTrainingCourses() {
                     : 'bg-warning hover:bg-warning/90'
                 }`}
               >
-                {approveDecision ? 'Approve' : 'Mark needs clarification'}
+                {approveDecision ? t('adminTraining.submitApprove') : t('adminTraining.submitNeedsWork')}
               </button>
             </div>
           </div>

@@ -2,9 +2,11 @@
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { API_BASE_URL, getUploadUrl } from '../../config';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminFraudReview() {
   const { authGet, authMutate } = useAuth('admin');
+  const { t } = useTranslation();
   const [pending, setPending] = useState([]);
   const [reviewed, setReviewed] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +55,7 @@ export default function AdminFraudReview() {
     try {
       const result = await authMutate(`/org-scan-ai/rescan/${orgId}`, {});
       setFraudAnalysis(result);
-      setSuccess('AI fraud analysis completed');
+      setSuccess(t('adminFraud.runAiScan'));
     } catch (err) {
       setError(err.message || 'Failed to run AI scan');
       setFraudAnalysis(null);
@@ -69,7 +71,7 @@ export default function AdminFraudReview() {
       const body = { decision };
       if (decision === 'rejected' && rejectionReason) body.reason = rejectionReason;
       await authMutate(`/organization/admin/review/${orgId}`, { body });
-      setSuccess(`Organization ${decision}`);
+      setSuccess(t('adminFraud.orgDecision', { decision }));
       setReviewingOrg(null);
       loadData();
     } catch (err) { setError(err.message); }
@@ -80,7 +82,7 @@ export default function AdminFraudReview() {
     const orgId = org._id || org.organizationId;
     try {
       await authMutate(`/organization/admin/re-review/${orgId}`, { body: { decision } });
-      setSuccess(`Organization ${decision}`);
+      setSuccess(t('adminFraud.orgDecision', { decision }));
       loadData();
     } catch (err) { setError(err.message); }
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
@@ -93,16 +95,16 @@ export default function AdminFraudReview() {
   };
 
   const getRiskLevel = (score) => {
-    if (score >= 70) return 'High';
-    if (score >= 40) return 'Medium';
-    return 'Low';
+    if (score >= 70) return t('adminFraud.riskHigh');
+    if (score >= 40) return t('adminFraud.riskMedium');
+    return t('adminFraud.riskLow');
   };
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold">Organization Review Queue</h2>
-        <p className="text-slate-500 dark:text-text-muted mt-1">Review pending organization applications with AI-powered fraud detection</p>
+        <h2 className="text-2xl font-bold">{t('adminFraud.title')}</h2>
+        <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminFraud.subtitle')}</p>
       </div>
 
       {error && <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium">{error}</div>}
@@ -112,17 +114,17 @@ export default function AdminFraudReview() {
       {aiHealth && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-success/10 border border-success/20">
           <span className="material-symbols-outlined text-success">check_circle</span>
-          <span className="text-sm font-medium text-success">AI Fraud Detection Service: Operational</span>
+          <span className="text-sm font-medium text-success">{t('adminFraud.aiOperational')}</span>
         </div>
       )}
 
       {/* Sub-tabs */}
       <div className="flex border-b border-slate-200 dark:border-slate-800">
         <button onClick={() => setSubTab('pending')} className={`px-6 pb-3 text-sm font-bold border-b-2 transition-colors ${subTab === 'pending' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>
-          Pending ({pending.length})
+          {t('adminFraud.tabPending', { count: pending.length })}
         </button>
         <button onClick={() => setSubTab('history')} className={`px-6 pb-3 text-sm font-bold border-b-2 transition-colors ${subTab === 'history' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>
-          Review History ({reviewed.length})
+          {t('adminFraud.tabHistory', { count: reviewed.length })}
         </button>
       </div>
 
@@ -133,7 +135,7 @@ export default function AdminFraudReview() {
           {pending.length === 0 ? (
             <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
               <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
-              <p>No pending reviews</p>
+              <p>{t('adminFraud.noPendingReviews')}</p>
             </div>
           ) : (
             pending.map(org => (
@@ -148,7 +150,7 @@ export default function AdminFraudReview() {
                       <p className="text-sm text-slate-500">{org.leaderName || org.leader?.fullName} • {org.leaderEmail || org.leader?.email}</p>
                     </div>
                   </div>
-                  <button onClick={() => openReview(org)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors">Review</button>
+                  <button onClick={() => openReview(org)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors">{t('adminFraud.review')}</button>
                 </div>
               </div>
             ))
@@ -169,13 +171,13 @@ export default function AdminFraudReview() {
               </div>
               <div className="flex items-center gap-3">
                 <StatusBadge status={org.reviewStatus || org.status || 'reviewed'} />
-                <button onClick={() => handleReReview(org, 'approved')} className="text-xs text-success font-medium hover:underline">Approve</button>
-                <button onClick={() => handleReReview(org, 'rejected')} className="text-xs text-error font-medium hover:underline">Revoke</button>
+                <button onClick={() => handleReReview(org, 'approved')} className="text-xs text-success font-medium hover:underline">{t('adminFraud.approve')}</button>
+                <button onClick={() => handleReReview(org, 'rejected')} className="text-xs text-error font-medium hover:underline">{t('adminFraud.revoke')}</button>
               </div>
             </div>
           ))}
           {reviewed.length === 0 && (
-            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">No review history</div>
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">{t('adminFraud.noReviewHistory')}</div>
           )}
         </div>
       )}
@@ -185,16 +187,16 @@ export default function AdminFraudReview() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setReviewingOrg(null)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Review: {reviewingOrg.organizationName || reviewingOrg.name}</h3>
+              <h3 className="text-lg font-bold">{t('adminFraud.reviewModalTitle', { name: reviewingOrg.organizationName || reviewingOrg.name })}</h3>
               <button onClick={() => setReviewingOrg(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
             {/* Org Info */}
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-6">
-              <p className="text-sm"><strong>Leader:</strong> {reviewingOrg.leaderName || reviewingOrg.leader?.fullName}</p>
-              <p className="text-sm"><strong>Email:</strong> {reviewingOrg.leaderEmail || reviewingOrg.leader?.email}</p>
+              <p className="text-sm"><strong>{t('adminFraud.leader')}</strong> {reviewingOrg.leaderName || reviewingOrg.leader?.fullName}</p>
+              <p className="text-sm"><strong>{t('adminFraud.emailLabel')}</strong> {reviewingOrg.leaderEmail || reviewingOrg.leader?.email}</p>
               {reviewingOrg.certificateUrl && (
-                <a href={getUploadUrl(reviewingOrg.certificateUrl)} target="_blank" rel="noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">View Certificate â†’</a>
+                <a href={getUploadUrl(reviewingOrg.certificateUrl)} target="_blank" rel="noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">{t('adminFraud.viewCertificate')}</a>
               )}
             </div>
 
@@ -205,9 +207,9 @@ export default function AdminFraudReview() {
               <div className="space-y-4 mb-6">
                 <h4 className="font-bold flex items-center gap-2">
                   <span className="material-symbols-outlined text-lg">shield</span>
-                  AI Fraud Analysis
+                  {t('adminFraud.aiAnalysis')}
                   <button onClick={() => runAiScan(reviewingOrg)} className="ml-auto text-xs text-primary hover:underline font-medium inline-flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">refresh</span> Re-scan
+                    <span className="material-symbols-outlined text-sm">refresh</span> {t('adminFraud.rescan')}
                   </button>
                 </h4>
                 <div className="flex items-center gap-6">
@@ -221,19 +223,19 @@ export default function AdminFraudReview() {
                     </div>
                   </div>
                   <div>
-                    <p className="font-bold">Risk Level: <StatusBadge status={getRiskLevel(fraudAnalysis.riskScore || 0)} /></p>
+                    <p className="font-bold">{t('adminFraud.riskLevel')} <StatusBadge status={getRiskLevel(fraudAnalysis.riskScore || 0)} /></p>
                     {fraudAnalysis.extractedInfo && (
                       <div className="mt-2 text-sm text-slate-500 space-y-1">
-                        {fraudAnalysis.extractedInfo.businessName && <p>Business: {fraudAnalysis.extractedInfo.businessName}</p>}
-                        {fraudAnalysis.extractedInfo.registrationNumber && <p>Reg #: {fraudAnalysis.extractedInfo.registrationNumber}</p>}
-                        {fraudAnalysis.extractedInfo.issuingAuthority && <p>Authority: {fraudAnalysis.extractedInfo.issuingAuthority}</p>}
+                        {fraudAnalysis.extractedInfo.businessName && <p>{t('adminFraud.businessLabel')} {fraudAnalysis.extractedInfo.businessName}</p>}
+                        {fraudAnalysis.extractedInfo.registrationNumber && <p>{t('adminFraud.regLabel')} {fraudAnalysis.extractedInfo.registrationNumber}</p>}
+                        {fraudAnalysis.extractedInfo.issuingAuthority && <p>{t('adminFraud.authorityLabel')} {fraudAnalysis.extractedInfo.issuingAuthority}</p>}
                       </div>
                     )}
                   </div>
                 </div>
                 {fraudAnalysis.flags?.length > 0 && (
                   <div>
-                    <p className="text-sm font-bold text-error mb-2">Detected Flags:</p>
+                    <p className="text-sm font-bold text-error mb-2">{t('adminFraud.detectedFlags')}</p>
                     <ul className="space-y-1.5">
                       {fraudAnalysis.flags.map((flag, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm">
@@ -248,21 +250,21 @@ export default function AdminFraudReview() {
             ) : (
               <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl mb-6 text-center">
                 <span className="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2">shield</span>
-                <p className="text-sm text-slate-400 mb-4">No fraud analysis available yet</p>
+                <p className="text-sm text-slate-400 mb-4">{t('adminFraud.noAnalysis')}</p>
                 <button onClick={() => runAiScan(reviewingOrg)} className="px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors inline-flex items-center gap-2">
                   <span className="material-symbols-outlined text-lg">smart_toy</span>
-                  Run AI Fraud Scan
+                  {t('adminFraud.runAiScan')}
                 </button>
               </div>
             )}
 
             {/* Decision */}
             <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
-              <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder="Notes / rejection reason (optional)..." className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-20 focus:ring-2 focus:ring-primary" />
+              <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder={t('adminFraud.notesPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-20 focus:ring-2 focus:ring-primary" />
               <div className="flex gap-3">
-                <button onClick={() => setReviewingOrg(null)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Skip</button>
-                <button onClick={() => handleDecision('rejected')} className="flex-1 py-3 bg-error text-white rounded-xl font-bold text-sm hover:bg-error/90">Reject</button>
-                <button onClick={() => handleDecision('approved')} className="flex-1 py-3 bg-success text-white rounded-xl font-bold text-sm hover:bg-success/90">Approve</button>
+                <button onClick={() => setReviewingOrg(null)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('adminFraud.skip')}</button>
+                <button onClick={() => handleDecision('rejected')} className="flex-1 py-3 bg-error text-white rounded-xl font-bold text-sm hover:bg-error/90">{t('adminFraud.reject')}</button>
+                <button onClick={() => handleDecision('approved')} className="flex-1 py-3 bg-success text-white rounded-xl font-bold text-sm hover:bg-success/90">{t('adminFraud.approve')}</button>
               </div>
             </div>
           </div>

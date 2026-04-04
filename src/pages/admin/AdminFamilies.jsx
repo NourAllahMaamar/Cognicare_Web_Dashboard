@@ -1,9 +1,11 @@
 ﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminFamilies() {
   const { authGet, authMutate } = useAuth('admin');
+  const { t } = useTranslation();
 
   const [families, setFamilies] = useState([]);
   const [allChildren, setAllChildren] = useState([]);
@@ -82,8 +84,8 @@ export default function AdminFamilies() {
   };
 
   const handleSaveFamily = async () => {
-    if (!familyForm.fullName || !familyForm.email) { setError('Name and email are required'); return; }
-    if (!editingFamily && (!familyForm.password || familyForm.password.length < 6)) { setError('Password is required (min 6 chars)'); return; }
+    if (!familyForm.fullName || !familyForm.email) { setError(t('adminFamilies.errorNameEmail')); return; }
+    if (!editingFamily && (!familyForm.password || familyForm.password.length < 6)) { setError(t('adminFamilies.errorPassword')); return; }
     try {
       if (editingFamily) {
         const body = { fullName: familyForm.fullName, email: familyForm.email, phone: familyForm.phone };
@@ -97,7 +99,7 @@ export default function AdminFamilies() {
         if (familyForm.organizationId) body.organizationId = familyForm.organizationId;
         await authMutate('/organization/admin/families', { body });
       }
-      setSuccess(editingFamily ? 'Family updated' : 'Family created');
+      setSuccess(editingFamily ? t('adminFamilies.familyUpdated') : t('adminFamilies.familyCreated'));
       setShowModal(false);
       loadData();
     } catch (err) { setError(err.message); }
@@ -105,10 +107,10 @@ export default function AdminFamilies() {
   };
 
   const handleDeleteFamily = async (fam) => {
-    if (!confirm('Delete this family and all their children? This cannot be undone.')) return;
+    if (!confirm(t('adminFamilies.confirmDeleteFamily'))) return;
     try {
       await authMutate(`/organization/admin/families/${fam._id}`, { method: 'DELETE' });
-      setSuccess('Family deleted');
+      setSuccess(t('adminFamilies.familyDeleted'));
       loadData();
     } catch (err) { setError(err.message); }
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
@@ -130,7 +132,7 @@ export default function AdminFamilies() {
       } else {
         await authMutate(`/organization/admin/families/${assignFamily._id}/organization`, { method: 'DELETE' });
       }
-      setSuccess('Organization updated');
+      setSuccess(t('adminFamilies.orgUpdated'));
       setShowAssignOrg(false);
       loadData();
     } catch (err) { setError(err.message); }
@@ -173,7 +175,7 @@ export default function AdminFamilies() {
   };
 
   const handleSaveChild = async () => {
-    if (!childForm.fullName || !childForm.dateOfBirth || !childForm.gender) { setError('Name, DOB, and gender are required'); return; }
+    if (!childForm.fullName || !childForm.dateOfBirth || !childForm.gender) { setError(t('adminFamilies.errorChildRequired')); return; }
     try {
       const body = { ...childForm };
       if (editingChild) {
@@ -181,7 +183,7 @@ export default function AdminFamilies() {
       } else {
         await authMutate(`/organization/admin/families/${selectedFamily._id}/children`, { body });
       }
-      setSuccess(editingChild ? 'Child updated' : 'Child added');
+      setSuccess(editingChild ? t('adminFamilies.childUpdated') : t('adminFamilies.childAdded'));
       setShowChildForm(false);
       const c = await authGet(`/organization/admin/families/${selectedFamily._id}/children`);
       setChildren(Array.isArray(c) ? c : []);
@@ -190,10 +192,10 @@ export default function AdminFamilies() {
   };
 
   const handleDeleteChild = async (child) => {
-    if (!confirm('Delete this child record?')) return;
+    if (!confirm(t('adminFamilies.confirmDeleteChild'))) return;
     try {
       await authMutate(`/organization/admin/families/${selectedFamily._id}/children/${child._id}`, { method: 'DELETE' });
-      setSuccess('Child deleted');
+      setSuccess(t('adminFamilies.childDeleted'));
       const c = await authGet(`/organization/admin/families/${selectedFamily._id}/children`);
       setChildren(Array.isArray(c) ? c : []);
     } catch (err) { setError(err.message); }
@@ -210,11 +212,11 @@ export default function AdminFamilies() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Families Management</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{families.length} families registered</p>
+          <h2 className="text-2xl font-bold">{t('adminFamilies.title')}</h2>
+          <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminFamilies.count', { count: families.length })}</p>
         </div>
         <button onClick={openAddFamily} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
-          <span className="material-symbols-outlined text-lg">add</span> Add Family
+          <span className="material-symbols-outlined text-lg">add</span> {t('adminFamilies.addFamily')}
         </button>
       </div>
 
@@ -224,7 +226,7 @@ export default function AdminFamilies() {
       {/* Search */}
       <div className="relative max-w-md">
         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search families..." className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('adminFamilies.searchPlaceholder')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
       {/* Families Grid */}
@@ -233,7 +235,7 @@ export default function AdminFamilies() {
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">family_restroom</span>
-          <p>No families found</p>
+          <p>{t('adminFamilies.noFamiliesFound')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -249,25 +251,25 @@ export default function AdminFamilies() {
                     <p className="text-xs text-slate-500">{fam.email}</p>
                   </div>
                 </div>
-                <StatusBadge status="Family" />
+                <StatusBadge status={t('adminUsers.roleFamily')} />
               </div>
 
               <div className="space-y-2 text-sm text-slate-500 dark:text-slate-400 mb-4">
                 {fam.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">phone</span>{fam.phone}</p>}
                 <p className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">corporate_fare</span>
-                  {fam.organization?.name || fam.organization?.organizationName || 'No organization'}
+                  {fam.organization?.name || fam.organization?.organizationName || t('adminFamilies.noOrganization')}
                 </p>
                 <p className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">child_care</span>
-                  {allChildren.filter(c => childBelongsToFamily(c, fam._id)).length} children
+                  {t('adminFamilies.childrenCount', { count: allChildren.filter(c => childBelongsToFamily(c, fam._id)).length })}
                 </p>
               </div>
 
               <div className="flex gap-2">
-                <button onClick={() => openEditFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Edit</button>
-                <button onClick={() => openChildren(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Children</button>
-                <button onClick={() => openAssignOrg(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Org</button>
+                <button onClick={() => openEditFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('adminFamilies.editBtn')}</button>
+                <button onClick={() => openChildren(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('adminFamilies.childrenBtn')}</button>
+                <button onClick={() => openAssignOrg(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('adminFamilies.orgBtn')}</button>
                 <button onClick={() => handleDeleteFamily(fam)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg transition-colors">
                   <span className="material-symbols-outlined text-sm">delete</span>
                 </button>
@@ -282,41 +284,41 @@ export default function AdminFamilies() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">{editingFamily ? 'Edit Family' : 'Add Family'}</h3>
+              <h3 className="text-lg font-bold">{editingFamily ? t('adminFamilies.editFamilyTitle') : t('adminFamilies.addFamilyTitle')}</h3>
               <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-bold mb-1.5">Full Name *</label>
+                <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.fullName')}</label>
                 <input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-1.5">Email *</label>
+                <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.email')}</label>
                 <input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-1.5">Phone</label>
+                <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.phone')}</label>
                 <input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               {!editingFamily && (
                 <div>
-                  <label className="block text-sm font-bold mb-1.5">Password *</label>
-                  <input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} placeholder="Min 6 characters" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.password')}</label>
+                  <input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} placeholder={t('adminFamilies.passwordPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
               )}
               <div>
-                <label className="block text-sm font-bold mb-1.5">Organization</label>
+                <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.organization')}</label>
                 <select value={familyForm.organizationId} onChange={e => setFamilyForm({...familyForm, organizationId: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
-                  <option value="">No organization</option>
+                  <option value="">{t('adminFamilies.noOrgOption')}</option>
                   {organizations.map(org => <option key={org._id} value={org._id}>{org.name || org.organizationName}</option>)}
                 </select>
               </div>
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
-              <button onClick={handleSaveFamily} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{editingFamily ? 'Update' : 'Create'}</button>
+              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('adminFamilies.cancel')}</button>
+              <button onClick={handleSaveFamily} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{editingFamily ? t('adminFamilies.update') : t('adminFamilies.create')}</button>
             </div>
           </div>
         </div>
@@ -327,18 +329,18 @@ export default function AdminFamilies() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowAssignOrg(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Assign Organization</h3>
+              <h3 className="text-lg font-bold">{t('adminFamilies.assignOrgTitle')}</h3>
               <button onClick={() => setShowAssignOrg(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
-            <p className="text-sm text-slate-500 mb-4">Family: <strong>{assignFamily.fullName}</strong></p>
-            <p className="text-sm text-slate-500 mb-4">Current: <strong>{assignFamily.organization?.name || assignFamily.organization?.organizationName || 'None'}</strong></p>
+            <p className="text-sm text-slate-500 mb-4">{t('adminFamilies.familyLabel')} <strong>{assignFamily.fullName}</strong></p>
+            <p className="text-sm text-slate-500 mb-4">{t('adminFamilies.currentLabel')} <strong>{assignFamily.organization?.name || assignFamily.organization?.organizationName || t('adminFamilies.noCurrent')}</strong></p>
             <select value={assignOrgId} onChange={e => setAssignOrgId(e.target.value)} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary mb-6">
-              <option value="">No organization (remove)</option>
+              <option value="">{t('adminFamilies.noOrgRemove')}</option>
               {organizations.map(org => <option key={org._id} value={org._id}>{org.name || org.organizationName}</option>)}
             </select>
             <div className="flex gap-3">
-              <button onClick={() => setShowAssignOrg(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
-              <button onClick={handleAssignOrg} disabled={assignLoading} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{assignLoading ? 'Saving...' : 'Apply'}</button>
+              <button onClick={() => setShowAssignOrg(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('adminFamilies.cancel')}</button>
+              <button onClick={handleAssignOrg} disabled={assignLoading} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{assignLoading ? t('adminFamilies.saving') : t('adminFamilies.apply')}</button>
             </div>
           </div>
         </div>
@@ -349,7 +351,7 @@ export default function AdminFamilies() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowChildren(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Children of {selectedFamily.fullName}</h3>
+              <h3 className="text-lg font-bold">{t('adminFamilies.childrenOfTitle', { name: selectedFamily.fullName })}</h3>
               <button onClick={() => setShowChildren(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
@@ -358,60 +360,60 @@ export default function AdminFamilies() {
             ) : showChildForm ? (
               /* Child Form */
               <div>
-                <h4 className="font-bold mb-4">{editingChild ? 'Edit Child' : 'Add Child'}</h4>
+                <h4 className="font-bold mb-4">{editingChild ? t('adminFamilies.editChildTitle') : t('adminFamilies.addChildTitle')}</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Full Name *</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.childFullName')}</label>
                     <input value={childForm.fullName} onChange={e => setChildForm({...childForm, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Date of Birth *</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.dateOfBirth')}</label>
                     <input type="date" value={childForm.dateOfBirth} onChange={e => setChildForm({...childForm, dateOfBirth: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Gender *</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.gender')}</label>
                     <select value={childForm.gender} onChange={e => setChildForm({...childForm, gender: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="male">{t('adminFamilies.genderMale')}</option>
+                      <option value="female">{t('adminFamilies.genderFemale')}</option>
+                      <option value="other">{t('adminFamilies.genderOther')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Diagnosis</label>
-                    <input value={childForm.diagnosis} onChange={e => setChildForm({...childForm, diagnosis: e.target.value})} placeholder="e.g. Autism" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.diagnosis')}</label>
+                    <input value={childForm.diagnosis} onChange={e => setChildForm({...childForm, diagnosis: e.target.value})} placeholder={t('adminFamilies.diagnosisPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Medical History</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.medicalHistory')}</label>
                     <input value={childForm.medicalHistory} onChange={e => setChildForm({...childForm, medicalHistory: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Allergies</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.allergies')}</label>
                     <input value={childForm.allergies} onChange={e => setChildForm({...childForm, allergies: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Medications</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.medications')}</label>
                     <input value={childForm.medications} onChange={e => setChildForm({...childForm, medications: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1.5">Notes</label>
+                    <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.notes')}</label>
                     <input value={childForm.notes} onChange={e => setChildForm({...childForm, notes: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                 </div>
                 <div className="flex gap-3 mt-6">
-                  <button onClick={() => setShowChildForm(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
-                  <button onClick={handleSaveChild} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{editingChild ? 'Update' : 'Add Child'}</button>
+                  <button onClick={() => setShowChildForm(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('adminFamilies.cancel')}</button>
+                  <button onClick={handleSaveChild} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{editingChild ? t('adminFamilies.update') : t('adminFamilies.addChildBtn')}</button>
                 </div>
               </div>
             ) : (
               /* Children List */
               <div>
                 <button onClick={openAddChild} className="mb-4 flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
-                  <span className="material-symbols-outlined text-lg">add</span> Add Child
+                  <span className="material-symbols-outlined text-lg">add</span> {t('adminFamilies.addChildBtn')}
                 </button>
                 {children.length === 0 ? (
                   <div className="p-8 text-center text-slate-400">
                     <span className="material-symbols-outlined text-3xl mb-2">child_care</span>
-                    <p>No children registered</p>
+                    <p>{t('adminFamilies.noChildrenRegistered')}</p>
                   </div>
                 ) : (
                   <div className="space-y-3">

@@ -1,9 +1,11 @@
 ﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminUsers() {
   const { authGet, authMutate } = useAuth('admin');
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -35,10 +37,10 @@ export default function AdminUsers() {
         const body = { ...formData };
         if (!body.password) delete body.password;
         await authMutate(`/users/${editingUser._id}`, { method: 'PATCH', body });
-        setSuccess('User updated successfully');
+        setSuccess(t('adminUsers.userUpdated'));
       } else {
         await authMutate('/users', { method: 'POST', body: formData });
-        setSuccess('User created successfully');
+        setSuccess(t('adminUsers.userCreated'));
       }
       setShowModal(false);
       resetForm();
@@ -50,10 +52,10 @@ export default function AdminUsers() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    if (!confirm(t('adminUsers.confirmDelete'))) return;
     try {
       await authMutate(`/users/${id}`, { method: 'DELETE' });
-      setSuccess('User deleted');
+      setSuccess(t('adminUsers.userDeleted'));
       fetchUsers();
     } catch (err) {
       setError(err.message);
@@ -74,6 +76,9 @@ export default function AdminUsers() {
 
   const roles = ['family', 'admin', 'organization_leader', 'psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'volunteer', 'other'];
 
+  const roleLabels = { family: t('adminUsers.roleFamily'), admin: t('adminUsers.roleAdmin'), organization_leader: t('adminUsers.roleOrganizationLeader'), psychologist: t('adminUsers.rolePsychologist'), speech_therapist: t('adminUsers.roleSpeechTherapist'), occupational_therapist: t('adminUsers.roleOccupationalTherapist'), doctor: t('adminUsers.roleDoctor'), volunteer: t('adminUsers.roleVolunteer'), other: t('adminUsers.roleOther'), careProvider: t('adminUsers.roleCareProvider') };
+  const roleLabel = (role) => roleLabels[role] || role?.replace(/_/g, ' ');
+
   const filtered = users.filter(u => {
     const matchesSearch = !searchTerm || u.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) || u.email?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = filterRole === 'all' || u.role === filterRole;
@@ -86,11 +91,11 @@ export default function AdminUsers() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">User Management</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{users.length} total users</p>
+          <h2 className="text-2xl font-bold">{t('adminUsers.title')}</h2>
+          <p className="text-slate-500 dark:text-text-muted mt-1">{users.length} {t('adminUsers.title').toLowerCase()}</p>
         </div>
         <button onClick={() => { resetForm(); setShowModal(true); }} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-all">
-          <span className="material-symbols-outlined text-lg">person_add</span>Add User
+          <span className="material-symbols-outlined text-lg">person_add</span>{t('adminUsers.addUser')}
         </button>
       </div>
 
@@ -102,11 +107,11 @@ export default function AdminUsers() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[200px]">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search users..." className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
+          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={t('adminUsers.searchPlaceholder')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
         </div>
         <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
-          <option value="all">All Roles</option>
-          {roles.map(r => <option key={r} value={r}>{r.replace(/_/g, ' ')}</option>)}
+          <option value="all">{t('adminUsers.allRoles')}</option>
+          {roles.map(r => <option key={r} value={r}>{roleLabel(r)}</option>)}
         </select>
       </div>
 
@@ -116,7 +121,7 @@ export default function AdminUsers() {
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">search_off</span>
-          <p>No users found</p>
+          <p>{t('adminUsers.noUsersFound')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -132,24 +137,24 @@ export default function AdminUsers() {
                     <p className="text-xs text-slate-500 dark:text-text-muted">{u.email}</p>
                   </div>
                 </div>
-                <StatusBadge status={u.deletedAt ? 'Deleted' : u.isConfirmed ? 'Active' : 'Pending'} />
+                <StatusBadge status={u.deletedAt ? t('adminUsers.statusDeleted') : u.isConfirmed ? t('adminUsers.statusActive') : t('adminUsers.statusPending')} />
               </div>
 
               <div className="space-y-2 text-sm text-slate-500 dark:text-slate-400 mb-4">
                 <p className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">{roleIcons[u.role] || 'person'}</span>
-                  {u.role?.replace(/_/g, ' ')}
+                  {roleLabel(u.role)}
                 </p>
                 {u.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">phone</span>{u.phone}</p>}
                 <p className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">calendar_today</span>
-                  Joined {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}
+                  {t('adminUsers.joined')} {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
 
               <div className="flex gap-2">
                 <button onClick={() => openEdit(u)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors inline-flex items-center justify-center gap-1">
-                  <span className="material-symbols-outlined text-sm">edit</span> Edit
+                  <span className="material-symbols-outlined text-sm">edit</span> {t('adminUsers.edit')}
                 </button>
                 <button onClick={() => handleDelete(u._id)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg transition-colors">
                   <span className="material-symbols-outlined text-sm">delete</span>
@@ -165,37 +170,37 @@ export default function AdminUsers() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">{editingUser ? 'Edit User' : 'Add User'}</h3>
+              <h3 className="text-lg font-bold">{editingUser ? t('adminUsers.editUser') : t('adminUsers.addUser')}</h3>
               <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">Full Name</label>
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{t('adminUsers.fullName')}</label>
                 <input type="text" required value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">Email</label>
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{t('adminUsers.email')}</label>
                 <input type="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">Phone</label>
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{t('adminUsers.phone')}</label>
                 <input type="tel" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">Password {editingUser && '(leave blank to keep)'}</label>
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{t('adminUsers.password')} {editingUser && `(${t('adminUsers.passwordHint')})`}</label>
                 <input type="password" {...(!editingUser ? { required: true } : {})} value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">Role</label>
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{t('adminUsers.role')}</label>
                 <select value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
-                  {roles.map(r => <option key={r} value={r}>{r.replace(/_/g, ' ')}</option>)}
+                  {roles.map(r => <option key={r} value={r}>{roleLabel(r)}</option>)}
                 </select>
               </div>
               <div className="flex gap-3 mt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
-                <button type="submit" className="flex-1 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">{editingUser ? 'Save Changes' : 'Create User'}</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">{t('adminUsers.cancel')}</button>
+                <button type="submit" className="flex-1 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">{editingUser ? t('adminUsers.saveChanges') : t('adminUsers.createUser')}</button>
               </div>
             </form>
           </div>
