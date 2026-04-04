@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
 
+const REFRESH_PROMPT = '__assistant_refresh__';
+
 const starterMessages = {
   admin:
     'I can explain system metrics, summarize the current admin overview, and point you to the next dashboard page to check.',
@@ -19,6 +21,7 @@ export default function DashboardAssistant({ role }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [lastMeta, setLastMeta] = useState(null);
   const [messages, setMessages] = useState(() => [
     {
       role: 'model',
@@ -33,6 +36,7 @@ export default function DashboardAssistant({ role }) {
         content: starterMessages[role] || 'I can help explain this dashboard.',
       },
     ]);
+    setLastMeta(null);
     setInput('');
   }, [role, location.pathname]);
 
@@ -51,25 +55,58 @@ export default function DashboardAssistant({ role }) {
       }));
   }, [uiContext]);
 
-  const handleSend = async () => {
-    const trimmed = input.trim();
+  const formatMetaLabel = (meta) => {
+    if (!meta) return 'Read-only in this release';
+    switch (meta.strategy) {
+      case 'default':
+        return 'Instant answer';
+      case 'cached':
+        return 'Reused answer';
+      case 'lite_model':
+        return 'Light analysis';
+      case 'smart_model':
+      default:
+        return 'Deep analysis';
+    }
+  };
+
+  const formatMetaTimestamp = (meta) => {
+    if (!meta?.generatedAt) return 'updated just now';
+    const date = new Date(meta.generatedAt);
+    if (Number.isNaN(date.getTime())) return 'updated just now';
+    return `updated ${date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })}`;
+  };
+
+  const requestAssistant = async ({
+    message,
+    appendUserMessage,
+    forceRefresh,
+  }) => {
+    const trimmed = message.trim();
     if (!trimmed || loading) return;
 
-    const nextMessages = [
-      ...messages,
-      { role: 'user', content: trimmed },
-    ];
-    setMessages(nextMessages);
-    setInput('');
+    const historyBase = trimmed === REFRESH_PROMPT
+      ? []
+      : messages.filter(
+          (entry) => entry.role === 'user' || entry.role === 'model',
+        );
+    if (appendUserMessage) {
+      setMessages([
+        ...historyBase,
+        { role: 'user', content: trimmed },
+      ]);
+      setInput('');
+    }
     setLoading(true);
 
     try {
-      const history = messages
-        .filter((message) => message.role === 'user' || message.role === 'model')
-        .map((message) => ({
-          role: message.role,
-          content: message.content,
-        }));
+      const history = historyBase.map((entry) => ({
+        role: entry.role,
+        content: entry.content,
+      }));
 
       const response = await authFetch('/chatbot/chat', {
         method: 'POST',
@@ -82,6 +119,7 @@ export default function DashboardAssistant({ role }) {
           surface: 'web',
           route: location.pathname,
           uiContext,
+          forceRefresh,
         }),
       });
       const data = await response.json().catch(() => ({}));
@@ -96,11 +134,13 @@ export default function DashboardAssistant({ role }) {
       const readOnlyNote = data.pendingAction
         ? '\n\nThis dashboard assistant is read-only in this release, so no action was executed.'
         : '';
+      setLastMeta(data.meta ?? null);
       setMessages((current) => [
         ...current,
         {
           role: 'model',
           content: `${reply}${readOnlyNote}`,
+          meta: data.meta ?? null,
         },
       ]);
     } catch (error) {
@@ -118,6 +158,30 @@ export default function DashboardAssistant({ role }) {
       setLoading(false);
     }
   };
+
+  const handleSend = async () => {
+    await requestAssistant({
+      message: input,
+      appendUserMessage: true,
+      forceRefresh: false,
+    });
+  };
+
+  const handleRefresh = async ({ entry = false } = {}) => {
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((entryItem) => entryItem.role === 'user')?.content;
+    await requestAssistant({
+      message: entry ? REFRESH_PROMPT : (lastUserMessage || REFRESH_PROMPT),
+      appendUserMessage: false,
+      forceRefresh: true,
+    });
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    void handleRefresh({ entry: true });
+  }, [open, location.pathname, role]);
 
   return (
     <>
@@ -151,6 +215,14 @@ export default function DashboardAssistant({ role }) {
                 </div>
                 <button
                   type="button"
+                  onClick={() => void handleRefresh()}
+                  disabled={loading}
+                  className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800"
+                >
+                  <span className="material-symbols-outlined">refresh</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setOpen(false)}
                   className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
@@ -170,6 +242,11 @@ export default function DashboardAssistant({ role }) {
                   </span>
                 ))}
               </div>
+              <p className="mt-3 text-xs text-slate-400">
+                {lastMeta
+                  ? `${formatMetaLabel(lastMeta)} • ${formatMetaTimestamp(lastMeta)}`
+                  : 'Read-only in this release'}
+              </p>
             </div>
 
             <div className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
@@ -187,7 +264,12 @@ export default function DashboardAssistant({ role }) {
                           : 'border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-100'
                       }`}
                     >
-                      {message.content}
+                      <div>{message.content}</div>
+                      {message.role === 'model' && message.meta && (
+                        <div className="mt-2 text-[11px] font-medium text-slate-400 dark:text-slate-400">
+                          {formatMetaLabel(message.meta)} • {formatMetaTimestamp(message.meta)}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -218,17 +300,30 @@ export default function DashboardAssistant({ role }) {
                 />
                 <div className="mt-2 flex items-center justify-between px-1">
                   <p className="text-xs text-slate-400">
-                    Read-only in this release
+                    {lastMeta
+                      ? `${formatMetaLabel(lastMeta)} • ${formatMetaTimestamp(lastMeta)}`
+                      : 'Read-only in this release'}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => void handleSend()}
-                    disabled={loading}
-                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">send</span>
-                    <span>Send</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void handleRefresh()}
+                      disabled={loading}
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">refresh</span>
+                      <span>Refresh</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleSend()}
+                      disabled={loading}
+                      className="inline-flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">send</span>
+                      <span>Send</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
