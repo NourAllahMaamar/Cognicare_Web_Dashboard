@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import SEOHead from '../../components/SEOHead';
+import DashboardAssistant from '../../components/assistant/DashboardAssistant';
+import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
 
 export default function SpecialistLayout() {
   const { t } = useTranslation();
@@ -35,18 +37,21 @@ export default function SpecialistLayout() {
   if (!user) return null;
 
   return (
-    <SidebarLayout
-      title={t('specialistDashboard.title', 'Specialist Dashboard')}
-      subtitle={t('specialistDashboard.subtitle', 'Professional Suite')}
-      brandName={t('specialistDashboard.brand', 'Specialist')}
-      brandIcon="stethoscope"
-      navItems={navItems}
-      bottomItems={bottomItems}
-      user={user}
-      onLogout={handleLogout}
-      seoHead={<SEOHead title="Specialist Dashboard" path="/specialist/dashboard" noindex />}
-    >
-      <Outlet />
-    </SidebarLayout>
+    <DashboardAssistantProvider>
+      <SidebarLayout
+        title={t('specialistDashboard.title', 'Specialist Dashboard')}
+        subtitle={t('specialistDashboard.subtitle', 'Professional Suite')}
+        brandName={t('specialistDashboard.brand', 'Specialist')}
+        brandIcon="stethoscope"
+        navItems={navItems}
+        bottomItems={bottomItems}
+        user={user}
+        onLogout={handleLogout}
+        headerActions={<DashboardAssistant role="specialist" />}
+        seoHead={<SEOHead title="Specialist Dashboard" path="/specialist/dashboard" noindex />}
+      >
+        <Outlet />
+      </SidebarLayout>
+    </DashboardAssistantProvider>
   );
 }

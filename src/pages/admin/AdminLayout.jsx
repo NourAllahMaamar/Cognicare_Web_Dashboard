@@ -4,6 +4,9 @@ import SidebarLayout from '../../components/layouts/SidebarLayout';
 import SEOHead from '../../components/SEOHead';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import DashboardAssistant from '../../components/assistant/DashboardAssistant';
+import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminLayout() {
   const { getUser, logout } = useAuth('admin');
@@ -37,31 +40,36 @@ export default function AdminLayout() {
   ];
 
   const headerActions = (
-    <button
-      onClick={() => window.location.reload()}
-      className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors"
-    >
-      <span className="material-symbols-outlined text-lg">refresh</span>
-      {t('adminLayout.refresh')}
-    </button>
+    <>
+      <DashboardAssistant role="admin" />
+      <button
+        onClick={() => window.location.reload()}
+        className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+      >
+        <span className="material-symbols-outlined text-lg">refresh</span>
+        {t('adminLayout.refresh')}
+      </button>
+    </>
   );
 
   if (!user) return null;
 
   return (
-    <SidebarLayout
-      title={t('adminLayout.title')}
-      subtitle={t('adminLayout.subtitle')}
-      brandName={t('adminLayout.brandName')}
-      brandIcon="admin_panel_settings"
-      navItems={navItems}
-      bottomItems={bottomItems}
-      user={user}
-      onLogout={logout}
-      headerActions={headerActions}
-      seoHead={<SEOHead title="Admin Dashboard" path="/admin/dashboard" noindex />}
-    >
-      <Outlet />
-    </SidebarLayout>
+    <DashboardAssistantProvider>
+      <SidebarLayout
+        title={t('adminLayout.title')}
+        subtitle={t('adminLayout.subtitle')}
+        brandName={t('adminLayout.brandName')}
+        brandIcon="admin_panel_settings"
+        navItems={navItems}
+        bottomItems={bottomItems}
+        user={user}
+        onLogout={logout}
+        headerActions={headerActions}
+        seoHead={<SEOHead title="Admin Dashboard" path="/admin/dashboard" noindex />}
+      >
+        <Outlet />
+      </SidebarLayout>
+    </DashboardAssistantProvider>
   );
 }

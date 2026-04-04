@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import StatCard from '../../components/ui/StatCard';
 import { useAuth } from '../../hooks/useAuth';
+import { API_BASE_URL } from '../../config';
+import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
 
 export default function AdminOverview() {
   const { t } = useTranslation();
   const { authGet } = useAuth('admin');
   const navigate = useNavigate();
+  const { setUiContext } = useDashboardAssistantContext();
   const [stats, setStats] = useState({ users: [], orgs: [], pending: [] });
   const [loading, setLoading] = useState(true);
   const [aiHealth, setAiHealth] = useState(null);
@@ -27,7 +30,7 @@ export default function AdminOverview() {
       ]);
 
       // AI health - no auth needed
-      const aiRes = await fetch('/api/v1/org-scan-ai/health').catch(() => null);
+      const aiRes = await fetch(`${API_BASE_URL}/org-scan-ai/health`).catch(() => null);
       const aiData = aiRes?.ok ? await aiRes.json() : null;
 
       setStats({ users: Array.isArray(users) ? users : [], orgs: Array.isArray(orgs) ? orgs : [], pending: Array.isArray(pending) ? pending : [], families: Array.isArray(families) ? families : [] });
@@ -40,6 +43,24 @@ export default function AdminOverview() {
   };
 
   const usersByRole = (role) => stats.users.filter(u => u.role === role).length;
+
+  useEffect(() => {
+    setUiContext({
+      page: 'admin-overview',
+      totalUsers: stats.users.length,
+      totalOrganizations: stats.orgs.length,
+      pendingReviews: stats.pending.length,
+      totalFamilies: stats.families?.length || 0,
+      aiConfigured: Boolean(aiHealth?.configured ?? aiHealth?.apiKeySet ?? aiHealth),
+    });
+  }, [
+    aiHealth,
+    setUiContext,
+    stats.families,
+    stats.orgs.length,
+    stats.pending.length,
+    stats.users.length,
+  ]);
 
   if (loading) {
     return (
@@ -150,4 +171,3 @@ export default function AdminOverview() {
     </div>
   );
 }
-

@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import SEOHead from '../../components/SEOHead';
+import DashboardAssistant from '../../components/assistant/DashboardAssistant';
+import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
 
 export default function OrgLayout() {
   const { t } = useTranslation();
@@ -38,19 +40,21 @@ export default function OrgLayout() {
   if (!user) return null;
 
   return (
-    <SidebarLayout
-      title={t('orgDashboard.title', 'Organization Dashboard')}
-      subtitle={t('orgDashboard.subtitle', 'Org Leader Console')}
-      brandName={t('orgDashboard.brand', 'Org Console')}
-      brandIcon="corporate_fare"
-      navItems={navItems}
-      bottomItems={bottomItems}
-      user={user}
-      onLogout={handleLogout}
-      headerActions={null}
-      seoHead={<SEOHead title="Organization Dashboard" path="/org/dashboard" noindex />}
-    >
-      <Outlet />
-    </SidebarLayout>
+    <DashboardAssistantProvider>
+      <SidebarLayout
+        title={t('orgDashboard.title', 'Organization Dashboard')}
+        subtitle={t('orgDashboard.subtitle', 'Org Leader Console')}
+        brandName={t('orgDashboard.brand', 'Org Console')}
+        brandIcon="corporate_fare"
+        navItems={navItems}
+        bottomItems={bottomItems}
+        user={user}
+        onLogout={handleLogout}
+        headerActions={<DashboardAssistant role="orgLeader" />}
+        seoHead={<SEOHead title="Organization Dashboard" path="/org/dashboard" noindex />}
+      >
+        <Outlet />
+      </SidebarLayout>
+    </DashboardAssistantProvider>
   );
 }
