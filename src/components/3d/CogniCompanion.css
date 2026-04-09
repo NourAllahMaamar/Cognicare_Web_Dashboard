@@ -1,0 +1,164 @@
+/* ═══════════════════════════════════════════════
+ *  CogniCompanion — Floating character styles
+ * ═══════════════════════════════════════════════ */
+
+/* ── Glow ring behind the character ── */
+.cogni-glow-ring {
+  position: absolute;
+  inset: -2%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(139, 92, 246, 0.12) 0%,
+    rgba(59, 130, 246, 0.08) 40%,
+    rgba(6, 182, 212, 0.02) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  animation: cogni-pulse 3s ease-in-out infinite;
+}
+
+.cogni-motion-halo {
+  position: absolute;
+  inset: -1%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(139, 92, 246, 0.12) 28%,
+    rgba(59, 130, 246, 0.08) 48%,
+    transparent 72%
+  );
+  filter: blur(4px);
+  opacity: 0.34;
+  pointer-events: none;
+  animation: cogni-motion-halo 4.4s ease-in-out infinite;
+}
+
+@keyframes cogni-motion-halo {
+  0%, 100% { transform: scale(0.98) rotate(0deg); opacity: 0.52; }
+  50% { transform: scale(1.05) rotate(6deg); opacity: 0.82; }
+}
+
+@keyframes cogni-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.1); opacity: 0.6; }
+}
+
+/* ── Speech bubble ── */
+.cogni-speech-bubble {
+  position: relative;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1E293B;
+  box-shadow:
+    0 4px 20px rgba(139, 92, 246, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+}
+
+.dark .cogni-speech-bubble {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #E2E8F0;
+  box-shadow:
+    0 4px 20px rgba(139, 92, 246, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.cogni-speech-arrow {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border-right: 1px solid rgba(139, 92, 246, 0.2);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.dark .cogni-speech-arrow {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* ── Celebration spin ── */
+.cogni-celebrate {
+  animation: cogni-spin 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cogni-spin {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* ── Click ripple ── */
+.cogni-click-ripple {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  animation: cogni-ripple 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes cogni-ripple {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* ── Companion container hover ── */
+.cogni-companion-container {
+  transition: filter 0.3s ease;
+}
+
+.cogni-media-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.cogni-media-frame {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+  position: relative;
+  z-index: 2;
+}
+
+.cogni-video-frame {
+  will-change: transform, filter;
+  mix-blend-mode: screen;
+}
+
+.cogni-companion-container:hover {
+  filter: none !important;
+}
+
+/* ── Hide on very small screens to prevent distraction ── */
+@media (max-width: 520px) {
+  .cogni-companion-container {
+    display: none;
+  }
+}

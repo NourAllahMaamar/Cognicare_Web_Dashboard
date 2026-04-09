@@ -1,0 +1,45 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      - name: Build app
+        run: npm run build
+        env:
+          VITE_BACKEND_ORIGIN: ${{ secrets.VITE_BACKEND_ORIGIN }}
+
+      - name: Deploy to Render
+        if: github.ref == 'refs/heads/main'
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+
+      - name: Verify deployment
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Deployment triggered on Render"
+          echo "Check status at: https://dashboard.render.com"

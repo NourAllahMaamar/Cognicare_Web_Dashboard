@@ -119,11 +119,14 @@ export default defineConfig(({ mode }) => {
       })
     ],
     build: {
+      chunkSizeWarningLimit: 1100,
       rollupOptions: {
         output: {
           manualChunks: {
             'vendor-react': ['react', 'react-dom', 'react-router-dom'],
             'vendor-i18n': ['i18next', 'react-i18next'],
+            'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
+            'vendor-motion': ['framer-motion'],
           },
         },
       },
