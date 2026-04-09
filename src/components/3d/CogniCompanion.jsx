@@ -540,6 +540,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
           transform: `scale(${isElementEngaged ? 1.12 : 1})`,
         }}
       />
+      {isElementEngaged && <div className="cogni-engage-dot" />}
 
       {/* Speech bubble — positioned above */}
       <div style={{
