@@ -247,11 +247,11 @@ export default function DashboardAssistant({ role }) {
             className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-slate-300 bg-white shadow-2xl dark:border-slate-800 dark:bg-surface-dark">
-            <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-slate-200 bg-gradient-to-b from-white via-slate-50 to-slate-100 shadow-2xl dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950">
+            <div className="border-b border-slate-200/80 bg-white/90 px-5 py-4 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-primary shadow-sm">
                     <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
                     Assistant
                   </div>
@@ -284,13 +284,13 @@ export default function DashboardAssistant({ role }) {
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                   {location.pathname}
                 </span>
                 {summaryChips.map((chip) => (
                   <span
                     key={chip.key}
-                    className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                    className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                   >
                     {chip.key}: {chip.value}
                   </span>
@@ -325,8 +325,8 @@ export default function DashboardAssistant({ role }) {
                     <div
                       className={`max-w-[86%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
                         isUser
-                          ? 'bg-primary text-white'
-                          : 'border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-100'
+                          ? 'border border-primary/30 bg-primary text-white'
+                          : 'border border-slate-200 bg-white text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
                       }`}
                     >
                       <div>{message.content}</div>
@@ -341,7 +341,7 @@ export default function DashboardAssistant({ role }) {
               })}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300">
+                  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                     {lastRequest?.mode === 'refresh'
                       ? 'Cogni is refreshing this view…'
                       : 'Cogni is thinking…'}
@@ -350,8 +350,8 @@ export default function DashboardAssistant({ role }) {
               )}
             </div>
 
-            <div className="border-t border-slate-200 px-5 py-4 dark:border-slate-800">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="border-t border-slate-200/80 bg-white/95 px-5 py-4 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/95">
+              <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-850">
                 <textarea
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
