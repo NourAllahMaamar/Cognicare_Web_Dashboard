@@ -4,6 +4,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+ARG VITE_BACKEND_ORIGIN=https://cognicare-mobile-h4ct.onrender.com
+ARG VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
+ENV VITE_BACKEND_ORIGIN=$VITE_BACKEND_ORIGIN
+ENV VITE_PUBLIC_SITE_ORIGIN=$VITE_PUBLIC_SITE_ORIGIN
+
 # Copy package files
 COPY package*.json ./
 

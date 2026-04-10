@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import SEOHead from '../../components/SEOHead';
 import logo from '../../assets/app_logo_withoutbackground.png';
 import CogniCompanion from '../../components/3d/CogniCompanion';
 import CursorEffect from '../../components/ui/CursorEffect';
@@ -68,6 +69,20 @@ const SLIDES = [
     ],
   },
 ];
+
+const DEFAULT_RELEASE_INFO = {
+  android: {
+    available: false,
+    version: 'Coming soon',
+    downloadUrl: '',
+    notes: 'The Android pilot build is being prepared.',
+  },
+  ios: {
+    available: false,
+    version: 'Coming soon',
+    notes: 'iOS distribution will follow after App Store setup.',
+  },
+};
 
 /* â”€â”€ Mini renderers for slide content â”€â”€ */
 function SlideContent({ slide }) {
@@ -175,6 +190,8 @@ export default function LandingPage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [cogniFocusTarget, setCogniFocusTarget] = useState(null);
   const [cogniZone, setCogniZone] = useState(null);
+  const [releaseInfo, setReleaseInfo] = useState(DEFAULT_RELEASE_INFO);
+  const [releaseLoading, setReleaseLoading] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -183,14 +200,83 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    const loadReleaseInfo = async () => {
+      setReleaseLoading(true);
+      try {
+        const response = await fetch('/mobile-release.json', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        if (active && data && typeof data === 'object') {
+          setReleaseInfo({
+            android: {
+              ...DEFAULT_RELEASE_INFO.android,
+              ...(typeof data.android === 'object' && data.android ? data.android : {}),
+            },
+            ios: {
+              ...DEFAULT_RELEASE_INFO.ios,
+              ...(typeof data.ios === 'object' && data.ios ? data.ios : {}),
+            },
+          });
+        }
+      } catch {
+        if (active) {
+          setReleaseInfo(DEFAULT_RELEASE_INFO);
+        }
+      } finally {
+        if (active) {
+          setReleaseLoading(false);
+        }
+      }
+    };
+
+    void loadReleaseInfo();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const navItems = [
     { label: t('landing.nav.orgLeaders', 'Organizations'), to: '/org/login' },
     { label: t('landing.nav.professionals', 'Professionals'), to: '/specialist/login' },
     { label: t('landing.nav.admins', 'Admins'), to: '/admin/login' },
   ];
 
+  const androidRelease = releaseInfo.android || DEFAULT_RELEASE_INFO.android;
+  const iosRelease = releaseInfo.ios || DEFAULT_RELEASE_INFO.ios;
+  const androidDownloadReady = Boolean(
+    androidRelease.available && androidRelease.downloadUrl,
+  );
+  const landingJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'CogniCare',
+    applicationCategory: 'HealthApplication',
+    operatingSystem: 'Android, Web',
+    description:
+      'CogniCare connects organizations, specialists, admins, and families through one cognitive care platform.',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    ...(androidDownloadReady
+      ? { downloadUrl: `https://cognicare.app${androidRelease.downloadUrl}` }
+      : {}),
+  };
+
   return (
     <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 font-display overflow-x-hidden selection:bg-primary/30">
+      <SEOHead
+        title="Connected Cognitive Care Platform"
+        path="/"
+        description="CogniCare brings organizations, specialists, admins, and families together through one connected cognitive care platform with a public Android pilot download."
+        jsonLd={landingJsonLd}
+      />
       <CursorEffect />
       <FloatingParticles count={45} />
       <ParticleBurst />
@@ -310,22 +396,46 @@ export default function LandingPage() {
 
                   {/* Mobile App Download */}
                   <div className="flex items-center gap-4 pt-6">
-                    <a 
-                      data-cogni-interactive
-                      href="/downloads/cognicare-app.apk" 
-                      download
-                      className="flex items-center gap-3 px-5 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all group"
-                    >
-                      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.523 15.3414c-.5 0-.909.409-.909.909 0 .5.409.909.909.909.5 0 .909-.409.909-.909 0-.5-.409-.909-.909-.909zm-11.046 0c-.5 0-.909.409-.909.909 0 .5.409.909.909.909.5 0 .909-.409.909-.909 0-.5-.409-.909-.909-.909zm11.4-6.117l2.033-3.521c.111-.192.045-.438-.147-.549-.192-.111-.438-.045-.549.147L17.153 8.89c-1.428-.655-3.031-1.024-4.653-1.024s-3.225.369-4.653 1.024L6.787 5.301c-.111-.192-.357-.258-.549-.147-.192.111-.258.357-.147.549l2.033 3.521C5.717 10.595 3.75 13.562 3.75 17.041h16.5c0-3.479-1.967-6.446-4.923-7.817z"/>
-                      </svg>
-                      <div className="flex flex-col items-start">
-                        <span className="text-xs opacity-75">{t('landing.download.get', 'Get the app')}</span>
-                        <span className="text-sm font-bold">{t('landing.download.android', 'Download APK')}</span>
-                      </div>
-                    </a>
+                    {androidDownloadReady ? (
+                      <a
+                        data-cogni-interactive
+                        href={androidRelease.downloadUrl}
+                        download
+                        className="flex items-center gap-3 px-5 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all group"
+                      >
+                        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M17.523 15.3414c-.5 0-.909.409-.909.909 0 .5.409.909.909.909.5 0 .909-.409.909-.909 0-.5-.409-.909-.909-.909zm-11.046 0c-.5 0-.909.409-.909.909 0 .5.409.909.909.909.5 0 .909-.409.909-.909 0-.5-.409-.909-.909-.909zm11.4-6.117l2.033-3.521c.111-.192.045-.438-.147-.549-.192-.111-.438-.045-.549.147L17.153 8.89c-1.428-.655-3.031-1.024-4.653-1.024s-3.225.369-4.653 1.024L6.787 5.301c-.111-.192-.357-.258-.549-.147-.192.111-.258.357-.147.549l2.033 3.521C5.717 10.595 3.75 13.562 3.75 17.041h16.5c0-3.479-1.967-6.446-4.923-7.817z"/>
+                        </svg>
+                        <div className="flex flex-col items-start">
+                          <span className="text-xs opacity-75">
+                            {t('landing.download.get', 'Get the app')}
+                          </span>
+                          <span className="text-sm font-bold">
+                            {t('landing.download.android', 'Download APK')} {androidRelease.version}
+                          </span>
+                        </div>
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled
+                        className="flex items-center gap-3 px-5 py-3 bg-slate-300/70 text-slate-600 rounded-xl cursor-not-allowed dark:bg-slate-700/70 dark:text-slate-300"
+                      >
+                        <span className="material-symbols-outlined">android</span>
+                        <div className="flex flex-col items-start">
+                          <span className="text-xs opacity-75">
+                            {releaseLoading ? 'Checking release' : 'Android pilot'}
+                          </span>
+                          <span className="text-sm font-bold">
+                            {releaseLoading ? 'Preparing download…' : 'Download coming soon'}
+                          </span>
+                        </div>
+                      </button>
+                    )}
                     <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[200px]">
-                      {t('landing.download.desc', 'Available for Android. iOS version coming soon.')}
+                      {androidDownloadReady
+                        ? `Android ${androidRelease.version} is ready. ${androidRelease.notes || 'iOS is coming soon.'}`
+                        : t('landing.download.desc', 'Available for Android soon. iOS version coming later.')}
                     </p>
                   </div>
                 </motion.div>
@@ -435,6 +545,141 @@ export default function LandingPage() {
                     </div>
                   </motion.div>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="section-download" className="py-20 relative z-10">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+                className="mb-14 text-center"
+              >
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
+                  Pilot Access for Web and Android
+                </h2>
+                <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg font-medium text-slate-600 dark:text-slate-400">
+                  Organizations, specialists, and admins can access CogniCare directly from this website, while families can install the current Android pilot build from the same public entrypoint.
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5 }}
+                  className="rounded-[2rem] border border-white/40 bg-white/50 p-7 shadow-[0_20px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/40"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-600">
+                      <span className="material-symbols-outlined">android</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">
+                        Android
+                      </p>
+                      <h3 className="text-xl font-black">Mobile pilot build</h3>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {androidDownloadReady
+                      ? `Version ${androidRelease.version} is published and ready for direct download. ${androidRelease.notes || ''}`
+                      : releaseLoading
+                        ? 'Checking the latest Android release manifest now.'
+                        : androidRelease.notes}
+                  </p>
+                  <div className="mt-6">
+                    {androidDownloadReady ? (
+                      <a
+                        href={androidRelease.downloadUrl}
+                        download
+                        className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">download</span>
+                        <span>Download Android {androidRelease.version}</span>
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled
+                        className="inline-flex items-center gap-2 rounded-2xl bg-slate-300/80 px-5 py-3 text-sm font-bold text-slate-600 cursor-not-allowed dark:bg-slate-700 dark:text-slate-300"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">hourglass_top</span>
+                        <span>Android build pending</span>
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: 0.08 }}
+                  className="rounded-[2rem] border border-white/40 bg-white/50 p-7 shadow-[0_20px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/40"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                      <span className="material-symbols-outlined">language</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
+                        Web
+                      </p>
+                      <h3 className="text-xl font-black">Role-based dashboards</h3>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    The same public website is the pilot access point for organization leaders, specialists, and admins. Choose the role entry that matches your test account and sign in directly here.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/org/login')}
+                      className="rounded-2xl border border-primary/20 bg-primary/10 px-4 py-2.5 text-sm font-bold text-primary transition-colors hover:bg-primary/15"
+                    >
+                      Organization login
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/specialist/login')}
+                      className="rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                    >
+                      Specialist login
+                    </button>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: 0.16 }}
+                  className="rounded-[2rem] border border-white/40 bg-white/50 p-7 shadow-[0_20px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/40"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900/10 text-slate-700 dark:bg-white/10 dark:text-slate-100">
+                      <span className="material-symbols-outlined">phone_iphone</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-500">
+                        iOS
+                      </p>
+                      <h3 className="text-xl font-black">Coming later</h3>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {iosRelease.notes}
+                  </p>
+                  <div className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                    <span className="material-symbols-outlined text-[18px]">schedule</span>
+                    <span>{iosRelease.version}</span>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </section>

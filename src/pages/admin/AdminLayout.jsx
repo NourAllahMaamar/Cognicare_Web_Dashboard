@@ -6,7 +6,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import DashboardAssistant from '../../components/assistant/DashboardAssistant';
 import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
-import { useTranslation } from 'react-i18next';
 
 export default function AdminLayout() {
   const { getUser, logout } = useAuth('admin');

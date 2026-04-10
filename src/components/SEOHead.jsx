@@ -5,7 +5,8 @@ const DEFAULT_TITLE = 'CogniCare – Cognitive Health Platform for Autism Care';
 const DEFAULT_DESCRIPTION =
   'CogniCare empowers families, specialists, and organizations with AI-powered tools for autism care management, PECS & TEACCH plans, and real-time progress tracking.';
 const DEFAULT_OG_IMAGE = '/pwa-512x512.png';
-const SITE_URL = 'https://cognicare.app'; // Update when domain is finalized
+const SITE_URL =
+  import.meta.env.VITE_PUBLIC_SITE_ORIGIN || 'https://cognicare.app';
 
 /**
  * Per-page SEO head — renders <title>, Open Graph, Twitter Card, and optional JSON-LD.

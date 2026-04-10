@@ -81,8 +81,11 @@ npm run preview           # Preview production build
 Create a `.env` file:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000/api/v1
+VITE_BACKEND_ORIGIN=http://localhost:3000
+VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
 ```
+
+`VITE_BACKEND_ORIGIN` is compiled into the production build and powers all dashboard API calls. The public Android release card on `/` reads `public/mobile-release.json`, so updating the downloadable APK/version does not require editing JSX.
 
 ## Role-Based Routing
 

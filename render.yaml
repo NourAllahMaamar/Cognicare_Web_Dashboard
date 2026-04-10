@@ -10,6 +10,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: VITE_API_BASE_URL
+      - key: VITE_BACKEND_ORIGIN
         value: https://cognicare-mobile-h4ct.onrender.com
+      - key: VITE_PUBLIC_SITE_ORIGIN
+        value: https://cognicare.app
     healthCheckPath: /

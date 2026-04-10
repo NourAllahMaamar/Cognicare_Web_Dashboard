@@ -1,69 +1,45 @@
-# Mobile App APK Build Guide
+# Android Pilot Build Guide
 
-## Build Flutter APK for Web Download
-
-### Step 1: Navigate to Flutter Project
+## Build the APK
 
 ```bash
-cd ../cognicare/frontend
-```
-
-### Step 2: Install Dependencies
-
-```bash
+cd /Users/mac/pim/cognicare/frontend
 flutter pub get
+flutter build apk --release --split-per-abi
 ```
 
-### Step 3: Build Release APK
+Recommended pilot artifact:
+
+```text
+/Users/mac/pim/cognicare/frontend/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+```
+
+## Publish it on the public website
+
+1. Read the current mobile app version from `pubspec.yaml`.
+2. Copy the APK into the public website downloads folder with a versioned filename:
 
 ```bash
-flutter build apk --release
+cp /Users/mac/pim/cognicare/frontend/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk \
+  /Users/mac/pim/cognicareweb/public/downloads/cognicare-android-v1.0.0-arm64-v8a.apk
 ```
 
-The APK will be created at:
-```
-build/app/outputs/flutter-apk/app-release.apk
-```
+3. Update `/Users/mac/pim/cognicareweb/public/mobile-release.json`:
+   - set `android.available` to `true`
+   - set `android.version`
+   - set `android.downloadUrl` to `/downloads/cognicare-android-v1.0.0-arm64-v8a.apk`
+   - update release notes if needed
 
-### Step 4: Copy to Webapp Downloads
+4. Rebuild and redeploy `cognicareweb`.
 
-```bash
-# From cognicare/frontend directory
-cp build/app/outputs/flutter-apk/app-release.apk \
-   ../../cognicareweb/public/downloads/cognicare-app.apk
-```
+## Important notes
 
-### Step 5: Commit and Push
+- Do not hardcode APK links in `LandingPage.jsx`; the site reads `mobile-release.json`.
+- The universal APK exceeded normal git-friendly size during release prep, so the pilot website uses the `arm64-v8a` build by default.
+- Keep old APK files until the new version is verified so rollback is one manifest edit away.
+- If the APK becomes too large for your git workflow, move the file to external hosting and keep the same manifest contract.
 
-```bash
-cd ../../cognicareweb
-git add public/downloads/cognicare-app.apk
-git commit -m "Add mobile app APK for download"
-git push origin main
-```
+## Related docs
 
-## Alternative: Upload to Cloud Storage
-
-If APK is too large for GitHub (>100MB), upload to:
-- Google Drive (with public link)
-- AWS S3
-- Firebase Storage
-
-Then update the download link in `src/pages/home/LandingPage.jsx`.
-
-## Troubleshooting
-
-### Build fails
-```bash
-flutter clean
-flutter pub get
-flutter build apk --release
-```
-
-### APK too large
-- Enable code shrinking in `android/app/build.gradle`
-- Use app bundles instead: `flutter build appbundle`
-- Upload to external storage
-
-### Signature issues
-Ensure `android/app/build.gradle` has signing config for release.
+- `/Users/mac/pim/project-architecture/PUBLIC_PILOT_RELEASE_RUNBOOK.md`
+- `/Users/mac/pim/cognicareweb/public/mobile-release.json`
