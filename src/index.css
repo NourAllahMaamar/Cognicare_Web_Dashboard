@@ -174,3 +174,14 @@ body {
 .animate-slide-in {
   animation: slideIn 0.2s ease-out;
 }
+
+/* ===== Assistant-Aware Dashboard Layout ===== */
+.assistant-aware-shell {
+  transition: padding-right 0.2s ease;
+}
+
+@media (min-width: 1280px) {
+  .assistant-aware-shell[data-assistant-open='true'] {
+    padding-right: calc(var(--dashboard-assistant-width, 0px) + 1rem);
+  }
+}

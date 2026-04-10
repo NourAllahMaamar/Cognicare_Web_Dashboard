@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useAnimation, AnimatePresence, motion } from 'framer-motion';
+import { useAnimation, AnimatePresence } from 'framer-motion';
 import './CogniCompanion.css';
 import { ZONES } from '../ui/InteractiveZones';
 
@@ -55,7 +55,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const [currentAnchor, setCurrentAnchor] = useState(0);
   const [currentPose, setCurrentPose] = useState(COGNI_POSES.WAVING);
   const [showTip, setShowTip] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
+  const [_isHovered, _setIsHovered] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [isJumping, setIsJumping] = useState(false);
   const [currentZone, setCurrentZone] = useState(null);
@@ -450,7 +450,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   }, [focusTarget, isJumping, jumpToAnchor]);
 
   // ─── Click handler ───
-  const handleClick = useCallback(() => {
+  const _handleClick = useCallback(() => {
     setClickCount((c) => c + 1);
     setCurrentPose(COGNI_POSES.DANCING);
 

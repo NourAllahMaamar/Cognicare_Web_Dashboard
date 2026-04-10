@@ -126,12 +126,14 @@ Translations are in `src/locales/`:
 
 ## Security Notes
 
-- No PII in console logs
-- Token stored in localStorage only
-- 401 errors redirect to appropriate login
-- Role checks before rendering sensitive data
-- Production nginx adds CSP, HSTS, `Referrer-Policy`, `Permissions-Policy`, and download-safe APK headers
-- The public Android release card is manifest-driven via `public/mobile-release.json`, so version/file updates do not require JSX changes
+- Production nginx adds CSP, HSTS, `Referrer-Policy`, `Permissions-Policy`, and download-safe APK headers.
+- Current auth model uses role-scoped `localStorage` tokens plus refresh.
+- Current PWA config includes API runtime caching and must be tightened for authenticated data before broad production launch.
+- Current route/session guards are partly client-side and must be strengthened with unified role-protected routing.
+- 2026-04-10 hardening findings and action list:
+  - `architecture/bilan/2026-04-10-security-hardening.md`
+  - `WEB_ARCHITECTURE.md`
+  - `../project-architecture/PRODUCTION_READINESS_SECURITY_AUDIT_2026-04-10.md`
 
 ## License
 

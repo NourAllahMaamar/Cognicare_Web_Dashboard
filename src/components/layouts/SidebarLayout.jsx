@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ThemeToggle from '../ui/ThemeToggle';
 import logo from '../../assets/app_logo_withoutbackground.png';
+import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
 
 export default function SidebarLayout({
   children,
@@ -21,6 +22,7 @@ export default function SidebarLayout({
   const _navigate = useNavigate();
   const _location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { assistantOpen, assistantPanelWidth } = useDashboardAssistantContext();
 
   // Close mobile menu on route change
   const handleNavClick = () => setMobileOpen(false);
@@ -135,7 +137,11 @@ export default function SidebarLayout({
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div
+        className="assistant-aware-shell flex-1 flex flex-col overflow-hidden"
+        data-assistant-open={assistantOpen ? 'true' : 'false'}
+        style={{ '--dashboard-assistant-width': `${assistantPanelWidth}px` }}
+      >
         {/* Header */}
         <header className="h-16 border-b border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 md:px-6 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-3">

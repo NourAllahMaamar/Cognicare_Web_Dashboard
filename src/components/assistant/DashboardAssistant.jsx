@@ -4,13 +4,13 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
+import {
+  MIN_ASSISTANT_PANEL_WIDTH,
+  MAX_ASSISTANT_PANEL_WIDTH,
+} from '../../assistant/constants';
 import cogniWave from '../../assets/cogni/cogni-wave.png';
 import cogniThinking from '../../assets/cogni/cogni-thinking.png';
 import cogniHappy from '../../assets/cogni/cogni-happy.png';
-
-const MIN_PANEL_WIDTH = 320;
-const DEFAULT_PANEL_WIDTH = 380;
-const MAX_PANEL_WIDTH = 760;
 
 function starterMessageForRole(role, t) {
   switch (role) {
@@ -141,10 +141,14 @@ export default function DashboardAssistant({ role }) {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const { authFetch } = useAuth(role);
-  const { uiContext } = useDashboardAssistantContext();
-  const [open, setOpen] = useState(false);
+  const {
+    uiContext,
+    assistantOpen,
+    setAssistantOpen,
+    assistantPanelWidth,
+    setAssistantPanelWidth,
+  } = useDashboardAssistantContext();
   const [isClient, setIsClient] = useState(false);
-  const [panelWidth, setPanelWidth] = useState(DEFAULT_PANEL_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -162,6 +166,8 @@ export default function DashboardAssistant({ role }) {
   const lastRefreshSignatureRef = useRef(null);
   const resizeSessionRef = useRef(null);
   const isRtl = i18n.dir() === 'rtl';
+  const open = assistantOpen;
+  const panelWidth = assistantPanelWidth;
 
   useEffect(() => {
     setIsClient(true);
@@ -188,7 +194,7 @@ export default function DashboardAssistant({ role }) {
 
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
-        setOpen(false);
+        setAssistantOpen(false);
       }
     };
 
@@ -204,10 +210,10 @@ export default function DashboardAssistant({ role }) {
       if (!session) return;
       const deltaX = session.startX - event.clientX;
       const nextWidth = Math.min(
-        MAX_PANEL_WIDTH,
-        Math.max(MIN_PANEL_WIDTH, session.startWidth + deltaX),
+        MAX_ASSISTANT_PANEL_WIDTH,
+        Math.max(MIN_ASSISTANT_PANEL_WIDTH, session.startWidth + deltaX),
       );
-      setPanelWidth(nextWidth);
+      setAssistantPanelWidth(nextWidth);
     };
 
     const handleEnd = () => {
@@ -452,7 +458,7 @@ export default function DashboardAssistant({ role }) {
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          setOpen((current) => !current);
+          setAssistantOpen((current) => !current);
         }}
         className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
           open
@@ -529,7 +535,7 @@ export default function DashboardAssistant({ role }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setOpen(false)}
+                    onClick={() => setAssistantOpen(false)}
                     aria-label={t('dashboardAssistant.close', 'Close assistant')}
                     className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
