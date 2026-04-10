@@ -411,6 +411,46 @@
     "fr": "Français",
     "ar": "Arabe"
   },
+  "dashboardAssistant": {
+    "askCogni": "Demander à Cogni",
+    "assistantTag": "Assistant",
+    "title": "Assistant Tableau de Bord Cogni",
+    "subtitle": "Assistance en lecture seule pour la vue actuelle du tableau de bord.",
+    "routeLabel": "Écran",
+    "conversation": "Conversation",
+    "clear": "Effacer",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "send": "Envoyer",
+    "close": "Fermer l'assistant",
+    "inputLabel": "Demander à Cogni",
+    "inputPlaceholder": "Posez une question sur l'état du tableau de bord, les métriques ou les prochaines étapes…",
+    "queued": "Message en file d'attente pendant l'actualisation de Cogni",
+    "readOnly": "Lecture seule dans cette version",
+    "fallbackReply": "Je n'ai rien d'utile à ajouter pour le moment.",
+    "readOnlyActionNote": "Cet assistant de tableau de bord reste en lecture seule dans cette version, donc aucune action n'a été exécutée.",
+    "unavailable": "Cogni est temporairement indisponible.",
+    "thinking": "Cogni réfléchit…",
+    "refreshing": "Cogni actualise cette vue…",
+    "status": {
+      "live": "Cogni en direct"
+    },
+    "starter": {
+      "admin": "Je peux expliquer les métriques système, résumer l'aperçu admin actuel et vous guider vers la prochaine page du tableau de bord.",
+      "orgLeader": "Je peux résumer le tableau de bord de votre organisation, expliquer les tendances du staff ou des familles, et vous aider à interpréter les cartes d'insights spécialistes.",
+      "specialist": "Je peux résumer vos données actuelles du tableau de bord, expliquer les volumes de plans et suggestions, et vous orienter vers le prochain workflow spécialiste.",
+      "default": "Je peux vous aider à comprendre ce tableau de bord."
+    },
+    "meta": {
+      "instantSummary": "Résumé instantané",
+      "reusedAnswer": "Réponse réutilisée",
+      "lightAnalysis": "Analyse légère",
+      "deepAnalysis": "Analyse approfondie",
+      "assistantReply": "Réponse de l'assistant",
+      "justUpdated": "mise à jour à l'instant",
+      "updatedAt": "mise à jour à {{time}}"
+    }
+  },
   "dashboard": {
     "title": "Admin CogniCare",
     "welcome": "Bon retour",

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 const languages = [
   { code: 'en', name: 'English', native: 'English', flag: '🇬🇧', dir: 'ltr' },
   { code: 'fr', name: 'French', native: 'Français', flag: '🇫🇷', dir: 'ltr' },
-  { code: 'ar', name: 'Arabic', native: 'العربية', flag: '🇸🇦', dir: 'rtl' },
+  { code: 'ar', name: 'Arabic', native: 'العربية', flag: '🇹🇳', dir: 'rtl' },
 ];
 
 export default function LanguageSwitcher({ variant = 'default' }) {

@@ -411,6 +411,46 @@
     "fr": "French",
     "ar": "Arabic"
   },
+  "dashboardAssistant": {
+    "askCogni": "Ask Cogni",
+    "assistantTag": "Assistant",
+    "title": "Cogni Dashboard Assistant",
+    "subtitle": "Read-only support for the current dashboard view.",
+    "routeLabel": "Screen",
+    "conversation": "Conversation",
+    "clear": "Clear",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "send": "Send",
+    "close": "Close assistant",
+    "inputLabel": "Ask Cogni",
+    "inputPlaceholder": "Ask about the current dashboard state, metrics, or next steps…",
+    "queued": "Message queued while Cogni refreshes",
+    "readOnly": "Read-only in this release",
+    "fallbackReply": "I do not have anything useful to add right now.",
+    "readOnlyActionNote": "This dashboard assistant stays read-only in this release, so no action was executed.",
+    "unavailable": "Cogni is temporarily unavailable.",
+    "thinking": "Cogni is thinking…",
+    "refreshing": "Cogni is refreshing this view…",
+    "status": {
+      "live": "Cogni Live"
+    },
+    "starter": {
+      "admin": "I can explain system metrics, summarize the current admin overview, and point you to the next dashboard page to check.",
+      "orgLeader": "I can summarize your organization dashboard, explain staff or family trends, and help you interpret specialist insight cards.",
+      "specialist": "I can summarize your current dashboard data, explain plan counts and suggestions, and guide you to the next specialist workflow.",
+      "default": "I can help explain this dashboard."
+    },
+    "meta": {
+      "instantSummary": "Instant summary",
+      "reusedAnswer": "Reused answer",
+      "lightAnalysis": "Light analysis",
+      "deepAnalysis": "Deep analysis",
+      "assistantReply": "Assistant reply",
+      "justUpdated": "just updated",
+      "updatedAt": "updated at {{time}}"
+    }
+  },
   "dashboard": {
     "title": "CogniCare Admin",
     "welcome": "Welcome back",
