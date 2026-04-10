@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
 
@@ -43,8 +44,10 @@ export default function DashboardAssistant({ role }) {
   const { authFetch } = useAuth(role);
   const { uiContext } = useDashboardAssistantContext();
   const [open, setOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [queuedMessage, setQueuedMessage] = useState('');
   const [error, setError] = useState('');
   const [latestMeta, setLatestMeta] = useState(null);
   const [messages, setMessages] = useState(() => [
@@ -58,6 +61,10 @@ export default function DashboardAssistant({ role }) {
   const lastRefreshSignatureRef = useRef(null);
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
     setMessages([
       {
         role: 'model',
@@ -65,6 +72,7 @@ export default function DashboardAssistant({ role }) {
         meta: null,
       },
     ]);
+    setQueuedMessage('');
     setInput('');
     setError('');
     setLatestMeta(null);
@@ -98,10 +106,16 @@ export default function DashboardAssistant({ role }) {
     refreshReason,
     appendUserMessage = false,
   }) => {
-    if (loading) return;
-
     const trimmed = typeof message === 'string' ? message.trim() : '';
     if (mode === 'message' && !trimmed) return;
+
+    if (loading) {
+      if (mode === 'message' && trimmed) {
+        setQueuedMessage(trimmed);
+        setInput('');
+      }
+      return;
+    }
 
     setError('');
     setLastRequest({ mode, message: trimmed || null, refreshReason });
@@ -205,6 +219,17 @@ export default function DashboardAssistant({ role }) {
     });
   }, [open, refreshSignature]);
 
+  useEffect(() => {
+    if (loading || !queuedMessage) return;
+    const nextMessage = queuedMessage;
+    setQueuedMessage('');
+    void requestAssistant({
+      mode: 'message',
+      message: nextMessage,
+      appendUserMessage: true,
+    });
+  }, [loading, queuedMessage]);
+
   const handleSend = async () => {
     await requestAssistant({
       mode: 'message',
@@ -234,20 +259,27 @@ export default function DashboardAssistant({ role }) {
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          setOpen(true);
+        }}
         className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/15"
       >
         <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
         <span>Ask Cogni</span>
       </button>
 
-      {open && (
+      {open && isClient && createPortal(
         <div className="fixed inset-0 z-50">
           <div
             className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
+            onMouseDown={() => setOpen(false)}
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col overflow-hidden border-l border-slate-200 bg-gradient-to-b from-white via-slate-50 to-slate-100 shadow-2xl dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950">
+          <aside
+            onMouseDown={(event) => event.stopPropagation()}
+            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col overflow-hidden border-l border-slate-200 bg-gradient-to-b from-white via-slate-50 to-slate-100 shadow-2xl dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950"
+          >
             <div className="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary via-blue-500 to-cyan-400 opacity-80" />
             <div className="border-b border-slate-200/80 bg-white/90 px-5 py-4 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
               <div className="flex items-start justify-between gap-4">
@@ -391,7 +423,9 @@ export default function DashboardAssistant({ role }) {
                 />
                 <div className="mt-2 flex items-center justify-between gap-3 px-1">
                   <p className="text-xs text-slate-400">
-                    Read-only in this release
+                    {queuedMessage
+                      ? 'Message queued while Cogni refreshes'
+                      : 'Read-only in this release'}
                   </p>
                   <div className="flex items-center gap-2">
                     <button
@@ -406,7 +440,7 @@ export default function DashboardAssistant({ role }) {
                     <button
                       type="button"
                       onClick={() => void handleSend()}
-                      disabled={loading}
+                      disabled={loading || input.trim().length === 0}
                       className="inline-flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <span className="material-symbols-outlined text-[18px]">send</span>
@@ -417,7 +451,8 @@ export default function DashboardAssistant({ role }) {
               </div>
             </div>
           </aside>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
