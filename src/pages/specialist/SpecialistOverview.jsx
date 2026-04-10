@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
@@ -18,6 +18,23 @@ export default function SpecialistOverview() {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const dedupeChildren = (items) => {
+    const map = new Map();
+    for (const item of items) {
+      if (!item || typeof item !== 'object') continue;
+      const key =
+        item._id ||
+        item.id ||
+        item.childId ||
+        `${item.fullName || ''}-${item.dateOfBirth || ''}`;
+      if (!key) continue;
+      if (!map.has(key)) {
+        map.set(key, item);
+      }
+    }
+    return Array.from(map.values());
+  };
+
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
@@ -29,8 +46,8 @@ export default function SpecialistOverview() {
         authGet('/specialized-plans/my-plans').catch(() => []),
         authGet('/progress-ai/activity-suggestions', { ttl: 30_000 }).catch(() => []),
       ]);
-      setOrgChildren(Array.isArray(orgC) ? orgC : []);
-      setPrivateChildren(Array.isArray(privC) ? privC : []);
+      setOrgChildren(dedupeChildren(Array.isArray(orgC) ? orgC : []));
+      setPrivateChildren(dedupeChildren(Array.isArray(privC) ? privC : []));
       setAllPlans(Array.isArray(plans) ? plans : []);
       setSuggestions(Array.isArray(sug) ? sug : []);
     } catch {}
@@ -39,12 +56,17 @@ export default function SpecialistOverview() {
 
   const pecsCount = allPlans.filter(p => p.type === 'PECS').length;
   const teacchCount = allPlans.filter(p => p.type === 'TEACCH').length;
+  const totalUniqueChildren = useMemo(
+    () => dedupeChildren([...orgChildren, ...privateChildren]).length,
+    [orgChildren, privateChildren],
+  );
 
   const recentPlans = allPlans.slice(0, 6);
 
   useEffect(() => {
     setUiContext({
       page: 'specialist-overview',
+      totalChildren: totalUniqueChildren,
       organizationChildren: orgChildren.length,
       privateChildren: privateChildren.length,
       totalPlans: allPlans.length,
@@ -67,6 +89,7 @@ export default function SpecialistOverview() {
     setUiContext,
     suggestions,
     teacchCount,
+    totalUniqueChildren,
   ]);
 
   return (
@@ -92,7 +115,7 @@ export default function SpecialistOverview() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span className="material-symbols-outlined">child_care</span></div>
-              <div className="text-left"><p className="font-bold text-sm">{t('specialistDashboard.viewChildren', 'View Children')}</p><p className="text-xs text-slate-400">{orgChildren.length + privateChildren.length} total</p></div>
+              <div className="text-left"><p className="font-bold text-sm">{t('specialistDashboard.viewChildren', 'View Children')}</p><p className="text-xs text-slate-400">{totalUniqueChildren} total</p></div>
             </button>
             <button onClick={() => navigate('/specialist/dashboard/plans')} className="flex items-center gap-3 p-4 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center"><span className="material-symbols-outlined">assignment</span></div>

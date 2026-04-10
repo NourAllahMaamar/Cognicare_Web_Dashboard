@@ -435,6 +435,25 @@
     "status": {
       "live": "Cogni Live"
     },
+    "localSummary": {
+      "snapshot": "Current snapshot for {{route}}: {{metrics}}.",
+      "empty": "I can summarize this screen as soon as your dashboard metrics load."
+    },
+    "metrics": {
+      "totalUsers": "Users",
+      "totalOrganizations": "Organizations",
+      "totalFamilies": "Families",
+      "pendingReviews": "Pending reviews",
+      "totalStaff": "Staff",
+      "totalChildren": "Children",
+      "invitations": "Invitations",
+      "organizationChildren": "Org children",
+      "privateChildren": "Private patients",
+      "totalPlans": "Plans",
+      "pecsBoards": "PECS boards",
+      "teacchTrackers": "TEACCH trackers",
+      "suggestionCount": "AI suggestions"
+    },
     "starter": {
       "admin": "I can explain system metrics, summarize the current admin overview, and point you to the next dashboard page to check.",
       "orgLeader": "I can summarize your organization dashboard, explain staff or family trends, and help you interpret specialist insight cards.",

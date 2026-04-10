@@ -435,6 +435,25 @@
     "status": {
       "live": "Cogni en direct"
     },
+    "localSummary": {
+      "snapshot": "Aperçu actuel pour {{route}} : {{metrics}}.",
+      "empty": "Je peux résumer cet écran dès que les métriques du tableau de bord sont disponibles."
+    },
+    "metrics": {
+      "totalUsers": "Utilisateurs",
+      "totalOrganizations": "Organisations",
+      "totalFamilies": "Familles",
+      "pendingReviews": "Revues en attente",
+      "totalStaff": "Staff",
+      "totalChildren": "Enfants",
+      "invitations": "Invitations",
+      "organizationChildren": "Enfants de l'organisation",
+      "privateChildren": "Patients privés",
+      "totalPlans": "Plans",
+      "pecsBoards": "Supports PECS",
+      "teacchTrackers": "Suivis TEACCH",
+      "suggestionCount": "Suggestions IA"
+    },
     "starter": {
       "admin": "Je peux expliquer les métriques système, résumer l'aperçu admin actuel et vous guider vers la prochaine page du tableau de bord.",
       "orgLeader": "Je peux résumer le tableau de bord de votre organisation, expliquer les tendances du staff ou des familles, et vous aider à interpréter les cartes d'insights spécialistes.",

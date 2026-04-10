@@ -435,6 +435,25 @@
     "status": {
       "live": "كوغني مباشر"
     },
+    "localSummary": {
+      "snapshot": "ملخص محدث للشاشة {{route}}: {{metrics}}.",
+      "empty": "أستطيع تلخيص هذه الشاشة فور تحميل مؤشرات لوحة التحكم."
+    },
+    "metrics": {
+      "totalUsers": "المستخدمون",
+      "totalOrganizations": "المنظمات",
+      "totalFamilies": "العائلات",
+      "pendingReviews": "المراجعات المعلقة",
+      "totalStaff": "الفريق",
+      "totalChildren": "الأطفال",
+      "invitations": "الدعوات",
+      "organizationChildren": "أطفال المنظمة",
+      "privateChildren": "المرضى الخاصون",
+      "totalPlans": "الخطط",
+      "pecsBoards": "لوحات PECS",
+      "teacchTrackers": "متابعات TEACCH",
+      "suggestionCount": "اقتراحات الذكاء الاصطناعي"
+    },
     "starter": {
       "admin": "أستطيع شرح مؤشرات النظام، وتلخيص نظرة الإدارة الحالية، وتوجيهك إلى الصفحة التالية المناسبة داخل لوحة التحكم.",
       "orgLeader": "أستطيع تلخيص لوحة منظمتك، وشرح اتجاهات الفريق أو العائلات، ومساعدتك على قراءة بطاقات رؤى المختصين.",

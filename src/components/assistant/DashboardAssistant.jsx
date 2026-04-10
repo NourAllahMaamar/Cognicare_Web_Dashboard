@@ -69,6 +69,70 @@ function metaTimestamp(meta, t, locale) {
   });
 }
 
+function readNumericMetric(uiContext, key) {
+  const value = uiContext?.[key];
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function metricLabel(key, t) {
+  return t(`dashboardAssistant.metrics.${key}`, key);
+}
+
+function buildLocalRefreshReply({ role, route, uiContext, t }) {
+  const metrics = [];
+  const pushMetric = (key) => {
+    const value = readNumericMetric(uiContext, key);
+    if (value == null) return;
+    metrics.push(`${metricLabel(key, t)}: ${value}`);
+  };
+
+  if (role === 'admin') {
+    pushMetric('totalUsers');
+    pushMetric('totalOrganizations');
+    pushMetric('totalFamilies');
+    pushMetric('pendingReviews');
+  } else if (role === 'orgLeader') {
+    pushMetric('totalStaff');
+    pushMetric('totalFamilies');
+    pushMetric('totalChildren');
+    pushMetric('invitations');
+  } else if (role === 'specialist') {
+    pushMetric('totalChildren');
+    pushMetric('organizationChildren');
+    pushMetric('privateChildren');
+    pushMetric('totalPlans');
+    pushMetric('pecsBoards');
+    pushMetric('teacchTrackers');
+    pushMetric('suggestionCount');
+  }
+
+  if (metrics.length === 0 && uiContext && typeof uiContext === 'object') {
+    for (const [key, value] of Object.entries(uiContext)) {
+      if (
+        typeof value === 'number' ||
+        typeof value === 'string' ||
+        typeof value === 'boolean'
+      ) {
+        metrics.push(`${metricLabel(key, t)}: ${String(value)}`);
+      }
+      if (metrics.length >= 4) break;
+    }
+  }
+
+  if (metrics.length === 0) {
+    return t(
+      'dashboardAssistant.localSummary.empty',
+      'I can summarize this screen as soon as your dashboard metrics load.',
+    );
+  }
+
+  return t('dashboardAssistant.localSummary.snapshot', {
+    route,
+    metrics: metrics.join(' • '),
+    defaultValue: 'Current snapshot for {{route}}: {{metrics}}.',
+  });
+}
+
 export default function DashboardAssistant({ role }) {
   const location = useLocation();
   const { t, i18n } = useTranslation();
@@ -173,6 +237,33 @@ export default function DashboardAssistant({ role }) {
       setInput('');
     }
 
+    if (mode === 'refresh') {
+      const localMeta = {
+        strategy: 'default',
+        complexity: 'simple',
+        refreshed: true,
+        cacheHit: false,
+        generatedAt: new Date().toISOString(),
+        reason: `local_refresh_${refreshReason ?? 'manual'}`,
+      };
+      const localReply = buildLocalRefreshReply({
+        role,
+        route: location.pathname,
+        uiContext,
+        t,
+      });
+      setLatestMeta(localMeta);
+      setMessages((current) => [
+        ...current,
+        {
+          role: 'model',
+          content: localReply,
+          meta: localMeta,
+        },
+      ]);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -202,6 +293,7 @@ export default function DashboardAssistant({ role }) {
         body: JSON.stringify({
           ...(mode === 'message' ? { message: trimmed } : {}),
           ...(history.length > 0 ? { history } : {}),
+          locale: i18n.language,
           surface: 'web',
           route: location.pathname,
           uiContext,
