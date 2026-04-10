@@ -85,6 +85,8 @@ VITE_BACKEND_ORIGIN=http://localhost:3000
 VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
 ```
 
+You can also start from `.env.example`.
+
 `VITE_BACKEND_ORIGIN` is compiled into the production build and powers all dashboard API calls. The public Android release card on `/` reads `public/mobile-release.json`, so updating the downloadable APK/version does not require editing JSX.
 
 ## Role-Based Routing
@@ -128,6 +130,8 @@ Translations are in `src/locales/`:
 - Token stored in localStorage only
 - 401 errors redirect to appropriate login
 - Role checks before rendering sensitive data
+- Production nginx adds CSP, HSTS, `Referrer-Policy`, `Permissions-Policy`, and download-safe APK headers
+- The public Android release card is manifest-driven via `public/mobile-release.json`, so version/file updates do not require JSX changes
 
 ## License
 
