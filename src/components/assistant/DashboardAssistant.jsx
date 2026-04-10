@@ -8,6 +8,10 @@ import cogniWave from '../../assets/cogni/cogni-wave.png';
 import cogniThinking from '../../assets/cogni/cogni-thinking.png';
 import cogniHappy from '../../assets/cogni/cogni-happy.png';
 
+const MIN_PANEL_WIDTH = 320;
+const DEFAULT_PANEL_WIDTH = 380;
+const MAX_PANEL_WIDTH = 760;
+
 function starterMessageForRole(role, t) {
   switch (role) {
     case 'admin':
@@ -140,6 +144,8 @@ export default function DashboardAssistant({ role }) {
   const { uiContext } = useDashboardAssistantContext();
   const [open, setOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [panelWidth, setPanelWidth] = useState(DEFAULT_PANEL_WIDTH);
+  const [isResizing, setIsResizing] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [queuedMessage, setQueuedMessage] = useState('');
@@ -154,6 +160,7 @@ export default function DashboardAssistant({ role }) {
   ]);
   const [lastRequest, setLastRequest] = useState(null);
   const lastRefreshSignatureRef = useRef(null);
+  const resizeSessionRef = useRef(null);
   const isRtl = i18n.dir() === 'rtl';
 
   useEffect(() => {
@@ -188,6 +195,33 @@ export default function DashboardAssistant({ role }) {
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [open]);
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMove = (event) => {
+      const session = resizeSessionRef.current;
+      if (!session) return;
+      const deltaX = session.startX - event.clientX;
+      const nextWidth = Math.min(
+        MAX_PANEL_WIDTH,
+        Math.max(MIN_PANEL_WIDTH, session.startWidth + deltaX),
+      );
+      setPanelWidth(nextWidth);
+    };
+
+    const handleEnd = () => {
+      setIsResizing(false);
+      resizeSessionRef.current = null;
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleEnd);
+    };
+  }, [isResizing]);
 
   const summaryChips = useMemo(() => {
     if (!uiContext || typeof uiContext !== 'object') return [];
@@ -401,6 +435,16 @@ export default function DashboardAssistant({ role }) {
     });
   };
 
+  const startResize = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    resizeSessionRef.current = {
+      startX: event.clientX,
+      startWidth: panelWidth,
+    };
+    setIsResizing(true);
+  };
+
   return (
     <>
       <button
@@ -429,8 +473,22 @@ export default function DashboardAssistant({ role }) {
           <aside
             id="dashboard-assistant-panel"
             dir={i18n.dir()}
-            className="pointer-events-auto relative flex h-full max-h-[calc(100vh-1rem)] w-[min(96vw,430px)] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white via-slate-50 to-slate-100 shadow-2xl dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950"
+            className={`pointer-events-auto relative flex h-full max-h-[calc(100vh-1rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white via-slate-50 to-slate-100 shadow-2xl dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 ${
+              isResizing ? 'select-none' : ''
+            }`}
+            style={{
+              width: `min(calc(100vw - 1rem), ${panelWidth}px)`,
+            }}
           >
+            <button
+              type="button"
+              onMouseDown={startResize}
+              aria-label={t('dashboardAssistant.resize', 'Resize assistant panel')}
+              title={t('dashboardAssistant.resizeHint', 'Drag to resize')}
+              className="absolute -left-2 top-0 hidden h-full w-4 cursor-col-resize items-center justify-center sm:flex"
+            >
+              <span className="h-20 w-1.5 rounded-full bg-slate-300/90 shadow-sm transition-colors hover:bg-primary/70 dark:bg-slate-600 dark:hover:bg-primary/70" />
+            </button>
             <div className="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary via-blue-500 to-cyan-400 opacity-80" />
             <div className="border-b border-slate-200/80 bg-white/90 px-5 py-4 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
               <div className="flex items-start justify-between gap-4">
