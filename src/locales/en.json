@@ -72,6 +72,10 @@
   "adminLogin": {
     "title": "Admin Login",
     "subtitle": "Access the administrative dashboard",
+    "branding": {
+      "title": "System Administration",
+      "description": "Full platform oversight - manage organizations, users, fraud review, and system health from a single powerful console."
+    },
     "email": "Email Address",
     "password": "Password",
     "signIn": "Sign In",
@@ -86,6 +90,10 @@
     "subtitle": "Access your organization dashboard",
     "signupTitle": "Create Your Organization",
     "signupSubtitle": "Register as an organization leader",
+    "branding": {
+      "title": "Organization Portal",
+      "description": "Manage your organization - oversee staff, families, children, and track progress with AI-powered insights across your care network."
+    },
     "email": "Email Address",
     "password": "Password",
     "fullName": "Full Name",
@@ -121,6 +129,42 @@
     "pdfOnly": "Only PDF files are allowed",
     "fileTooLarge": "File size must be less than 10MB",
     "certificateHint": "Upload your organization's official registration certificate for AI-powered fraud detection (required for approval)"
+  },
+  "specialistLogin": {
+    "title": "Specialist Login",
+    "subtitle": "Access your professional dashboard",
+    "signupTitle": "Specialist Sign Up",
+    "signupSubtitle": "Create your specialist account",
+    "branding": {
+      "title": "Professional Suite",
+      "description": "Access your clinical tools - manage children, create specialized plans (PECS, TEACCH), track progress, and collaborate with your organization."
+    },
+    "profileComplete": {
+      "title": "Complete Your Profile",
+      "subtitle": "Set up your specialist account",
+      "specialistType": "Specialist Type",
+      "selectSpecialty": "Select your specialty",
+      "setPassword": "Set a Password",
+      "passwordHint": "Minimum 6 characters",
+      "completeSetup": "Complete Setup",
+      "completing": "Completing...",
+      "required": "*"
+    },
+    "specialistTypes": {
+      "speech_therapist": "Speech Therapist",
+      "occupational_therapist": "Occupational Therapist",
+      "psychologist": "Psychologist",
+      "doctor": "Doctor",
+      "ergotherapist": "Ergotherapist",
+      "caregiver": "Caregiver",
+      "organization_leader": "Organization Leader",
+      "other": "Other"
+    },
+    "createAccount": "Create Specialist Account",
+    "googleSignIn": "Sign in with Google",
+    "googleSignUp": "Sign up with Google",
+    "loadingGoogle": "Loading Google Sign-In...",
+    "googleUnavailable": "Google login unavailable (client ID not configured)"
   },
   "orgDashboard": {
     "title": "Organization Dashboard",
@@ -493,7 +537,7 @@
       "caregivers": "Caregivers",
       "communityHelpers": "Community helpers",
       "orgLeaders": "Organization Leaders",
-      "volunteers": "Volunteers"
+      "volunteers": "Volunteers" 
     },
     "quickActions": {
       "title": "Quick Actions",

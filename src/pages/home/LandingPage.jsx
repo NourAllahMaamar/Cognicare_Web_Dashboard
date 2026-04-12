@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -222,7 +222,7 @@ export default function LandingPage() {
               ...(typeof data.ios === 'object' && data.ios ? data.ios : {}),
             },
           });
-        }
+        } 
       } catch {
         if (active) {
           setReleaseInfo(DEFAULT_RELEASE_INFO);
