@@ -1,6 +1,7 @@
 // API Configuration
 // Use relative path in dev so Vite proxy handles it (avoids CORS); full URL for production build
 
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 const isDev = import.meta.env.DEV;
 const DEFAULT_PROD_BACKEND_ORIGIN =

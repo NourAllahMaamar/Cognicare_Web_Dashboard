@@ -69,8 +69,8 @@ function AdminLogin() {
           <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-white shadow-2xl shadow-primary/40 mx-auto mb-8">
             <span className="material-symbols-outlined text-3xl">admin_panel_settings</span>
           </div>
-          <h2 className="text-3xl font-black text-white mb-4">System Administration</h2>
-          <p className="text-slate-300 text-sm leading-relaxed">Full platform oversight "” manage organizations, users, fraud review, and system health from a single powerful console.</p>
+          <h2 className="text-3xl font-black text-white mb-4">{t('adminLogin.branding.title', 'System Administration')}</h2>
+          <p className="text-slate-300 text-sm leading-relaxed">{t('adminLogin.branding.description', 'Full platform oversight - manage organizations, users, fraud review, and system health from a single powerful console.')}</p>
           <div className="flex gap-4 justify-center mt-10">
             {['shield', 'monitoring', 'analytics'].map(icon => (
               <div key={icon} className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">

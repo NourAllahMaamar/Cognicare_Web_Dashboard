@@ -72,6 +72,10 @@
   "adminLogin": {
     "title": "Connexion Admin",
     "subtitle": "Accéder au tableau de bord administratif",
+    "branding": {
+      "title": "Administration Système",
+      "description": "Supervision complète de la plateforme - gérez les organisations, les utilisateurs, la détection de fraude et la santé du système depuis une console unique et puissante."
+    },
     "email": "Adresse Email",
     "password": "Mot de Passe",
     "signIn": "Se Connecter",
@@ -86,6 +90,10 @@
     "subtitle": "Accédez au tableau de bord de votre organisation",
     "signupTitle": "Créer Votre Organisation",
     "signupSubtitle": "S'inscrire en tant que leader d'organisation",
+    "branding": {
+      "title": "Portail d'Organisation",
+      "description": "Gérez votre organisation - supervisez le personnel, les familles, les enfants, et suivez les progrès avec des analyses IA à travers votre réseau de soins."
+    },
     "email": "Adresse Email",
     "password": "Mot de Passe",
     "fullName": "Nom Complet",
@@ -121,6 +129,42 @@
     "pdfOnly": "Seuls les fichiers PDF sont autorisés",
     "fileTooLarge": "La taille du fichier doit être inférieure à 10 Mo",
     "certificateHint": "Téléchargez le certificat d'enregistrement officiel de votre organisation pour la détection de fraude par IA (requis pour l'approbation)"
+  },
+  "specialistLogin": {
+    "title": "Connexion Spécialiste",
+    "subtitle": "Accédez à votre tableau de bord professionnel",
+    "signupTitle": "Inscription Spécialiste",
+    "signupSubtitle": "Créez votre compte spécialiste",
+    "branding": {
+      "title": "Suite Professionnelle",
+      "description": "Accédez à vos outils cliniques - gérez les enfants, créez des plans spécialisés (PECS, TEACCH), suivez les progrès et collaborez avec votre organisation."
+    },
+    "profileComplete": {
+      "title": "Complétez Votre Profil",
+      "subtitle": "Configurez votre compte spécialiste",
+      "specialistType": "Type de Spécialiste",
+      "selectSpecialty": "Sélectionnez votre spécialité",
+      "setPassword": "Définir un Mot de Passe",
+      "passwordHint": "Minimum 6 caractères",
+      "completeSetup": "Terminer la Configuration",
+      "completing": "Finalisation...",
+      "required": "*"
+    },
+    "specialistTypes": {
+      "speech_therapist": "Orthophoniste",
+      "occupational_therapist": "Ergothérapeute",
+      "psychologist": "Psychologue",
+      "doctor": "Médecin",
+      "ergotherapist": "Ergothérapeute",
+      "caregiver": "Intervenant",
+      "organization_leader": "Leader d'Organisation",
+      "other": "Autre"
+    },
+    "createAccount": "Créer un Compte Spécialiste",
+    "googleSignIn": "Se connecter avec Google",
+    "googleSignUp": "S'inscrire avec Google",
+    "loadingGoogle": "Chargement de Google Sign-In...",
+    "googleUnavailable": "Connexion Google indisponible (ID client non configuré)"
   },
   "orgDashboard": {
     "title": "Tableau de Bord de l'Organisation",

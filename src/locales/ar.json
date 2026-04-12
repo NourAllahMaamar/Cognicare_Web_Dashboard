@@ -72,6 +72,10 @@
   "adminLogin": {
     "title": "تسجيل دخول المدير",
     "subtitle": "الوصول إلى لوحة الإدارة",
+    "branding": {
+      "title": "إدارة النظام",
+      "description": "إشراف كامل على المنصة - إدارة المنظمات والمستخدمين ومراجعة الاحتيال وصحة النظام من وحدة تحكم واحدة قوية."
+    },
     "email": "عنوان البريد الإلكتروني",
     "password": "كلمة المرور",
     "signIn": "تسجيل الدخول",
@@ -86,6 +90,10 @@
     "subtitle": "الوصول إلى لوحة إدارة منظمتك",
     "signupTitle": "إنشاء منظمتك",
     "signupSubtitle": "التسجيل كقائد منظمة",
+    "branding": {
+      "title": "بوابة المنظمة",
+      "description": "إدارة منظمتك - الإشراف على الموظفين والعائلات والأطفال وتتبع التقدم بتحليلات الذكاء الاصطناعي عبر شبكة الرعاية الخاصة بك."
+    },
     "email": "عنوان البريد الإلكتروني",
     "password": "كلمة المرور",
     "fullName": "الاسم الكامل",
@@ -121,6 +129,42 @@
     "pdfOnly": "يُسمح فقط بملفات PDF",
     "fileTooLarge": "يجب أن يكون حجم الملف أقل من 10 ميغابايت",
     "certificateHint": "قم بتحميل شهادة التسجيل الرسمية لمنظمتك للكشف عن الاحتيال بالذكاء الاصطناعي (مطلوبة للموافقة)"
+  },
+  "specialistLogin": {
+    "title": "تسجيل دخول المتخصص",
+    "subtitle": "الوصول إلى لوحتك الاحترافية",
+    "signupTitle": "تسجيل المتخصص",
+    "signupSubtitle": "إنشاء حسابك كمتخصص",
+    "branding": {
+      "title": "المجموعة الاحترافية",
+      "description": "الوصول إلى أدواتك السريرية - إدارة الأطفال، إنشاء خطط متخصصة (PECS، TEACCH)، تتبع التقدم، والتعاون مع منظمتك."
+    },
+    "profileComplete": {
+      "title": "أكمل ملفك الشخصي",
+      "subtitle": "إعداد حساب المتخصص الخاص بك",
+      "specialistType": "نوع التخصص",
+      "selectSpecialty": "اختر تخصصك",
+      "setPassword": "تعيين كلمة المرور",
+      "passwordHint": "6 أحرف على الأقل",
+      "completeSetup": "إتمام الإعداد",
+      "completing": "جاري الإتمام...",
+      "required": "*"
+    },
+    "specialistTypes": {
+      "speech_therapist": "معالج النطق",
+      "occupational_therapist": "أخصائي العلاج الوظيفي",
+      "psychologist": "أخصائي نفسي",
+      "doctor": "طبيب",
+      "ergotherapist": "أخصائي العلاج الوظيفي",
+      "caregiver": "مقدم رعاية",
+      "organization_leader": "قائد منظمة",
+      "other": "آخر"
+    },
+    "createAccount": "إنشاء حساب متخصص",
+    "googleSignIn": "تسجيل الدخول بواسطة Google",
+    "googleSignUp": "التسجيل بواسطة Google",
+    "loadingGoogle": "جاري تحميل Google Sign-In...",
+    "googleUnavailable": "تسجيل الدخول بـ Google غير متاح (لم يتم تكوين معرف العميل)"
   },
   "orgDashboard": {
     "title": "لوحة إدارة المنظمة",

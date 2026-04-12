@@ -106,8 +106,8 @@ function OrgLeaderLogin() {
           <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center text-white shadow-2xl mx-auto mb-8">
             <span className="material-symbols-outlined text-3xl">leaderboard</span>
           </div>
-          <h2 className="text-3xl font-black text-white mb-4">Organization Portal</h2>
-          <p className="text-purple-100/80 text-sm leading-relaxed">Manage your organization "” oversee staff, families, children, and track progress with AI-powered insights across your care network.</p>
+          <h2 className="text-3xl font-black text-white mb-4">{t('orgLeaderLogin.branding.title', 'Organization Portal')}</h2>
+          <p className="text-purple-100/80 text-sm leading-relaxed">{t('orgLeaderLogin.branding.description', 'Manage your organization - oversee staff, families, children, and track progress with AI-powered insights across your care network.')}</p>
           <div className="flex gap-4 justify-center mt-10">
             {['groups', 'family_restroom', 'trending_up'].map(icon => (
               <div key={icon} className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">
