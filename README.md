@@ -138,3 +138,15 @@ Translations are in `src/locales/`:
 ## License
 
 [LICENSE](../LICENSE)
+
+## Security and Reliability Update (2026-04-12)
+
+Applied in this hardening cycle:
+
+- Organization RNE verification now uses backend AI analysis endpoint (`/org-scan-ai/analyze`) instead of simulated/random UI outcomes.
+- Specialist role parity updated: `careProvider` is accepted in specialist login and protected route checks.
+- `useAuth` in-memory GET cache is now scoped by user/session to prevent same-role cross-account reuse.
+- PWA runtime caching is now limited to safe static resources and excludes authenticated API responses.
+- Specialist creator pages include safe back-navigation fallbacks when browser history is unavailable.
+
+Current lint status: no errors, with two existing warnings in untouched files (`CogniCompanion.jsx`, `LandingPage.jsx`).

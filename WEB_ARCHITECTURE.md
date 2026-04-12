@@ -576,3 +576,29 @@ npm run build:no-prerender  # Vite + PWA only (skip pre-render)
 npm run preview           # Serve dist/ locally (test PWA)
 npm run lint              # ESLint
 ```
+
+---
+
+## Remediation Update (2026-04-12)
+
+### RNE verification flow (organization leader)
+
+- The organization RNE page now uses real backend analysis:
+  - `POST /org-scan-ai/analyze` (multipart with `file`, `organizationId`, optional metadata)
+- Simulated/random verification outcomes were removed from the active flow.
+- UI decision state is now backend-risk-driven and queued for manual verification review.
+
+### Role and route consistency
+
+- Specialist login allowlist now includes `careProvider`, matching protected-route allowlist parity.
+- Audited specialist creator pages now include safe back navigation fallbacks when browser history is empty.
+
+### Session/cache hardening
+
+- Shared in-memory auth GET caching is now user/session scoped (role + user/token scope + path).
+- Session-expiration handling clears auth cache and role-scoped storage consistently.
+
+### PWA/runtime caching hardening
+
+- Runtime caching no longer includes authenticated API routes.
+- Runtime cache is restricted to safe/static resources (fonts + Cloudinary public assets).

@@ -1,0 +1,61 @@
+name: SEO and Security Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Public URL to scan'
+        required: true
+        type: string
+      run_lighthouse:
+        description: 'Run Lighthouse CI'
+        required: false
+        default: true
+        type: boolean
+      run_zap:
+        description: 'Run OWASP ZAP baseline scan'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  lighthouse:
+    if: ${{ inputs.run_lighthouse }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate target URL
+        run: |
+          if ! echo "${{ inputs.target_url }}" | grep -Eq '^https?://'; then
+            echo "Invalid target_url. Must start with http:// or https://"
+            exit 1
+          fi
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ inputs.target_url }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  zap-baseline:
+    if: ${{ inputs.run_zap }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Run OWASP ZAP Baseline
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ inputs.target_url }}
+          fail_action: false
+          allow_issue_writing: false
+          cmd_options: '-a -m 5'

@@ -23,6 +23,14 @@ export default function SkillTrackerCreator() {
   const [success, setSuccess] = useState('');
   useEffect(() => { if (!childId) setError(t('skillTracker.childRequired')); }, [childId, t]);
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/specialist/dashboard/children');
+  };
+
   const toggleTrial = (i) => {
     const t = [...trials];
     t[i] = t[i] === null ? 'pass' : t[i] === 'pass' ? 'fail' : null;
@@ -58,7 +66,7 @@ export default function SkillTrackerCreator() {
       <div className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <button onClick={handleBack} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
@@ -123,7 +131,7 @@ export default function SkillTrackerCreator() {
                 <p className="text-xs text-slate-500 mt-1">{t('skillTracker.accuracy')}</p>
               </div>
               <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center">
-                <p className="text-2xl font-black">{mastered ? 'ðŸ†' : 'â³'}</p>
+                <p className="text-2xl font-black">{mastered ? 'Trophy' : '-'}</p>
                 <p className="text-xs text-slate-500 mt-1">{mastered ? t('skillTracker.mastered') : t('skillTracker.inProgress')}</p>
               </div>
             </div>
@@ -160,7 +168,7 @@ export default function SkillTrackerCreator() {
               <div className="grid grid-cols-5 gap-3">
                 {trials.map((trial, i) => (
                   <button key={i} onClick={() => toggleTrial(i)} className={`aspect-square rounded-xl text-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-all ${trial === 'pass' ? 'bg-success text-white shadow-lg shadow-success/20' : trial === 'fail' ? 'bg-error text-white shadow-lg shadow-error/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200'}`}>
-                    <span className="text-xl">{trial === 'pass' ? 'âœ"' : trial === 'fail' ? 'âœ—' : ''}</span>
+                    <span className="text-xl">{trial === 'pass' ? '✓' : trial === 'fail' ? '✕' : ''}</span>
                     <span className="text-[10px] opacity-70">{t('skillTracker.trial')} {i + 1}</span>
                   </button>
                 ))}
@@ -172,5 +180,4 @@ export default function SkillTrackerCreator() {
     </div>
   );
 }
-
 

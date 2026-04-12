@@ -60,3 +60,27 @@ The current pilot still serves the Android APK from the public web app. If artif
 4. Add explicit protected-route wrappers with strict role checks on all dashboard and creator routes.
 5. Reduce polling load with visibility-aware intervals and backoff policies.
 6. Enforce paginated API usage in admin/org/specialist heavy tables.
+
+---
+
+## Execution Update (2026-04-12)
+
+### Resolved from the 2026-04-10 findings
+
+- Cross-account cache leakage risk in `useAuth`:
+  - Resolved by user/session-scoped cache keying.
+- Service worker/runtime caching of authenticated API responses:
+  - Resolved by removing API runtime caching from PWA Workbox config.
+- RNE flow simulated/randomized trust evidence:
+  - Resolved in active UI path by switching to backend analysis contract (`/org-scan-ai/analyze`) and review-driven decision state.
+
+### Additional hardening shipped
+
+- Specialist role parity (`careProvider`) aligned between login allowlist and route protection.
+- Back-navigation fallback added to audited specialist creator pages for no-history entry.
+- Specialist/UI mojibake text defects corrected in touched creator/login pages.
+
+### Residual notes
+
+- Web lint still reports two warnings in untouched files (`src/components/3d/CogniCompanion.jsx`, `src/pages/home/LandingPage.jsx`) for unused `motion` imports.
+- Token strategy remains role-scoped local storage in this cycle (cookie-session migration intentionally deferred).

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useAnimation, AnimatePresence } from 'framer-motion';
+import { useAnimation, AnimatePresence, motion } from 'framer-motion';
 import './CogniCompanion.css';
 import { ZONES } from '../ui/InteractiveZones';
 
@@ -499,6 +499,10 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const isElementEngaged = Boolean(focusTarget?.rect);
   const initialPosition = useMemo(() => {
     const anchorX = isRtl ? 0.24 : 0.76;
+    // Guard window access for SSR/hydration safety
+    if (typeof window === 'undefined') {
+      return { x: 0, y: 0 };
+    }
     return {
       x: (window.innerWidth * anchorX) - (COMPANION_SIZE / 2),
       y: (window.innerHeight * 0.28) - (COMPANION_SIZE / 2),

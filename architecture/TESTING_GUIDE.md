@@ -316,3 +316,29 @@ LandingPage chunk: 34.50 kB (gzipped: 10.87 kB)
 ---
 
 **Happy Testing! 🎉**
+
+---
+
+## Remediation Validation Addendum (2026-04-12)
+
+### Commands executed
+
+- `npm run lint` -> passed (warnings only in untouched files)
+- `npm run build` -> passed
+
+### Regression checks to include in every cycle
+
+1. Organization RNE flow
+- Upload valid/invalid document and verify backend-driven analysis request (`/org-scan-ai/analyze`).
+- Confirm failure-stop behavior: no progression to success state on analysis failure.
+- Confirm final state remains review-based (no fake auto-approval path).
+
+2. Specialist role/session hardening
+- Validate `careProvider` account can access specialist dashboard routes.
+- Validate same-browser account switching does not reuse stale cached GET payloads from previous user.
+
+3. Navigation hardening
+- In specialist creator screens, verify back button works with normal history and with direct-link/no-history entry (fallback route).
+
+4. PWA/cache hardening
+- Inspect Service Worker caches and verify authenticated API responses are not runtime-cached.

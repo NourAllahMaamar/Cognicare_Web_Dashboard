@@ -21,6 +21,14 @@ export default function ActivitiesCreator() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/specialist/dashboard/children');
+  };
+
   useEffect(() => { if (!childId) setError(t('activitiesCreator.childRequired'));  }, [childId, t]);
 
   const addMaterial = () => {
@@ -56,7 +64,7 @@ export default function ActivitiesCreator() {
       <div className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <button onClick={handleBack} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
@@ -163,5 +171,4 @@ export default function ActivitiesCreator() {
     </div>
   );
 }
-
 

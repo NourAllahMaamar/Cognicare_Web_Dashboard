@@ -1325,6 +1325,108 @@
       "occupational_therapist": "Occupational Therapist",
       "volunteer": "Volunteer",
       "other": "Other"
+    },
+    "seo": {
+      "title": "SEO Control Plane",
+      "subtitle": "Govern robots/sitemap, tool integrations, and automated SEO actions.",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing...",
+      "notAvailable": "Not available",
+      "none": "None",
+      "saving": "Saving...",
+      "savePolicies": "Save policies",
+      "siteOrigin": "Site origin",
+      "publicRoutes": "Public routes (comma separated)",
+      "successTitle": "SEO action recorded",
+      "banner": {
+        "operational": "SEO control plane is operational.",
+        "degraded": "SEO/AI services are unavailable; showing the latest known state.",
+        "snapshot": "Last snapshot: {{date}}"
+      },
+      "crawlers": {
+        "title": "Crawler policies",
+        "subtitle": "Manage user-agent, allow/disallow, and crawl-delay.",
+        "userAgent": "User-Agent",
+        "allow": "Allow",
+        "disallow": "Disallow",
+        "crawlDelay": "Crawl delay (sec)",
+        "enabled": "Enabled",
+        "on": "On",
+        "off": "Off",
+        "help": "Private dashboard paths are blocked automatically."
+      },
+      "integrity": {
+        "title": "Robots/Sitemap integrity",
+        "subtitle": "Drift checks against the public route allowlist.",
+        "robotsSummary": "robots.txt validation and private-path safety.",
+        "sitemapSummary": "sitemap.xml validation and public-route coverage.",
+        "ready": "Ready",
+        "attention": "Attention",
+        "allowedRoutes": "Allowed routes",
+        "missing": "Missing",
+        "extra": "Extra",
+        "entries": "Entries",
+        "warnings": "Warnings"
+      },
+      "actions": {
+        "title": "SEO actions",
+        "subtitle": "Run asynchronous actions with full audit trail.",
+        "running": "Running...",
+        "ready": "Ready to run",
+        "inspectHelp": "Inspect a public URL path only.",
+        "inspectPathLabel": "Public path",
+        "inspectPlaceholder": "/pricing",
+        "inspectSafety": "Private dashboard and API paths are blocked.",
+        "runInspect": "Run URL inspection",
+        "pathRequired": "A public path is required.",
+        "privatePathBlocked": "This is a private path and cannot be inspected.",
+        "items": {
+          "REGENERATE_SITEMAP": "Regenerate sitemap",
+          "VALIDATE_ROBOTS_RULES": "Validate robots rules",
+          "SUBMIT_SITEMAP": "Submit sitemap",
+          "INSPECT_URL_COVERAGE": "Inspect URL coverage",
+          "REQUEST_INDEXING": "Request indexing",
+          "TRIGGER_LIGHTHOUSE_SCAN": "Trigger Lighthouse scan",
+          "TRIGGER_ZAP_SCAN": "Trigger ZAP scan",
+          "TRIGGER_JENKINS_BUILD": "Trigger Jenkins build"
+        }
+      },
+      "tools": {
+        "title": "Tool integrations",
+        "subtitle": "Live connector health and latest error context.",
+        "awaitingBackend": "Awaiting backend status.",
+        "lastSuccess": "Last success",
+        "lastError": "Last error",
+        "items": {
+          "github_actions": "GitHub Actions",
+          "jenkins": "Jenkins",
+          "search_console": "Search Console",
+          "lighthouse": "Lighthouse",
+          "zap": "OWASP ZAP",
+          "sentry": "Sentry"
+        },
+        "status": {
+          "CONNECTED": "CONNECTED",
+          "DEGRADED": "DEGRADED",
+          "DISABLED": "DISABLED",
+          "ERROR": "ERROR",
+          "PENDING": "PENDING",
+          "RUNNING": "RUNNING",
+          "COMPLETED": "COMPLETED",
+          "FAILED": "FAILED"
+        }
+      },
+      "history": {
+        "title": "Action history",
+        "subtitle": "Paginated trail of executed SEO actions.",
+        "action": "Action",
+        "target": "Target",
+        "status": "Status",
+        "started": "Started",
+        "summary": "Summary",
+        "empty": "No SEO actions have been recorded yet.",
+        "loadMore": "Load more"
+      }
     }
   },
   "adminOverview": {
@@ -1541,7 +1643,15 @@
     "compApplications": "Applications",
     "compAnalytics": "Analytics",
     "compSystemHealth": "System Health",
-    "compSettings": "Settings"
+    "compSettings": "Settings",
+    "fallbackTitle": "Degraded mode active",
+    "aiFallbackSnapshot": "AI service is unavailable. Showing the latest known valid data.",
+    "aiFallbackEstimate": "AI service is unavailable. Showing local estimates based on recent traffic.",
+    "aiFallbackNoData": "AI service is unavailable and no snapshot is available yet.",
+    "lastSnapshot": "Last snapshot: {{date}}",
+    "estimated": "Estimated",
+    "noDataTitle": "No health data available",
+    "noDataDescription": "Please retry when backend/AI services are reachable again."
   },
   "adminFamilies": {
     "title": "Families Management",

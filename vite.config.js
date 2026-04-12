@@ -89,19 +89,8 @@ export default defineConfig(({ mode }) => {
               },
             },
             {
-              // Cache API calls with network-first strategy
-              urlPattern: /\/api\/v1\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'api-cache',
-                expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 },
-                cacheableResponse: { statuses: [0, 200] },
-                networkTimeoutSeconds: 10,
-              },
-            },
-            {
-              // Cache uploaded images from Cloudinary or /uploads
-              urlPattern: /\/(uploads|res\.cloudinary\.com)\/.*/i,
+              // Cache public CDN images only (never authenticated API responses)
+              urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'image-cache',

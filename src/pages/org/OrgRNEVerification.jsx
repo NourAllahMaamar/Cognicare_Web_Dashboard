@@ -5,7 +5,6 @@ import { useAuth } from '../../hooks/useAuth';
 /* ─── Constants ─── */
 const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 const MAX_FILE_SIZE_MB = 10;
-const PROCESSING_DURATION = 60;
 const CALL_PREP_DURATION = 10;
 
 const PROCESSING_MESSAGES = [
@@ -288,9 +287,8 @@ export default function OrgRNEVerification() {
   const [submitting, setSubmitting] = useState(false);
 
   /* ── Processing ── */
-  const [countdown, setCountdown] = useState(PROCESSING_DURATION);
   const [msgIdx, setMsgIdx] = useState(0);
-  const countdownRef = useRef(null);
+  const processingRef = useRef(null);
 
   /* ── Analysis ── */
   const [analysis, setAnalysis] = useState(null);
@@ -307,6 +305,12 @@ export default function OrgRNEVerification() {
 
   /* ── Event log ── */
   const [events, setEvents] = useState([]);
+
+  const deriveDecisionFromAnalysis = useCallback(() => {
+    // Final organization verification remains an explicit review workflow.
+    // AI analysis provides risk signals but does not auto-approve in this flow.
+    return 'needs_review';
+  }, []);
 
   const addEvent = useCallback((message, type = 'info') => {
     const now = new Date();
@@ -333,6 +337,66 @@ export default function OrgRNEVerification() {
   /* ─── Phone validation ─── */
   const validatePhone = (p) => /^\+?[0-9\s\-().]{8,20}$/.test(p.trim());
 
+  const resolveOrganizationContext = async () => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('orgLeaderUser') || '{}');
+      let pendingOrganization = null;
+      try {
+        const pendingRes = await authFetch('/organization/my-pending-request', {
+          method: 'GET',
+        });
+        if (pendingRes.ok) {
+          pendingOrganization = await pendingRes.json();
+        }
+      } catch {
+        pendingOrganization = null;
+      }
+      const organizationId =
+        pendingOrganization?._id ||
+        pendingOrganization?.id ||
+        storedUser?.organizationId ||
+        storedUser?.organization?._id ||
+        storedUser?.organization?.id ||
+        storedUser?.pendingOrganizationId ||
+        storedUser?.pendingOrganization?._id ||
+        '';
+      const orgName =
+        pendingOrganization?.organizationName ||
+        storedUser?.organizationName ||
+        storedUser?.organization?.name ||
+        storedUser?.name ||
+        'Your Organization';
+      const email = pendingOrganization?.leaderEmail || storedUser?.email || '';
+      const websiteDomain = storedUser?.websiteDomain || storedUser?.organization?.websiteDomain || '';
+      return { organizationId: String(organizationId || ''), orgName, email, websiteDomain };
+    } catch {
+      return { organizationId: '', orgName: 'Your Organization', email: '', websiteDomain: '' };
+    }
+  };
+
+  const mapAnalysisResponse = useCallback((payload) => {
+    const extracted = payload?.extractedFields || {};
+    const normalizedFraudRisk = Number(payload?.fraudRisk ?? 1);
+    const fraudRisk = Math.max(0, Math.min(100, Math.round(normalizedFraudRisk * 100)));
+    const validationScore = Math.max(0, Math.min(100, Math.round((1 - normalizedFraudRisk) * 100)));
+    return {
+      analysisId: payload?.analysisId || '',
+      organizationId: payload?.organizationId || '',
+      orgName: extracted.name || extracted.organizationName || extracted.orgName || 'Unknown organization',
+      registrationNumber: extracted.registrationNumber || extracted.registrationNo || 'N/A',
+      registrationDate: extracted.expirationDate || extracted.registrationDate || extracted.date || 'N/A',
+      legalStatus: payload?.level || extracted.legalStatus || 'N/A',
+      address: extracted.address || 'N/A',
+      documentQuality: fraudRisk < 40 ? t('rneVerification.analysis.qualityGood', 'Good') : fraudRisk < 70 ? t('rneVerification.analysis.qualityMedium', 'Medium') : t('rneVerification.analysis.qualityLow', 'Low'),
+      validationScore,
+      authenticated: fraudRisk < 70,
+      fraudRisk,
+      level: payload?.level || 'HIGH',
+      similarityRisk: payload?.similarityRisk || 'unknown',
+      flags: Array.isArray(payload?.flags) ? payload.flags : [],
+    };
+  }, [t]);
+
   /* ─── Submit upload ─── */
   const handleSubmit = async () => {
     let valid = true;
@@ -346,148 +410,96 @@ export default function OrgRNEVerification() {
     }
     if (!valid) return;
 
+    const { organizationId, orgName, email, websiteDomain } =
+      await resolveOrganizationContext();
+    if (!organizationId) {
+      setPhoneError(t('rneVerification.errors.orgContextMissing', 'Organization context is missing. Please sign in again.'));
+      addEvent(t('rneVerification.events.orgContextMissing', 'Organization context missing. Verification was not started.'), 'error');
+      return;
+    }
+
+    setPhase('processing');
+    setMsgIdx(0);
     setSubmitting(true);
-    addEvent(t('rneVerification.events.uploading', 'Uploading RNE document to secure server...'), 'info');
+    addEvent(t('rneVerification.events.processingStart', 'AI document analysis pipeline initiated'), 'info');
+    processingRef.current = setInterval(() => {
+      setMsgIdx((prev) => (prev + 1) % PROCESSING_MESSAGES.length);
+    }, 1800);
 
     try {
       const formData = new FormData();
-      formData.append('rneDocument', file);
-      formData.append('phone', phone);
-      const res = await authFetch('/organization/rne/verify', { method: 'POST', body: formData });
-      if (res.ok) {
-        addEvent(t('rneVerification.events.uploaded', 'Document uploaded and queued for AI processing'), 'success');
-      } else {
-        addEvent(t('rneVerification.events.uploadFallback', 'Document received — starting AI pipeline'), 'info');
+      formData.append('file', file);
+      formData.append('organizationId', organizationId);
+      if (email) formData.append('email', email);
+      if (websiteDomain) formData.append('websiteDomain', websiteDomain);
+      const res = await authFetch('/org-scan-ai/analyze', { method: 'POST', body: formData });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || t('rneVerification.errors.analysisFailed', 'Document analysis failed.'));
       }
-    } catch {
-      addEvent(t('rneVerification.events.uploadFallback', 'Document received — starting AI pipeline'), 'info');
+      const payload = await res.json();
+      const mapped = { ...mapAnalysisResponse(payload), orgName };
+      setAnalysis(mapped);
+      addEvent(t('rneVerification.events.analysisComplete', 'Document analysis completed successfully'), 'success');
+      addEvent(`${t('rneVerification.events.scoreGenerated', 'Validation score generated')}: ${mapped.validationScore}%`, 'success');
+      setPhase('analysis');
+    } catch (err) {
+      const message = err?.message || t('rneVerification.errors.analysisFailed', 'Document analysis failed.');
+      addEvent(message, 'error');
+      setFileError(message);
+      setPhase('upload');
+    } finally {
+      if (processingRef.current) {
+        clearInterval(processingRef.current);
+        processingRef.current = null;
+      }
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
-    startProcessing();
   };
 
-  /* ─── Processing countdown ─── */
-  const startProcessing = () => {
-    setPhase('processing');
-    setCountdown(PROCESSING_DURATION);
-    setMsgIdx(0);
-    addEvent(t('rneVerification.events.processingStart', 'AI document analysis pipeline initiated'), 'info');
-
-    let remaining = PROCESSING_DURATION;
-    countdownRef.current = setInterval(() => {
-      remaining -= 1;
-      setCountdown(remaining);
-      const newIdx = Math.min(
-        Math.floor(((PROCESSING_DURATION - remaining) / PROCESSING_DURATION) * PROCESSING_MESSAGES.length),
-        PROCESSING_MESSAGES.length - 1
-      );
-      setMsgIdx(newIdx);
-      if (remaining <= 0) {
-        clearInterval(countdownRef.current);
-        finishProcessing();
-      }
-    }, 1000);
-  };
-
-  /* ─── Show analysis results ─── */
-  const finishProcessing = () => {
-    const storedUser = JSON.parse(localStorage.getItem('orgLeaderUser') || '{}');
-    const orgName = storedUser.organizationName || storedUser.name || 'Your Organization';
-    const score = Math.floor(Math.random() * 15) + 82; // 82–97
-
-    const mockAnalysis = {
-      orgName,
-      registrationNumber: `RNE-${new Date().getFullYear()}-TN-${Math.floor(Math.random() * 90000 + 10000)}`,
-      registrationDate: '2024-03-15',
-      legalStatus: t('rneVerification.analysis.legalStatusValue', 'Non-profit Organization'),
-      address: t('rneVerification.analysis.addressValue', 'Tunis, Tunisia'),
-      documentQuality: t('rneVerification.analysis.qualityGood', 'Good'),
-      validationScore: score,
-      authenticated: true,
-    };
-
-    setAnalysis(mockAnalysis);
-    setPhase('analysis');
-    addEvent(t('rneVerification.events.analysisComplete', 'Document analysis completed successfully'), 'success');
-    addEvent(`${t('rneVerification.events.scoreGenerated', 'Validation score generated')}: ${score}%`, 'success');
-  };
-
-  /* ─── Voice call ─── */
+  /* ─── Submit for review (no simulated call path) ─── */
   const startVoiceCall = () => {
-    setPhase('voice_call');
-    setCallPhase('preparing');
-    setCallCountdown(CALL_PREP_DURATION);
-    setTranscript([]);
-    addEvent(t('rneVerification.events.callInitiating', `Initiating AI voice call to ${phone}`), 'info');
-
-    authFetch('/organization/rne/verify/initiate-call', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone }),
-    }).catch(() => {});
-
-    let remaining = CALL_PREP_DURATION;
-    callRef.current = setInterval(() => {
-      remaining -= 1;
-      setCallCountdown(remaining);
-      if (remaining <= 0) {
-        clearInterval(callRef.current);
-        beginCall();
-      }
-    }, 1000);
-  };
-
-  const beginCall = () => {
-    setCallPhase('ringing');
-    addEvent(t('rneVerification.events.callRinging', 'Phone is ringing — awaiting answer...'), 'info');
-    setTimeout(() => {
-      setCallPhase('talking');
-      addEvent(t('rneVerification.events.callConnected', 'Call connected — AI verification in progress'), 'success');
-      simulateTranscript();
-    }, 3500);
-  };
-
-  const simulateTranscript = () => {
-    CALL_TRANSCRIPT.forEach((line, idx) => {
-      const t0 = transcriptTimeouts.current;
-      t0.push(setTimeout(() => {
-        setTranscript(prev => [...prev, line]);
-        if (idx === CALL_TRANSCRIPT.length - 1) {
-          t0.push(setTimeout(() => {
-            setCallPhase('ended');
-            addEvent(t('rneVerification.events.callEnded', 'AI verification call completed successfully'), 'success');
-            t0.push(setTimeout(() => finalizeDecision(), 2500));
-          }, 3000));
-        }
-      }, idx * 5000));
-    });
+    addEvent(
+      t(
+        'rneVerification.events.reviewQueued',
+        'AI analysis complete. Submission queued for manual verification review.',
+      ),
+      'info',
+    );
+    finalizeDecision();
   };
 
   const finalizeDecision = () => {
-    const docScore = analysis?.validationScore ?? 87;
-    const callScore = Math.floor(Math.random() * 10) + 88;
-    const overall = Math.round((docScore * 0.5) + (callScore * 0.5));
-    const status = overall >= 80 ? 'approved' : overall >= 60 ? 'needs_review' : 'rejected';
+    const docScore = analysis?.validationScore ?? 0;
+    const overall = docScore;
+    const status = deriveDecisionFromAnalysis(analysis);
 
-    setDecision({ status, docScore, callScore, overall });
+    setDecision({
+      status,
+      docScore,
+      callScore: null,
+      overall,
+      level: analysis?.level || 'MEDIUM',
+      flags: Array.isArray(analysis?.flags) ? analysis.flags : [],
+      analysisId: analysis?.analysisId || '',
+    });
     setPhase('decision');
     addEvent(
-      `${t('rneVerification.events.decisionReached', 'Final decision reached')}: ${status.toUpperCase()}`,
-      status === 'approved' ? 'success' : status === 'rejected' ? 'error' : 'info'
+      `${t('rneVerification.events.decisionReached', 'Final decision reached')}: ${String(analysis?.level || 'MEDIUM').toUpperCase()} RISK`,
+      status === 'rejected' ? 'error' : 'info'
     );
   };
 
   /* ─── Cleanup ─── */
   useEffect(() => () => {
-    clearInterval(countdownRef.current);
+    clearInterval(processingRef.current);
     clearInterval(callRef.current);
     transcriptTimeouts.current.forEach(clearTimeout);
   }, []);
 
   /* ─── Reset ─── */
   const reset = () => {
-    clearInterval(countdownRef.current);
+    clearInterval(processingRef.current);
     clearInterval(callRef.current);
     transcriptTimeouts.current.forEach(clearTimeout);
     transcriptTimeouts.current = [];
@@ -498,7 +510,6 @@ export default function OrgRNEVerification() {
     setFileError('');
     setPhoneError('');
     setSubmitting(false);
-    setCountdown(PROCESSING_DURATION);
     setMsgIdx(0);
     setAnalysis(null);
     setCallPhase('preparing');
@@ -509,10 +520,7 @@ export default function OrgRNEVerification() {
   };
 
   /* ─── Step progress for processing phase ─── */
-  const stepProgress = Math.min(
-    Math.floor(((PROCESSING_DURATION - countdown) / PROCESSING_DURATION) * PROCESSING_STEPS.length),
-    PROCESSING_STEPS.length
-  );
+  const stepProgress = Math.min(msgIdx + 1, PROCESSING_STEPS.length);
 
   /* ─── Decision color helpers ─── */
   const decisionColor = {
@@ -706,14 +714,12 @@ export default function OrgRNEVerification() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start py-2">
             {/* Left: countdown + message */}
             <div className="flex flex-col items-center gap-6">
-              <CircularCountdown
-                value={countdown}
-                total={PROCESSING_DURATION}
-                size={180}
-                label={t('rneVerification.processing.title', 'AI Analysis in Progress')}
-                sublabel={t('rneVerification.processing.seconds', 'sec')}
-                color="#6366f1"
-              />
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-24 h-24 rounded-full border-4 border-indigo-200 border-t-indigo-500 animate-spin" />
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 text-center">
+                  {t('rneVerification.processing.title', 'AI Analysis in Progress')}
+                </p>
+              </div>
 
               {/* Animated status message */}
               <div className="w-full text-center">
@@ -824,7 +830,7 @@ export default function OrgRNEVerification() {
                     : t('rneVerification.analysis.low',    'Low Confidence')}
                 </div>
                 <p className="text-xs text-slate-400 mt-1">
-                  {t('rneVerification.analysis.proceedInfo', 'Proceed to voice verification to finalize')}
+                  {t('rneVerification.analysis.proceedInfo', 'Submit this AI analysis for verification review')}
                 </p>
               </div>
             </div>
@@ -856,8 +862,8 @@ export default function OrgRNEVerification() {
               onClick={startVoiceCall}
               className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2"
             >
-              <span className="material-symbols-outlined text-lg">call</span>
-              {t('rneVerification.analysis.proceedToCall', 'Proceed to AI Voice Verification')}
+              <span className="material-symbols-outlined text-lg">rule</span>
+              {t('rneVerification.analysis.proceedToCall', 'Submit for Final Verification Review')}
             </button>
           </div>
 
@@ -869,11 +875,11 @@ export default function OrgRNEVerification() {
                 {t('rneVerification.analysis.authenticity', 'Authenticity Checks')}
               </h4>
               {[
-                { label: t('rneVerification.checks.format',     'Document Format Valid'),    ok: true },
-                { label: t('rneVerification.checks.signatures', 'Official Signatures Found'), ok: true },
-                { label: t('rneVerification.checks.anomalies',  'No Anomalies Detected'),    ok: true },
+                { label: t('rneVerification.checks.format',     'Document Format Valid'),    ok: Number(analysis.fraudRisk ?? 100) < 95 },
+                { label: t('rneVerification.checks.signatures', 'Official Signatures Found'), ok: Number(analysis.fraudRisk ?? 100) < 80 },
+                { label: t('rneVerification.checks.anomalies',  'No Anomalies Detected'),    ok: Number(analysis.fraudRisk ?? 100) < 60 },
                 { label: t('rneVerification.checks.registry',   'Registry Cross-Check'),     ok: analysis.authenticated },
-                { label: t('rneVerification.checks.tampering',  'Tampering Detection'),      ok: true },
+                { label: t('rneVerification.checks.tampering',  'Tampering Detection'),      ok: Number(analysis.fraudRisk ?? 100) < 70 },
               ].map((c, i) => (
                 <div key={i} className="flex items-center gap-2.5 py-2.5 border-b border-slate-100 dark:border-slate-800 last:border-0">
                   <span className={`material-symbols-outlined text-[18px] ${c.ok ? 'text-emerald-500' : 'text-red-500'}`}>
@@ -1098,13 +1104,23 @@ export default function OrgRNEVerification() {
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
               {t('rneVerification.decision.scoreBreakdown', 'Score Breakdown')}
             </p>
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {[
-                { label: t('rneVerification.decision.docScore',  'Document'),      value: decision.docScore,  color: '#6366f1' },
-                { label: t('rneVerification.decision.callScore', 'Voice Call'),    value: decision.callScore, color: '#06b6d4' },
-                { label: t('rneVerification.decision.overall',   'Overall Score'), value: decision.overall,
-                  color: decision.status === 'approved' ? '#10b981' : decision.status === 'rejected' ? '#ef4444' : '#f59e0b' },
-              ].map((s, i) => (
+                { label: t('rneVerification.decision.docScore', 'Document'), value: decision.docScore, color: '#6366f1' },
+                decision.callScore == null
+                  ? null
+                  : { label: t('rneVerification.decision.callScore', 'Voice Call'), value: decision.callScore, color: '#06b6d4' },
+                {
+                  label: t('rneVerification.decision.overall', 'Overall Score'),
+                  value: decision.overall,
+                  color:
+                    decision.status === 'approved'
+                      ? '#10b981'
+                      : decision.status === 'rejected'
+                      ? '#ef4444'
+                      : '#f59e0b',
+                },
+              ].filter(Boolean).map((s, i) => (
                 <div key={i} className="flex flex-col items-center gap-2 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
                   <ScoreRing value={s.value} size={72} strokeWidth={7} color={s.color} />
                   <p className="text-xs text-slate-400 text-center">{s.label}</p>
@@ -1170,7 +1186,7 @@ export default function OrgRNEVerification() {
               {[
                 { icon: 'upload_file', label: t('rneVerification.decision.sumDoc',      'Document Submitted'),    status: 'done' },
                 { icon: 'smart_toy',   label: t('rneVerification.decision.sumAI',       'AI Analysis Complete'),  status: 'done' },
-                { icon: 'call',        label: t('rneVerification.decision.sumCall',     'Voice Verification'),    status: 'done' },
+                { icon: 'call',        label: t('rneVerification.decision.sumCall',     'Voice Verification'),    status: 'pending' },
                 { icon: 'gavel',       label: t('rneVerification.decision.sumDecision', 'Decision Rendered'),     status: decision.status },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 py-2.5 border-b border-slate-100 dark:border-slate-800 last:border-0">
@@ -1193,10 +1209,10 @@ export default function OrgRNEVerification() {
                 <span className="material-symbols-outlined text-indigo-500 text-lg mt-0.5">notifications</span>
                 <div>
                   <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300">
-                    {t('rneVerification.decision.notifyTitle', 'Email Notification Sent')}
+                    {t('rneVerification.decision.notifyTitle', 'Notification Pending')}
                   </p>
                   <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
-                    {t('rneVerification.decision.notifyText', 'A verification report has been sent to your registered email address.')}
+                    {t('rneVerification.decision.notifyText', 'You will receive an email once manual verification review is completed.')}
                   </p>
                 </div>
               </div>

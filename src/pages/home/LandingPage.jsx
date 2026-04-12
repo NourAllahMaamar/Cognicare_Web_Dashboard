@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
