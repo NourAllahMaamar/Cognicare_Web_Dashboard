@@ -411,6 +411,65 @@
     "fr": "الفرنسية",
     "ar": "العربية"
   },
+  "dashboardAssistant": {
+    "askCogni": "اسأل كوغني",
+    "assistantTag": "المساعد",
+    "title": "مساعد كوغني للوحة التحكم",
+    "subtitle": "دعم للقراءة فقط حسب شاشة لوحة التحكم الحالية.",
+    "routeLabel": "الشاشة",
+    "conversation": "المحادثة",
+    "clear": "مسح",
+    "retry": "إعادة المحاولة",
+    "refresh": "تحديث",
+    "send": "إرسال",
+    "close": "إغلاق المساعد",
+    "inputLabel": "اسأل كوغني",
+    "inputPlaceholder": "اسأل عن حالة لوحة التحكم الحالية أو المؤشرات أو الخطوات القادمة…",
+    "queued": "تمت إضافة رسالتك إلى الانتظار بينما يقوم كوغني بالتحديث",
+    "readOnly": "للقراءة فقط في هذا الإصدار",
+    "fallbackReply": "لا أملك إضافة مفيدة الآن.",
+    "readOnlyActionNote": "يبقى هذا المساعد في لوحة التحكم للقراءة فقط في هذا الإصدار، لذلك لم يتم تنفيذ أي إجراء.",
+    "unavailable": "كوغني غير متاح مؤقتاً.",
+    "thinking": "كوغني يفكر…",
+    "refreshing": "كوغني يحدّث هذه الشاشة…",
+    "status": {
+      "live": "كوغني مباشر"
+    },
+    "localSummary": {
+      "snapshot": "ملخص محدث للشاشة {{route}}: {{metrics}}.",
+      "empty": "أستطيع تلخيص هذه الشاشة فور تحميل مؤشرات لوحة التحكم."
+    },
+    "metrics": {
+      "totalUsers": "المستخدمون",
+      "totalOrganizations": "المنظمات",
+      "totalFamilies": "العائلات",
+      "pendingReviews": "المراجعات المعلقة",
+      "totalStaff": "الفريق",
+      "totalChildren": "الأطفال",
+      "invitations": "الدعوات",
+      "organizationChildren": "أطفال المنظمة",
+      "privateChildren": "المرضى الخاصون",
+      "totalPlans": "الخطط",
+      "pecsBoards": "لوحات PECS",
+      "teacchTrackers": "متابعات TEACCH",
+      "suggestionCount": "اقتراحات الذكاء الاصطناعي"
+    },
+    "starter": {
+      "admin": "أستطيع شرح مؤشرات النظام، وتلخيص نظرة الإدارة الحالية، وتوجيهك إلى الصفحة التالية المناسبة داخل لوحة التحكم.",
+      "orgLeader": "أستطيع تلخيص لوحة منظمتك، وشرح اتجاهات الفريق أو العائلات، ومساعدتك على قراءة بطاقات رؤى المختصين.",
+      "specialist": "أستطيع تلخيص بيانات لوحة التحكم الحالية، وشرح عدد الخطط والاقتراحات، وتوجيهك إلى الخطوة التالية في مسار عمل المختص.",
+      "default": "أستطيع مساعدتك في فهم هذه اللوحة."
+    },
+    "meta": {
+      "instantSummary": "ملخص فوري",
+      "reusedAnswer": "إجابة معاد استخدامها",
+      "lightAnalysis": "تحليل خفيف",
+      "deepAnalysis": "تحليل عميق",
+      "assistantReply": "رد المساعد",
+      "justUpdated": "تم التحديث الآن",
+      "updatedAt": "آخر تحديث {{time}}"
+    }
+  },
   "dashboard": {
     "title": "مدير CogniCare",
     "welcome": "مرحباً بعودتك",
@@ -1266,6 +1325,108 @@
       "occupational_therapist": "معالج وظيفي",
       "volunteer": "متطوع",
       "other": "أخرى"
+    },
+    "seo": {
+      "title": "لوحة تحكم SEO",
+      "subtitle": "إدارة الروبوتات/خريطة الموقع وأدوات وإجراءات SEO الآلية.",
+      "refresh": "تحديث",
+      "refreshing": "جارٍ التحديث...",
+      "notAvailable": "غير متاح",
+      "none": "لا يوجد",
+      "saving": "جارٍ الحفظ...",
+      "savePolicies": "حفظ السياسات",
+      "siteOrigin": "نطاق الموقع",
+      "publicRoutes": "المسارات العامة (مفصولة بفواصل)",
+      "successTitle": "تم تسجيل إجراء SEO",
+      "banner": {
+        "operational": "لوحة تحكم SEO تعمل.",
+        "degraded": "خدمات SEO/AI غير متاحة، يتم عرض آخر حالة محفوظة.",
+        "snapshot": "آخر لقطة: {{date}}"
+      },
+      "crawlers": {
+        "title": "سياسات الزواحف",
+        "subtitle": "إدارة user-agent و allow/disallow و crawl-delay.",
+        "userAgent": "User-Agent",
+        "allow": "Allow",
+        "disallow": "Disallow",
+        "crawlDelay": "تأخير الزحف (ثانية)",
+        "enabled": "مفعل",
+        "on": "نشط",
+        "off": "معطل",
+        "help": "يتم حظر المسارات الخاصة تلقائيًا."
+      },
+      "integrity": {
+        "title": "تكامل robots/sitemap",
+        "subtitle": "فحص الانحراف مقابل قائمة المسارات العامة.",
+        "robotsSummary": "التحقق من robots.txt وأمان المسارات الخاصة.",
+        "sitemapSummary": "التحقق من sitemap.xml وتغطية المسارات العامة.",
+        "ready": "جاهز",
+        "attention": "تنبيه",
+        "allowedRoutes": "المسارات المسموحة",
+        "missing": "مفقودة",
+        "extra": "زائدة",
+        "entries": "العناصر",
+        "warnings": "تحذيرات"
+      },
+      "actions": {
+        "title": "إجراءات SEO",
+        "subtitle": "تشغيل إجراءات غير متزامنة مع تدقيق.",
+        "running": "قيد التنفيذ...",
+        "ready": "جاهز للتشغيل",
+        "inspectHelp": "افحص عنوان URL عام فقط.",
+        "inspectPathLabel": "مسار عام",
+        "inspectPlaceholder": "/pricing",
+        "inspectSafety": "يتم حظر المسارات الخاصة وواجهات API.",
+        "runInspect": "تشغيل فحص الرابط",
+        "pathRequired": "المسار العام مطلوب.",
+        "privatePathBlocked": "هذا المسار خاص ولا يمكن فحصه.",
+        "items": {
+          "REGENERATE_SITEMAP": "إعادة توليد خريطة الموقع",
+          "VALIDATE_ROBOTS_RULES": "التحقق من قواعد robots",
+          "SUBMIT_SITEMAP": "إرسال خريطة الموقع",
+          "INSPECT_URL_COVERAGE": "فحص تغطية URL",
+          "REQUEST_INDEXING": "طلب الفهرسة",
+          "TRIGGER_LIGHTHOUSE_SCAN": "تشغيل فحص Lighthouse",
+          "TRIGGER_ZAP_SCAN": "تشغيل فحص ZAP",
+          "TRIGGER_JENKINS_BUILD": "تشغيل Jenkins build"
+        }
+      },
+      "tools": {
+        "title": "حالة التكاملات",
+        "subtitle": "حالة مباشرة للموصلات وآخر الأخطاء.",
+        "awaitingBackend": "بانتظار حالة الخادم.",
+        "lastSuccess": "آخر نجاح",
+        "lastError": "آخر خطأ",
+        "items": {
+          "github_actions": "GitHub Actions",
+          "jenkins": "Jenkins",
+          "search_console": "Search Console",
+          "lighthouse": "Lighthouse",
+          "zap": "OWASP ZAP",
+          "sentry": "Sentry"
+        },
+        "status": {
+          "CONNECTED": "متصل",
+          "DEGRADED": "متدهور",
+          "DISABLED": "معطل",
+          "ERROR": "خطأ",
+          "PENDING": "قيد الانتظار",
+          "RUNNING": "قيد التشغيل",
+          "COMPLETED": "مكتمل",
+          "FAILED": "فشل"
+        }
+      },
+      "history": {
+        "title": "سجل الإجراءات",
+        "subtitle": "سجل مقسم للإجراءات المنفذة.",
+        "action": "الإجراء",
+        "target": "الهدف",
+        "status": "الحالة",
+        "started": "بدأ",
+        "summary": "الملخص",
+        "empty": "لا توجد إجراءات SEO مسجلة.",
+        "loadMore": "تحميل المزيد"
+      }
     }
   },
   "adminOverview": {
@@ -1482,7 +1643,15 @@
     "compApplications": "الطلبات",
     "compAnalytics": "التحليلات",
     "compSystemHealth": "صحة النظام",
-    "compSettings": "الإعدادات"
+    "compSettings": "الإعدادات",
+    "fallbackTitle": "وضع متدهور مفعل",
+    "aiFallbackSnapshot": "خدمة الذكاء الاصطناعي غير متاحة. يتم عرض آخر بيانات صالحة.",
+    "aiFallbackEstimate": "خدمة الذكاء الاصطناعي غير متاحة. يتم عرض تقديرات محلية من حركة المرور الأخيرة.",
+    "aiFallbackNoData": "خدمة الذكاء الاصطناعي غير متاحة ولا توجد لقطة محفوظة.",
+    "lastSnapshot": "آخر لقطة: {{date}}",
+    "estimated": "تقديري",
+    "noDataTitle": "لا توجد بيانات صحة متاحة",
+    "noDataDescription": "يرجى إعادة المحاولة عندما تصبح خدمات الخادم/الذكاء الاصطناعي متاحة."
   },
   "adminFamilies": {
     "title": "إدارة العائلات",

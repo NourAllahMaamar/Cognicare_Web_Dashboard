@@ -39,6 +39,14 @@ export default function TEACCHTrackerCreator() {
 
   useEffect(() => { if (!childId) setError(t('teachCreator.childRequired')); }, [childId, t]);
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/specialist/dashboard/children');
+  };
+
   const addGoal = (text) => {
     if (!text || goals.find(g => g.text === text)) return;
     setGoals([...goals, { id: Date.now().toString(), text, status: 'not_started', notes: '' }]);
@@ -81,7 +89,7 @@ export default function TEACCHTrackerCreator() {
       <div className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <button onClick={handleBack} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
@@ -239,5 +247,4 @@ export default function TEACCHTrackerCreator() {
     </div>
   );
 }
-
 

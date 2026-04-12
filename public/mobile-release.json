@@ -1,0 +1,13 @@
+{
+  "android": {
+    "available": true,
+    "version": "1.0.0",
+    "downloadUrl": "/downloads/cognicare-android-v1.0.0-arm64-v8a.apk",
+    "notes": "Pilot Android build for modern ARM64 devices."
+  },
+  "ios": {
+    "available": false,
+    "version": "Coming soon",
+    "notes": "iOS distribution will be added after App Store enrollment."
+  }
+}

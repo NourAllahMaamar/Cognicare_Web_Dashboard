@@ -141,6 +141,8 @@ The web dashboard is a fully offline-capable PWA built with **vite-plugin-pwa v1
 | `api-cache` | `/api/v1/*` | NetworkFirst | 1 hour (10s network timeout) |
 | `image-cache` | `/uploads/*`, `res.cloudinary.com/*` | CacheFirst | 30 days |
 
+> 2026-04-10 audit note: authenticated `/api/v1/*` runtime caching is a data-isolation risk in shared-browser scenarios and should be removed or restricted to explicitly public endpoints before broader production rollout.
+
 ### PWA User Experience Components
 
 **`src/components/PWAPrompt.jsx`**
@@ -197,7 +199,12 @@ All routing is client-side via React Router v7 with `BrowserRouter`. Every page 
 
 ### Auth Guards
 
-Each dashboard layout (`AdminLayout`, `OrgLayout`, `SpecialistLayout`) reads its user from `localStorage` on mount. If the user object is missing or the role doesn't match, the layout immediately redirects to the appropriate login page — no separate `PrivateRoute` wrapper needed.
+Each dashboard layout (`AdminLayout`, `OrgLayout`, `SpecialistLayout`) reads session state from `localStorage` on mount.
+
+- `AdminLayout` currently validates role explicitly.
+- `OrgLayout` and `SpecialistLayout` currently validate presence of stored user data, then rely on backend guards for sensitive API operations.
+
+2026-04-10 hardening requirement: introduce a unified protected-route wrapper with strict role validation for every role dashboard and creator route.
 
 ---
 
@@ -220,7 +227,7 @@ The central auth primitive. Returns:
 | Method | Description |
 |---|---|
 | `authFetch(path, options)` | Authenticated `fetch` with auto-retry on 401 (silent token refresh). Attaches `Authorization: Bearer <token>` and `X-Correlation-Id` headers. Records API metrics. |
-| `authGet(path, { ttl, skipCache })` | Wraps `authFetch`, parses JSON, maintains a shared in-memory TTL cache (60s default). Cache is keyed by `role:path`. |
+| `authGet(path, { ttl, skipCache })` | Wraps `authFetch`, parses JSON, maintains a shared in-memory TTL cache (60s default). Cache is currently keyed by `role:path` and must be user/session-scoped for production. |
 | `authMutate(path, { method, body, isFormData })` | POST/PATCH/DELETE helper. Automatically clears the entire GET cache after any mutation. |
 | `logout()` | Clears all 3 localStorage keys and redirects to login. |
 | `refreshAccessToken()` | Called internally on 401. Calls `POST /auth/refresh` and saves the new access token. |
@@ -569,3 +576,29 @@ npm run build:no-prerender  # Vite + PWA only (skip pre-render)
 npm run preview           # Serve dist/ locally (test PWA)
 npm run lint              # ESLint
 ```
+
+---
+
+## Remediation Update (2026-04-12)
+
+### RNE verification flow (organization leader)
+
+- The organization RNE page now uses real backend analysis:
+  - `POST /org-scan-ai/analyze` (multipart with `file`, `organizationId`, optional metadata)
+- Simulated/random verification outcomes were removed from the active flow.
+- UI decision state is now backend-risk-driven and queued for manual verification review.
+
+### Role and route consistency
+
+- Specialist login allowlist now includes `careProvider`, matching protected-route allowlist parity.
+- Audited specialist creator pages now include safe back navigation fallbacks when browser history is empty.
+
+### Session/cache hardening
+
+- Shared in-memory auth GET caching is now user/session scoped (role + user/token scope + path).
+- Session-expiration handling clears auth cache and role-scoped storage consistently.
+
+### PWA/runtime caching hardening
+
+- Runtime caching no longer includes authenticated API routes.
+- Runtime cache is restricted to safe/static resources (fonts + Cloudinary public assets).

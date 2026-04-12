@@ -7,6 +7,10 @@ import { recordApiMetric } from '../utils/performanceMonitor';
 const _getCache = new Map();
 const CACHE_TTL = 60_000; // 60 seconds default
 
+export function clearAuthCache() {
+  _getCache.clear();
+}
+
 function createCorrelationId() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
@@ -35,6 +39,7 @@ export function useAuth(role) {
   };
 
   const handleSessionExpired = useCallback(() => {
+    clearAuthCache();
     localStorage.removeItem(keys.token);
     localStorage.removeItem(keys.refresh);
     localStorage.removeItem(keys.user);
@@ -132,7 +137,11 @@ export function useAuth(role) {
    * Supports in-memory TTL caching. Pass { skipCache: true } to bypass.
    */
   const authGet = useCallback(async (path, { ttl = CACHE_TTL, skipCache = false } = {}) => {
-    const cacheKey = `${role}:${path}`;
+    const userId = String(getUser()?.id || getUser()?._id || '').trim();
+    const token = getToken() || '';
+    const tokenScope = token ? token.slice(-16) : 'no-token';
+    const userScope = userId || 'anonymous';
+    const cacheKey = `${role}:${userScope}:${tokenScope}:${path}`;
 
     if (!skipCache) {
       const cached = _getCache.get(cacheKey);
@@ -174,7 +183,7 @@ export function useAuth(role) {
   }, [handleSessionExpired]);
 
   /** Manually clear the in-memory GET cache */
-  const clearCache = useCallback(() => _getCache.clear(), []);
+  const clearCache = useCallback(() => clearAuthCache(), []);
 
   return { getToken, getUser, authFetch, authGet, authMutate, logout, handleSessionExpired, refreshAccessToken, clearCache };
 }

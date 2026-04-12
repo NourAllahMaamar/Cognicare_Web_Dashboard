@@ -411,6 +411,65 @@
     "fr": "Français",
     "ar": "Arabe"
   },
+  "dashboardAssistant": {
+    "askCogni": "Demander à Cogni",
+    "assistantTag": "Assistant",
+    "title": "Assistant Tableau de Bord Cogni",
+    "subtitle": "Assistance en lecture seule pour la vue actuelle du tableau de bord.",
+    "routeLabel": "Écran",
+    "conversation": "Conversation",
+    "clear": "Effacer",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "send": "Envoyer",
+    "close": "Fermer l'assistant",
+    "inputLabel": "Demander à Cogni",
+    "inputPlaceholder": "Posez une question sur l'état du tableau de bord, les métriques ou les prochaines étapes…",
+    "queued": "Message en file d'attente pendant l'actualisation de Cogni",
+    "readOnly": "Lecture seule dans cette version",
+    "fallbackReply": "Je n'ai rien d'utile à ajouter pour le moment.",
+    "readOnlyActionNote": "Cet assistant de tableau de bord reste en lecture seule dans cette version, donc aucune action n'a été exécutée.",
+    "unavailable": "Cogni est temporairement indisponible.",
+    "thinking": "Cogni réfléchit…",
+    "refreshing": "Cogni actualise cette vue…",
+    "status": {
+      "live": "Cogni en direct"
+    },
+    "localSummary": {
+      "snapshot": "Aperçu actuel pour {{route}} : {{metrics}}.",
+      "empty": "Je peux résumer cet écran dès que les métriques du tableau de bord sont disponibles."
+    },
+    "metrics": {
+      "totalUsers": "Utilisateurs",
+      "totalOrganizations": "Organisations",
+      "totalFamilies": "Familles",
+      "pendingReviews": "Revues en attente",
+      "totalStaff": "Staff",
+      "totalChildren": "Enfants",
+      "invitations": "Invitations",
+      "organizationChildren": "Enfants de l'organisation",
+      "privateChildren": "Patients privés",
+      "totalPlans": "Plans",
+      "pecsBoards": "Supports PECS",
+      "teacchTrackers": "Suivis TEACCH",
+      "suggestionCount": "Suggestions IA"
+    },
+    "starter": {
+      "admin": "Je peux expliquer les métriques système, résumer l'aperçu admin actuel et vous guider vers la prochaine page du tableau de bord.",
+      "orgLeader": "Je peux résumer le tableau de bord de votre organisation, expliquer les tendances du staff ou des familles, et vous aider à interpréter les cartes d'insights spécialistes.",
+      "specialist": "Je peux résumer vos données actuelles du tableau de bord, expliquer les volumes de plans et suggestions, et vous orienter vers le prochain workflow spécialiste.",
+      "default": "Je peux vous aider à comprendre ce tableau de bord."
+    },
+    "meta": {
+      "instantSummary": "Résumé instantané",
+      "reusedAnswer": "Réponse réutilisée",
+      "lightAnalysis": "Analyse légère",
+      "deepAnalysis": "Analyse approfondie",
+      "assistantReply": "Réponse de l'assistant",
+      "justUpdated": "mise à jour à l'instant",
+      "updatedAt": "mise à jour à {{time}}"
+    }
+  },
   "dashboard": {
     "title": "Admin CogniCare",
     "welcome": "Bon retour",
@@ -1266,6 +1325,108 @@
       "occupational_therapist": "Ergothérapeute",
       "volunteer": "Bénévole",
       "other": "Autre"
+    },
+    "seo": {
+      "title": "Plan de contrôle SEO",
+      "subtitle": "Gouvernez les robots/sitemap, les outils et les actions SEO automatisées.",
+      "refresh": "Actualiser",
+      "refreshing": "Actualisation...",
+      "notAvailable": "Non disponible",
+      "none": "Aucun",
+      "saving": "Enregistrement...",
+      "savePolicies": "Enregistrer les politiques",
+      "siteOrigin": "Origine du site",
+      "publicRoutes": "Routes publiques (séparées par des virgules)",
+      "successTitle": "Action SEO enregistrée",
+      "banner": {
+        "operational": "Le plan de contrôle SEO est opérationnel.",
+        "degraded": "Services SEO/IA indisponibles, affichage du dernier état connu.",
+        "snapshot": "Dernier instantané: {{date}}"
+      },
+      "crawlers": {
+        "title": "Politiques des robots",
+        "subtitle": "Gérez user-agent, allow/disallow et crawl-delay.",
+        "userAgent": "User-Agent",
+        "allow": "Allow",
+        "disallow": "Disallow",
+        "crawlDelay": "Délai de crawl (sec)",
+        "enabled": "Activé",
+        "on": "Actif",
+        "off": "Inactif",
+        "help": "Les chemins privés sont bloqués automatiquement."
+      },
+      "integrity": {
+        "title": "Intégrité robots/sitemap",
+        "subtitle": "Détection de dérive contre la liste de routes publiques.",
+        "robotsSummary": "Validation robots.txt et sécurité des chemins privés.",
+        "sitemapSummary": "Validation sitemap.xml et couverture des routes publiques.",
+        "ready": "Prêt",
+        "attention": "Attention",
+        "allowedRoutes": "Routes autorisées",
+        "missing": "Manquantes",
+        "extra": "Supplémentaires",
+        "entries": "Entrées",
+        "warnings": "Avertissements"
+      },
+      "actions": {
+        "title": "Actions SEO",
+        "subtitle": "Lancez des actions asynchrones avec audit.",
+        "running": "En cours...",
+        "ready": "Prêt à lancer",
+        "inspectHelp": "Inspectez une URL publique uniquement.",
+        "inspectPathLabel": "Chemin public",
+        "inspectPlaceholder": "/pricing",
+        "inspectSafety": "Les chemins privés et API sont bloqués.",
+        "runInspect": "Lancer l'inspection URL",
+        "pathRequired": "Un chemin public est requis.",
+        "privatePathBlocked": "Ce chemin est privé et ne peut pas être inspecté.",
+        "items": {
+          "REGENERATE_SITEMAP": "Régénérer le sitemap",
+          "VALIDATE_ROBOTS_RULES": "Valider robots rules",
+          "SUBMIT_SITEMAP": "Soumettre le sitemap",
+          "INSPECT_URL_COVERAGE": "Inspecter la couverture URL",
+          "REQUEST_INDEXING": "Demander l'indexation",
+          "TRIGGER_LIGHTHOUSE_SCAN": "Déclencher scan Lighthouse",
+          "TRIGGER_ZAP_SCAN": "Déclencher scan ZAP",
+          "TRIGGER_JENKINS_BUILD": "Déclencher build Jenkins"
+        }
+      },
+      "tools": {
+        "title": "État des intégrations",
+        "subtitle": "État en direct des connecteurs et dernières erreurs.",
+        "awaitingBackend": "En attente du statut backend.",
+        "lastSuccess": "Dernier succès",
+        "lastError": "Dernière erreur",
+        "items": {
+          "github_actions": "GitHub Actions",
+          "jenkins": "Jenkins",
+          "search_console": "Search Console",
+          "lighthouse": "Lighthouse",
+          "zap": "OWASP ZAP",
+          "sentry": "Sentry"
+        },
+        "status": {
+          "CONNECTED": "CONNECTÉ",
+          "DEGRADED": "DÉGRADÉ",
+          "DISABLED": "DÉSACTIVÉ",
+          "ERROR": "ERREUR",
+          "PENDING": "EN ATTENTE",
+          "RUNNING": "EN COURS",
+          "COMPLETED": "TERMINÉ",
+          "FAILED": "ÉCHEC"
+        }
+      },
+      "history": {
+        "title": "Historique des actions",
+        "subtitle": "Suivi paginé des actions SEO exécutées.",
+        "action": "Action",
+        "target": "Cible",
+        "status": "Statut",
+        "started": "Démarré",
+        "summary": "Résumé",
+        "empty": "Aucune action SEO enregistrée.",
+        "loadMore": "Charger plus"
+      }
     }
   },
   "adminOverview": {
@@ -1482,7 +1643,15 @@
     "compApplications": "Candidatures",
     "compAnalytics": "Analytique",
     "compSystemHealth": "Santé du Système",
-    "compSettings": "Paramètres"
+    "compSettings": "Paramètres",
+    "fallbackTitle": "Mode dégradé actif",
+    "aiFallbackSnapshot": "Le service IA est indisponible. Affichage des dernières données valides.",
+    "aiFallbackEstimate": "Le service IA est indisponible. Affichage d'estimations locales basées sur le trafic récent.",
+    "aiFallbackNoData": "Le service IA est indisponible et aucun instantané n'est disponible.",
+    "lastSnapshot": "Dernier instantané: {{date}}",
+    "estimated": "Estimé",
+    "noDataTitle": "Aucune donnée de santé disponible",
+    "noDataDescription": "Veuillez réessayer quand les services backend/IA sont de nouveau accessibles."
   },
   "adminFamilies": {
     "title": "Gestion des Familles",

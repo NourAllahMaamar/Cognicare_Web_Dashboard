@@ -103,6 +103,16 @@ html.dark {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+.material-icons-fallback-active .material-symbols-outlined {
+  font-family: 'Inter', sans-serif;
+  font-variation-settings: normal;
+}
+
+.material-symbol-fallback {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
 /* ===== Scrollbar ===== */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -173,4 +183,15 @@ body {
 }
 .animate-slide-in {
   animation: slideIn 0.2s ease-out;
+}
+
+/* ===== Assistant-Aware Dashboard Layout ===== */
+.assistant-aware-shell {
+  transition: padding-right 0.2s ease;
+}
+
+@media (min-width: 1280px) {
+  .assistant-aware-shell[data-assistant-open='true'] {
+    padding-right: calc(var(--dashboard-assistant-width, 0px) + 1rem);
+  }
 }

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: cognicare-webapp
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_BACKEND_ORIGIN
+        value: https://cognicare-mobile-h4ct.onrender.com
+      - key: VITE_PUBLIC_SITE_ORIGIN
+        value: https://cognicare.app
+    healthCheckPath: /

@@ -33,7 +33,7 @@ function SpecialistLogin() {
                 throw new Error(data.message || t('dashboard.messages.loginFailed'));
             }
 
-            const specialistRoles = ['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'volunteer'];
+            const specialistRoles = ['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'volunteer', 'careProvider'];
             if (!specialistRoles.includes(data.user.role)) {
                 throw new Error('Access denied. This login is for specialists only.');
             }
@@ -69,7 +69,7 @@ function SpecialistLogin() {
                         <span className="material-symbols-outlined text-3xl">medical_services</span>
                     </div>
                     <h2 className="text-3xl font-black text-white mb-4">Professional Suite</h2>
-                    <p className="text-blue-100/80 text-sm leading-relaxed">Access your clinical tools "” manage children, create specialized plans (PECS, TEACCH), track progress, and collaborate with your organization.</p>
+                    <p className="text-blue-100/80 text-sm leading-relaxed">Access your clinical tools - manage children, create specialized plans (PECS, TEACCH), track progress, and collaborate with your organization.</p>
                     <div className="flex gap-4 justify-center mt-10">
                         {['psychology', 'assignment', 'insights'].map(icon => (
                             <div key={icon} className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">
@@ -146,4 +146,3 @@ function SpecialistLogin() {
 }
 
 export default SpecialistLogin;
-

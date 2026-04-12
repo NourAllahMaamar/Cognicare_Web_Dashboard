@@ -3,9 +3,11 @@
 
 
 const isDev = import.meta.env.DEV;
+const DEFAULT_PROD_BACKEND_ORIGIN =
+  'https://cognicare-mobile-h4ct.onrender.com';
 const BACKEND_ORIGIN =
   import.meta.env.VITE_BACKEND_ORIGIN ||
-  'http://localhost:3000';
+  (isDev ? 'http://localhost:3000' : DEFAULT_PROD_BACKEND_ORIGIN);
 export const API_BASE_URL = isDev ? '/api/v1' : `${BACKEND_ORIGIN}/api/v1`;
 // For uploaded images: relative path in dev (proxy), full URL in prod
 export const getUploadUrl = (pathOrUrl) =>

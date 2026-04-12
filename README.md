@@ -81,8 +81,13 @@ npm run preview           # Preview production build
 Create a `.env` file:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000/api/v1
+VITE_BACKEND_ORIGIN=http://localhost:3000
+VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
 ```
+
+You can also start from `.env.example`.
+
+`VITE_BACKEND_ORIGIN` is compiled into the production build and powers all dashboard API calls. The public Android release card on `/` reads `public/mobile-release.json`, so updating the downloadable APK/version does not require editing JSX.
 
 ## Role-Based Routing
 
@@ -121,11 +126,27 @@ Translations are in `src/locales/`:
 
 ## Security Notes
 
-- No PII in console logs
-- Token stored in localStorage only
-- 401 errors redirect to appropriate login
-- Role checks before rendering sensitive data
+- Production nginx adds CSP, HSTS, `Referrer-Policy`, `Permissions-Policy`, and download-safe APK headers.
+- Current auth model uses role-scoped `localStorage` tokens plus refresh.
+- Current PWA config includes API runtime caching and must be tightened for authenticated data before broad production launch.
+- Current route/session guards are partly client-side and must be strengthened with unified role-protected routing.
+- 2026-04-10 hardening findings and action list:
+  - `architecture/bilan/2026-04-10-security-hardening.md`
+  - `WEB_ARCHITECTURE.md`
+  - `../project-architecture/PRODUCTION_READINESS_SECURITY_AUDIT_2026-04-10.md`
 
 ## License
 
 [LICENSE](../LICENSE)
+
+## Security and Reliability Update (2026-04-12)
+
+Applied in this hardening cycle:
+
+- Organization RNE verification now uses backend AI analysis endpoint (`/org-scan-ai/analyze`) instead of simulated/random UI outcomes.
+- Specialist role parity updated: `careProvider` is accepted in specialist login and protected route checks.
+- `useAuth` in-memory GET cache is now scoped by user/session to prevent same-role cross-account reuse.
+- PWA runtime caching is now limited to safe static resources and excludes authenticated API responses.
+- Specialist creator pages include safe back-navigation fallbacks when browser history is unavailable.
+
+Current lint status: no errors, with two existing warnings in untouched files (`CogniCompanion.jsx`, `LandingPage.jsx`).

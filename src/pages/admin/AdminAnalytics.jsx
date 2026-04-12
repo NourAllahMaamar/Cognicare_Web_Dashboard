@@ -1,15 +1,67 @@
-﻿import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
+import { useSeoControlPlane } from '../../hooks/useSeoControlPlane';
 import StatCard from '../../components/ui/StatCard';
+import SeoSectionCard from '../../components/admin/seo/SeoSectionCard';
+import CrawlerPolicyEditor from '../../components/admin/seo/CrawlerPolicyEditor';
+import SeoIntegrityPanel from '../../components/admin/seo/SeoIntegrityPanel';
+import SeoActionPanel from '../../components/admin/seo/SeoActionPanel';
+import SeoToolStatusGrid from '../../components/admin/seo/SeoToolStatusGrid';
+import SeoHistoryTable from '../../components/admin/seo/SeoHistoryTable';
+
+function listToText(list = []) {
+  return Array.isArray(list) ? list.join(', ') : '';
+}
+
+function textToList(text = '') {
+  return text
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
 
 export default function AdminAnalytics() {
   const { t } = useTranslation();
   const { authGet } = useAuth('admin');
   const [stats, setStats] = useState({ users: 0, orgs: 0, families: 0, pending: 0 });
   const [loading, setLoading] = useState(true);
+  const [roleData, setRoleData] = useState([]);
 
-  useEffect(() => { loadData(); }, []);
+  const {
+    loading: seoLoading,
+    refreshing: seoRefreshing,
+    saving: seoSaving,
+    runningAction,
+    error: seoError,
+    success: seoSuccess,
+    controlPlane,
+    toolStatuses,
+    history,
+    hasMoreHistory,
+    lastSnapshotAt,
+    reload: reloadSeo,
+    saveControlPlane,
+    runAction,
+    loadMoreHistory,
+    resetFeedback,
+  } = useSeoControlPlane();
+
+  const [siteOrigin, setSiteOrigin] = useState('');
+  const [publicRoutesText, setPublicRoutesText] = useState('');
+  const [crawlerPolicies, setCrawlerPolicies] = useState([]);
+
+  useEffect(() => {
+    if (!controlPlane) return;
+    setSiteOrigin(controlPlane.siteOrigin || '');
+    setPublicRoutesText(listToText(controlPlane.publicRoutes));
+    setCrawlerPolicies(Array.isArray(controlPlane.crawlerPolicies) ? controlPlane.crawlerPolicies : []);
+  }, [controlPlane]);
+
+  useEffect(() => {
+    loadData();
+    fetchRoles();
+  }, []);
 
   const loadData = async () => {
     setLoading(true);
@@ -26,57 +78,103 @@ export default function AdminAnalytics() {
         families: Array.isArray(families) ? families.length : 0,
         pending: Array.isArray(pending) ? pending.length : 0,
       });
-    } catch {}
+    } catch {
+      // Ignore dashboard stat errors and keep previous values.
+    }
     setLoading(false);
   };
 
-  // Compute role distribution from user data
-  const [roleData, setRoleData] = useState([]);
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const users = await authGet('/users');
-        if (!Array.isArray(users)) return;
-        const counts = {};
-        users.forEach(u => { const r = u.role || 'unknown'; counts[r] = (counts[r] || 0) + 1; });
-        const total = users.length || 1;
-        const colors = { admin: '#2563EB', orgLeader: '#7c3aed', specialist: '#3b82f6', family: '#6b7280' };
-        setRoleData(Object.entries(counts).map(([role, count]) => ({
-          role, count, pct: Math.round((count / total) * 100),
-          color: colors[role] || '#94a3b8'
-        })));
-      } catch {}
-    };
-    fetchRoles();
+  const fetchRoles = async () => {
+    try {
+      const users = await authGet('/users');
+      if (!Array.isArray(users)) return;
+      const counts = {};
+      users.forEach((u) => {
+        const role = u?.role || 'unknown';
+        counts[role] = (counts[role] || 0) + 1;
+      });
+      const total = users.length || 1;
+      const colors = { admin: '#2563EB', orgLeader: '#7c3aed', specialist: '#3b82f6', family: '#6b7280' };
+      setRoleData(
+        Object.entries(counts).map(([role, count]) => ({
+          role,
+          count,
+          pct: Math.round((count / total) * 100),
+          color: colors[role] || '#94a3b8',
+        })),
+      );
+    } catch {
+      // Ignore role chart errors.
+    }
+  };
+
+  const onCrawlerPolicyChange = useCallback((index, field, value) => {
+    setCrawlerPolicies((prev) =>
+      prev.map((policy, i) => {
+        if (i !== index) return policy;
+        if (field === 'allow' || field === 'disallow') {
+          return { ...policy, [field]: textToList(String(value || '')) };
+        }
+        if (field === 'crawlDelay') {
+          if (value === '' || value === null || Number(value) <= 0) {
+            return { ...policy, crawlDelay: null };
+          }
+          return { ...policy, crawlDelay: Number(value) };
+        }
+        return { ...policy, [field]: value };
+      }),
+    );
   }, []);
 
-  // SVG line chart points (simulated growth data)
+  const onSaveCrawlerPolicies = useCallback(async () => {
+    await saveControlPlane({
+      siteOrigin,
+      publicRoutes: textToList(publicRoutesText),
+      crawlerPolicies,
+    });
+  }, [crawlerPolicies, publicRoutesText, saveControlPlane, siteOrigin]);
+
   const months = [
-    t('adminAnalytics.months.jan'), t('adminAnalytics.months.feb'), t('adminAnalytics.months.mar'),
-    t('adminAnalytics.months.apr'), t('adminAnalytics.months.may'), t('adminAnalytics.months.jun'),
-    t('adminAnalytics.months.jul'), t('adminAnalytics.months.aug'), t('adminAnalytics.months.sep'),
-    t('adminAnalytics.months.oct'), t('adminAnalytics.months.nov'), t('adminAnalytics.months.dec')
+    t('adminAnalytics.months.jan'),
+    t('adminAnalytics.months.feb'),
+    t('adminAnalytics.months.mar'),
+    t('adminAnalytics.months.apr'),
+    t('adminAnalytics.months.may'),
+    t('adminAnalytics.months.jun'),
+    t('adminAnalytics.months.jul'),
+    t('adminAnalytics.months.aug'),
+    t('adminAnalytics.months.sep'),
+    t('adminAnalytics.months.oct'),
+    t('adminAnalytics.months.nov'),
+    t('adminAnalytics.months.dec'),
   ];
   const newUsers = [120, 180, 240, 310, 380, 420, 500, 560, 620, 700, 780, 850];
   const activeUsers = [80, 120, 160, 200, 260, 310, 370, 420, 480, 530, 600, 680];
 
   const toPath = (data, maxVal) => {
-    const w = 540, h = 180;
-    const points = data.map((v, i) => ({
-      x: (i / (data.length - 1)) * w,
-      y: h - (v / maxVal) * h
+    const w = 540;
+    const h = 180;
+    const points = data.map((value, index) => ({
+      x: (index / (data.length - 1)) * w,
+      y: h - (value / maxVal) * h,
     }));
-    return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
+    return points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`).join(' ');
   };
 
   const maxVal = Math.max(...newUsers, ...activeUsers) * 1.1;
 
-  // Donut chart
-  const planData = [
-    { name: t('adminAnalytics.planTypes.pecs'), pct: 45, color: '#2563EB' },
-    { name: t('adminAnalytics.planTypes.teacch'), pct: 30, color: '#7c3aed' },
-    { name: t('adminAnalytics.planTypes.activities'), pct: 25, color: '#3b82f6' },
-  ];
+  const planData = useMemo(
+    () => [
+      { name: t('adminAnalytics.planTypes.pecs'), pct: 45, color: '#2563EB' },
+      { name: t('adminAnalytics.planTypes.teacch'), pct: 30, color: '#7c3aed' },
+      { name: t('adminAnalytics.planTypes.activities'), pct: 25, color: '#3b82f6' },
+    ],
+    [t],
+  );
+
+  const seoBannerTone = seoError
+    ? 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200'
+    : 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200';
 
   return (
     <div className="flex flex-col gap-6">
@@ -99,7 +197,6 @@ export default function AdminAnalytics() {
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : (
         <>
-          {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <StatCard label={t('adminAnalytics.totalUsers')} value={stats.users.toLocaleString()} icon="group" trend="+12.5%" />
             <StatCard label={t('adminAnalytics.organizations')} value={stats.orgs.toLocaleString()} icon="corporate_fare" trend="+5.2%" />
@@ -107,9 +204,7 @@ export default function AdminAnalytics() {
             <StatCard label={t('adminAnalytics.pendingReviews')} value={stats.pending.toLocaleString()} icon="pending_actions" trend={stats.pending > 0 ? `${stats.pending} ${t('adminAnalytics.pending')}` : t('adminAnalytics.clear')} />
           </div>
 
-          {/* Charts Row */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-            {/* User Growth Chart */}
             <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -123,11 +218,9 @@ export default function AdminAnalytics() {
               </div>
               <div className="overflow-x-auto">
                 <svg viewBox="0 0 560 220" className="w-full min-w-[400px]">
-                  {/* Grid lines */}
-                  {[0, 1, 2, 3].map(i => (
+                  {[0, 1, 2, 3].map((i) => (
                     <line key={i} x1="0" y1={i * 60} x2="540" y2={i * 60} stroke="currentColor" className="text-slate-100 dark:text-slate-800" strokeDasharray="4" />
                   ))}
-                  {/* Area under new users */}
                   <defs>
                     <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#2563EB" stopOpacity="0.3" />
@@ -135,18 +228,15 @@ export default function AdminAnalytics() {
                     </linearGradient>
                   </defs>
                   <path d={`${toPath(newUsers, maxVal)} L540,180 L0,180 Z`} fill="url(#areaGrad)" />
-                  {/* Lines */}
                   <path d={toPath(newUsers, maxVal)} fill="none" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                   <path d={toPath(activeUsers, maxVal)} fill="none" stroke="#c084fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  {/* X-axis labels */}
-                  {months.map((m, i) => (
-                    <text key={m} x={(i / 11) * 540} y="200" className="fill-slate-400 text-[10px]" textAnchor="middle">{m}</text>
+                  {months.map((month, index) => (
+                    <text key={month} x={(index / 11) * 540} y="200" className="fill-slate-400 text-[10px]" textAnchor="middle">{month}</text>
                   ))}
                 </svg>
               </div>
             </div>
 
-            {/* Activity Feed */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold">{t('adminAnalytics.activityFeed')}</h3>
@@ -161,8 +251,8 @@ export default function AdminAnalytics() {
                     { color: 'bg-success', title: t('adminAnalytics.activities.payment.title'), desc: t('adminAnalytics.activities.payment.desc'), time: t('adminAnalytics.activities.payment.time') },
                     { color: 'bg-blue-500', title: t('adminAnalytics.activities.report.title'), desc: t('adminAnalytics.activities.report.desc'), time: t('adminAnalytics.activities.report.time') },
                     { color: 'bg-purple-500', title: t('adminAnalytics.activities.feature.title'), desc: t('adminAnalytics.activities.feature.desc'), time: t('adminAnalytics.activities.feature.time') },
-                  ].map((item, i) => (
-                    <div key={i} className="relative pl-8">
+                  ].map((item, index) => (
+                    <div key={index} className="relative pl-8">
                       <div className={`absolute left-0 top-1 w-6 h-6 rounded-full ${item.color} ring-4 ring-white dark:ring-surface-dark flex items-center justify-center`}>
                         <div className="w-2 h-2 rounded-full bg-white" />
                       </div>
@@ -174,13 +264,12 @@ export default function AdminAnalytics() {
                 </div>
               </div>
 
-              {/* System Health CTA */}
               <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20">
                 <p className="font-bold text-sm">{t('adminAnalytics.systemHealth')}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
                   </span>
                   <span className="text-xs font-bold text-success">{t('adminAnalytics.allSystemsOperational')}</span>
                 </div>
@@ -188,9 +277,7 @@ export default function AdminAnalytics() {
             </div>
           </div>
 
-          {/* Bottom Row: Plan Distribution + Users by Role */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            {/* Plan Distribution */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <h3 className="font-bold mb-4">{t('adminAnalytics.planDistribution')}</h3>
               <div className="flex items-center gap-8">
@@ -201,8 +288,7 @@ export default function AdminAnalytics() {
                       return planData.map((seg, i) => {
                         const dash = (seg.pct / 100) * 100;
                         const el = (
-                          <circle key={i} cx="18" cy="18" r="14" fill="none" stroke={seg.color} strokeWidth="5"
-                            strokeDasharray={`${dash} ${100 - dash}`} strokeDashoffset={-offset} strokeLinecap="round" />
+                          <circle key={i} cx="18" cy="18" r="14" fill="none" stroke={seg.color} strokeWidth="5" strokeDasharray={`${dash} ${100 - dash}`} strokeDashoffset={-offset} strokeLinecap="round" />
                         );
                         offset += dash;
                         return el;
@@ -217,7 +303,7 @@ export default function AdminAnalytics() {
                   </div>
                 </div>
                 <div className="space-y-3 flex-1">
-                  {planData.map(seg => (
+                  {planData.map((seg) => (
                     <div key={seg.name} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full" style={{ backgroundColor: seg.color }} />
@@ -230,7 +316,6 @@ export default function AdminAnalytics() {
               </div>
             </div>
 
-            {/* Users by Role */}
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
               <h3 className="font-bold mb-4">{t('adminAnalytics.usersByRole')}</h3>
               <div className="space-y-4">
@@ -239,7 +324,7 @@ export default function AdminAnalytics() {
                   { role: 'orgLeader', count: 8, pct: 15, color: '#7c3aed' },
                   { role: 'specialist', count: 20, pct: 35, color: '#3b82f6' },
                   { role: 'family', count: 25, pct: 45, color: '#6b7280' },
-                ]).map(r => (
+                ]).map((r) => (
                   <div key={r.role}>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-sm font-medium">{t(`adminAnalytics.roles.${r.role}`)}</span>
@@ -255,8 +340,115 @@ export default function AdminAnalytics() {
           </div>
         </>
       )}
+
+      <SeoSectionCard
+        title={t('adminAnalytics.seo.title')}
+        subtitle={t('adminAnalytics.seo.subtitle')}
+        icon="travel_explore"
+        actions={(
+          <button
+            type="button"
+            onClick={() => reloadSeo({ silent: true })}
+            disabled={seoLoading || seoRefreshing}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200"
+          >
+            <span className="material-symbols-outlined text-sm">refresh</span>
+            {seoRefreshing ? t('adminAnalytics.seo.refreshing') : t('adminAnalytics.seo.refresh')}
+          </button>
+        )}
+      >
+        <div className="space-y-6">
+          <div className={`rounded-2xl border px-4 py-3 text-sm ${seoBannerTone}`}>
+            <p className="font-semibold">
+              {seoError ? t('adminAnalytics.seo.banner.degraded') : t('adminAnalytics.seo.banner.operational')}
+            </p>
+            <p className="mt-1 text-xs opacity-90">
+              {seoError
+                ? seoError
+                : t('adminAnalytics.seo.banner.snapshot', {
+                    date: lastSnapshotAt ? new Date(lastSnapshotAt).toLocaleString() : t('adminAnalytics.seo.notAvailable'),
+                  })}
+            </p>
+          </div>
+
+          {seoSuccess ? (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200">
+              <p className="font-semibold">{t('adminAnalytics.seo.successTitle')}</p>
+              <p className="mt-1 text-xs">
+                {t(`adminAnalytics.seo.actions.items.${seoSuccess}`, { defaultValue: seoSuccess })}
+              </p>
+            </div>
+          ) : null}
+
+          <SeoSectionCard
+            title={t('adminAnalytics.seo.crawlers.title')}
+            subtitle={t('adminAnalytics.seo.crawlers.subtitle')}
+            icon="smart_toy"
+            className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+          >
+            <CrawlerPolicyEditor
+              policies={crawlerPolicies}
+              publicRoutesText={publicRoutesText}
+              siteOrigin={siteOrigin}
+              saving={seoSaving}
+              onPublicRoutesChange={(value) => {
+                resetFeedback();
+                setPublicRoutesText(value);
+              }}
+              onSiteOriginChange={(value) => {
+                resetFeedback();
+                setSiteOrigin(value);
+              }}
+              onPolicyChange={(index, field, value) => {
+                resetFeedback();
+                onCrawlerPolicyChange(index, field, value);
+              }}
+              onSave={onSaveCrawlerPolicies}
+            />
+          </SeoSectionCard>
+
+          <SeoSectionCard
+            title={t('adminAnalytics.seo.integrity.title')}
+            subtitle={t('adminAnalytics.seo.integrity.subtitle')}
+            icon="rule_settings"
+            className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+          >
+            <SeoIntegrityPanel controlPlane={controlPlane} />
+          </SeoSectionCard>
+
+          <SeoSectionCard
+            title={t('adminAnalytics.seo.actions.title')}
+            subtitle={t('adminAnalytics.seo.actions.subtitle')}
+            icon="rocket_launch"
+            className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+          >
+            <SeoActionPanel runningAction={runningAction} onAction={runAction} />
+          </SeoSectionCard>
+
+          <SeoSectionCard
+            title={t('adminAnalytics.seo.tools.title')}
+            subtitle={t('adminAnalytics.seo.tools.subtitle')}
+            icon="hub"
+            className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+          >
+            <SeoToolStatusGrid tools={toolStatuses} />
+          </SeoSectionCard>
+
+          <SeoSectionCard
+            title={t('adminAnalytics.seo.history.title')}
+            subtitle={t('adminAnalytics.seo.history.subtitle')}
+            icon="history"
+            className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+          >
+            <SeoHistoryTable
+              history={history}
+              hasMoreHistory={hasMoreHistory}
+              refreshing={seoRefreshing}
+              onLoadMore={loadMoreHistory}
+            />
+          </SeoSectionCard>
+        </div>
+      </SeoSectionCard>
     </div>
   );
 }
-
-
