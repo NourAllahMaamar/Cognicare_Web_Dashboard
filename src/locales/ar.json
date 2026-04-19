@@ -181,6 +181,8 @@
       "staff": "إدارة الموظفين",
       "families": "العائلات",
       "children": "الأطفال",
+      "community": "المجتمع",
+      "marketplace": "السوق",
       "invitations": "الدعوات",
       "rneVerification": "التحقق من السجل التجاري"
     },
@@ -447,7 +449,16 @@
     "invitationAlreadyCancelled": "تم إلغاء الدعوة مسبقاً",
     "confirmDeleteStaff": "هل أنت متأكد من حذف هذا الموظف؟",
     "confirmDeleteFamily": "هل أنت متأكد من حذف هذه العائلة؟",
-    "confirmCancelInvitation": "هل أنت متأكد من إلغاء هذه الدعوة؟"
+    "confirmCancelInvitation": "هل أنت متأكد من إلغاء هذه الدعوة؟",
+    "community": {
+      "title": "خلاصة المجتمع",
+      "subtitle": "تواصل مع العائلات والمتخصصين ومقدمي الرعاية",
+      "noPosts": "لا توجد منشورات بعد"
+    },
+    "marketplace": {
+      "title": "السوق",
+      "subtitle": "تصفح الأدوات والموارد التعليمية"
+    }
   },
   "language": {
     "select": "اللغة",
@@ -979,6 +990,22 @@
       "callConnected": "تم الاتصال — التحقق بالذكاء الاصطناعي جارٍ",
       "callEnded": "اكتملت مكالمة التحقق بالذكاء الاصطناعي بنجاح",
       "decisionReached": "تم الوصول إلى القرار النهائي"
+    }
+  },
+  "marketplace": {
+    "title": "السوق",
+    "subtitle": "تصفح الأدوات والموارد التعليمية",
+    "search": "البحث عن المنتجات...",
+    "free": "مجاني",
+    "view": "عرض",
+    "noProducts": "لا توجد منتجات متاحة",
+    "noResults": "لم يتم العثور على منتجات",
+    "untitled": "منتج بدون عنوان",
+    "categories": {
+      "all": "جميع المنتجات",
+      "sensory": "حسي",
+      "motor": "المهارات الحركية",
+      "cognitive": "إدراكي"
     }
   },
   "confirmAccount": {
@@ -1792,7 +1819,13 @@
     "settings": "الإعدادات",
     "update": "تحديث",
     "viewAll": "عرض الكل",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "justNow": "الآن",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "daysAgo": "منذ {{count}} يوم",
+    "loadMore": "تحميل المزيد",
+    "anonymous": "مجهول"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",

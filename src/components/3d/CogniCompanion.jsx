@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { useAnimation, AnimatePresence, motion } from 'framer-motion';
 import './CogniCompanion.css';
 import { ZONES } from '../ui/InteractiveZones';

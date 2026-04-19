@@ -243,7 +243,7 @@ export default function AdminAnalytics() {
                 <button className="text-xs text-primary font-bold hover:underline">{t('adminAnalytics.viewAll')}</button>
               </div>
               <div className="relative">
-                <div className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-slate-100 dark:bg-slate-800" />
+                <div className="absolute start-[11px] top-0 bottom-0 w-0.5 bg-slate-100 dark:bg-slate-800" />
                 <div className="space-y-5">
                   {[
                     { color: 'bg-primary', title: t('adminAnalytics.activities.newOrg.title'), desc: t('adminAnalytics.activities.newOrg.desc'), time: t('adminAnalytics.activities.newOrg.time') },
@@ -252,8 +252,8 @@ export default function AdminAnalytics() {
                     { color: 'bg-blue-500', title: t('adminAnalytics.activities.report.title'), desc: t('adminAnalytics.activities.report.desc'), time: t('adminAnalytics.activities.report.time') },
                     { color: 'bg-purple-500', title: t('adminAnalytics.activities.feature.title'), desc: t('adminAnalytics.activities.feature.desc'), time: t('adminAnalytics.activities.feature.time') },
                   ].map((item, index) => (
-                    <div key={index} className="relative pl-8">
-                      <div className={`absolute left-0 top-1 w-6 h-6 rounded-full ${item.color} ring-4 ring-white dark:ring-surface-dark flex items-center justify-center`}>
+                    <div key={index} className="relative ps-8">
+                      <div className={`absolute start-0 top-1 w-6 h-6 rounded-full ${item.color} ring-4 ring-white dark:ring-surface-dark flex items-center justify-center`}>
                         <div className="w-2 h-2 rounded-full bg-white" />
                       </div>
                       <p className="font-bold text-sm">{item.title}</p>

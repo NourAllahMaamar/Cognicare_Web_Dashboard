@@ -29,6 +29,8 @@ export default function OrgLayout() {
     { to: '/org/dashboard/staff', icon: 'groups', label: t('orgDashboard.tabs.staff', 'Staff') },
     { to: '/org/dashboard/families', icon: 'family_restroom', label: t('orgDashboard.tabs.families', 'Families') },
     { to: '/org/dashboard/children', icon: 'child_care', label: t('orgDashboard.tabs.children', 'Children') },
+    { to: '/org/dashboard/community', icon: 'forum', label: t('orgDashboard.tabs.community', 'Community') },
+    { to: '/org/dashboard/marketplace', icon: 'shopping_bag', label: t('orgDashboard.tabs.marketplace', 'Marketplace') },
     { to: '/org/dashboard/invitations', icon: 'mail', label: t('orgDashboard.tabs.invitations', 'Invitations') },
     { to: '/org/dashboard/rne-verification', icon: 'fact_check', label: t('orgDashboard.tabs.rneVerification', 'RNE Verification') },
   ];

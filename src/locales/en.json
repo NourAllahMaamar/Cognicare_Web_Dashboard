@@ -181,6 +181,8 @@
       "staff": "Staff Management",
       "families": "Families",
       "children": "Children",
+      "community": "Community",
+      "marketplace": "Marketplace",
       "invitations": "Invitations",
       "rneVerification": "RNE Verification"
     },
@@ -447,7 +449,16 @@
     "invitationAlreadyCancelled": "Invitation was already cancelled",
     "confirmDeleteStaff": "Are you sure you want to delete this staff member?",
     "confirmDeleteFamily": "Are you sure you want to delete this family?",
-    "confirmCancelInvitation": "Are you sure you want to cancel this invitation?"
+    "confirmCancelInvitation": "Are you sure you want to cancel this invitation?",
+    "community": {
+      "title": "Community Feed",
+      "subtitle": "Connect with families, specialists, and caregivers",
+      "noPosts": "No posts yet"
+    },
+    "marketplace": {
+      "title": "Marketplace",
+      "subtitle": "Browse educational tools and resources"
+    }
   },
   "language": {
     "select": "Language",
@@ -979,6 +990,22 @@
       "callConnected": "Call connected — AI verification in progress",
       "callEnded": "AI verification call completed successfully",
       "decisionReached": "Final decision reached"
+    }
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "subtitle": "Browse educational tools and resources",
+    "search": "Search products...",
+    "free": "Free",
+    "view": "View",
+    "noProducts": "No products available",
+    "noResults": "No products found",
+    "untitled": "Untitled Product",
+    "categories": {
+      "all": "All Products",
+      "sensory": "Sensory",
+      "motor": "Motor Skills",
+      "cognitive": "Cognitive"
     }
   },
   "confirmAccount": {
@@ -1784,6 +1811,7 @@
     "fullName": "Full Name",
     "importExport": "Import / Export",
     "loading": "Loading…",
+    "loadMore": "Load More",
     "password": "Password",
     "pending": "Pending",
     "phone": "Phone",
@@ -1792,7 +1820,12 @@
     "settings": "Settings",
     "update": "Update",
     "viewAll": "View All",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} minutes ago",
+    "hoursAgo": "{{count}} hours ago",
+    "daysAgo": "{{count}} days ago",
+    "anonymous": "Anonymous"
   },
   "notFound": {
     "title": "Page Not Found",

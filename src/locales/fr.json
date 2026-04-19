@@ -181,6 +181,8 @@
       "staff": "Gestion du personnel",
       "families": "Familles",
       "children": "Enfants",
+      "community": "Communauté",
+      "marketplace": "Marché",
       "invitations": "Invitations",
       "rneVerification": "Vérification RNE"
     },
@@ -447,7 +449,16 @@
     "invitationAlreadyCancelled": "L'invitation a déjà été annulée",
     "confirmDeleteStaff": "Êtes-vous sûr de vouloir supprimer ce membre ?",
     "confirmDeleteFamily": "Êtes-vous sûr de vouloir supprimer cette famille ?",
-    "confirmCancelInvitation": "Êtes-vous sûr de vouloir annuler cette invitation ?"
+    "confirmCancelInvitation": "Êtes-vous sûr de vouloir annuler cette invitation ?",
+    "community": {
+      "title": "Fil communautaire",
+      "subtitle": "Connectez-vous avec les familles, les spécialistes et les soignants",
+      "noPosts": "Aucune publication pour le moment"
+    },
+    "marketplace": {
+      "title": "Marché",
+      "subtitle": "Parcourir les outils et ressources éducatifs"
+    }
   },
   "language": {
     "select": "Langue",
@@ -979,6 +990,22 @@
       "callConnected": "Appel connecté — vérification IA en cours",
       "callEnded": "Appel de vérification IA terminé avec succès",
       "decisionReached": "Décision finale atteinte"
+    }
+  },
+  "marketplace": {
+    "title": "Marché",
+    "subtitle": "Parcourir les outils et ressources éducatifs",
+    "search": "Rechercher des produits...",
+    "free": "Gratuit",
+    "view": "Voir",
+    "noProducts": "Aucun produit disponible",
+    "noResults": "Aucun produit trouvé",
+    "untitled": "Produit sans titre",
+    "categories": {
+      "all": "Tous les produits",
+      "sensory": "Sensoriel",
+      "motor": "Motricité",
+      "cognitive": "Cognitif"
     }
   },
   "confirmAccount": {
@@ -1792,7 +1819,13 @@
     "settings": "Paramètres",
     "update": "Mettre à jour",
     "viewAll": "Voir tout",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {{count}} minutes",
+    "hoursAgo": "Il y a {{count}} heures",
+    "daysAgo": "Il y a {{count}} jours",
+    "loadMore": "Charger plus",
+    "anonymous": "Anonyme"
   },
   "notFound": {
     "title": "Page introuvable",

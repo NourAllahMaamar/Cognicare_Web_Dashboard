@@ -1,6 +1,6 @@
 # CogniCare Web Dashboard - AI Agent Instructions
 
-> **Last updated:** April 12, 2026  
+> **Last updated:** April 19, 2026  
 > **Read root instructions first:** `../.github/copilot-instructions.md`
 
 ---
@@ -24,9 +24,10 @@
 | **Build Tool** | Vite | 7.2.4 | Dev server, build, code splitting |
 | **Routing** | React Router DOM | 7.13.0 | Client-side, lazy-loaded routes |
 | **Styling** | Tailwind CSS | 4.2.1 | CSS-first config in `src/index.css` |
-| **i18n** | i18next + react-i18next | 25.8.4 / 16.5.4 | EN/FR/AR with RTL support |
-| **3D/Graphics** | three.js + @react-three/fiber | 0.182.0 / 9.5.0 | Landing page 3D effects |
+| **Animation** | Framer Motion | 12.38.0 | Advanced UI animations |
+| **3D Graphics** | three.js + @react-three/fiber + @react-three/drei | 0.182.0 / 9.5.0 / 10.7.7 | Landing page 3D character |
 | **Charts** | recharts | 3.7.0 | Analytics dashboard |
+| **i18n** | i18next + react-i18next | 25.8.4 / 16.5.4 | EN/FR/AR with RTL support (~1625 keys) |
 | **PWA** | vite-plugin-pwa + workbox | 1.2.0 / 7.4.0 | Offline support, update prompts |
 | **SEO** | react-helmet-async | 3.0.0 | Per-page meta tags |
 | **Excel Export** | xlsx | 0.18.5 | System health CSV export |
@@ -104,6 +105,12 @@ All routes use **React.lazy + Suspense** for code splitting:
 - **StatCard.jsx** — Reusable stat display cards
 - **StatusBadge.jsx** — Role/status badges
 - **ThemeToggle.jsx** — Dark/light mode switcher
+
+**3D Components** ([src/components/3d](src/components/3d)):
+- **CogniCompanion.jsx** — Interactive 3D mascot character (main landing page feature)
+- **CogniCharacter.jsx** — Alternative 3D character model
+- **LandingScene.jsx** — Three.js scene wrapper with scroll-based animations
+- Features: Cursor tracking, section-based poses, celebratory animations on click
 - **CursorEffect.jsx**, **FloatingParticles.jsx**, **ParticleBurst.jsx** — 3D/animation effects
 
 **Shared Components** ([src/components](src/components)):
@@ -402,27 +409,41 @@ VITE_BACKEND_ORIGIN=https://cognicare-mobile-h4ct.onrender.com
 VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
 ```
 
----
-
-## Key Features by Dashboard
-
-### Admin Dashboard
-- **User Management:** CRUD for all platform users, role assignment
+--- with Gemini AI + similarity detection)
+- **Family Management:** Platform-wide family CRUD, child records, org assignment
+- **Training Courses:** Review/approve submissions
+- **Caregiver Applications:** Review volunteer applications
+- **Analytics:** Platform-wide usage stats with Recharts visualizations
+  - Users by role (pie chart)
+  - Children by diagnosis (bar chart)
+  - Posts/products/donations over time (line charts)
+  - Top organizations by activity
+- **System Health:** Real-time API monitoring with performance metrics
+  - Average response times by endpoint
+  - Success/error rates
+  - Recent errors with correlation IDs
+  - CSV/Excel export functionality
+  - Service health probes
 - **Organization Approval:** AI fraud detection review (RNE certificate scanning)
 - **Family Management:** Platform-wide family CRUD, child records, org assignment
 - **Training Courses:** Review/approve submissions
 - **Caregiver Applications:** Review applications
 - **Analytics:** Platform-wide usage stats with Recharts visualizations (users by role, children by diagnosis, posts/products/donations over time, top organizations)
-- **System Health:** API latency monitoring, service probes, audit logs with CSV export
-
-### Organization Leader Dashboard
-- **Staff Management:** Invite/create specialists, view performance summaries
+- **System Health:** API latenStructured work system tracker
+  - **ActivitiesCreator:** Custom activity plans
+  - **SkillTrackerCreator:** 10-trial Discrete Trial Training (DTT) tracker
+- **AI Recommendations:** Gemini 2.0 Flash-powered progress suggestions with specialist feedback
+  - Analyzes all plan types (PECS, TEACCH, Activities, Skill Trackers)
+  - Provides next steps and recommendations
+  - Thumbs-up/down feedback system
+  - Parent feedback request workflow
 - **Family Management:** Invite/create families within org
 - **Children:** View all children in org
-- **Invitations:** Track pending invites (staff + families)
-- **RNE Verification:** AI-powered certificate validation + Jitsi video calls
-
-### Specialist Dashboard
+1. **Config mismatch:** `config.js` dev fallback = `localhost:3001`, `vite.config.js` proxy = `localhost:3000` ⚠️ **Keep aligned!**
+2. **Silent login failures:** If backend host unreachable, login appears to succeed but redirect fails
+3. **Cache scoping (2026-04-12 security fix):** `useAuth` GET cache keys now include `role:userId:tokenSlice:path` to prevent cross-account cache leaks in shared browsers
+4. **Role parity:** Specialist role accepts both `specialist` and `careProvider` (backend inconsistency)
+5. **Performance tracking:** All `authFetch` calls automatically record metrics via `recordApiMetric()` for System Health dashboard
 - **Overview:** Quick stats (children count, plans by type, AI suggestions)
 - **Children:** View assigned children (org + private practice)
 - **Plans:** Manage treatment plans (PECS, TEACCH, Activities, Skill Trackers)
@@ -443,10 +464,17 @@ VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
 3. **Cache scoping:** `useAuth` GET cache is user/session-scoped (2026-04-12 fix) to prevent cross-account leaks
 4. **Role parity:** Specialist role accepts both `specialist` and `careProvider` (backend inconsistency)
 
+- **3D optimization:** CogniCompanion uses `useMemo` for geometry/materials and throttled event handlers for performance
 ### Component Patterns
 - **Deduplication:** Child lists use `dedupeChildren()` to handle duplicate IDs from multiple API sources
-- **Safe array handling:** Always check `Array.isArray()` before array operations
-- **Date formatting:** Use `dateFmt(date, lang)` from [src/utils/planUtils.js](src/utils/planUtils.js) for locale-aware dates
+- **Safe array handling:** Always chec:
+  - `/` (landing page)
+  - `/admin/login`
+  - `/org/login`
+  - `/specialist/login`
+- Injects page-specific `<title>`, `<meta description>`, Open Graph, Twitter Card, JSON-LD structured data
+- Run via `npm run build` (not `build:no-prerender`)
+- Critical for SEO as this is a client-side SPAm [src/utils/planUtils.js](src/utils/planUtils.js) for locale-aware dates
 - **Plan type colors:** Use `getTypeColor()` and `getTypeBg()` from planUtils for consistent styling
 
 ### SEO Pre-rendering

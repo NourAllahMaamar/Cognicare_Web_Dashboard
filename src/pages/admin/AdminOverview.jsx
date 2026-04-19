@@ -108,7 +108,7 @@ export default function AdminOverview() {
           <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform">
             <span className="material-symbols-outlined">person_add</span>
           </div>
-          <div className="text-left">
+          <div className="text-start">
             <p className="font-bold">{t('adminOverview.manageUsers')}</p>
             <p className="text-sm text-slate-500 dark:text-text-muted">{stats.users.length} {t('adminOverview.totalUsersCount')}</p>
           </div>
@@ -120,7 +120,7 @@ export default function AdminOverview() {
           <div className="p-3 rounded-xl bg-warning/10 text-warning group-hover:scale-110 transition-transform">
             <span className="material-symbols-outlined">shield</span>
           </div>
-          <div className="text-left">
+          <div className="text-start">
             <p className="font-bold">{t('adminOverview.reviewOrgs')}</p>
             <p className="text-sm text-slate-500 dark:text-text-muted">{stats.pending.length} {t('adminOverview.pendingReviewsCount')}</p>
           </div>
@@ -132,7 +132,7 @@ export default function AdminOverview() {
           <div className="p-3 rounded-xl bg-success/10 text-success group-hover:scale-110 transition-transform">
             <span className="material-symbols-outlined">monitor_heart</span>
           </div>
-          <div className="text-left">
+          <div className="text-start">
             <p className="font-bold">{t('adminOverview.systemHealth')}</p>
             <p className="text-sm text-slate-500 dark:text-text-muted">{t('adminOverview.systemHealthStatus')}</p>
           </div>

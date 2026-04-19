@@ -83,7 +83,7 @@ export default function OrgInvitations() {
                   <p className="flex items-center gap-2">
                     <span className={`material-symbols-outlined text-sm ${isExpired(inv.expiresAt) ? 'text-error' : ''}`}>{isExpired(inv.expiresAt) ? 'timer_off' : 'timer'}</span>
                     Expires: {dateFmt(inv.expiresAt)}
-                    {isExpired(inv.expiresAt) && <span className="text-error text-xs font-bold ml-1">Expired</span>}
+                    {isExpired(inv.expiresAt) && <span className="text-error text-xs font-bold ms-1">Expired</span>}
                   </p>
                 )}
               </div>

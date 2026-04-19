@@ -416,11 +416,11 @@ export default function AdminSystemHealth() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800">
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colComponent')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colRequests')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colAvg')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colP95')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colErrorRate')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colComponent')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colRequests')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colAvg')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colP95')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colErrorRate')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -456,12 +456,12 @@ export default function AdminSystemHealth() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800">
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colTimestamp')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colComponent')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colMethod')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colEndpoint')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colLatency')}</th>
-                    <th className="text-left py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colStatus')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colTimestamp')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colComponent')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colMethod')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colEndpoint')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colLatency')}</th>
+                    <th className="text-start py-3 px-3 text-xs font-bold text-slate-400 uppercase">{t('adminSystemHealth.colStatus')}</th>
                   </tr>
                 </thead>
                 <tbody>
