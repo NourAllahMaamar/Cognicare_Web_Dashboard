@@ -458,6 +458,28 @@
     "marketplace": {
       "title": "Marketplace",
       "subtitle": "Browse educational tools and resources"
+    },
+    "onboarding": {
+      "welcome": {
+        "title": "Welcome to CogniCare",
+        "subtitle": "Organization Leader Portal",
+        "description": "Manage your organization, monitor staff performance, and stay connected with your community."
+      },
+      "community": {
+        "title": "Community Feed",
+        "subtitle": "Stay Connected",
+        "description": "View posts from families, specialists, and caregivers. Stay informed about community activities and needs."
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "subtitle": "Resource Discovery",
+        "description": "Browse products and resources that families are using. Understand the tools that support cognitive care."
+      },
+      "staff": {
+        "title": "Staff Management",
+        "subtitle": "Monitor Performance",
+        "description": "Track specialist progress, view AI-powered insights, and ensure quality care delivery across your organization."
+      }
     }
   },
   "language": {

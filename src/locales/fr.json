@@ -458,6 +458,28 @@
     "marketplace": {
       "title": "Marché",
       "subtitle": "Parcourir les outils et ressources éducatifs"
+    },
+    "onboarding": {
+      "welcome": {
+        "title": "Bienvenue sur CogniCare",
+        "subtitle": "Portail du Responsable d'Organisation",
+        "description": "Gérez votre organisation, surveillez les performances du personnel et restez connecté avec votre communauté."
+      },
+      "community": {
+        "title": "Fil Communautaire",
+        "subtitle": "Restez Connecté",
+        "description": "Consultez les publications des familles, des spécialistes et des soignants. Restez informé des activités et besoins de la communauté."
+      },
+      "marketplace": {
+        "title": "Marché",
+        "subtitle": "Découverte de Ressources",
+        "description": "Parcourez les produits et ressources utilisés par les familles. Comprenez les outils qui soutiennent les soins cognitifs."
+      },
+      "staff": {
+        "title": "Gestion du Personnel",
+        "subtitle": "Surveillance des Performances",
+        "description": "Suivez les progrès des spécialistes, consultez les analyses basées sur l'IA et assurez une prestation de soins de qualité dans votre organisation."
+      }
     }
   },
   "language": {
