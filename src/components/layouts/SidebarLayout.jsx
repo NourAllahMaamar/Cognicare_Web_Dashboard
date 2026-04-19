@@ -42,7 +42,7 @@ export default function SidebarLayout({
           {/* Close button - mobile only */}
           <button
             onClick={() => setMobileOpen(false)}
-            className="ml-auto p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden"
+            className="ms-auto p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
@@ -67,7 +67,7 @@ export default function SidebarLayout({
               <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
               <span>{item.label}</span>
               {item.badge && (
-                <span className="ml-auto text-xs bg-error text-white px-1.5 py-0.5 rounded-full font-bold">
+                <span className="ms-auto text-xs bg-error text-white px-1.5 py-0.5 rounded-full font-bold">
                   {item.badge}
                 </span>
               )}
@@ -130,7 +130,7 @@ export default function SidebarLayout({
             onClick={() => setMobileOpen(false)}
           />
           {/* Drawer */}
-          <aside className="absolute left-0 top-0 h-full w-72 flex flex-col justify-between bg-white dark:bg-surface-dark shadow-2xl animate-slide-in">
+          <aside className="absolute start-0 top-0 h-full w-72 flex flex-col justify-between bg-white dark:bg-surface-dark shadow-2xl animate-slide-in">
             {sidebarContent}
           </aside>
         </div>
@@ -148,7 +148,7 @@ export default function SidebarLayout({
             {/* Hamburger - mobile only */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="p-2 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden"
+              className="p-2 -ms-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden"
             >
               <span className="material-symbols-outlined">menu</span>
             </button>

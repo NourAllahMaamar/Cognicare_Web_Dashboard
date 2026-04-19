@@ -583,16 +583,16 @@ export default function OrgRNEVerification() {
             <div className="mt-5">
               <label className="block text-sm font-semibold mb-1.5">
                 {t('rneVerification.upload.phone', 'Phone Number')}
-                <span className="text-red-500 ml-1">*</span>
+                <span className="text-red-500 ms-1">*</span>
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">call</span>
+                <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">call</span>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => { setPhone(e.target.value); setPhoneError(''); }}
                   placeholder={t('rneVerification.upload.phonePlaceholder', '+216 XX XXX XXX')}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none transition-all bg-slate-50 dark:bg-slate-800 ${
+                  className={`w-full ps-10 pe-4 py-3 rounded-xl border text-sm outline-none transition-all bg-slate-50 dark:bg-slate-800 ${
                     phoneError
                       ? 'border-red-400 focus:ring-2 focus:ring-red-400/30'
                       : 'border-slate-300 dark:border-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20'

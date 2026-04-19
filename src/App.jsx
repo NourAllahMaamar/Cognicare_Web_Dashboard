@@ -24,6 +24,8 @@ const OrgFamilies = lazy(() => import('./pages/org/OrgFamilies'));
 const OrgChildren = lazy(() => import('./pages/org/OrgChildren'));
 const OrgInvitations = lazy(() => import('./pages/org/OrgInvitations'));
 const OrgRNEVerification = lazy(() => import('./pages/org/OrgRNEVerification'));
+const OrgCommunity = lazy(() => import('./pages/org/OrgCommunity'));
+const OrgMarketplace = lazy(() => import('./pages/org/OrgMarketplace'));
 const OrgLeaderLogin = lazy(() => import('./pages/org-leader/OrgLeaderLogin'));
 const OrgSpecialistDetail = lazy(() => import('./pages/org-leader/OrgSpecialistDetail'));
 const SpecialistLayout = lazy(() => import('./pages/specialist/SpecialistLayout'));
@@ -118,6 +120,8 @@ function App() {
           <Route path="children" element={<OrgChildren />} />
           <Route path="invitations" element={<OrgInvitations />} />
           <Route path="rne-verification" element={<OrgRNEVerification />} />
+          <Route path="community" element={<OrgCommunity />} />
+          <Route path="marketplace" element={<OrgMarketplace />} />
           <Route path="specialist/:specialistId" element={<OrgSpecialistDetail />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>

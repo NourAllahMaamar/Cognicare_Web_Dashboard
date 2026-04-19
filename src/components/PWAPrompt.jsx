@@ -36,15 +36,15 @@ export default function PWAPrompt() {
     <>
       {/* Offline banner */}
       {offline && (
-        <div className="fixed top-0 left-0 right-0 z-[9999] bg-warning text-white text-center py-2 text-sm font-medium shadow-lg">
-          <span className="material-symbols-outlined text-sm align-middle mr-1">cloud_off</span>
+        <div className="fixed top-0 start-0 end-0 z-[9999] bg-warning text-white text-center py-2 text-sm font-medium shadow-lg">
+          <span className="material-symbols-outlined text-sm align-middle me-1">cloud_off</span>
           {t('pwa.offline', 'You are currently offline. Some features may be unavailable.')}
         </div>
       )}
 
       {/* Update available prompt */}
       {needRefresh && (
-        <div className="fixed bottom-6 right-6 z-[9999] max-w-sm bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl p-5 animate-slide-up">
+        <div className="fixed bottom-6 end-6 z-[9999] max-w-sm bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl p-5 animate-slide-up">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-xl bg-primary/10 text-primary flex-shrink-0">
               <span className="material-symbols-outlined">system_update</span>

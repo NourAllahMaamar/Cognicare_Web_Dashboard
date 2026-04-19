@@ -475,7 +475,7 @@ export default function DashboardAssistant({ role }) {
       </button>
 
       {open && isClient && createPortal(
-        <div className="pointer-events-none fixed inset-y-0 right-0 z-[70] flex justify-end p-2 sm:p-4">
+        <div className="pointer-events-none fixed inset-y-0 end-0 z-[70] flex justify-end p-2 sm:p-4">
           <aside
             id="dashboard-assistant-panel"
             dir={i18n.dir()}
@@ -491,11 +491,11 @@ export default function DashboardAssistant({ role }) {
               onMouseDown={startResize}
               aria-label={t('dashboardAssistant.resize', 'Resize assistant panel')}
               title={t('dashboardAssistant.resizeHint', 'Drag to resize')}
-              className="absolute -left-2 top-0 hidden h-full w-4 cursor-col-resize items-center justify-center sm:flex"
+              className="absolute -start-2 top-0 hidden h-full w-4 cursor-col-resize items-center justify-center sm:flex"
             >
               <span className="h-20 w-1.5 rounded-full bg-slate-300/90 shadow-sm transition-colors hover:bg-primary/70 dark:bg-slate-600 dark:hover:bg-primary/70" />
             </button>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary via-blue-500 to-cyan-400 opacity-80" />
+            <div className="pointer-events-none absolute inset-y-0 start-0 w-1 bg-gradient-to-b from-primary via-blue-500 to-cyan-400 opacity-80" />
             <div className="border-b border-slate-200/80 bg-white/90 px-5 py-4 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
               <div className="flex items-start justify-between gap-4">
                 <div className={`flex items-start gap-3 ${isRtl ? 'flex-row-reverse' : ''}`}>

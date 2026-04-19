@@ -23,14 +23,14 @@ export default function NotFound() {
             onClick={() => navigate(-1)}
             className="px-6 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
-            <span className="material-symbols-outlined text-sm align-middle mr-1">arrow_back</span>
+            <span className="material-symbols-outlined text-sm align-middle me-1">arrow_back</span>
             {t('notFound.goBack', 'Go Back')}
           </button>
           <button
             onClick={() => navigate('/')}
             className="px-6 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors shadow-md shadow-primary/20"
           >
-            <span className="material-symbols-outlined text-sm align-middle mr-1">home</span>
+            <span className="material-symbols-outlined text-sm align-middle me-1">home</span>
             {t('notFound.home', 'Home')}
           </button>
         </div>

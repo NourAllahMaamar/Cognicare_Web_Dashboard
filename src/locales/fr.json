@@ -181,6 +181,8 @@
       "staff": "Gestion du personnel",
       "families": "Familles",
       "children": "Enfants",
+      "community": "Communauté",
+      "marketplace": "Marché",
       "invitations": "Invitations",
       "rneVerification": "Vérification RNE"
     },
@@ -447,7 +449,38 @@
     "invitationAlreadyCancelled": "L'invitation a déjà été annulée",
     "confirmDeleteStaff": "Êtes-vous sûr de vouloir supprimer ce membre ?",
     "confirmDeleteFamily": "Êtes-vous sûr de vouloir supprimer cette famille ?",
-    "confirmCancelInvitation": "Êtes-vous sûr de vouloir annuler cette invitation ?"
+    "confirmCancelInvitation": "Êtes-vous sûr de vouloir annuler cette invitation ?",
+    "community": {
+      "title": "Fil communautaire",
+      "subtitle": "Connectez-vous avec les familles, les spécialistes et les soignants",
+      "noPosts": "Aucune publication pour le moment"
+    },
+    "marketplace": {
+      "title": "Marché",
+      "subtitle": "Parcourir les outils et ressources éducatifs"
+    },
+    "onboarding": {
+      "welcome": {
+        "title": "Bienvenue sur CogniCare",
+        "subtitle": "Portail du Responsable d'Organisation",
+        "description": "Gérez votre organisation, surveillez les performances du personnel et restez connecté avec votre communauté."
+      },
+      "community": {
+        "title": "Fil Communautaire",
+        "subtitle": "Restez Connecté",
+        "description": "Consultez les publications des familles, des spécialistes et des soignants. Restez informé des activités et besoins de la communauté."
+      },
+      "marketplace": {
+        "title": "Marché",
+        "subtitle": "Découverte de Ressources",
+        "description": "Parcourez les produits et ressources utilisés par les familles. Comprenez les outils qui soutiennent les soins cognitifs."
+      },
+      "staff": {
+        "title": "Gestion du Personnel",
+        "subtitle": "Surveillance des Performances",
+        "description": "Suivez les progrès des spécialistes, consultez les analyses basées sur l'IA et assurez une prestation de soins de qualité dans votre organisation."
+      }
+    }
   },
   "language": {
     "select": "Langue",
@@ -979,6 +1012,22 @@
       "callConnected": "Appel connecté — vérification IA en cours",
       "callEnded": "Appel de vérification IA terminé avec succès",
       "decisionReached": "Décision finale atteinte"
+    }
+  },
+  "marketplace": {
+    "title": "Marché",
+    "subtitle": "Parcourir les outils et ressources éducatifs",
+    "search": "Rechercher des produits...",
+    "free": "Gratuit",
+    "view": "Voir",
+    "noProducts": "Aucun produit disponible",
+    "noResults": "Aucun produit trouvé",
+    "untitled": "Produit sans titre",
+    "categories": {
+      "all": "Tous les produits",
+      "sensory": "Sensoriel",
+      "motor": "Motricité",
+      "cognitive": "Cognitif"
     }
   },
   "confirmAccount": {
@@ -1792,7 +1841,13 @@
     "settings": "Paramètres",
     "update": "Mettre à jour",
     "viewAll": "Voir tout",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {{count}} minutes",
+    "hoursAgo": "Il y a {{count}} heures",
+    "daysAgo": "Il y a {{count}} jours",
+    "loadMore": "Charger plus",
+    "anonymous": "Anonyme"
   },
   "notFound": {
     "title": "Page introuvable",

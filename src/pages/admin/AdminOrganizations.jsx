@@ -137,8 +137,8 @@ export default function AdminOrganizations() {
 
       {/* Search */}
       <div className="relative">
-        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-        <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('adminOrgs.searchPlaceholder')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+        <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+        <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('adminOrgs.searchPlaceholder')} className="w-full ps-10 pe-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
       {/* Organizations Grid */}
