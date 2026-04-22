@@ -1,6 +1,6 @@
 # CogniCare Web Dashboard - AI Agent Instructions
 
-> **Last updated:** April 19, 2026  
+> **Last updated:** April 22, 2026  
 > **Read root instructions first:** `../.github/copilot-instructions.md`
 
 ---
@@ -52,6 +52,8 @@ npm run preview      # Preview production build
 ### Routing Structure ([src/App.jsx](src/App.jsx))
 All routes use **React.lazy + Suspense** for code splitting:
 
+**Total Routes: 38**
+
 ```
 /                              LandingPage             [public]
 /admin/login                   AdminLogin              [public]
@@ -74,6 +76,7 @@ All routes use **React.lazy + Suspense** for code splitting:
   /org/dashboard/children      OrgChildren
   /org/dashboard/invitations   OrgInvitations
   /org/dashboard/rne-verification OrgRNEVerification
+  /org/dashboard/specialist/:id OrgSpecialistDetail
   /org/dashboard/specialist/:id OrgSpecialistDetail
   /org/dashboard/settings      SettingsPage
 /specialist/login              SpecialistLogin         [public]
@@ -308,38 +311,16 @@ See [I18N_REMAINING_WORK.md](I18N_REMAINING_WORK.md) for detailed inventory.
 - Keep role-specific behavior explicit by route namespace and role key passed to `useAuth`.
 - Keep i18n/RTL behavior intact (`src/i18n.js`, direction handling in `src/App.jsx`).
 
-## Internationalization (i18n) Status
+### i18n Status
+**Completed (7 pages):**
+- ActivitiesCreator, PECSBoardCreator, SkillTrackerCreator, TEACCHTrackerCreator
+- ProgressAIRecommendations, AdminAnalytics, AdminOverview
 
-### Completed (April 2026)
-- **Framework**: react-i18next with EN/FR/AR support + RTL for Arabic
-- **Translation files**: `src/locales/en.json`, `src/locales/fr.json`, `src/locales/ar.json` (~1200 lines each, 500+ keys)
-- **Fully internationalized pages (7)**:
-  - `ActivitiesCreator.jsx` - Specialist activity creator
-  - `PECSBoardCreator.jsx` - PECS board creator (6 phases)
-  - `SkillTrackerCreator.jsx` - DTT skill tracker (10-trial system)
-  - `TEACCHTrackerCreator.jsx` - TEACCH tracker with work system
-  - `ProgressAIRecommendations.jsx` - AI recommendations with feedback
-  - `AdminAnalytics.jsx` - Analytics dashboard with charts
-  - `AdminOverview.jsx` - Admin overview with quick actions
-
-### Remaining Work (8 admin pages - ~350 translation keys needed)
-See `I18N_REMAINING_WORK.md` for detailed inventory:
-- `AdminLayout.jsx` - Navigation sidebar (14 keys)
-- `AdminFraudReview.jsx` - Org fraud detection (58 keys)
-- `AdminFamilies.jsx` - Family management (89 keys)
-- `AdminUsers.jsx` - User CRUD (41 keys)
-- `AdminTrainingCourses.jsx` - Training review (24 keys)
-- `AdminSystemHealth.jsx` - System monitoring (48 keys)
-- `AdminOrganizations.jsx` - Org management (47 keys)
-- `OrgSpecialistDetail.jsx` - Specialist summary (41 keys)
+**Remaining (8 admin pages, ~350 keys):**
+- AdminLayout, AdminFraudReview, AdminFamilies, AdminUsers, AdminTrainingCourses
+- AdminSystemHealth, AdminOrganizations, OrgSpecialistDetail
 
 See [I18N_REMAINING_WORK.md](I18N_REMAINING_WORK.md) for detailed inventory.
-
-**Conventions:**
-- **Always use `t()` function** for all user-visible text
-- **Never hardcode English strings**
-- **Use `t('roles.{roleName}')` pattern** for role display (not string manipulation)
-- Add keys to all 3 locale files (en.json, fr.json, ar.json) simultaneously
 
 ---
 
@@ -409,7 +390,13 @@ VITE_BACKEND_ORIGIN=https://cognicare-mobile-h4ct.onrender.com
 VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
 ```
 
---- with Gemini AI + similarity detection)
+---
+
+## Dashboard Role Features
+
+### Admin Dashboard
+- **User Management:** CRUD for all user types (10 roles supported)
+- **Organization Approval:** AI fraud detection review with Gemini + transformers
 - **Family Management:** Platform-wide family CRUD, child records, org assignment
 - **Training Courses:** Review/approve submissions
 - **Caregiver Applications:** Review volunteer applications
@@ -422,65 +409,126 @@ VITE_PUBLIC_SITE_ORIGIN=https://cognicare.app
   - Average response times by endpoint
   - Success/error rates
   - Recent errors with correlation IDs
-  - CSV/Excel export functionality
-  - Service health probes
-- **Organization Approval:** AI fraud detection review (RNE certificate scanning)
-- **Family Management:** Platform-wide family CRUD, child records, org assignment
-- **Training Courses:** Review/approve submissions
-- **Caregiver Applications:** Review applications
-- **Analytics:** Platform-wide usage stats with Recharts visualizations (users by role, children by diagnosis, posts/products/donations over time, top organizations)
-- **System Health:** API latenStructured work system tracker
+  - CSV/Excel export functionality via xlsx library
+  - Service health probes (API, Database, Email, Storage, Payments)
+
+### Organization Leader Dashboard
+- **Staff Management:** Invite/manage staff members (specialists, volunteers)
+- **Family Management:** Invite/create families within organization
+- **Children:** View all children in organization with filtering
+- **Community:** Organization-wide social feed management
+- **Marketplace:** Organization products management
+- **Specialist Details:** AI-generated specialist performance analytics
+- **RNE Verification:** National registry verification feature
+
+### Specialist Dashboard
+- **Overview:** Quick stats (children count, plans by type, AI suggestions)
+- **Children:** View assigned children (organization + private practice)
+- **Plans:** Manage treatment plans (PECS, TEACCH, Activities, Skill Trackers)
+- **Creator Tools:**
+  - **PECSBoardCreator:** 6-phase PECS board builder with Cloudinary image upload
+  - **TEACCHTrackerCreator:** Structured work system tracker
   - **ActivitiesCreator:** Custom activity plans
   - **SkillTrackerCreator:** 10-trial Discrete Trial Training (DTT) tracker
-- **AI Recommendations:** Gemini 2.0 Flash-powered progress suggestions with specialist feedback
+- **AI Recommendations:** Gemini 2.0 Flash-powered progress suggestions
   - Analyzes all plan types (PECS, TEACCH, Activities, Skill Trackers)
   - Provides next steps and recommendations
   - Thumbs-up/down feedback system
   - Parent feedback request workflow
-- **Family Management:** Invite/create families within org
-- **Children:** View all children in org
-1. **Config mismatch:** `config.js` dev fallback = `localhost:3001`, `vite.config.js` proxy = `localhost:3000` ⚠️ **Keep aligned!**
-2. **Silent login failures:** If backend host unreachable, login appears to succeed but redirect fails
-3. **Cache scoping (2026-04-12 security fix):** `useAuth` GET cache keys now include `role:userId:tokenSlice:path` to prevent cross-account cache leaks in shared browsers
-4. **Role parity:** Specialist role accepts both `specialist` and `careProvider` (backend inconsistency)
-5. **Performance tracking:** All `authFetch` calls automatically record metrics via `recordApiMetric()` for System Health dashboard
-- **Overview:** Quick stats (children count, plans by type, AI suggestions)
-- **Children:** View assigned children (org + private practice)
-- **Plans:** Manage treatment plans (PECS, TEACCH, Activities, Skill Trackers)
-- **Creator Tools:**
-  - **PECSBoardCreator:** 6-phase PECS board builder with Cloudinary image upload
-  - **TEACCHTrackerCreator:** Work system tracker
-  - **ActivitiesCreator:** Custom activity plans
-  - **SkillTrackerCreator:** 10-trial DTT tracker
-- **AI Recommendations:** Gemini 1.5-powered progress suggestions with thumbs-up/down feedback
+
+---
+
+## Key Features (Recent Additions)
+
+### **AI Fraud Detection System** ([AdminFraudReview.jsx](src/pages/admin/AdminFraudReview.jsx))
+- **Technology:** Gemini AI + @xenova/transformers (all-MiniLM-L6-v2 model)
+- **Features:**
+  - PDF certificate viewer integrated in UI
+  - AI risk levels: High/Medium/Low with confidence scores
+  - Three-layer fraud detection: Gemini analysis + document similarity + domain reputation
+  - Manual approval/rejection workflow
+  - Re-scan functionality for updated analysis
+  - Fraud pattern detection from certificate content
+  - Document similarity analysis against previous submissions
+- **UI Components:** Certificate preview, risk badges, fraud indicators, admin actions
+
+### **Performance Monitoring Dashboard** ([AdminSystemHealth.jsx](src/pages/admin/AdminSystemHealth.jsx))
+- **Purpose:** Real-time system health monitoring and API audit
+- **Features:**
+  - Component latency tracking (11 admin routes mapped)
+  - API audit log with correlation IDs
+  - Service health probes (5 backend services: API, Database, Email, Storage, Payments)
+  - CSV/Excel export functionality via xlsx library
+  - Response time distribution charts
+  - HTTP status code tracking
+  - Retry metrics and error logging
+- **Data Source:** In-memory metrics from `performanceMonitor.js` utility
+- **Display:** Tables, charts (Recharts), color-coded status indicators
+
+### **Specialist AI Progress Summary** ([OrgSpecialistDetail.jsx](src/pages/org/OrgSpecialistDetail.jsx))
+- **Purpose:** AI-generated analytics for specialist performance
+- **Features:**
+  - Total plans created (all types)
+  - Children followed count
+  - Plan approval rate
+  - Plan improvement rate
+  - Breakdown by plan type (PECS, TEACCH, Activities, DTT)
+  - Feedback history display
+  - Role formatting utilities
+- **Integration:** Fetches AI-generated summaries from backend `/progress-ai` endpoints
+
+### **RNE Verification Feature** ([OrgRNEVerification.jsx](src/pages/org/OrgRNEVerification.jsx))
+- **Purpose:** Organization RNE (national registry) verification for compliance
+- **Status:** Recently added, functionality TBD
+- **Route:** `/org/dashboard/rne-verification`
+
+### **3D Interactive Character System** ([CogniCompanion](src/components/3d/))
+- **CogniCharacter.jsx:** Sprite-based 3D character with 12+ animated poses
+  - Poses: WAVING, JUMPING, CELEBRATING, DANCING, POINTING, THINKING, IDLE, etc.
+  - Cursor tracking with damped motion for natural interaction
+  - Click flash animations with particle burst effects
+  - 15 floating orbital particles
+  - Multi-layer sprite rendering (front/mid/back layers)
+  - Displacement mapping for depth effects
+- **InteractiveZones.jsx:** 8-zone interaction system for landing page
+  - Hero section, features carousel, CTA buttons, footer, login buttons
+  - Video demo, team section, contact form
+  - Each zone triggers unique character reactions
+- **CogniCompanion.jsx:** Landing page orchestrator
+  - Scroll-based anchor system (4 sections)
+  - Speech bubble system with Framer Motion animations
+  - Roaming idle behavior
+  - Click interaction counter
+  - RTL support for Arabic layout
 
 ---
 
 ## Critical Quirks & Patterns
 
 ### Auth/Network Quirks
-1. **Config mismatch:** `config.js` dev fallback = `localhost:3001`, `vite.config.js` proxy = `localhost:3000`
+1. **Config mismatch:** `config.js` dev fallback = `localhost:3001`, `vite.config.js` proxy = `localhost:3000` ⚠️ **Keep aligned!**
 2. **Silent login failures:** If backend host unreachable, login appears to succeed but redirect fails
-3. **Cache scoping:** `useAuth` GET cache is user/session-scoped (2026-04-12 fix) to prevent cross-account leaks
+3. **Cache scoping (2026-04-12 security fix):** `useAuth` GET cache keys now include `role:userId:tokenSlice:path` to prevent cross-account cache leaks in shared browsers
 4. **Role parity:** Specialist role accepts both `specialist` and `careProvider` (backend inconsistency)
+5. **Performance tracking:** All `authFetch` calls automatically record metrics via `recordApiMetric()` for System Health dashboard
+6. **3D optimization:** CogniCompanion uses `useMemo` for geometry/materials and throttled event handlers for performance
 
-- **3D optimization:** CogniCompanion uses `useMemo` for geometry/materials and throttled event handlers for performance
 ### Component Patterns
 - **Deduplication:** Child lists use `dedupeChildren()` to handle duplicate IDs from multiple API sources
-- **Safe array handling:** Always chec:
+- **Safe array handling:** Always check `Array.isArray()` before mapping
+- **Date formatting:** Use helpers from [src/utils/planUtils.js](src/utils/planUtils.js) for locale-aware dates
+- **Plan type colors:** Use `getTypeColor()` and `getTypeBg()` from planUtils for consistent styling
+
+### SEO Pre-rendering
+- Post-build script: [scripts/prerender-routes.mjs](scripts/prerender-routes.mjs)
+- Generates static HTML for key routes:
   - `/` (landing page)
   - `/admin/login`
   - `/org/login`
   - `/specialist/login`
 - Injects page-specific `<title>`, `<meta description>`, Open Graph, Twitter Card, JSON-LD structured data
 - Run via `npm run build` (not `build:no-prerender`)
-- Critical for SEO as this is a client-side SPAm [src/utils/planUtils.js](src/utils/planUtils.js) for locale-aware dates
-- **Plan type colors:** Use `getTypeColor()` and `getTypeBg()` from planUtils for consistent styling
-
-### SEO Pre-rendering
-- Post-build script: [scripts/prerender-routes.mjs](scripts/prerender-routes.mjs)
-- Generates static HTML for key routes (landing page, login pages)
-- Run via `npm run build` (not `build:no-prerender`)
+- Critical for SEO as this is a client-side SPA
 
 ### Material Icons Fallback
 - `bootstrapMaterialIconFallback()` in [src/main.jsx](src/main.jsx) ensures icon fonts load

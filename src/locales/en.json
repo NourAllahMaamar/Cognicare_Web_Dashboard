@@ -1302,6 +1302,44 @@
       "not_started": "Not Started",
       "in_progress": "In Progress"
     },
+    "goalTemplates": {
+      "communication": [
+        "Follow 2-step instructions",
+        "Request items using words/pictures",
+        "Respond to greetings",
+        "Answer yes/no questions"
+      ],
+      "social": [
+        "Take turns in play",
+        "Maintain personal space",
+        "Identify emotions in others",
+        "Participate in group activities"
+      ],
+      "academic": [
+        "Sort objects by category",
+        "Match identical objects",
+        "Complete a 3-step task independently",
+        "Follow a visual schedule"
+      ],
+      "selfCare": [
+        "Wash hands independently",
+        "Put on/remove shoes",
+        "Use utensils during meals",
+        "Brush teeth with visual guide"
+      ],
+      "motor": [
+        "String beads",
+        "Cut with scissors on a line",
+        "Write first name",
+        "Catch a ball from 5 feet"
+      ],
+      "behavior": [
+        "Transition between activities with timer",
+        "Wait for 2 minutes",
+        "Accept changes in routine",
+        "Use a calm-down strategy"
+      ]
+    },
     "emptyState": "No goals added yet. Use Quick Add or type a custom goal above.",
     "goalsSubtitle": "Update goal status and add notes as the child progresses",
     "inProgressCount": "In Progress",

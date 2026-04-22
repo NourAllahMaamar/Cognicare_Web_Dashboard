@@ -43,13 +43,21 @@ export async function bootstrapMaterialIconFallback() {
   if (typeof document === 'undefined') return;
 
   let hasMaterialSymbolFont = false;
+  
   try {
+    // Attempt to load Material Symbols font with timeout
     if (document.fonts?.load) {
+      // Race between font load and 2-second timeout
       await Promise.race([
         document.fonts.load('24px "Material Symbols Outlined"'),
-        new Promise((resolve) => setTimeout(resolve, 1600)),
+        new Promise((resolve) => setTimeout(resolve, 2000)),
       ]);
+      
+      // Wait a bit more for font to be available
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
+    
+    // Check if font is available
     hasMaterialSymbolFont = Boolean(
       document.fonts?.check?.('24px "Material Symbols Outlined"'),
     );
@@ -57,11 +65,33 @@ export async function bootstrapMaterialIconFallback() {
     hasMaterialSymbolFont = false;
   }
 
-  if (hasMaterialSymbolFont) return;
+  // Add fonts-loaded class to enable icon visibility
+  if (hasMaterialSymbolFont) {
+    document.documentElement.classList.add('fonts-loaded');
+    
+    // Additional check after a short delay to ensure font is fully rendered
+    setTimeout(() => {
+      const stillAvailable = document.fonts?.check?.('24px "Material Symbols Outlined"');
+      if (!stillAvailable) {
+        // Font check failed, activate fallback
+        document.documentElement.classList.remove('fonts-loaded');
+        document.documentElement.classList.add('material-icons-fallback-active');
+        applyFallbackIcons(document);
+        observeNewIcons();
+      }
+    }, 500);
+    
+    return;
+  }
 
+  // Font not available, use fallback system
   document.documentElement.classList.add('material-icons-fallback-active');
   applyFallbackIcons(document);
+  observeNewIcons();
+}
 
+// Separate observer function for cleaner code
+function observeNewIcons() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {

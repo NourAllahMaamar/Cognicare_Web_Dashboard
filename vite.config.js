@@ -41,18 +41,30 @@ export default defineConfig(({ mode }) => {
       }),
       tailwindcss(),
       VitePWA({
+        // Use the custom src/sw.js so our cache-clear message handler, 
+        // clientsClaim(), and legacy-cache cleanup are all active.
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.js',
         registerType: 'prompt',
-        includeAssets: ['logo.svg', 'apple-touch-icon.png'],
+        injectRegister: 'auto',
+        includeAssets: ['logo.svg', 'apple-touch-icon.png', 'font-detection.js'],
         manifest: {
+          // `id` uniquely identifies the PWA – browsers use it to avoid
+          // duplicating the installed app when start_url changes later.
+          id: '/',
           name: 'CogniCare – Cognitive Health Platform',
           short_name: 'CogniCare',
           description: 'A cognitive health platform for autism care – manage organizations, families, and specialized treatment plans.',
           theme_color: '#2563EB',
           background_color: '#0f172a',
           display: 'standalone',
+          // Preferred display modes in priority order (Chrome 113+ respects this)
+          display_override: ['standalone', 'minimal-ui', 'browser'],
           scope: '/',
-          start_url: '/',
+          start_url: '/?source=pwa',
           orientation: 'any',
+          lang: 'fr',
           categories: ['health', 'medical', 'education'],
           icons: [
             { src: 'pwa-72x72.png', sizes: '72x72', type: 'image/png' },
@@ -60,48 +72,32 @@ export default defineConfig(({ mode }) => {
             { src: 'pwa-128x128.png', sizes: '128x128', type: 'image/png' },
             { src: 'pwa-144x144.png', sizes: '144x144', type: 'image/png' },
             { src: 'pwa-152x152.png', sizes: '152x152', type: 'image/png' },
+            // purpose 'any' = adaptive icon on Android
             { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
             { src: 'pwa-384x384.png', sizes: '384x384', type: 'image/png' },
             { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+            // purpose 'maskable' = safe-zone icon for Android adaptive icons
             { src: 'pwa-maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
-        },
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-          runtimeCaching: [
+          shortcuts: [
             {
-              // Cache Google Fonts stylesheets
-              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'google-fonts-stylesheets',
-                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
+              name: 'Specialist Dashboard',
+              short_name: 'Specialist',
+              url: '/specialist/login?source=shortcut',
+              icons: [{ src: 'pwa-96x96.png', sizes: '96x96', type: 'image/png' }],
             },
             {
-              // Cache Google Fonts webfont files
-              urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'google-fonts-webfonts',
-                expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
-            },
-            {
-              // Cache public CDN images only (never authenticated API responses)
-              urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'image-cache',
-                expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
+              name: 'Organisation',
+              short_name: 'Org',
+              url: '/org/login?source=shortcut',
+              icons: [{ src: 'pwa-96x96.png', sizes: '96x96', type: 'image/png' }],
             },
           ],
-          navigateFallback: 'index.html',
-          navigateFallbackDenylist: [/^\/api/],
+        },
+        // For injectManifest strategy, only globPatterns is needed here.
+        // All runtime caching / navigation fallback logic lives in src/sw.js.
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         },
         devOptions: {
           enabled: false,

@@ -1,17 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { getUploadUrl } from '../../config';
-
-const PECS_PHASES = [
-  { id: 1, name: 'Phase I - Physical Exchange', description: 'The child learns to exchange a single picture for a highly desired item.', criteria: 'Child independently exchanges a picture with minimal prompting in 8/10 trials.', tips: 'Use highly motivating items. Two adults recommended.' },
-  { id: 2, name: 'Phase II - Distance & Persistence', description: 'The child travels to the communication partner and uses the picture across settings.', criteria: 'Child travels to book, selects picture, and approaches partner independently.', tips: 'Gradually increase distance. Practice in different rooms.' },
-  { id: 3, name: 'Phase III - Picture Discrimination', description: 'The child discriminates between two or more pictures.', criteria: 'Child consistently selects the correct picture from 5+ pictures in 8/10 trials.', tips: 'Start with preferred vs. non-preferred, then preferred vs. preferred.' },
-  { id: 4, name: 'Phase IV - Sentence Structure', description: 'The child constructs simple sentences using "I want" + item picture.', criteria: 'Child independently constructs "I want + [item]" sentence strips.', tips: 'Introduce the "I want" icon. Place on strip, then add item picture.' },
-  { id: 5, name: 'Phase V - Responsive Requesting', description: 'The child uses PECS to answer "What do you want?"', criteria: 'Child responds to "What do you want?" within 5 seconds.', tips: 'Begin with a delay between question and prompting.' },
-  { id: 6, name: 'Phase VI - Commenting', description: 'The child spontaneously comments on their environment.', criteria: 'Child spontaneously comments using sentence starters.', tips: 'Introduce starters: "I see", "I hear", "I have".' },
-];
 
 const TRIALS_PER_CARD = 10;
 const MASTERY_THRESHOLD = 8;
@@ -22,6 +13,16 @@ export default function PECSBoardCreator() {
   const navigate = useNavigate();
   const { authFetch, authMutate } = useAuth('specialist');
   const { t } = useTranslation();
+
+  // Generate PECS phases from translations
+  const PECS_PHASES = useMemo(() => [
+    { id: 1, name: t('pecsCreator.phases.phase1.name'), description: t('pecsCreator.phases.phase1.description'), criteria: t('pecsCreator.phases.phase1.criteria'), tips: t('pecsCreator.phases.phase1.tips') },
+    { id: 2, name: t('pecsCreator.phases.phase2.name'), description: t('pecsCreator.phases.phase2.description'), criteria: t('pecsCreator.phases.phase2.criteria'), tips: t('pecsCreator.phases.phase2.tips') },
+    { id: 3, name: t('pecsCreator.phases.phase3.name'), description: t('pecsCreator.phases.phase3.description'), criteria: t('pecsCreator.phases.phase3.criteria'), tips: t('pecsCreator.phases.phase3.tips') },
+    { id: 4, name: t('pecsCreator.phases.phase4.name'), description: t('pecsCreator.phases.phase4.description'), criteria: t('pecsCreator.phases.phase4.criteria'), tips: t('pecsCreator.phases.phase4.tips') },
+    { id: 5, name: t('pecsCreator.phases.phase5.name'), description: t('pecsCreator.phases.phase5.description'), criteria: t('pecsCreator.phases.phase5.criteria'), tips: t('pecsCreator.phases.phase5.tips') },
+    { id: 6, name: t('pecsCreator.phases.phase6.name'), description: t('pecsCreator.phases.phase6.description'), criteria: t('pecsCreator.phases.phase6.criteria'), tips: t('pecsCreator.phases.phase6.tips') },
+  ], [t]);
 
   const [title, setTitle] = useState('');
   const [selectedPhase, setSelectedPhase] = useState(1);
