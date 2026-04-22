@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Safari pinned-tab icon -->
+    <link rel="mask-icon" href="/logo.svg" color="#2563EB" />
+    <!-- Apple touch icons — iOS uses the largest match for home-screen & splash -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/pwa-152x152.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/pwa-144x144.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2563EB" />
 
@@ -19,9 +24,20 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="CogniCare" />
     <title>CogniCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <!-- Fonts: Use display=block to prevent FOUT/FOIT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=block" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet" />
+    
+    <!-- Material Symbols: Critical preload to prevent icon text flash -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" /></noscript>
+    
+    <!-- Inline font loading detection - runs before React -->
+    <!-- Loaded as external script to satisfy nginx script-src 'self' CSP (no unsafe-inline needed) -->
+    <script src="/font-detection.js"></script>
+    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body class="bg-bg-light dark:bg-bg-dark text-slate-900 dark:text-text-main font-display antialiased">

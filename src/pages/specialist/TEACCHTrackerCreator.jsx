@@ -1,16 +1,7 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import{ useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
-
-const GOAL_TEMPLATES = {
-  communication: ['Follow 2-step instructions', 'Request items using words/pictures', 'Respond to greetings', 'Answer yes/no questions'],
-  social: ['Take turns in play', 'Maintain personal space', 'Identify emotions in others', 'Participate in group activities'],
-  academic: ['Sort objects by category', 'Match identical objects', 'Complete a 3-step task independently', 'Follow a visual schedule'],
-  selfCare: ['Wash hands independently', 'Put on/remove shoes', 'Use utensils during meals', 'Brush teeth with visual guide'],
-  motor: ['String beads', 'Cut with scissors on a line', 'Write first name', 'Catch a ball from 5 feet'],
-  behavior: ['Transition between activities with timer', 'Wait for 2 minutes', 'Accept changes in routine', 'Use a calm-down strategy'],
-};
 
 export default function TEACCHTrackerCreator() {
   const [searchParams] = useSearchParams();
@@ -18,6 +9,16 @@ export default function TEACCHTrackerCreator() {
   const navigate = useNavigate();
   const { authMutate } = useAuth('specialist');
   const { t } = useTranslation();
+
+  // Generate goal templates from translations
+  const GOAL_TEMPLATES = useMemo(() => ({
+    communication: t('teachCreator.goalTemplates.communication', { returnObjects: true }),
+    social: t('teachCreator.goalTemplates.social', { returnObjects: true }),
+    academic: t('teachCreator.goalTemplates.academic', { returnObjects: true }),
+    selfCare: t('teachCreator.goalTemplates.selfCare', { returnObjects: true }),
+    motor: t('teachCreator.goalTemplates.motor', { returnObjects: true }),
+    behavior: t('teachCreator.goalTemplates.behavior', { returnObjects: true }),
+  }), [t]);
 
   const CATEGORIES = [
     { id: 'communication', label: t('teachCreator.categories.communication'), icon: 'chat_bubble', color: 'text-blue-500' },

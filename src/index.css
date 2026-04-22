@@ -98,19 +98,82 @@ html.dark {
   color: var(--text-primary);
 }
 
-/* ===== Material Symbols ===== */
+/* ===== Material Symbols - FOUT Prevention ===== */
+
+/* Base icon styling with font loaded */
 .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  
+  /* Prevent selection of icon text */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
+/* Hide icon text until font loads - prevents FOUT */
+html:not(.fonts-loaded) .material-symbols-outlined {
+  /* Make text invisible but maintain layout */
+  color: transparent;
+  text-shadow: none;
+  /* Prevent text from being visible during paint */
+  -webkit-text-fill-color: transparent;
+  /* Show a subtle placeholder dot */
+  position: relative;
+}
+
+html:not(.fonts-loaded) .material-symbols-outlined::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.3;
+}
+
+/* Show icons when font is loaded */
+html.fonts-loaded .material-symbols-outlined {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+}
+
+html.fonts-loaded .material-symbols-outlined::before {
+  display: none;
+}
+
+/* Fallback styling when font fails to load */
 .material-icons-fallback-active .material-symbols-outlined {
   font-family: 'Inter', sans-serif;
   font-variation-settings: normal;
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  font-size: 0.875em;
+  font-weight: 600;
+  background: rgba(37, 99, 235, 0.1);
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  letter-spacing: 0.02em;
 }
 
-.material-symbol-fallback {
-  font-weight: 700;
-  letter-spacing: 0;
+.material-icons-fallback-active .material-symbols-outlined::before {
+  display: none;
 }
 
 /* ===== Scrollbar ===== */
@@ -146,6 +209,7 @@ html.dark {
 }
 
 /* ===== Base Styles ===== */
+
 html {
   scroll-behavior: smooth;
   color-scheme: light;

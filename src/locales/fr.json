@@ -1302,6 +1302,44 @@
       "not_started": "Non commencé",
       "in_progress": "En cours"
     },
+    "goalTemplates": {
+      "communication": [
+        "Suivre des instructions en 2 étapes",
+        "Demander des objets avec des mots/images",
+        "Répondre aux salutations",
+        "Répondre aux questions oui/non"
+      ],
+      "social": [
+        "Prendre des tours dans le jeu",
+        "Maintenir l'espace personnel",
+        "Identifier les émotions chez les autres",
+        "Participer aux activités de groupe"
+      ],
+      "academic": [
+        "Trier les objets par catégorie",
+        "Faire correspondre des objets identiques",
+        "Terminer une tâche en 3 étapes indépendamment",
+        "Suivre un emploi du temps visuel"
+      ],
+      "selfCare": [
+        "Se laver les mains de façon indépendante",
+        "Mettre/enlever les chaussures",
+        "Utiliser les ustensiles pendant les repas",
+        "Se brosser les dents avec un guide visuel"
+      ],
+      "motor": [
+        "Enfiler des perles",
+        "Couper avec des ciseaux sur une ligne",
+        "Écrire son prénom",
+        "Attraper une balle à 5 pieds"
+      ],
+      "behavior": [
+        "Transition entre activités avec minuteur",
+        "Attendre 2 minutes",
+        "Accepter les changements de routine",
+        "Utiliser une stratégie de calme"
+      ]
+    },
     "emptyState": "Aucun objectif ajouté. Utilisez l'ajout rapide ou saisissez un objectif personnalisé.",
     "goalsSubtitle": "Mettez à jour le statut des objectifs et ajoutez des notes au fil de la progression",
     "inProgressCount": "En cours",
