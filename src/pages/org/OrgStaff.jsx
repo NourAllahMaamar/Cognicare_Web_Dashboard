@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { API_BASE_URL } from '../../config';
-import * as XLSX from 'xlsx';
+import { exportTemplate, exportJson } from '../../utils/excelExport';
 
 export default function OrgStaff() {
   const { t, i18n } = useTranslation();
@@ -99,20 +99,14 @@ export default function OrgStaff() {
   };
 
   // â”€â”€ Import/Export â”€â”€
-  const downloadTemplate = () => {
-    const ws = XLSX.utils.aoa_to_sheet([['Full Name', 'Email', 'Phone', 'Role', 'Password']]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Staff');
-    XLSX.writeFile(wb, 'cognicare_staff_template.xlsx');
+  const downloadTemplate = async () => {
+    await exportTemplate(['Full Name', 'Email', 'Phone', 'Role', 'Password'], 'Staff', 'cognicare_staff_template.xlsx');
     setShowDropdown(false);
   };
 
-  const exportStaff = () => {
+  const exportStaff = async () => {
     const data = staff.map(s => ({ 'Full Name': s.fullName, Email: s.email, Phone: s.phone || '', Role: s.role, Joined: s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '' }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Staff');
-    XLSX.writeFile(wb, 'staff_export.xlsx');
+    await exportJson(data, 'Staff', 'staff_export.xlsx');
     setShowDropdown(false);
   };
 

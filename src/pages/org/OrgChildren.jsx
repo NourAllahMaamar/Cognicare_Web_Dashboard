@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
-import * as XLSX from 'xlsx';
+import { exportTemplate, exportJson } from '../../utils/excelExport';
 
 export default function OrgChildren() {
   const { t, i18n } = useTranslation();
@@ -31,25 +31,19 @@ export default function OrgChildren() {
     return years > 0 ? `${years} yrs` : `${Math.floor(diff / (30.44 * 24 * 60 * 60 * 1000))} months`;
   };
 
-  const downloadTemplate = () => {
-    const ws = XLSX.utils.aoa_to_sheet([['Child Name', 'DOB', 'Gender', 'Parent Email', 'Diagnosis', 'Medical History', 'Allergies', 'Medications', 'Notes']]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Children');
-    XLSX.writeFile(wb, 'cognicare_children_template.xlsx');
+  const downloadTemplate = async () => {
+    await exportTemplate(['Child Name', 'DOB', 'Gender', 'Parent Email', 'Diagnosis', 'Medical History', 'Allergies', 'Medications', 'Notes'], 'Children', 'cognicare_children_template.xlsx');
     setShowDropdown(false);
   };
 
-  const exportChildren = () => {
+  const exportChildren = async () => {
     const data = children.map(c => ({
       'Child Name': c.fullName, DOB: dateFmt(c.dateOfBirth), Gender: c.gender || '',
       'Parent Name': c.parentId?.fullName || c.parentName || '', 'Parent Email': c.parentId?.email || c.parentEmail || '',
       Diagnosis: c.diagnosis || '', 'Medical History': c.medicalHistory || '', Allergies: c.allergies || '',
       Medications: c.medications || '', Notes: c.notes || ''
     }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Children');
-    XLSX.writeFile(wb, 'children_export.xlsx');
+    await exportJson(data, 'Children', 'children_export.xlsx');
     setShowDropdown(false);
   };
 
