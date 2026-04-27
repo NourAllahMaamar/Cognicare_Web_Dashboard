@@ -71,11 +71,11 @@ export default function AdminOverview() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 md:gap-8">
       {/* Header */}
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">{t('adminOverview.title')}</h2>
-        <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminOverview.subtitle')}</p>
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{t('adminOverview.title')}</h2>
+        <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('adminOverview.subtitle')}</p>
       </div>
 
       {/* AI Health Banner */}
@@ -92,7 +92,7 @@ export default function AdminOverview() {
       )}
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         <StatCard label={t('adminOverview.totalUsers')} value={stats.users.length} icon="group" trend={`+${usersByRole('family')}`} trendLabel={t('adminOverview.families')} />
         <StatCard label={t('adminOverview.organizations')} value={stats.orgs.length} icon="corporate_fare" iconBg="bg-purple-50 dark:bg-purple-900/30" iconColor="text-purple-600" trend={`${stats.pending.length} ${t('adminOverview.pending')}`} trendLabel={t('adminOverview.reviews')} />
         <StatCard label={t('adminOverview.families')} value={stats.families?.length || 0} icon="family_restroom" iconBg="bg-orange-50 dark:bg-orange-900/30" iconColor="text-orange-600" />
@@ -100,49 +100,49 @@ export default function AdminOverview() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
         <button
           onClick={() => navigate('/admin/dashboard/users')}
-          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
+          className="flex items-center gap-3 md:gap-4 p-4 md:p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
         >
-          <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined">person_add</span>
+          <div className="p-2 md:p-3 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform flex-shrink-0">
+            <span className="material-symbols-outlined text-lg md:text-xl">person_add</span>
           </div>
-          <div className="text-start">
-            <p className="font-bold">{t('adminOverview.manageUsers')}</p>
-            <p className="text-sm text-slate-500 dark:text-text-muted">{stats.users.length} {t('adminOverview.totalUsersCount')}</p>
+          <div className="text-start min-w-0 flex-1">
+            <p className="font-bold text-sm md:text-base truncate">{t('adminOverview.manageUsers')}</p>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted truncate">{stats.users.length} {t('adminOverview.totalUsersCount')}</p>
           </div>
         </button>
         <button
           onClick={() => navigate('/admin/dashboard/reviews')}
-          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
+          className="flex items-center gap-3 md:gap-4 p-4 md:p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
         >
-          <div className="p-3 rounded-xl bg-warning/10 text-warning group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined">shield</span>
+          <div className="p-2 md:p-3 rounded-xl bg-warning/10 text-warning group-hover:scale-110 transition-transform flex-shrink-0">
+            <span className="material-symbols-outlined text-lg md:text-xl">shield</span>
           </div>
-          <div className="text-start">
-            <p className="font-bold">{t('adminOverview.reviewOrgs')}</p>
-            <p className="text-sm text-slate-500 dark:text-text-muted">{stats.pending.length} {t('adminOverview.pendingReviewsCount')}</p>
+          <div className="text-start min-w-0 flex-1">
+            <p className="font-bold text-sm md:text-base truncate">{t('adminOverview.reviewOrgs')}</p>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted truncate">{stats.pending.length} {t('adminOverview.pendingReviewsCount')}</p>
           </div>
         </button>
         <button
           onClick={() => navigate('/admin/dashboard/system-health')}
-          className="flex items-center gap-4 p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
+          className="flex items-center gap-3 md:gap-4 p-4 md:p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-800 hover:border-primary/30 transition-all group"
         >
-          <div className="p-3 rounded-xl bg-success/10 text-success group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined">monitor_heart</span>
+          <div className="p-2 md:p-3 rounded-xl bg-success/10 text-success group-hover:scale-110 transition-transform flex-shrink-0">
+            <span className="material-symbols-outlined text-lg md:text-xl">monitor_heart</span>
           </div>
-          <div className="text-start">
-            <p className="font-bold">{t('adminOverview.systemHealth')}</p>
-            <p className="text-sm text-slate-500 dark:text-text-muted">{t('adminOverview.systemHealthStatus')}</p>
+          <div className="text-start min-w-0 flex-1">
+            <p className="font-bold text-sm md:text-base truncate">{t('adminOverview.systemHealth')}</p>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted truncate">{t('adminOverview.systemHealthStatus')}</p>
           </div>
         </button>
       </div>
 
       {/* Role Distribution */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-        <h3 className="text-lg font-bold mb-6">{t('adminOverview.userDistribution')}</h3>
-        <div className="space-y-4">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-bold mb-4 md:mb-6">{t('adminOverview.userDistribution')}</h3>
+        <div className="space-y-3 md:space-y-4">
           {[
             { role: 'family', label: t('adminOverview.roleLabels.family'), color: 'bg-primary' },
             { role: 'organization_leader', label: t('adminOverview.roleLabels.orgLeader'), color: 'bg-purple-500' },

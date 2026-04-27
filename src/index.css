@@ -127,12 +127,17 @@ html.dark {
 /* Hide icon text until font loads - prevents FOUT */
 html:not(.fonts-loaded) .material-symbols-outlined {
   /* Make text invisible but maintain layout */
-  color: transparent;
+  color: transparent !important;
   text-shadow: none;
   /* Prevent text from being visible during paint */
   -webkit-text-fill-color: transparent;
-  /* Show a subtle placeholder dot */
+  /* Show a visible placeholder with pulsing animation */
   position: relative;
+  min-width: 24px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 html:not(.fonts-loaded) .material-symbols-outlined::before {
@@ -141,11 +146,17 @@ html:not(.fonts-loaded) .material-symbols-outlined::before {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 4px;
-  height: 4px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: currentColor;
-  opacity: 0.3;
+  opacity: 0.4;
+  animation: icon-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); }
 }
 
 /* Show icons when font is loaded */
@@ -158,22 +169,60 @@ html.fonts-loaded .material-symbols-outlined::before {
   display: none;
 }
 
-/* Fallback styling when font fails to load */
+/* Fallback styling when font fails to load - show text labels */
 .material-icons-fallback-active .material-symbols-outlined {
   font-family: 'Inter', sans-serif;
   font-variation-settings: normal;
-  color: inherit;
-  -webkit-text-fill-color: inherit;
-  font-size: 0.875em;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  font-size: 0.75em;
   font-weight: 600;
-  background: rgba(37, 99, 235, 0.1);
-  padding: 0.25em 0.5em;
-  border-radius: 0.25em;
+  background: rgba(37, 99, 235, 0.12);
+  padding: 0.35em 0.6em;
+  border-radius: 0.375em;
   letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  min-width: 40px;
+  text-align: center;
 }
 
 .material-icons-fallback-active .material-symbols-outlined::before {
   display: none;
+}
+
+/* Dark mode fallback styling */
+.dark .material-icons-fallback-active .material-symbols-outlined {
+  background: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.25);
+}
+
+/* Navigation-specific icon loading improvements */
+nav .material-symbols-outlined,
+a .material-symbols-outlined {
+  /* Ensure minimum size for navigation icons */
+  min-width: 20px;
+  min-height: 20px;
+  vertical-align: middle;
+}
+
+/* Make loading indicators more visible in navigation */
+html:not(.fonts-loaded) nav .material-symbols-outlined::before,
+html:not(.fonts-loaded) a .material-symbols-outlined::before {
+  width: 10px;
+  height: 10px;
+  opacity: 0.5;
+}
+
+/* Critical navigation items - show with higher contrast while loading */
+html:not(.fonts-loaded) button .material-symbols-outlined,
+html:not(.fonts-loaded) header .material-symbols-outlined {
+  opacity: 0.6;
+}
+
+/* Prevent layout shift during icon font loading */
+.material-symbols-outlined:empty::after {
+  content: '\200B'; /* Zero-width space to maintain line height */
 }
 
 /* ===== Scrollbar ===== */

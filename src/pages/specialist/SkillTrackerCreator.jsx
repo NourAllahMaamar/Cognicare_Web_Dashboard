@@ -58,7 +58,7 @@ export default function SkillTrackerCreator() {
     setLoading(false);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
@@ -70,11 +70,11 @@ export default function SkillTrackerCreator() {
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-xl font-bold">{t('skillTracker.title')}</h1>
-              <p className="text-xs text-slate-500">{t('skillTracker.subtitle')}</p>
+              <h1 className="text-xl md:text-2xl font-bold">{t('skillTracker.title')}</h1>
+              <p className="text-sm text-slate-500">{t('skillTracker.subtitle')}</p>
             </div>
           </div>
-          <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
+          <button onClick={handleSave} disabled={loading} className="w-full sm:w-auto px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
             {loading ? t('skillTracker.saving') : t('skillTracker.saveTracker')}
           </button>
         </div>
@@ -87,7 +87,7 @@ export default function SkillTrackerCreator() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left: Settings */}
           <div className="space-y-4">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <label className="block text-sm font-bold mb-2">{t('skillTracker.skillTitle')}</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder={t('skillTracker.titlePlaceholder')} className={inputCls} />
             </div>
@@ -137,7 +137,7 @@ export default function SkillTrackerCreator() {
             </div>
 
             {/* Progress comparison bar */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <h3 className="text-sm font-bold mb-3">{t('skillTracker.progressComparison')}</h3>
               <div className="space-y-3">
                 <div>
@@ -162,7 +162,7 @@ export default function SkillTrackerCreator() {
             </div>
 
             {/* Trial Grid */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <h3 className="text-sm font-bold mb-1">{t('skillTracker.trialGrid')}</h3>
               <p className="text-xs text-slate-400 mb-4">{t('skillTracker.instructions')}</p>
               <div className="grid grid-cols-5 gap-3">

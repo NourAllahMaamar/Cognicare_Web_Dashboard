@@ -78,18 +78,19 @@ export default function AdminCaregiverApplications() {
   const pendingCount = applications.length;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('caregiverApplications.title')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{t('caregiverApplications.title')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">
             {pendingCount} {t('caregiverApplications.applicationsCount')}
           </p>
         </div>
-        <button onClick={fetchApplications} className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
-          <span className="material-symbols-outlined text-lg">refresh</span>
-          {t('caregiverApplications.refresh')}
+        <button onClick={fetchApplications} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+          <span className="material-symbols-outlined text-lg flex-shrink-0">refresh</span>
+          <span className="hidden sm:inline">{t('caregiverApplications.refresh')}</span>
+          <span className="sm:hidden">Refresh</span>
         </button>
       </div>
 
@@ -120,27 +121,27 @@ export default function AdminCaregiverApplications() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
       ) : applications.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
-          <span className="material-symbols-outlined text-5xl mb-3 block">folder_open</span>
-          <p className="font-medium">{t('caregiverApplications.noApplications')}</p>
-          <p className="text-sm mt-1">{t(`caregiverApplications.noApplicationsSub.${filter}`)}</p>
+        <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
+          <span className="material-symbols-outlined text-5xl mb-3 block flex-shrink-0">folder_open</span>
+          <p className="font-medium text-sm md:text-base">{t('caregiverApplications.noApplications')}</p>
+          <p className="text-xs md:text-sm mt-1">{t(`caregiverApplications.noApplicationsSub.${filter}`)}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
           {applications.map((app) => {
             const user = app.user || {};
             return (
               <div key={app.id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden hover:shadow-lg transition-shadow">
                 {/* Header */}
-                <div className="p-5 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+                <div className="p-4 md:p-5 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-base md:text-lg flex-shrink-0">
                         {user.fullName?.charAt(0)?.toUpperCase() || '?'}
                       </div>
-                      <div>
-                        <p className="font-bold text-slate-900 dark:text-white">{user.fullName || t('caregiverApplications.unknownUser')}</p>
-                        <p className="text-xs text-slate-500 dark:text-text-muted">{user.email}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-sm md:text-base text-slate-900 dark:text-white truncate">{user.fullName || t('caregiverApplications.unknownUser')}</p>
+                        <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted truncate">{user.email}</p>
                       </div>
                     </div>
                     <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[app.status]}`}>
@@ -150,7 +151,7 @@ export default function AdminCaregiverApplications() {
                 </div>
 
                 {/* Details */}
-                <div className="p-5 space-y-3">
+                <div className="p-4 md:p-5 space-y-2 md:space-y-3">
                   {/* Role */}
                   {app.careProviderType && (
                   <div className="flex items-center gap-2 text-sm">
@@ -248,10 +249,10 @@ export default function AdminCaregiverApplications() {
 
       {/* Rejection Modal */}
       {reviewingApp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setReviewingApp(null)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setReviewingApp(null)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('caregiverApplications.denyTitle')}</h3>
+              <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white">{t('caregiverApplications.denyTitle')}</h3>
               <button onClick={() => setReviewingApp(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -267,7 +268,7 @@ export default function AdminCaregiverApplications() {
               value={rejectionReason}
               onChange={e => setRejectionReason(e.target.value)}
               placeholder={t('caregiverApplications.rejectionPlaceholder')}
-              className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm resize-none h-24 focus:ring-2 focus:ring-primary mb-4"
+              className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm resize-none h-24 focus:ring-2 focus:ring-primary mb-4"
             />
             <div className="flex gap-3">
               <button onClick={() => setReviewingApp(null)} className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
@@ -286,12 +287,12 @@ export default function AdminCaregiverApplications() {
 
       {/* Document Preview Modal */}
       {previewDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setPreviewDoc(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setPreviewDoc(null)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white">
+            <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-200 dark:border-slate-800">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white truncate">
                   {docTypeLabels[previewDoc.type] || previewDoc.type}
                 </h3>
                 {previewDoc.fileName && <p className="text-xs text-slate-500">{previewDoc.fileName}</p>}

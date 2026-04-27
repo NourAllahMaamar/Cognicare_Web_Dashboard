@@ -56,28 +56,28 @@ export default function OrgMarketplace() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100">
           {t('orgDashboard.marketplace.title', 'Marketplace')}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5 md:mt-1">
           {t('orgDashboard.marketplace.subtitle', 'Browse educational tools and resources')}
         </p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
         {/* Search */}
         <div className="flex-1 relative">
-          <MagnifyingGlassIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <MagnifyingGlassIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 flex-shrink-0" />
           <input
             type="text"
             placeholder={t('marketplace.search', 'Search products...')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full ps-10 pe-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-slate-900 dark:text-slate-100"
+            className="w-full ps-10 pe-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-slate-900 dark:text-slate-100"
           />
         </div>
 
@@ -85,7 +85,7 @@ export default function OrgMarketplace() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-slate-900 dark:text-slate-100"
+          className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-slate-900 dark:text-slate-100"
         >
           {categories.map(cat => (
             <option key={cat.value} value={cat.value}>
@@ -101,9 +101,9 @@ export default function OrgMarketplace() {
           <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700">
+        <div className="text-center p-8 md:p-12 bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700">
           <ShoppingBagIcon className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-sm md:text-base text-slate-500 dark:text-slate-400">
             {searchTerm 
               ? t('marketplace.noResults', 'No products found')
               : t('marketplace.noProducts', 'No products available')
@@ -111,7 +111,7 @@ export default function OrgMarketplace() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {filteredProducts.map(product => (
             <div 
               key={product._id}
@@ -119,7 +119,7 @@ export default function OrgMarketplace() {
             >
               {/* Product Image */}
               {product.imageUrl ? (
-                <div className="aspect-video bg-slate-100 dark:bg-slate-800">
+                <div className="h-48 sm:h-56 md:h-64 bg-slate-100 dark:bg-slate-800">
                   <img 
                     src={product.imageUrl} 
                     alt={product.title}
@@ -127,13 +127,13 @@ export default function OrgMarketplace() {
                   />
                 </div>
               ) : (
-                <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                  <ShoppingBagIcon className="w-16 h-16 text-slate-300 dark:text-slate-600" />
+                <div className="h-48 sm:h-56 md:h-64 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+                  <ShoppingBagIcon className="w-16 h-16 text-slate-300 dark:text-slate-600 flex-shrink-0" />
                 </div>
               )}
 
               {/* Product Info */}
-              <div className="p-4">
+              <div className="p-4 md:p-5">
                 {/* Category Badge */}
                 {product.category && (
                   <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full mb-2">
@@ -142,24 +142,24 @@ export default function OrgMarketplace() {
                 )}
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2 line-clamp-2">
+                <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100 mb-2 line-clamp-2">
                   {product.title || t('marketplace.untitled', 'Untitled Product')}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
                   {product.description}
                 </p>
 
                 {/* Rating */}
                 {product.rating > 0 && (
                   <div className="flex items-center gap-1 mb-3">
-                    <StarIcon className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <StarIcon className="w-4 h-4 text-yellow-400 fill-current flex-shrink-0" />
+                    <span className="text-xs md:text-sm font-medium text-slate-700 dark:text-slate-300">
                       {product.rating.toFixed(1)}
                     </span>
                     {product.reviewCount > 0 && (
-                      <span className="text-sm text-slate-500 dark:text-slate-400">
+                      <span className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
                         ({product.reviewCount})
                       </span>
                     )}
@@ -168,7 +168,7 @@ export default function OrgMarketplace() {
 
                 {/* Price & Link */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
-                  <span className="text-lg font-bold text-primary">
+                  <span className="text-base md:text-lg font-bold text-primary">
                     {formatPrice(product.price)}
                   </span>
                   {product.externalUrl && (
@@ -176,10 +176,10 @@ export default function OrgMarketplace() {
                       href={product.externalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-white text-xs md:text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
                     >
                       {t('marketplace.view', 'View')}
-                      <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                      <ArrowTopRightOnSquareIcon className="w-4 h-4 flex-shrink-0" />
                     </a>
                   )}
                 </div>

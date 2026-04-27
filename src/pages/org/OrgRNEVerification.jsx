@@ -532,32 +532,32 @@ export default function OrgRNEVerification() {
 
   /* ════ RENDER ════ */
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
 
       {/* ── Page Header ── */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-2xl">fact_check</span>
-            {t('rneVerification.title', 'RNE Verification')}
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 md:gap-4">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-xl md:text-2xl flex-shrink-0">fact_check</span>
+            <span className="truncate">{t('rneVerification.title', 'RNE Verification')}</span>
           </h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1 text-sm">
+          <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1 truncate">
             {t('rneVerification.subtitle', 'Automated AI-powered organization identity verification system')}
           </p>
         </div>
         {phase !== 'upload' && (
           <button
             onClick={reset}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
           >
-            <span className="material-symbols-outlined text-lg">restart_alt</span>
-            {t('rneVerification.reset', 'Start Over')}
+            <span className="material-symbols-outlined text-lg flex-shrink-0">restart_alt</span>
+            <span>{t('rneVerification.reset', 'Start Over')}</span>
           </button>
         )}
       </div>
 
       {/* ── Phase Bar ── */}
-      <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-5 shadow-sm">
+      <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 shadow-sm">
         <PhaseBar currentPhase={phase} />
       </div>
 
@@ -565,14 +565,14 @@ export default function OrgRNEVerification() {
           PHASE 1 — UPLOAD
       ═══════════════════════════════════════════ */}
       {phase === 'upload' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Main form */}
-          <div className="lg:col-span-2 bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm">
-            <h3 className="font-bold text-lg mb-1 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">upload_file</span>
-              {t('rneVerification.upload.title', 'Upload RNE Document')}
+          <div className="lg:col-span-2 bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-4 md:p-6 shadow-sm">
+            <h3 className="font-bold text-base md:text-lg mb-1 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary flex-shrink-0">upload_file</span>
+              <span className="truncate">{t('rneVerification.upload.title', 'Upload RNE Document')}</span>
             </h3>
-            <p className="text-sm text-slate-500 dark:text-text-muted mb-6">
+            <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted mb-4 md:mb-6">
               {t('rneVerification.upload.description', 'Upload your official RNE registration document for AI-powered analysis and validation')}
             </p>
 
@@ -580,19 +580,19 @@ export default function OrgRNEVerification() {
             <DropZone file={file} onFile={handleFile} error={fileError} />
 
             {/* Phone */}
-            <div className="mt-5">
-              <label className="block text-sm font-semibold mb-1.5">
+            <div className="mt-4 md:mt-5">
+              <label className="block text-xs md:text-sm font-semibold mb-1.5">
                 {t('rneVerification.upload.phone', 'Phone Number')}
                 <span className="text-red-500 ms-1">*</span>
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">call</span>
+                <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg flex-shrink-0">call</span>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => { setPhone(e.target.value); setPhoneError(''); }}
                   placeholder={t('rneVerification.upload.phonePlaceholder', '+216 XX XXX XXX')}
-                  className={`w-full ps-10 pe-4 py-3 rounded-xl border text-sm outline-none transition-all bg-slate-50 dark:bg-slate-800 ${
+                  className={`w-full ps-10 pe-4 py-2 md:py-3 rounded-xl border text-sm outline-none transition-all bg-slate-50 dark:bg-slate-800 ${
                     phoneError
                       ? 'border-red-400 focus:ring-2 focus:ring-red-400/30'
                       : 'border-slate-300 dark:border-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20'
@@ -613,19 +613,19 @@ export default function OrgRNEVerification() {
             </div>
 
             {/* Consent */}
-            <div className="mt-5 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-xl">
-              <label className="flex gap-3 cursor-pointer">
+            <div className="mt-4 md:mt-5 p-3 md:p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-xl">
+              <label className="flex gap-2 md:gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
                   className="w-4 h-4 mt-0.5 rounded accent-primary shrink-0"
                 />
-                <div className="text-sm">
+                <div className="text-xs md:text-sm">
                   <p className="font-semibold text-amber-800 dark:text-amber-400">
                     {t('rneVerification.upload.consentTitle', 'Consent to AI Processing & Voice Verification')}
                   </p>
-                  <p className="text-amber-700 dark:text-amber-500 mt-0.5 text-xs leading-relaxed">
+                  <p className="text-amber-700 dark:text-amber-500 mt-0.5 text-[10px] md:text-xs leading-relaxed">
                     {t('rneVerification.upload.consentText', 'I consent to AI analysis of the uploaded document and agree to receive an automated verification call. Data is processed securely and in compliance with privacy regulations.')}
                   </p>
                 </div>
@@ -636,28 +636,28 @@ export default function OrgRNEVerification() {
             <button
               onClick={handleSubmit}
               disabled={!consent || submitting}
-              className="mt-5 w-full py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              className="mt-4 md:mt-5 w-full py-2.5 md:py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {t('rneVerification.upload.submitting', 'Uploading...')}
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin flex-shrink-0" />
+                  <span>{t('rneVerification.upload.submitting', 'Uploading...')}</span>
                 </>
               ) : (
                 <>
-                  <span className="material-symbols-outlined text-lg">rocket_launch</span>
-                  {t('rneVerification.upload.submit', 'Begin AI Verification')}
+                  <span className="material-symbols-outlined text-lg flex-shrink-0">rocket_launch</span>
+                  <span>{t('rneVerification.upload.submit', 'Begin AI Verification')}</span>
                 </>
               )}
             </button>
           </div>
 
           {/* Sidebar */}
-          <div className="flex flex-col gap-4">
-            <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-5 shadow-sm">
-              <h4 className="font-bold text-sm mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-lg">info</span>
-                {t('rneVerification.info.howItWorks', 'How It Works')}
+          <div className="flex flex-col gap-3 md:gap-4">
+            <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 shadow-sm">
+              <h4 className="font-bold text-xs md:text-sm mb-3 md:mb-4 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-lg flex-shrink-0">info</span>
+                <span>{t('rneVerification.info.howItWorks', 'How It Works')}</span>
               </h4>
               {[
                 { icon: 'upload_file', label: t('rneVerification.info.step1', 'Upload your official RNE document') },
@@ -665,42 +665,42 @@ export default function OrgRNEVerification() {
                 { icon: 'call',        label: t('rneVerification.info.step3', 'AI agent calls to confirm identity') },
                 { icon: 'verified',    label: t('rneVerification.info.step4', 'Receive instant verification decision') },
               ].map((s, i) => (
-                <div key={i} className="flex items-start gap-3 mb-3 last:mb-0">
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="material-symbols-outlined text-primary text-sm">{s.icon}</span>
+                <div key={i} className="flex items-start gap-2 md:gap-3 mb-2.5 md:mb-3 last:mb-0">
+                  <div className="w-7 h-7 md:w-8 md:h-8 flex-shrink-0 rounded-xl bg-primary/10 flex items-center justify-center mt-0.5">
+                    <span className="material-symbols-outlined text-primary text-sm md:text-base">{s.icon}</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1">{s.label}</p>
+                  <p className="text-[10px] md:text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1">{s.label}</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl border border-indigo-200 dark:border-indigo-800/30 p-5">
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-indigo-500 mt-0.5">security</span>
-                <div>
-                  <p className="font-semibold text-sm text-indigo-700 dark:text-indigo-300">
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl border border-indigo-200 dark:border-indigo-800/30 p-4 md:p-5">
+              <div className="flex items-start gap-2 md:gap-3">
+                <span className="material-symbols-outlined text-indigo-500 mt-0.5 flex-shrink-0">security</span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-xs md:text-sm text-indigo-700 dark:text-indigo-300">
                     {t('rneVerification.info.security', 'Secure & Compliant')}
                   </p>
-                  <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1 leading-relaxed">
+                  <p className="text-[10px] md:text-xs text-indigo-600 dark:text-indigo-400 mt-1 leading-relaxed">
                     {t('rneVerification.info.securityText', 'End-to-end encrypted. Compliant with GDPR and local data protection regulations.')}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-5 shadow-sm">
-              <h4 className="font-bold text-sm mb-3 flex items-center gap-2">
-                <span className="material-symbols-outlined text-slate-400 text-lg">description</span>
-                {t('rneVerification.info.accepted', 'Accepted Formats')}
+            <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 shadow-sm">
+              <h4 className="font-bold text-xs md:text-sm mb-3 flex items-center gap-2">
+                <span className="material-symbols-outlined text-slate-400 text-lg flex-shrink-0">description</span>
+                <span>{t('rneVerification.info.accepted', 'Accepted Formats')}</span>
               </h4>
               <div className="flex flex-wrap gap-2">
                 {['PDF', 'JPG', 'PNG', 'WEBP'].map(f => (
-                  <span key={f} className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-mono font-bold rounded-lg">
+                  <span key={f} className="px-2 md:px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-mono font-bold rounded-lg">
                     {f}
                   </span>
                 ))}
               </div>
-              <p className="text-xs text-slate-400 mt-2">{t('rneVerification.info.maxSize', 'Maximum file size: 10 MB')}</p>
+              <p className="text-[10px] md:text-xs text-slate-400 mt-2">{t('rneVerification.info.maxSize', 'Maximum file size: 10 MB')}</p>
             </div>
           </div>
         </div>
@@ -710,10 +710,10 @@ export default function OrgRNEVerification() {
           PHASE 2 — AI PROCESSING (COUNTDOWN)
       ═══════════════════════════════════════════ */}
       {phase === 'processing' && (
-        <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-8 shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start py-2">
+        <div className="bg-white dark:bg-surface-dark rounded-2xl border border-slate-300 dark:border-slate-800 p-4 md:p-6 lg:p-8 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-10 items-start py-2">
             {/* Left: countdown + message */}
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-4 md:gap-6">
               <div className="flex flex-col items-center gap-4">
                 <div className="w-24 h-24 rounded-full border-4 border-indigo-200 border-t-indigo-500 animate-spin" />
                 <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 text-center">

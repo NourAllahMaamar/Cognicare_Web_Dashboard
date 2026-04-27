@@ -64,17 +64,44 @@ export default function SpecialistChildren() {
 
   // â”€â”€ Family CRUD â”€â”€
   const openAddFamily = () => {
+    // Set default birth date to 7 years ago (typical age for interventions)
+    const defaultDate = new Date();
+    defaultDate.setFullYear(defaultDate.getFullYear() - 7);
+    const defaultDateStr = defaultDate.toISOString().split('T')[0];
+    
     setFamilyForm({ fullName: '', email: '', phone: '', password: '' });
-    setFormChildren([{ fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
+    setFormChildren([{ fullName: '', dateOfBirth: defaultDateStr, gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
     setShowModal(true);
   };
 
-  const addChild = () => setFormChildren([...formChildren, { fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
+  const addChild = () => {
+    // Set default birth date to 7 years ago for new children
+    const defaultDate = new Date();
+    defaultDate.setFullYear(defaultDate.getFullYear() - 7);
+    const defaultDateStr = defaultDate.toISOString().split('T')[0];
+    
+    setFormChildren([...formChildren, { fullName: '', dateOfBirth: defaultDateStr, gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
+  };
   const removeChild = (i) => setFormChildren(formChildren.filter((_, idx) => idx !== i));
   const updateChild = (i, field, val) => { const nc = [...formChildren]; nc[i] = { ...nc[i], [field]: val }; setFormChildren(nc); };
 
   const handleCreateFamily = async () => {
     if (!familyForm.fullName || !familyForm.email || !familyForm.password) { flash('Name, email, and password required', 'error'); return; }
+    
+    // Validate children age - must be at least 3 years old
+    const threeYearsAgo = new Date();
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+    
+    for (const child of formChildren) {
+      if (child.fullName && child.dateOfBirth) {
+        const birthDate = new Date(child.dateOfBirth);
+        if (birthDate > threeYearsAgo) {
+          flash(`Child "${child.fullName}" must be at least 3 years old`, 'error');
+          return;
+        }
+      }
+    }
+    
     setFormLoading(true);
     try {
       const body = { ...familyForm, children: formChildren.filter(c => c.fullName) };
@@ -94,13 +121,13 @@ export default function SpecialistChildren() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('specialistDashboard.tabs.children', 'Children')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{allChildren.length} total ({orgChildren.length} org, {privateChildren.length} private)</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('specialistDashboard.tabs.children', 'Children')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{allChildren.length} total ({orgChildren.length} org, {privateChildren.length} private)</p>
         </div>
-        <button onClick={openAddFamily} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
-          <span className="material-symbols-outlined text-lg">add</span> Add Private Family
+        <button onClick={openAddFamily} className="w-full sm:w-auto flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
+          <span className="material-symbols-outlined flex-shrink-0 text-lg">add</span> <span className="hidden sm:inline">Add Private Family</span><span className="sm:hidden">Add Family</span>
         </button>
       </div>
 
@@ -121,10 +148,10 @@ export default function SpecialistChildren() {
               <div className="space-y-2">
                 {orgChildren.map(child => (
                   <button key={child._id} onClick={() => selectChild(child)} className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all ${selectedChild?._id === child._id ? 'bg-primary/10 border-primary ring-1 ring-primary' : 'bg-white dark:bg-surface-dark border-slate-200 dark:border-slate-800 hover:shadow'} border`}>
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
+                    <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm truncate">{child.fullName}</p>
-                      <p className="text-xs text-slate-400">{child.diagnosis || '"”'}</p>
+                      <p className="font-bold text-sm md:text-base truncate">{child.fullName}</p>
+                      <p className="text-xs md:text-sm text-slate-400 truncate">{child.diagnosis || '""'}</p>
                     </div>
                   </button>
                 ))}
@@ -141,10 +168,10 @@ export default function SpecialistChildren() {
               <div className="space-y-2">
                 {privateChildren.map(child => (
                   <button key={child._id} onClick={() => selectChild(child)} className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all ${selectedChild?._id === child._id ? 'bg-primary/10 border-primary ring-1 ring-primary' : 'bg-white dark:bg-surface-dark border-slate-200 dark:border-slate-800 hover:shadow'} border`}>
-                    <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
+                    <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm truncate">{child.fullName}</p>
-                      <p className="text-xs text-slate-400">{child.diagnosis || '"”'}</p>
+                      <p className="font-bold text-sm md:text-base truncate">{child.fullName}</p>
+                      <p className="text-xs md:text-sm text-slate-400 truncate">{child.diagnosis || '""'}</p>
                     </div>
                   </button>
                 ))}
@@ -163,7 +190,7 @@ export default function SpecialistChildren() {
           ) : (
             <div className="space-y-4">
               {/* Child Info */}
-              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl">{(selectedChild.fullName || '?')[0].toUpperCase()}</div>
                   <div>
@@ -173,7 +200,7 @@ export default function SpecialistChildren() {
                   </div>
                 </div>
                 {/* Action buttons */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   <button onClick={() => navigate(`/specialist/ai-recommendations/${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-primary/5 rounded-xl text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
                     <span className="material-symbols-outlined text-lg">auto_awesome</span>AI Recs
                   </button>
@@ -193,10 +220,10 @@ export default function SpecialistChildren() {
               </div>
 
               {/* Plans filter + list */}
-              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+              <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
                 {/* Summary stats */}
                 {childPlans.length > 0 && (
-                  <div className="grid grid-cols-4 gap-2 mb-5">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
                     {[
                       { label: 'PECS', count: childPlans.filter(p => p.type === 'PECS').length, color: 'text-blue-500 bg-blue-500/10' },
                       { label: 'TEACCH', count: childPlans.filter(p => p.type === 'TEACCH').length, color: 'text-purple-500 bg-purple-500/10' },
@@ -316,18 +343,18 @@ export default function SpecialistChildren() {
 
       {/* Add Family Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Add Private Family</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base md:text-lg font-bold">Add Private Family</h3>
               <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div><label className="block text-sm font-bold mb-1.5">Parent Name *</label><input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-              <div><label className="block text-sm font-bold mb-1.5">Email *</label><input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-              <div><label className="block text-sm font-bold mb-1.5">Phone</label><input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-              <div><label className="block text-sm font-bold mb-1.5">Password *</label><input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-3">
+              <div><label className="block text-sm font-bold mb-1.5">Parent Name *</label><input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">Email *</label><input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">Phone</label><input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">Password *</label><input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
             </div>
 
             <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
@@ -335,16 +362,24 @@ export default function SpecialistChildren() {
                 <h4 className="font-bold text-sm">Children</h4>
                 <button onClick={addChild} className="text-xs text-primary font-bold hover:underline">+ Add Child</button>
               </div>
-              {formChildren.map((c, i) => (
-                <div key={i} className="grid grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
-                  <input value={c.fullName} onChange={e => updateChild(i, 'fullName', e.target.value)} placeholder="Name *" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                  <input type="date" value={c.dateOfBirth} onChange={e => updateChild(i, 'dateOfBirth', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                  <select value={c.gender} onChange={e => updateChild(i, 'gender', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                    <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+              {formChildren.map((c, i) => {
+                // Calculate max date (3 years ago from today)
+                const maxDate = new Date();
+                maxDate.setFullYear(maxDate.getFullYear() - 3);
+                const maxDateStr = maxDate.toISOString().split('T')[0];
+                
+                return (
+                <div key={i} className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
+                  <input value={c.fullName} onChange={e => updateChild(i, 'fullName', e.target.value)} placeholder="Name *" className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                  <input type="date" value={c.dateOfBirth} onChange={e => updateChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                  <select value={c.gender} onChange={e => updateChild(i, 'gender', e.target.value)} className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
                   </select>
                   <button onClick={() => removeChild(i)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="flex gap-3 mt-6">

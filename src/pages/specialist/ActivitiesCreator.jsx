@@ -55,7 +55,7 @@ export default function ActivitiesCreator() {
     setLoading(false);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
   const priorityColors = { low: 'bg-blue-100 text-blue-700 border-blue-200', medium: 'bg-amber-100 text-amber-700 border-amber-200', high: 'bg-error/10 text-error border-error/20' };
 
   return (
@@ -68,11 +68,11 @@ export default function ActivitiesCreator() {
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-xl font-bold">{t('activitiesCreator.title')}</h1>
-              <p className="text-xs text-slate-500">{t('activitiesCreator.subtitle')}</p>
+              <h1 className="text-xl md:text-2xl font-bold">{t('activitiesCreator.title')}</h1>
+              <p className="text-sm text-slate-500">{t('activitiesCreator.subtitle')}</p>
             </div>
           </div>
-          <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
+          <button onClick={handleSave} disabled={loading} className="w-full sm:w-auto px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50 transition-colors">
             {loading ? t('activitiesCreator.saving') : t('activitiesCreator.saveActivity')}
           </button>
         </div>
@@ -84,19 +84,19 @@ export default function ActivitiesCreator() {
 
         <div className="space-y-4">
           {/* Title */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
             <label className="block text-sm font-bold mb-2">{t('activitiesCreator.activityTitle')}</label>
             <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder={t('activitiesCreator.titlePlaceholder')} className={inputCls} />
           </div>
 
           {/* Description */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
             <label className="block text-sm font-bold mb-2">{t('activitiesCreator.description')}</label>
             <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder={t('activitiesCreator.descriptionPlaceholder')} className={inputCls} />
           </div>
 
           {/* Parent Instructions */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
             <label className="block text-sm font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-lg">family_restroom</span>
               {t('activitiesCreator.parentInstructions')}
@@ -104,15 +104,15 @@ export default function ActivitiesCreator() {
             <textarea value={parentInstructions} onChange={e => setParentInstructions(e.target.value)} rows={4} placeholder={t('activitiesCreator.instructionsPlaceholder')} className={inputCls} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
             {/* Due Date */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <label className="block text-sm font-bold mb-2">{t('activitiesCreator.dueDate')}</label>
               <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className={inputCls} />
             </div>
 
             {/* Priority */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <label className="block text-sm font-bold mb-2">{t('activitiesCreator.priority')}</label>
               <div className="flex gap-2">
                 {['low', 'medium', 'high'].map(p => (
@@ -125,7 +125,7 @@ export default function ActivitiesCreator() {
           </div>
 
           {/* Materials */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
             <label className="block text-sm font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-lg">inventory_2</span>
               {t('activitiesCreator.materialsNeeded')}
@@ -150,7 +150,7 @@ export default function ActivitiesCreator() {
 
           {/* Preview */}
           {title && (
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">preview</span>
                 {t('activitiesCreator.preview')}

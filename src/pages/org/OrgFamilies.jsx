@@ -98,6 +98,32 @@ export default function OrgFamilies() {
   };
 
   const handleSave = async () => {
+    // Validate children age - must be at least 3 years old
+    const threeYearsAgo = new Date();
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+    
+    // Check new children
+    for (const child of formChildren) {
+      if (child.fullName && child.dateOfBirth) {
+        const birthDate = new Date(child.dateOfBirth);
+        if (birthDate > threeYearsAgo) {
+          flash(`Child "${child.fullName}" must be at least 3 years old`, 'error');
+          return;
+        }
+      }
+    }
+    
+    // Check existing children being updated
+    for (const child of existingChildren) {
+      if (child._modified && child.dateOfBirth) {
+        const birthDate = new Date(child.dateOfBirth);
+        if (birthDate > threeYearsAgo) {
+          flash(`Child "${child.fullName}" must be at least 3 years old`, 'error');
+          return;
+        }
+      }
+    }
+    
     try {
       if (modalMode === 'edit' && editingFamily) {
         // 1. Update family
@@ -144,7 +170,14 @@ export default function OrgFamilies() {
   };
 
   // â”€â”€ Children helpers â”€â”€
-  const addNewChild = () => setFormChildren([...formChildren, { fullName: '', dateOfBirth: '', gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
+  const addNewChild = () => {
+    // Set default birth date to 7 years ago for new children
+    const defaultDate = new Date();
+    defaultDate.setFullYear(defaultDate.getFullYear() - 7);
+    const defaultDateStr = defaultDate.toISOString().split('T')[0];
+    
+    setFormChildren([...formChildren, { fullName: '', dateOfBirth: defaultDateStr, gender: 'male', diagnosis: '', medicalHistory: '', allergies: '', medications: '', notes: '' }]);
+  };
   const removeNewChild = (i) => setFormChildren(formChildren.filter((_, idx) => idx !== i));
   const updateNewChild = (i, field, val) => { const nc = [...formChildren]; nc[i] = { ...nc[i], [field]: val }; setFormChildren(nc); };
   const updateExistingChild = (i, field, val) => { const ec = [...existingChildren]; ec[i] = { ...ec[i], [field]: val, _modified: true }; setExistingChildren(ec); };
@@ -237,29 +270,36 @@ export default function OrgFamilies() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('orgDashboard.tabs.families', 'Families')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{families.length} {t('orgDashboard.familiesRegistered', 'families registered')}</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('orgDashboard.tabs.families', 'Families')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{families.length} {t('orgDashboard.familiesRegistered', 'families registered')}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <div className="relative">
-            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
-              <span className="material-symbols-outlined text-lg">import_export</span> {t('common.importExport', 'Import/Export')}
+            <button onClick={() => setShowDropdown(!showDropdown)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
+              <span className="material-symbols-outlined text-lg">import_export</span>
+              <span className="hidden sm:inline">{t('common.importExport', 'Import/Export')}</span>
+              <span className="sm:hidden">Import/Export</span>
             </button>
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
+              <>
+                <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
+                <div className="absolute right-0 left-0 sm:left-auto mt-2 sm:w-56 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
                 <button onClick={exportData} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Families</button>
                 <button onClick={() => openImport('families')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Families</button>
                 <button onClick={() => openImport('families_children')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Families + Children</button>
                 <button onClick={() => downloadTemplate('families')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Download Template</button>
                 <button onClick={() => downloadTemplate('families_children')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Families+Children Template</button>
               </div>
+              </>
             )}
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
-            <span className="material-symbols-outlined text-lg">add</span> {t('orgDashboard.addFamily', 'Add Family')}
+          <button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
+            <span className="material-symbols-outlined text-lg">add</span>
+            <span className="hidden sm:inline">{t('orgDashboard.addFamily', 'Add Family')}</span>
+            <span className="sm:hidden">Add Family</span>
           </button>
         </div>
       </div>
@@ -267,7 +307,7 @@ export default function OrgFamilies() {
       {error && <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium">{error}</div>}
       {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium">{success}</div>}
 
-      <div className="relative max-w-md">
+      <div className="relative w-full md:max-w-md">
         <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('common.search', 'Search...')} className="w-full ps-10 pe-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
@@ -275,38 +315,40 @@ export default function OrgFamilies() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
+        <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">family_restroom</span>
-          <p>{t('orgDashboard.noFamilies', 'No families found')}</p>
+          <p className="text-sm md:text-base">{t('orgDashboard.noFamilies', 'No families found')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
           {filtered.map(fam => {
             const famChildren = allChildren.filter(c => childBelongsToFamily(c, fam._id));
             return (
-              <div key={fam._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+              <div key={fam._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 hover:shadow-lg transition-shadow">
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-base md:text-lg">
                       {(fam.fullName || '?')[0].toUpperCase()}
                     </div>
-                    <div>
-                      <p className="font-bold">{fam.fullName}</p>
-                      <p className="text-xs text-slate-500">{fam.email}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-sm md:text-base truncate">{fam.fullName}</p>
+                      <p className="text-xs text-slate-500 truncate">{fam.email}</p>
                     </div>
                   </div>
-                  <StatusBadge status="Family" />
+                  <div className="flex-shrink-0">
+                    <StatusBadge status="Family" />
+                  </div>
                 </div>
-                <div className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400 mb-4">
-                  {fam.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">phone</span>{fam.phone}</p>}
-                  <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">child_care</span>{fam.childrenCount ?? famChildren.length} children</p>
-                  <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">calendar_today</span>{dateFmt(fam.createdAt)}</p>
+                <div className="space-y-1.5 text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-3 md:mb-4">
+                  {fam.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">phone</span><span className="truncate">{fam.phone}</span></p>}
+                  <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">child_care</span>{fam.childrenCount ?? famChildren.length} children</p>
+                  <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">calendar_today</span>{dateFmt(fam.createdAt)}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => openEdit(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg">{t('common.edit', 'Edit')}</button>
-                  <button onClick={() => setViewFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg">Children</button>
-                  <button onClick={() => handleDelete(fam)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg">
-                    <span className="material-symbols-outlined text-sm">delete</span>
+                  <button onClick={() => openEdit(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('common.edit', 'Edit')}</button>
+                  <button onClick={() => setViewFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Children</button>
+                  <button onClick={() => handleDelete(fam)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg transition-colors">
+                    <span className="material-symbols-outlined text-base md:text-sm">delete</span>
                   </button>
                 </div>
               </div>
@@ -317,11 +359,11 @@ export default function OrgFamilies() {
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowModal(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">{modalMode === 'edit' ? t('orgDashboard.editFamily', 'Edit Family') : t('orgDashboard.addFamily', 'Add Family')}</h3>
-              <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
+              <h3 className="text-base md:text-lg font-bold">{modalMode === 'edit' ? t('orgDashboard.editFamily', 'Edit Family') : t('orgDashboard.addFamily', 'Add Family')}</h3>
+              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 -mr-1"><span className="material-symbols-outlined text-xl">close</span></button>
             </div>
 
             {modalMode !== 'edit' && (
@@ -334,15 +376,15 @@ export default function OrgFamilies() {
             {modalMode === 'invite' ? (
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
-                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div><label className="block text-sm font-bold mb-1.5">{t('common.fullName', 'Full Name')} *</label><input value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                  <div><label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')} *</label><input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                  <div><label className="block text-sm font-bold mb-1.5">{t('common.phone', 'Phone')}</label><input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                  {modalMode === 'create' && <div><label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
+                  <div><label className="block text-sm font-bold mb-1.5">{t('common.fullName', 'Full Name')} *</label><input value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                  <div><label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')} *</label><input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                  <div><label className="block text-sm font-bold mb-1.5">{t('common.phone', 'Phone')}</label><input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                  {modalMode === 'create' && <div><label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>}
                 </div>
 
                 {/* Children section */}
@@ -353,28 +395,44 @@ export default function OrgFamilies() {
                   </div>
 
                   {/* Existing children (edit mode) */}
-                  {existingChildren.map((c, i) => (
-                    <div key={c._id} className="grid grid-cols-4 gap-2 mb-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                      <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder="Name" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                      <input type="date" value={(c.dateOfBirth || '').split('T')[0]} onChange={e => updateExistingChild(i, 'dateOfBirth', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                      <select value={c.gender || 'male'} onChange={e => updateExistingChild(i, 'gender', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                        <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+                  {existingChildren.map((c, i) => {
+                    // Calculate max date (3 years ago from today)
+                    const maxDate = new Date();
+                    maxDate.setFullYear(maxDate.getFullYear() - 3);
+                    const maxDateStr = maxDate.toISOString().split('T')[0];
+                    
+                    return (
+                    <div key={c._id} className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                      <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder="Name" className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input type="date" value={(c.dateOfBirth || '').split('T')[0]} onChange={e => updateExistingChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <select value={c.gender || 'male'} onChange={e => updateExistingChild(i, 'gender', e.target.value)} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                       </select>
                       <button onClick={() => markDeleteChild(c)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     </div>
-                  ))}
+                    );
+                  })}
 
                   {/* New children */}
-                  {formChildren.map((c, i) => (
+                  {formChildren.map((c, i) => {
+                    // Calculate max date (3 years ago from today)
+                    const maxDate = new Date();
+                    maxDate.setFullYear(maxDate.getFullYear() - 3);
+                    const maxDateStr = maxDate.toISOString().split('T')[0];
+                    
+                    return (
                     <div key={i} className="grid grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
                       <input value={c.fullName} onChange={e => updateNewChild(i, 'fullName', e.target.value)} placeholder="Name *" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                      <input type="date" value={c.dateOfBirth} onChange={e => updateNewChild(i, 'dateOfBirth', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input type="date" value={c.dateOfBirth} onChange={e => updateNewChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender} onChange={e => updateNewChild(i, 'gender', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                        <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                       </select>
                       <button onClick={() => removeNewChild(i)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}

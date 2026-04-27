@@ -95,8 +95,8 @@ export default function SpecialistOverview() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold">{t('specialistDashboard.tabs.overview', 'Overview')}</h2>
-        <p className="text-slate-500 dark:text-text-muted mt-1">{t('specialistDashboard.welcome', 'Welcome to your specialist dashboard')}</p>
+        <h2 className="text-xl md:text-2xl font-bold">{t('specialistDashboard.tabs.overview', 'Overview')}</h2>
+        <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('specialistDashboard.welcome', 'Welcome to your specialist dashboard')}</p>
       </div>
 
       {loading ? (
@@ -104,7 +104,7 @@ export default function SpecialistOverview() {
       ) : (
         <>
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <StatCard label={t('specialistDashboard.orgChildren', 'Org Children')} value={orgChildren.length} icon="groups" />
             <StatCard label={t('specialistDashboard.privatePatients', 'Private Patients')} value={privateChildren.length} icon="person" />
             <StatCard label="PECS Boards" value={pecsCount} icon="grid_view" />
@@ -112,24 +112,24 @@ export default function SpecialistOverview() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span className="material-symbols-outlined">child_care</span></div>
-              <div className="text-left"><p className="font-bold text-sm">{t('specialistDashboard.viewChildren', 'View Children')}</p><p className="text-xs text-slate-400">{totalUniqueChildren} total</p></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 md:p-5 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
+              <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span className="material-symbols-outlined">child_care</span></div>
+              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.viewChildren', 'View Children')}</p><p className="text-xs text-slate-400 truncate">{totalUniqueChildren} total</p></div>
             </button>
-            <button onClick={() => navigate('/specialist/dashboard/plans')} className="flex items-center gap-3 p-4 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center"><span className="material-symbols-outlined">assignment</span></div>
-              <div className="text-left"><p className="font-bold text-sm">{t('specialistDashboard.myPlans', 'My Plans')}</p><p className="text-xs text-slate-400">{allPlans.length} plans</p></div>
+            <button onClick={() => navigate('/specialist/dashboard/plans')} className="flex items-center gap-3 p-4 md:p-5 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
+              <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center"><span className="material-symbols-outlined">assignment</span></div>
+              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.myPlans', 'My Plans')}</p><p className="text-xs text-slate-400 truncate">{allPlans.length} plans</p></div>
             </button>
-            <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-success/10 text-success flex items-center justify-center"><span className="material-symbols-outlined">add_circle</span></div>
-              <div className="text-left"><p className="font-bold text-sm">{t('specialistDashboard.addFamily', 'Add Private Family')}</p><p className="text-xs text-slate-400">Create new family</p></div>
+            <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 md:p-5 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
+              <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-success/10 text-success flex items-center justify-center"><span className="material-symbols-outlined">add_circle</span></div>
+              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.addFamily', 'Add Private Family')}</p><p className="text-xs text-slate-400 truncate">Create new family</p></div>
             </button>
           </div>
 
           {/* AI Suggestions */}
           {suggestions.length > 0 && (
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
               <h3 className="font-bold flex items-center gap-2 mb-3">
                 <span className="material-symbols-outlined text-primary">auto_awesome</span>
                 {t('specialistDashboard.aiSuggestions', 'AI Activity Suggestions')}
@@ -146,7 +146,7 @@ export default function SpecialistOverview() {
           )}
 
           {/* Recent Plans */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold">{t('specialistDashboard.recentPlans', 'Recent Plans')}</h3>
               <button onClick={() => navigate('/specialist/dashboard/plans')} className="text-xs text-primary font-bold hover:underline">{t('common.viewAll', 'View All')}</button>
@@ -154,9 +154,9 @@ export default function SpecialistOverview() {
             {recentPlans.length === 0 ? (
               <p className="text-sm text-slate-400 text-center py-4">{t('specialistDashboard.noPlans', 'No plans yet')}</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
                 {recentPlans.map(plan => (
-                  <div key={plan._id} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4">
+                  <div key={plan._id} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`w-2.5 h-2.5 rounded-full ${getTypeColor(plan.type)}`} />
                       <span className="text-xs font-bold uppercase text-slate-400">{plan.type}</span>

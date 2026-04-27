@@ -100,14 +100,16 @@ export default function AdminOrganizations() {
   const filtered = organizations.filter(o => !searchTerm || o.name?.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('adminOrgs.title')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminOrgs.count', { count: organizations.length })}</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('adminOrgs.title')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('adminOrgs.count', { count: organizations.length })}</p>
         </div>
-        <button onClick={() => setShowInviteModal(true)} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-all">
-          <span className="material-symbols-outlined text-lg">add</span>{t('adminOrgs.inviteLeader')}
+        <button onClick={() => setShowInviteModal(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-all">
+          <span className="material-symbols-outlined text-lg">add</span>
+          <span className="hidden sm:inline">{t('adminOrgs.inviteLeader')}</span>
+          <span className="sm:hidden">Invite Leader</span>
         </button>
       </div>
 
@@ -136,8 +138,8 @@ export default function AdminOrganizations() {
       )}
 
       {/* Search */}
-      <div className="relative">
-        <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+      <div className="relative w-full md:max-w-md">
+        <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('adminOrgs.searchPlaceholder')} className="w-full ps-10 pe-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
@@ -145,17 +147,17 @@ export default function AdminOrganizations() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {filtered.map(org => (
-            <div key={org._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 hover:border-primary/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                    <span className="material-symbols-outlined">corporate_fare</span>
+            <div key={org._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 hover:border-primary/30 transition-colors">
+              <div className="flex items-start justify-between mb-3 md:mb-4">
+                <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                    <span className="material-symbols-outlined text-lg">corporate_fare</span>
                   </div>
-                  <div>
-                    <p className="font-bold text-sm">{org.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-text-muted">{org.leader?.fullName || t('adminOrgs.noLeader')}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-sm truncate">{org.name}</p>
+                    <p className="text-xs text-slate-500 dark:text-text-muted truncate">{org.leader?.fullName || t('adminOrgs.noLeader')}</p>
                   </div>
                 </div>
                 <StatusBadge status={org.status || 'Active'} />
@@ -191,13 +193,13 @@ export default function AdminOrganizations() {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowInviteModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">{t('adminOrgs.inviteModal.title')}</h3>
-              <button onClick={() => setShowInviteModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowInviteModal(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h3 className="text-base md:text-lg font-bold">{t('adminOrgs.inviteModal.title')}</h3>
+              <button onClick={() => setShowInviteModal(false)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 -mr-1"><span className="material-symbols-outlined text-xl">close</span></button>
             </div>
-            <form onSubmit={handleInvite} className="flex flex-col gap-4">
+            <form onSubmit={handleInvite} className="flex flex-col gap-3 md:gap-4">
               {[
               { key: 'organizationName', label: t('adminOrgs.inviteModal.orgName'), type: 'text' },
                 { key: 'leaderFullName', label: t('adminOrgs.inviteModal.leaderFullName'), type: 'text' },
@@ -207,10 +209,10 @@ export default function AdminOrganizations() {
               ].map(f => (
                 <div key={f.key}>
                   <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 block">{f.label}</label>
-                  <input type={f.type} required value={inviteForm[f.key]} onChange={e => setInviteForm({ ...inviteForm, [f.key]: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <input type={f.type} required value={inviteForm[f.key]} onChange={e => setInviteForm({ ...inviteForm, [f.key]: e.target.value })} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
               ))}
-              <div className="flex gap-3 mt-2">
+              <div className="flex gap-2 md:gap-3 mt-2">
                 <button type="button" onClick={() => setShowInviteModal(false)} className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('adminOrgs.inviteModal.cancel')}</button>
                 <button type="submit" className="flex-1 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{t('adminOrgs.inviteModal.sendInvitation')}</button>
               </div>
@@ -221,11 +223,11 @@ export default function AdminOrganizations() {
 
       {/* Members Modal */}
       {showMembersModal && selectedOrg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowMembersModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">{selectedOrg.name} - {t('adminOrgs.membersModal.membersSuffix')}</h3>
-              <button onClick={() => setShowMembersModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowMembersModal(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h3 className="text-base md:text-lg font-bold truncate pr-2">{selectedOrg.name} - {t('adminOrgs.membersModal.membersSuffix')}</h3>
+              <button onClick={() => setShowMembersModal(false)} className="p-1.5 flex-shrink-0 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined text-xl">close</span></button>
             </div>
             {loadingMembers ? (
               <div className="flex justify-center py-8"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" /></div>

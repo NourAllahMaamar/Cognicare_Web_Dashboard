@@ -62,15 +62,15 @@ export default function SettingsPage() {
   const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors';
 
   return (
-    <div className="flex flex-col gap-8 max-w-2xl">
+    <div className="flex flex-col gap-6 md:gap-8 max-w-2xl">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">{t('settings.title', 'Settings')}</h2>
-        <p className="text-slate-500 dark:text-text-muted mt-1">{t('settings.subtitle', 'Manage your preferences and account settings.')}</p>
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight">{t('settings.title', 'Settings')}</h2>
+        <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('settings.subtitle', 'Manage your preferences and account settings.')}</p>
       </div>
 
       {/* Profile */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">person</span>
           {t('settings.profile', 'Profile')}
         </h3>
@@ -91,15 +91,15 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">{t('settings.phone', 'Phone')}</label>
             <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })} className={inputCls} placeholder="+1 234 567 890" />
           </div>
-          <button type="submit" disabled={profileLoading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
+          <button type="submit" disabled={profileLoading} className="w-full sm:w-auto px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
             {profileLoading ? t('settings.saving', 'Saving...') : t('settings.saveProfile', 'Save Profile')}
           </button>
         </form>
       </div>
 
       {/* Password */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">lock</span>
           {t('settings.changePassword', 'Change Password')}
         </h3>
@@ -119,15 +119,15 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">{t('settings.confirmPassword', 'Confirm New Password')}</label>
             <input type="password" value={passwordForm.confirmPassword} onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })} className={inputCls} required minLength={6} />
           </div>
-          <button type="submit" disabled={passwordLoading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
+          <button type="submit" disabled={passwordLoading} className="w-full sm:w-auto px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
             {passwordLoading ? t('settings.changing', 'Changing...') : t('settings.updatePassword', 'Update Password')}
           </button>
         </form>
       </div>
 
       {/* Appearance */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">palette</span>
           {t('settings.appearance', 'Appearance')}
         </h3>
@@ -150,8 +150,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Account Info */}
-      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">info</span>
           {t('settings.accountInfo', 'Account Information')}
         </h3>

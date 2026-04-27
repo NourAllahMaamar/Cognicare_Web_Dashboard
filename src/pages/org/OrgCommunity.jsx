@@ -77,27 +77,27 @@ export default function OrgCommunity() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100">
           {t('orgDashboard.community.title', 'Community Feed')}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5 md:mt-1">
           {t('orgDashboard.community.subtitle', 'Connect with families, specialists, and caregivers')}
         </p>
       </div>
 
       {/* Posts List */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         {loading && page === 1 ? (
           <div className="flex justify-center py-12">
             <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700">
+          <div className="text-center p-8 md:p-12 bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700">
             <UsersIcon className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400">
               {t('orgDashboard.community.noPosts', 'No posts yet')}
             </p>
           </div>
@@ -105,50 +105,50 @@ export default function OrgCommunity() {
           posts.map(post => (
             <div 
               key={post._id} 
-              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 p-6 hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 p-4 md:p-6 hover:shadow-md transition-shadow"
             >
               {/* Author Info */}
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-semibold">
+              <div className="flex items-start gap-2 md:gap-3 mb-3 md:mb-4">
+                <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-semibold text-sm md:text-base">
                   {post.authorName?.[0]?.toUpperCase() || 'U'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">
+                  <p className="font-semibold text-sm md:text-base text-slate-900 dark:text-slate-100 truncate">
                     {post.authorName || t('common.anonymous', 'Anonymous')}
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                    <CalendarIcon className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-xs md:text-sm text-slate-500 dark:text-slate-400">
+                    <CalendarIcon className="w-4 h-4 flex-shrink-0" />
                     <span>{formatDate(post.createdAt)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Post Content */}
-              <div className="mb-4">
+              <div className="mb-3 md:mb-4">
                 {post.title && (
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                  <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
                     {post.title}
                   </h3>
                 )}
-                <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
                   {post.content}
                 </p>
               </div>
 
               {/* Post Image */}
               {post.imageUrl && (
-                <div className="mb-4 rounded-lg overflow-hidden">
+                <div className="mb-3 md:mb-4 rounded-lg overflow-hidden">
                   <img 
                     src={post.imageUrl} 
                     alt={post.title || 'Post image'}
-                    className="w-full max-h-96 object-cover"
+                    className="w-full h-48 sm:h-56 md:h-64 object-cover"
                   />
                 </div>
               )}
 
               {/* Post Tags */}
               {post.tags && post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-3 md:mb-4">
                   {post.tags.map((tag, idx) => (
                     <span 
                       key={idx}
@@ -161,23 +161,23 @@ export default function OrgCommunity() {
               )}
 
               {/* Engagement Stats */}
-              <div className="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+              <div className="flex items-center flex-wrap gap-3 md:gap-4 pt-3 md:pt-4 border-t border-slate-100 dark:border-slate-700">
                 <button
                   onClick={() => toggleLike(post._id)}
                   className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
                 >
                   {post.hasLiked ? (
-                    <HeartSolidIcon className="w-5 h-5 text-red-500" />
+                    <HeartSolidIcon className="w-5 h-5 text-red-500 flex-shrink-0" />
                   ) : (
-                    <HeartIcon className="w-5 h-5" />
+                    <HeartIcon className="w-5 h-5 flex-shrink-0" />
                   )}
-                  <span className="text-sm font-medium">
+                  <span className="text-xs md:text-sm font-medium">
                     {post.likesCount || 0}
                   </span>
                 </button>
                 <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                  <ChatBubbleLeftIcon className="w-5 h-5" />
-                  <span className="text-sm font-medium">
+                  <ChatBubbleLeftIcon className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-xs md:text-sm font-medium">
                     {post.commentsCount || 0}
                   </span>
                 </div>

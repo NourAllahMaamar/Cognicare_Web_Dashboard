@@ -100,7 +100,7 @@ export default function PECSBoardCreator() {
     setLoading(false);
   };
 
-  const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
+  const inputCls = 'w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
@@ -112,11 +112,11 @@ export default function PECSBoardCreator() {
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-xl font-bold">{t('pecsCreator.title')}</h1>
-              <p className="text-xs text-slate-500">{t('pecsCreator.subtitle')}</p>
+              <h1 className="text-xl md:text-2xl font-bold">{t('pecsCreator.title')}</h1>
+              <p className="text-sm text-slate-500">{t('pecsCreator.subtitle')}</p>
             </div>
           </div>
-          <button onClick={handleSave} disabled={loading} className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
+          <button onClick={handleSave} disabled={loading} className="w-full sm:w-auto px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors disabled:opacity-50">
             {loading ? t('pecsCreator.saving') : t('pecsCreator.saveBoard')}
           </button>
         </div>
@@ -140,13 +140,13 @@ export default function PECSBoardCreator() {
           {/* Left Settings Panel */}
           <div className="lg:col-span-2 space-y-4">
             {/* Title */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <label className="block text-sm font-bold mb-2">{t('pecsCreator.boardTitle')}</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder={t('pecsCreator.titlePlaceholder')} className={inputCls} />
             </div>
 
             {/* Phase Selector */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <label className="block text-sm font-bold mb-2">{t('pecsCreator.phase')}</label>
               <select value={selectedPhase} onChange={e => setSelectedPhase(Number(e.target.value))} className={inputCls}>
                 {PECS_PHASES.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -167,7 +167,7 @@ export default function PECSBoardCreator() {
             </div>
 
             {/* Add Card */}
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
               <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">add_photo_alternate</span>
                 {t('pecsCreator.addCard')}
@@ -192,12 +192,12 @@ export default function PECSBoardCreator() {
 
           {/* Right: Board */}
           <div className="lg:col-span-3">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
               <h3 className="text-lg font-bold mb-1">{t('pecsCreator.board')}</h3>
               <p className="text-xs text-slate-400 mb-4">{items.length} {t('pecsCreator.cards')} "" {t('pecsCreator.trialInstructions')}</p>
 
               {items.length === 0 ? (
-                <div className="p-12 text-center text-slate-400">
+                <div className="p-8 md:p-12 text-center text-slate-400">
                   <span className="material-symbols-outlined text-4xl mb-2">grid_view</span>
                   <p>{t('pecsCreator.emptyState')}</p>
                 </div>
