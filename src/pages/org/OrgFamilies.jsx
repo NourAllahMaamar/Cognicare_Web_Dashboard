@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
-import * as XLSX from 'xlsx';
+import { exportTemplate, exportJson } from '../../utils/excelExport';
 
 export default function OrgFamilies() {
   const { t, i18n } = useTranslation();
@@ -184,7 +184,7 @@ export default function OrgFamilies() {
   const markDeleteChild = (child) => { setChildrenToDelete([...childrenToDelete, child._id]); setExistingChildren(existingChildren.filter(c => c._id !== child._id)); };
 
   // â”€â”€ Import/Export â”€â”€
-  const downloadTemplate = (type) => {
+  const downloadTemplate = async (type) => {
     let headers;
     let filename;
     if (type === 'families_children') {
@@ -194,23 +194,17 @@ export default function OrgFamilies() {
       headers = ['Full Name', 'Email', 'Phone', 'Password'];
       filename = 'cognicare_families_template.xlsx';
     }
-    const ws = XLSX.utils.aoa_to_sheet([headers]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Template');
-    XLSX.writeFile(wb, filename);
+    await exportTemplate(headers, 'Template', filename);
     setShowDropdown(false);
   };
 
-  const exportData = () => {
+  const exportData = async () => {
     const data = families.map(f => ({
       'Full Name': f.fullName, Email: f.email, Phone: f.phone || '',
       'Children Count': f.childrenCount ?? allChildren.filter(c => childBelongsToFamily(c, f._id)).length,
       Joined: dateFmt(f.createdAt)
     }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Families');
-    XLSX.writeFile(wb, 'families_export.xlsx');
+    await exportJson(data, 'Families', 'families_export.xlsx');
     setShowDropdown(false);
   };
 
