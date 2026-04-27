@@ -59,26 +59,31 @@ export default function OrgChildren() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('orgDashboard.tabs.children', 'Children')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{children.length} {t('orgDashboard.childrenRegistered', 'children registered')}</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('orgDashboard.tabs.children', 'Children')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{children.length} {t('orgDashboard.childrenRegistered', 'children registered')}</p>
         </div>
-        <div className="relative">
-          <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
-            <span className="material-symbols-outlined text-lg">import_export</span> {t('common.importExport', 'Import/Export')}
+        <div className="relative w-full sm:w-auto">
+          <button onClick={() => setShowDropdown(!showDropdown)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
+            <span className="material-symbols-outlined text-lg">import_export</span>
+            <span className="hidden sm:inline">{t('common.importExport', 'Import/Export')}</span>
+            <span className="sm:hidden">Import/Export</span>
           </button>
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
-              <button onClick={exportChildren} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Children</button>
-              <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
-            </div>
+            <>
+              <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
+              <div className="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 sm:w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
+                <button onClick={exportChildren} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Children</button>
+                <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
+              </div>
+            </>
           )}
         </div>
       </div>
 
-      <div className="relative max-w-md">
+      <div className="relative w-full md:max-w-md">
         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('common.search', 'Search children...')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
@@ -86,12 +91,12 @@ export default function OrgChildren() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
+        <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">child_care</span>
-          <p>{t('orgDashboard.noChildren', 'No children found')}</p>
+          <p className="text-sm md:text-base">{t('orgDashboard.noChildren', 'No children found')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
           {filtered.map(child => (
             <div key={child._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <div className="flex items-start gap-3 mb-3">

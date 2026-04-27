@@ -177,18 +177,22 @@ export default function AdminAnalytics() {
     : 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200';
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('adminAnalytics.title')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminAnalytics.subtitle')}</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('adminAnalytics.title')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('adminAnalytics.subtitle')}</p>
         </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-            <span className="material-symbols-outlined text-lg">calendar_today</span> {t('adminAnalytics.last30Days')}
+        <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
+          <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <span className="material-symbols-outlined text-lg flex-shrink-0">calendar_today</span>
+            <span className="hidden sm:inline">{t('adminAnalytics.last30Days')}</span>
+            <span className="sm:hidden">Last 30 Days</span>
           </button>
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
-            <span className="material-symbols-outlined text-lg">download</span> {t('adminAnalytics.exportReport')}
+          <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+            <span className="material-symbols-outlined text-lg flex-shrink-0">download</span>
+            <span className="hidden sm:inline">{t('adminAnalytics.exportReport')}</span>
+            <span className="sm:hidden">Export</span>
           </button>
         </div>
       </div>
@@ -197,19 +201,19 @@ export default function AdminAnalytics() {
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
             <StatCard label={t('adminAnalytics.totalUsers')} value={stats.users.toLocaleString()} icon="group" trend="+12.5%" />
             <StatCard label={t('adminAnalytics.organizations')} value={stats.orgs.toLocaleString()} icon="corporate_fare" trend="+5.2%" />
             <StatCard label={t('adminAnalytics.families')} value={stats.families.toLocaleString()} icon="family_restroom" trend="+8.1%" />
             <StatCard label={t('adminAnalytics.pendingReviews')} value={stats.pending.toLocaleString()} icon="pending_actions" trend={stats.pending > 0 ? `${stats.pending} ${t('adminAnalytics.pending')}` : t('adminAnalytics.clear')} />
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-            <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <div className="flex items-center justify-between mb-4">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4">
+            <div className="xl:col-span-2 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-4 gap-2">
                 <div>
-                  <h3 className="font-bold">{t('adminAnalytics.userGrowth')}</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">{t('adminAnalytics.userGrowthSubtitle')}</p>
+                  <h3 className="text-sm md:text-base font-bold">{t('adminAnalytics.userGrowth')}</h3>
+                  <p className="text-[10px] md:text-xs text-slate-400 mt-0.5">{t('adminAnalytics.userGrowthSubtitle')}</p>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
                   <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary" /> {t('adminAnalytics.newUsers')}</span>
@@ -237,14 +241,14 @@ export default function AdminAnalytics() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold">{t('adminAnalytics.activityFeed')}</h3>
-                <button className="text-xs text-primary font-bold hover:underline">{t('adminAnalytics.viewAll')}</button>
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+              <div className="flex items-center justify-between mb-3 md:mb-4">
+                <h3 className="text-sm md:text-base font-bold">{t('adminAnalytics.activityFeed')}</h3>
+                <button className="text-[10px] md:text-xs text-primary font-bold hover:underline">{t('adminAnalytics.viewAll')}</button>
               </div>
               <div className="relative">
                 <div className="absolute start-[11px] top-0 bottom-0 w-0.5 bg-slate-100 dark:bg-slate-800" />
-                <div className="space-y-5">
+                <div className="space-y-4 md:space-y-5">
                   {[
                     { color: 'bg-primary', title: t('adminAnalytics.activities.newOrg.title'), desc: t('adminAnalytics.activities.newOrg.desc'), time: t('adminAnalytics.activities.newOrg.time') },
                     { color: 'bg-amber-500', title: t('adminAnalytics.activities.highLoad.title'), desc: t('adminAnalytics.activities.highLoad.desc'), time: t('adminAnalytics.activities.highLoad.time') },
@@ -252,36 +256,36 @@ export default function AdminAnalytics() {
                     { color: 'bg-blue-500', title: t('adminAnalytics.activities.report.title'), desc: t('adminAnalytics.activities.report.desc'), time: t('adminAnalytics.activities.report.time') },
                     { color: 'bg-purple-500', title: t('adminAnalytics.activities.feature.title'), desc: t('adminAnalytics.activities.feature.desc'), time: t('adminAnalytics.activities.feature.time') },
                   ].map((item, index) => (
-                    <div key={index} className="relative ps-8">
-                      <div className={`absolute start-0 top-1 w-6 h-6 rounded-full ${item.color} ring-4 ring-white dark:ring-surface-dark flex items-center justify-center`}>
-                        <div className="w-2 h-2 rounded-full bg-white" />
+                    <div key={index} className="relative ps-6 md:ps-8">
+                      <div className={`absolute start-0 top-1 w-5 h-5 md:w-6 md:h-6 rounded-full ${item.color} ring-4 ring-white dark:ring-surface-dark flex items-center justify-center flex-shrink-0`}>
+                        <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white" />
                       </div>
-                      <p className="font-bold text-sm">{item.title}</p>
-                      <p className="text-xs text-slate-400">{item.desc}</p>
-                      <p className="text-xs text-slate-300 dark:text-slate-600 mt-0.5">{item.time}</p>
+                      <p className="font-bold text-xs md:text-sm truncate">{item.title}</p>
+                      <p className="text-[10px] md:text-xs text-slate-400 truncate">{item.desc}</p>
+                      <p className="text-[10px] md:text-xs text-slate-300 dark:text-slate-600 mt-0.5">{item.time}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20">
-                <p className="font-bold text-sm">{t('adminAnalytics.systemHealth')}</p>
+              <div className="mt-4 md:mt-6 p-3 md:p-4 rounded-xl bg-primary/5 border border-primary/20">
+                <p className="font-bold text-xs md:text-sm">{t('adminAnalytics.systemHealth')}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="relative flex h-2.5 w-2.5">
+                  <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5 flex-shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-success" />
                   </span>
-                  <span className="text-xs font-bold text-success">{t('adminAnalytics.allSystemsOperational')}</span>
+                  <span className="text-[10px] md:text-xs font-bold text-success">{t('adminAnalytics.allSystemsOperational')}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <h3 className="font-bold mb-4">{t('adminAnalytics.planDistribution')}</h3>
-              <div className="flex items-center gap-8">
-                <div className="relative w-32 h-32 flex-shrink-0">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+              <h3 className="text-sm md:text-base font-bold mb-3 md:mb-4">{t('adminAnalytics.planDistribution')}</h3>
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+                <div className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0">
                   <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
                     {(() => {
                       let offset = 0;
@@ -297,28 +301,28 @@ export default function AdminAnalytics() {
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <p className="text-lg font-black">{(stats.families * 1.5).toFixed(0)}</p>
-                      <p className="text-[10px] text-slate-400">{t('adminAnalytics.total')}</p>
+                      <p className="text-base md:text-lg font-black">{(stats.families * 1.5).toFixed(0)}</p>
+                      <p className="text-[10px] md:text-xs text-slate-400">{t('adminAnalytics.total')}</p>
                     </div>
                   </div>
                 </div>
-                <div className="space-y-3 flex-1">
+                <div className="space-y-2 md:space-y-3 flex-1 w-full">
                   {planData.map((seg) => (
                     <div key={seg.name} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: seg.color }} />
-                        <span className="text-sm font-medium">{seg.name}</span>
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: seg.color }} />
+                        <span className="text-xs md:text-sm font-medium truncate">{seg.name}</span>
                       </div>
-                      <span className="text-sm font-bold">{seg.pct}%</span>
+                      <span className="text-xs md:text-sm font-bold flex-shrink-0">{seg.pct}%</span>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-              <h3 className="font-bold mb-4">{t('adminAnalytics.usersByRole')}</h3>
-              <div className="space-y-4">
+            <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+              <h3 className="text-sm md:text-base font-bold mb-3 md:mb-4">{t('adminAnalytics.usersByRole')}</h3>
+              <div className="space-y-3 md:space-y-4">
                 {(roleData.length > 0 ? roleData : [
                   { role: 'admin', count: 2, pct: 5, color: '#2563EB' },
                   { role: 'orgLeader', count: 8, pct: 15, color: '#7c3aed' },

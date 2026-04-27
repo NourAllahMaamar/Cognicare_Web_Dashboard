@@ -52,20 +52,20 @@ export default function OrgSpecialistDetail() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       {/* Back + Header */}
       <div>
-        <button onClick={() => navigate('/org/dashboard/staff')} className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-primary transition-colors mb-4">
-          <span className="material-symbols-outlined text-lg">arrow_back</span> {t('orgSpecialist.backToStaff')}
+        <button onClick={() => navigate('/org/dashboard/staff')} className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-primary transition-colors mb-3 md:mb-4">
+          <span className="material-symbols-outlined text-lg flex-shrink-0">arrow_back</span> {t('orgSpecialist.backToStaff')}
         </button>
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">smart_toy</span>
+        <div className="flex items-center gap-3 md:gap-4">
+          <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+            <span className="material-symbols-outlined text-2xl md:text-3xl">smart_toy</span>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold">{t('orgSpecialist.title')}</h2>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-xl md:text-2xl font-bold truncate">{t('orgSpecialist.title')}</h2>
             {specialistInfo && (
-              <p className="text-slate-500 dark:text-text-muted mt-0.5">
+              <p className="text-xs md:text-sm text-slate-500 dark:text-text-muted mt-0.5 truncate">
                 {specialistInfo.name} • <span className="capitalize">{specialistInfo.role?.replace(/_/g, ' ')}</span>
                 {specialistInfo.email && <span> • {specialistInfo.email}</span>}
               </p>
@@ -76,23 +76,24 @@ export default function OrgSpecialistDetail() {
 
       {error && (
         <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium flex items-center gap-2">
-          <span className="material-symbols-outlined text-lg">warning</span>{error}
+          <span className="material-symbols-outlined text-lg flex-shrink-0">warning</span>
+          <span className="truncate">{error}</span>
         </div>
       )}
 
       {/* Stat Cards */}
       {statCards.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {statCards.map((s, i) => (
-            <div key={i} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-              <div className="flex items-center gap-3 mb-3">
-                <div className={`w-10 h-10 rounded-xl ${s.bg} ${s.text} flex items-center justify-center`}>
-                  <span className="material-symbols-outlined">{s.icon}</span>
+            <div key={i} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
+              <div className="flex items-center gap-2 md:gap-3 mb-3">
+                <div className={`w-9 h-9 md:w-10 md:h-10 flex-shrink-0 rounded-xl ${s.bg} ${s.text} flex items-center justify-center`}>
+                  <span className="material-symbols-outlined text-lg md:text-xl">{s.icon}</span>
                 </div>
-                <span className="text-sm text-slate-500 dark:text-text-muted font-medium">{s.label}</span>
+                <span className="text-xs md:text-sm text-slate-500 dark:text-text-muted font-medium truncate">{s.label}</span>
               </div>
-              <p className="text-2xl font-black">{s.value}</p>
-              {s.sub && <p className="text-xs text-slate-400 mt-1">{s.sub}</p>}
+              <p className="text-xl md:text-2xl font-black">{s.value}</p>
+              {s.sub && <p className="text-[10px] md:text-xs text-slate-400 mt-1 truncate">{s.sub}</p>}
             </div>
           ))}
         </div>
@@ -100,16 +101,16 @@ export default function OrgSpecialistDetail() {
 
       {/* Plans by Type */}
       {summary?.planCountByType && Object.keys(summary.planCountByType).length > 0 && (
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">category</span>
-            {t('orgSpecialist.plansByType')}
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary flex-shrink-0">category</span>
+            <span className="truncate">{t('orgSpecialist.plansByType')}</span>
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
             {Object.entries(summary.planCountByType).map(([type, count]) => (
-              <div key={type} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 text-center">
-                <p className="text-2xl font-black text-primary">{count}</p>
-                <p className="text-xs text-slate-500 mt-1 capitalize">{type.replace(/_/g, ' ')}</p>
+              <div key={type} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 md:p-4 text-center">
+                <p className="text-xl md:text-2xl font-black text-primary">{count}</p>
+                <p className="text-[10px] md:text-xs text-slate-500 mt-1 capitalize truncate">{type.replace(/_/g, ' ')}</p>
               </div>
             ))}
           </div>
@@ -118,26 +119,26 @@ export default function OrgSpecialistDetail() {
 
       {/* Feedback Details */}
       {summary?.totalFeedback != null && summary.totalFeedback > 0 && (
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">rate_review</span>
-            {t('orgSpecialist.feedbackDetails')}
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary flex-shrink-0">rate_review</span>
+            <span className="truncate">{t('orgSpecialist.feedbackDetails')}</span>
           </h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3 md:gap-4">
             {[
             { label: t('orgSpecialist.approved'), value: summary.approvedCount ?? 0, color: 'text-success' },
               { label: t('orgSpecialist.modified'), value: summary.modifiedCount ?? 0, color: 'text-warning' },
               { label: t('orgSpecialist.dismissed'), value: summary.dismissedCount ?? 0, color: 'text-error' },
             ].map(fb => (
-              <div key={fb.label} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 text-center">
-                <p className={`text-2xl font-black ${fb.color}`}>{fb.value}</p>
-                <p className="text-xs text-slate-500 mt-1">{fb.label}</p>
+              <div key={fb.label} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 md:p-4 text-center">
+                <p className={`text-xl md:text-2xl font-black ${fb.color}`}>{fb.value}</p>
+                <p className="text-[10px] md:text-xs text-slate-500 mt-1 truncate">{fb.label}</p>
               </div>
             ))}
           </div>
           {/* Progress bar */}
-          <div className="mt-4">
-            <div className="flex h-3 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+          <div className="mt-3 md:mt-4">
+            <div className="flex h-2 md:h-3 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
               {summary.totalFeedback > 0 && (
                 <>
                   <div className="bg-success transition-all" style={{ width: `${((summary.approvedCount || 0) / summary.totalFeedback) * 100}%` }} />
@@ -146,10 +147,10 @@ export default function OrgSpecialistDetail() {
                 </>
               )}
             </div>
-            <div className="flex justify-between mt-2 text-xs text-slate-400">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success inline-block" /> {t('orgSpecialist.approved')}</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning inline-block" /> {t('orgSpecialist.modified')}</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-error inline-block" /> {t('orgSpecialist.dismissed')}</span>
+            <div className="flex flex-wrap justify-between gap-2 mt-2 text-[10px] md:text-xs text-slate-400">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success inline-block flex-shrink-0" /> {t('orgSpecialist.approved')}</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning inline-block flex-shrink-0" /> {t('orgSpecialist.modified')}</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-error inline-block flex-shrink-0" /> {t('orgSpecialist.dismissed')}</span>
             </div>
           </div>
         </div>
@@ -157,9 +158,9 @@ export default function OrgSpecialistDetail() {
 
       {/* Empty state */}
       {!summary && !error && (
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-12 text-center">
-          <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3">analytics</span>
-          <p className="text-slate-500 dark:text-text-muted">{t('orgSpecialist.noData')}</p>
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-8 md:p-12 text-center">
+          <span className="material-symbols-outlined text-4xl md:text-5xl text-slate-300 dark:text-slate-600 mb-3">analytics</span>
+          <p className="text-sm md:text-base text-slate-500 dark:text-text-muted">{t('orgSpecialist.noData')}</p>
         </div>
       )}
     </div>

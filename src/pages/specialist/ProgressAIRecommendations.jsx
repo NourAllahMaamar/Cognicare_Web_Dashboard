@@ -146,8 +146,8 @@ export default function ProgressAIRecommendations() {
                             <span className="material-symbols-outlined">arrow_back</span>
                         </button>
                         <div>
-                            <h1 className="text-xl font-bold">{t('progressAI.title')}</h1>
-                            <p className="text-sm text-slate-500 dark:text-text-muted">{t('progressAI.childId')}: {childId}</p>
+                            <h1 className="text-xl md:text-2xl font-bold">{t('progressAI.title')}</h1>
+                            <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('progressAI.childId')}: {childId}</p>
                         </div>
                     </div>
                 </div>
@@ -173,8 +173,8 @@ export default function ProgressAIRecommendations() {
 
             {!loading && data && (
                 <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
-                    <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-                        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+                        <h2 className="text-base md:text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary">summarize</span>
                             {t('progressAI.summary')}
                         </h2>
@@ -182,8 +182,8 @@ export default function ProgressAIRecommendations() {
                     </section>
 
                     {data.milestones && (
-                        <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-                            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                        <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+                            <h2 className="text-base md:text-lg font-bold mb-4 flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">flag</span>
                                 {t('progressAI.milestones')}
                             </h2>
@@ -192,8 +192,8 @@ export default function ProgressAIRecommendations() {
                     )}
 
                     {data.predictions && (
-                        <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-                            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                        <section className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+                            <h2 className="text-base md:text-lg font-bold mb-4 flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">insights</span>
                                 {t('progressAI.predictions')}
                             </h2>

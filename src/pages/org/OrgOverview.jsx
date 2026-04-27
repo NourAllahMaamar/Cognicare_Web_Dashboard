@@ -180,11 +180,11 @@ export default function OrgOverview() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold">{t('orgDashboard.tabs.overview', 'Organization Overview')}</h2>
-        <p className="text-slate-500 dark:text-text-muted mt-1">{t('orgDashboard.welcome', 'Welcome to your organization dashboard')}</p>
+        <h2 className="text-xl md:text-2xl font-bold">{t('orgDashboard.tabs.overview', 'Organization Overview')}</h2>
+        <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('orgDashboard.welcome', 'Welcome to your organization dashboard')}</p>
       </div>
 
       {loading ? (
@@ -194,7 +194,7 @@ export default function OrgOverview() {
       ) : (
         <>
           {/* ─── Stat Cards ─── */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             <StatCard label={t('orgDashboard.stats.totalStaff', 'Total Staff')} value={staff.length} icon="groups" />
             <StatCard label={t('orgDashboard.stats.totalFamilies', 'Families')} value={families.length} icon="family_restroom" />
             <StatCard label={t('orgDashboard.stats.totalChildren', 'Children')} value={children.length} icon="child_care" />
@@ -202,7 +202,7 @@ export default function OrgOverview() {
           </div>
 
           {/* ─── Role Breakdown ─── */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 md:gap-3">
             {[
               { role: 'psychologist', icon: 'psychology', label: t('roles.psychologist', 'Psychologists') },
               { role: 'speech_therapist', icon: 'record_voice_over', label: t('roles.speechTherapist', 'Speech Therapists') },
@@ -211,10 +211,10 @@ export default function OrgOverview() {
               { role: 'careProvider', icon: 'volunteer_activism', label: t('roles.caregiver', 'Caregivers') },
               { role: 'other', icon: 'person', label: t('roles.other', 'Other') },
             ].map(r => (
-              <div key={r.role} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center shadow-sm hover:shadow-lg transition-all hover:scale-105">
-                <span className="material-symbols-outlined text-2xl text-primary mb-1">{r.icon}</span>
-                <p className="text-2xl font-black">{countRole(r.role)}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{r.label}</p>
+              <div key={r.role} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-3 md:p-4 text-center shadow-sm hover:shadow-lg transition-all hover:scale-105">
+                <span className="material-symbols-outlined text-xl md:text-2xl text-primary mb-1 flex-shrink-0">{r.icon}</span>
+                <p className="text-xl md:text-2xl font-black">{countRole(r.role)}</p>
+                <p className="text-[10px] md:text-xs text-slate-500 mt-0.5 truncate">{r.label}</p>
               </div>
             ))}
           </div>
@@ -222,35 +222,35 @@ export default function OrgOverview() {
           {/* ═══════════════════════════════════════════════════════
               PROGRESS AI SECTION
              ═══════════════════════════════════════════════════════ */}
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-md p-6 transition-all">
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-md p-4 md:p-6 transition-all">
             {/* Section header */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
-                <span className="material-symbols-outlined text-xl">psychology</span>
+            <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex-shrink-0">
+                <span className="material-symbols-outlined text-lg md:text-xl">psychology</span>
               </div>
-              <div>
-                <h3 className="font-bold text-lg">{t('orgDashboard.ai.title', 'Progress AI Insights')}</h3>
-                <p className="text-xs text-slate-500 dark:text-text-muted">{t('orgDashboard.ai.subtitle', 'Select a specialist to view AI-powered performance analytics')}</p>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-base md:text-lg truncate">{t('orgDashboard.ai.title', 'Progress AI Insights')}</h3>
+                <p className="text-[10px] md:text-xs text-slate-500 dark:text-text-muted truncate">{t('orgDashboard.ai.subtitle', 'Select a specialist to view AI-powered performance analytics')}</p>
               </div>
             </div>
 
             {/* ─── Search by Name ─── */}
-            <div className="relative mb-6" ref={searchRef}>
-              <div className="flex gap-3">
+            <div className="relative mb-4 md:mb-6" ref={searchRef}>
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
                 <div className="relative flex-1">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg flex-shrink-0">search</span>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={e => { setSearchQuery(e.target.value); setShowDropdown(true); setSelectedSpecialist(null); }}
                     onFocus={() => setShowDropdown(true)}
                     placeholder={t('orgDashboard.ai.searchPlaceholder', 'Search specialist by name...')}
-                    className="w-full ps-10 pe-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all outline-none"
+                    className="w-full ps-10 pe-4 py-2 md:py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all outline-none"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => { setSearchQuery(''); setSelectedSpecialist(null); setAiSummary(null); setAiError(''); }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 flex-shrink-0"
                     >
                       <span className="material-symbols-outlined text-lg">close</span>
                     </button>
@@ -260,17 +260,19 @@ export default function OrgOverview() {
                   <button
                     onClick={() => fetchAiSummary(selectedSpecialist)}
                     disabled={aiLoading}
-                    className="px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 transition-all flex items-center gap-2"
+                    className="w-full sm:w-auto px-4 md:px-5 py-2 md:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
-                    {aiLoading ? t('common.loading', 'Loading...') : t('orgDashboard.ai.analyze', 'Analyze')}
+                    <span className="material-symbols-outlined text-sm flex-shrink-0">auto_awesome</span>
+                    <span>{aiLoading ? t('common.loading', 'Loading...') : t('orgDashboard.ai.analyze', 'Analyze')}</span>
                   </button>
                 )}
               </div>
 
               {/* Dropdown */}
               {showDropdown && !selectedSpecialist && (
-                <div className="absolute z-20 top-full mt-1 w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                <>
+                  <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
+                  <div className="absolute z-20 top-full mt-1 right-0 left-0 sm:left-0 sm:right-auto w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
                   {filteredSpecialists.length === 0 ? (
                     <div className="px-4 py-6 text-center text-sm text-slate-400">
                       <span className="material-symbols-outlined text-3xl mb-2 block">person_search</span>
@@ -281,20 +283,21 @@ export default function OrgOverview() {
                       <button
                         key={s._id}
                         onClick={() => fetchAiSummary(s)}
-                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-left border-b border-slate-100 dark:border-slate-700/50 last:border-0"
+                        className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-left border-b border-slate-100 dark:border-slate-700/50 last:border-0"
                       >
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        <div className="w-8 h-8 md:w-9 md:h-9 flex-shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs md:text-sm">
                           {(s.fullName || s.email || '?')[0].toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="font-medium text-sm truncate">{s.fullName || s.email}</p>
-                          <p className="text-xs text-slate-400 truncate">{roleLabel(s.role)}{s.email ? ` · ${s.email}` : ''}</p>
+                          <p className="font-medium text-xs md:text-sm truncate">{s.fullName || s.email}</p>
+                          <p className="text-[10px] md:text-xs text-slate-400 truncate">{roleLabel(s.role)}{s.email ? ` · ${s.email}` : ''}</p>
                         </div>
-                        <span className="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                        <span className="material-symbols-outlined text-slate-300 text-lg flex-shrink-0">chevron_right</span>
                       </button>
                     ))
                   )}
                 </div>
+                </>
               )}
             </div>
 
@@ -308,46 +311,46 @@ export default function OrgOverview() {
 
             {/* Loading skeleton */}
             {aiLoading && (
-              <div className="space-y-4 animate-pulse">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-3 md:space-y-4 animate-pulse">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                    <div key={i} className="h-20 md:h-24 bg-slate-100 dark:bg-slate-800 rounded-xl" />
                   ))}
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-xl" />
-                  <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
+                  <div className="h-48 md:h-64 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                  <div className="h-48 md:h-64 bg-slate-100 dark:bg-slate-800 rounded-xl" />
                 </div>
               </div>
             )}
 
             {/* ─── AI Summary Results ─── */}
             {aiSummary && !aiLoading && (
-              <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500">
                 {/* Selected specialist badge */}
                 {selectedSpecialist && (
-                  <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-300 dark:border-indigo-800">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                  <div className="flex items-center gap-2 md:gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-300 dark:border-indigo-800">
+                    <div className="w-9 h-9 md:w-10 md:h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm md:text-base">
                       {(selectedSpecialist.fullName || '?')[0].toUpperCase()}
                     </div>
-                    <div>
-                      <p className="font-semibold text-sm">{selectedSpecialist.fullName}</p>
-                      <p className="text-xs text-slate-500">{roleLabel(selectedSpecialist.role)}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-xs md:text-sm truncate">{selectedSpecialist.fullName}</p>
+                      <p className="text-[10px] md:text-xs text-slate-500 truncate">{roleLabel(selectedSpecialist.role)}</p>
                     </div>
                   </div>
                 )}
 
                 {/* KPI Cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/20 border border-indigo-300 dark:border-indigo-700/30 shadow-sm">
-                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-indigo-200 dark:text-indigo-800/40">description</span>
-                    <p className="text-3xl font-black text-indigo-600 dark:text-indigo-400">{aiSummary.totalPlans || 0}</p>
-                    <p className="text-xs font-medium text-indigo-500/80 mt-1">{t('orgDashboard.ai.totalPlans', 'Total Plans')}</p>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                  <div className="relative overflow-hidden p-4 md:p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/20 border border-indigo-300 dark:border-indigo-700/30 shadow-sm">
+                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-4xl md:text-5xl text-indigo-200 dark:text-indigo-800/40">description</span>
+                    <p className="text-2xl md:text-3xl font-black text-indigo-600 dark:text-indigo-400">{aiSummary.totalPlans || 0}</p>
+                    <p className="text-[10px] md:text-xs font-medium text-indigo-500/80 mt-1">{t('orgDashboard.ai.totalPlans', 'Total Plans')}</p>
                   </div>
-                  <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/20 border border-emerald-300 dark:border-emerald-700/30 shadow-sm">
-                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-emerald-200 dark:text-emerald-800/40">child_care</span>
-                    <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{aiSummary.childrenCount || 0}</p>
-                    <p className="text-xs font-medium text-emerald-500/80 mt-1">{t('orgDashboard.ai.childrenServed', 'Children Served')}</p>
+                  <div className="relative overflow-hidden p-4 md:p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/20 border border-emerald-300 dark:border-emerald-700/30 shadow-sm">
+                    <span className="material-symbols-outlined absolute -top-1 -right-1 text-4xl md:text-5xl text-emerald-200 dark:text-emerald-800/40">child_care</span>
+                    <p className="text-2xl md:text-3xl font-black text-emerald-600 dark:text-emerald-400">{aiSummary.childrenCount || 0}</p>
+                    <p className="text-[10px] md:text-xs font-medium text-emerald-500/80 mt-1">{t('orgDashboard.ai.childrenServed', 'Children Served')}</p>
                   </div>
                   <div className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/30 dark:to-cyan-800/20 border border-cyan-300 dark:border-cyan-700/30 shadow-sm">
                     <span className="material-symbols-outlined absolute -top-1 -right-1 text-5xl text-cyan-200 dark:text-cyan-800/40">thumb_up</span>

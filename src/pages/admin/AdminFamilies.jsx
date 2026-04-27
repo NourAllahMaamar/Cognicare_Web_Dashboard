@@ -209,14 +209,16 @@ export default function AdminFamilies() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('adminFamilies.title')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminFamilies.count', { count: families.length })}</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('adminFamilies.title')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('adminFamilies.count', { count: families.length })}</p>
         </div>
-        <button onClick={openAddFamily} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
-          <span className="material-symbols-outlined text-lg">add</span> {t('adminFamilies.addFamily')}
+        <button onClick={openAddFamily} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
+          <span className="material-symbols-outlined text-lg flex-shrink-0">add</span>
+          <span className="hidden sm:inline">{t('adminFamilies.addFamily')}</span>
+          <span className="sm:hidden">Add Family</span>
         </button>
       </div>
 
@@ -224,45 +226,45 @@ export default function AdminFamilies() {
       {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium">{success}</div>}
 
       {/* Search */}
-      <div className="relative max-w-md">
-        <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('adminFamilies.searchPlaceholder')} className="w-full ps-10 pe-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+      <div className="relative w-full md:max-w-md">
+        <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg flex-shrink-0">search</span>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('adminFamilies.searchPlaceholder')} className="w-full ps-10 pe-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
       {/* Families Grid */}
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
-          <span className="material-symbols-outlined text-4xl mb-2">family_restroom</span>
-          <p>{t('adminFamilies.noFamiliesFound')}</p>
+        <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
+          <span className="material-symbols-outlined text-4xl mb-2 flex-shrink-0">family_restroom</span>
+          <p className="text-sm md:text-base">{t('adminFamilies.noFamiliesFound')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
           {filtered.map(fam => (
-            <div key={fam._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+            <div key={fam._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 hover:shadow-lg transition-shadow">
+              <div className="flex items-start justify-between mb-3 gap-2">
+                <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg flex-shrink-0">
                     {(fam.fullName || '?')[0].toUpperCase()}
                   </div>
-                  <div>
-                    <p className="font-bold">{fam.fullName}</p>
-                    <p className="text-xs text-slate-500">{fam.email}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-sm md:text-base truncate">{fam.fullName}</p>
+                    <p className="text-xs md:text-sm text-slate-500 truncate">{fam.email}</p>
                   </div>
                 </div>
                 <StatusBadge status={t('adminUsers.roleFamily')} />
               </div>
 
-              <div className="space-y-2 text-sm text-slate-500 dark:text-slate-400 mb-4">
-                {fam.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">phone</span>{fam.phone}</p>}
-                <p className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">corporate_fare</span>
-                  {fam.organization?.name || fam.organization?.organizationName || t('adminFamilies.noOrganization')}
+              <div className="space-y-2 text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-3 md:mb-4">
+                {fam.phone && <p className="flex items-center gap-2 truncate"><span className="material-symbols-outlined text-sm flex-shrink-0">phone</span><span className="truncate">{fam.phone}</span></p>}
+                <p className="flex items-center gap-2 truncate">
+                  <span className="material-symbols-outlined text-sm flex-shrink-0">corporate_fare</span>
+                  <span className="truncate">{fam.organization?.name || fam.organization?.organizationName || t('adminFamilies.noOrganization')}</span>
                 </p>
-                <p className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">child_care</span>
-                  {t('adminFamilies.childrenCount', { count: allChildren.filter(c => childBelongsToFamily(c, fam._id)).length })}
+                <p className="flex items-center gap-2 truncate">
+                  <span className="material-symbols-outlined text-sm flex-shrink-0">child_care</span>
+                  <span className="truncate">{t('adminFamilies.childrenCount', { count: allChildren.filter(c => childBelongsToFamily(c, fam._id)).length })}</span>
                 </p>
               </div>
 
@@ -281,35 +283,35 @@ export default function AdminFamilies() {
 
       {/* Add/Edit Family Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">{editingFamily ? t('adminFamilies.editFamilyTitle') : t('adminFamilies.addFamilyTitle')}</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowModal(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h3 className="text-base md:text-lg font-bold">{editingFamily ? t('adminFamilies.editFamilyTitle') : t('adminFamilies.addFamilyTitle')}</h3>
               <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.fullName')}</label>
-                <input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.email')}</label>
-                <input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.phone')}</label>
-                <input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
               {!editingFamily && (
                 <div>
                   <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.password')}</label>
-                  <input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} placeholder={t('adminFamilies.passwordPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} placeholder={t('adminFamilies.passwordPlaceholder')} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
               )}
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('adminFamilies.organization')}</label>
-                <select value={familyForm.organizationId} onChange={e => setFamilyForm({...familyForm, organizationId: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
+                <select value={familyForm.organizationId} onChange={e => setFamilyForm({...familyForm, organizationId: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
                   <option value="">{t('adminFamilies.noOrgOption')}</option>
                   {organizations.map(org => <option key={org._id} value={org._id}>{org.name || org.organizationName}</option>)}
                 </select>
@@ -326,8 +328,8 @@ export default function AdminFamilies() {
 
       {/* Assign Org Modal */}
       {showAssignOrg && assignFamily && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowAssignOrg(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowAssignOrg(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{t('adminFamilies.assignOrgTitle')}</h3>
               <button onClick={() => setShowAssignOrg(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
@@ -348,8 +350,8 @@ export default function AdminFamilies() {
 
       {/* Children Modal */}
       {showChildren && selectedFamily && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowChildren(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowChildren(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{t('adminFamilies.childrenOfTitle', { name: selectedFamily.fullName })}</h3>
               <button onClick={() => setShowChildren(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>

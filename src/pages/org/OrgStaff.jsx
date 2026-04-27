@@ -171,28 +171,38 @@ export default function OrgStaff() {
   const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      {/* Header - Responsive stacking */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('orgDashboard.tabs.staff', 'Staff Management')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{staff.length} {t('orgDashboard.staffMembers', 'staff members')}</p>
+          <h2 className="text-xl md:text-2xl font-bold">{t('orgDashboard.tabs.staff', 'Staff Management')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{staff.length} {t('orgDashboard.staffMembers', 'staff members')}</p>
         </div>
-        <div className="flex gap-3">
+        {/* Buttons - stack vertically on mobile, horizontal on tablet+ */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           {/* Import/Export Dropdown */}
           <div className="relative">
-            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-              <span className="material-symbols-outlined text-lg">import_export</span> {t('common.importExport', 'Import/Export')}
+            <button onClick={() => setShowDropdown(!showDropdown)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <span className="material-symbols-outlined text-lg">import_export</span>
+              <span className="hidden sm:inline">{t('common.importExport', 'Import/Export')}</span>
+              <span className="sm:hidden">Import/Export</span>
             </button>
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
-                <button onClick={exportStaff} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Staff</button>
-                <button onClick={openImport} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Staff</button>
-                <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
-              </div>
+              <>
+                {/* Backdrop for mobile */}
+                <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
+                <div className="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 sm:w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
+                  <button onClick={exportStaff} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Staff</button>
+                  <button onClick={openImport} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Staff</button>
+                  <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
+                </div>
+              </>
             )}
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
-            <span className="material-symbols-outlined text-lg">add</span> {t('orgDashboard.addStaff', 'Add Staff')}
+          <button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
+            <span className="material-symbols-outlined text-lg">add</span>
+            <span className="hidden sm:inline">{t('orgDashboard.addStaff', 'Add Staff')}</span>
+            <span className="sm:hidden">Add Staff</span>
           </button>
         </div>
       </div>
@@ -201,7 +211,7 @@ export default function OrgStaff() {
       {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium">{success}</div>}
 
       {/* Search */}
-      <div className="relative max-w-md">
+      <div className="relative w-full md:max-w-md">
         <span className="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('common.search', 'Search...')} className="w-full ps-10 pe-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
@@ -210,38 +220,57 @@ export default function OrgStaff() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
+        <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
           <span className="material-symbols-outlined text-4xl mb-2">groups</span>
-          <p>{t('orgDashboard.noStaff', 'No staff members found')}</p>
+          <p className="text-sm md:text-base">{t('orgDashboard.noStaff', 'No staff members found')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
           {filtered.map(s => (
-            <div key={s._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/org/dashboard/specialist/${s._id}`)}>
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+            <div key={s._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/org/dashboard/specialist/${s._id}`)}>
+              {/* Header - More compact on mobile */}
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-base md:text-lg">
                     {(s.fullName || '?')[0].toUpperCase()}
                   </div>
-                  <div>
-                    <p className="font-bold">{s.fullName}</p>
-                    <p className="text-xs text-slate-500">{s.email}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-sm md:text-base truncate">{s.fullName}</p>
+                    <p className="text-xs text-slate-500 truncate">{s.email}</p>
                   </div>
                 </div>
-                <StatusBadge status={s.role || 'staff'} />
+                <div className="flex-shrink-0">
+                  <StatusBadge status={s.role || 'staff'} />
+                </div>
               </div>
-              <div className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400 mb-4">
-                {s.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">phone</span>{s.phone}</p>}
-                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">calendar_today</span>{dateFmt(s.createdAt)}</p>
+              
+              {/* Info - Hide phone on mobile if too long */}
+              <div className="space-y-1.5 text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-3 md:mb-4">
+                {s.phone && (
+                  <p className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm flex-shrink-0">phone</span>
+                    <span className="truncate">{s.phone}</span>
+                  </p>
+                )}
                 <p className="flex items-center gap-2">
-                  <span className={`material-symbols-outlined text-sm ${s.isConfirmed ? 'text-success' : 'text-amber-500'}`}>{s.isConfirmed ? 'verified' : 'pending'}</span>
-                  {s.isConfirmed ? t('common.confirmed', 'Confirmed') : t('common.pending', 'Pending')}
+                  <span className="material-symbols-outlined text-sm flex-shrink-0">calendar_today</span>
+                  <span>{dateFmt(s.createdAt)}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className={`material-symbols-outlined text-sm flex-shrink-0 ${s.isConfirmed ? 'text-success' : 'text-amber-500'}`}>
+                    {s.isConfirmed ? 'verified' : 'pending'}
+                  </span>
+                  <span>{s.isConfirmed ? t('common.confirmed', 'Confirmed') : t('common.pending', 'Pending')}</span>
                 </p>
               </div>
+              
+              {/* Actions - More compact on mobile */}
               <div className="flex gap-2" onClick={e => e.stopPropagation()}>
-                <button onClick={() => openEdit(s)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('common.edit', 'Edit')}</button>
+                <button onClick={() => openEdit(s)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">
+                  {t('common.edit', 'Edit')}
+                </button>
                 <button onClick={() => handleDelete(s)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg transition-colors">
-                  <span className="material-symbols-outlined text-sm">delete</span>
+                  <span className="material-symbols-outlined text-base md:text-sm">delete</span>
                 </button>
               </div>
             </div>
@@ -249,76 +278,98 @@ export default function OrgStaff() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
+      {/* Add/Edit Modal - Mobile optimized */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowModal(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">{modalMode === 'edit' ? t('orgDashboard.editStaff', 'Edit Staff') : t('orgDashboard.addStaff', 'Add Staff')}</h3>
-              <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
+              <h3 className="text-base md:text-lg font-bold">{modalMode === 'edit' ? t('orgDashboard.editStaff', 'Edit Staff') : t('orgDashboard.addStaff', 'Add Staff')}</h3>
+              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 -mr-1">
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
             </div>
 
             {modalMode !== 'edit' && (
               <div className="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 mb-4">
-                <button onClick={() => setModalMode('invite')} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${modalMode === 'invite' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>{t('orgDashboard.invite', 'Invite')}</button>
-                <button onClick={() => setModalMode('create')} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${modalMode === 'create' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>{t('orgDashboard.create', 'Create')}</button>
+                <button onClick={() => setModalMode('invite')} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${modalMode === 'invite' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>
+                  {t('orgDashboard.invite', 'Invite')}
+                </button>
+                <button onClick={() => setModalMode('create')} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${modalMode === 'create' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>
+                  {t('orgDashboard.create', 'Create')}
+                </button>
               </div>
             )}
 
             {modalMode === 'invite' ? (
               <div>
                 <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
-                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
               </div>
             ) : (
-              <div className="space-y-4">
-                <div><label className="block text-sm font-bold mb-1.5">{t('common.fullName', 'Full Name')} *</label><input value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                <div><label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')} *</label><input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-                <div><label className="block text-sm font-bold mb-1.5">{t('common.phone', 'Phone')}</label><input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div className="space-y-3 md:space-y-4">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5">{t('common.fullName', 'Full Name')} *</label>
+                  <input value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')} *</label>
+                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5">{t('common.phone', 'Phone')}</label>
+                  <input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5">{t('common.role', 'Role')}</label>
-                  <select value={form.role} onChange={e => setForm({...form, role: e.target.value})} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
+                  <select value={form.role} onChange={e => setForm({...form, role: e.target.value})} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
                     {roles.map(r => <option key={r} value={r}>{t(`roles.${r}`, r)}</option>)}
                   </select>
                 </div>
                 {modalMode === 'create' && (
-                  <div><label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Min 6 characters" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label>
+                    <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Min 6 characters" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  </div>
                 )}
               </div>
             )}
 
-            <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('common.cancel', 'Cancel')}</button>
-              <button onClick={handleSave} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{modalMode === 'edit' ? t('common.update', 'Update') : modalMode === 'invite' ? t('orgDashboard.sendInvite', 'Send Invite') : t('common.create', 'Create')}</button>
+            <div className="flex gap-2 md:gap-3 mt-4 md:mt-6">
+              <button onClick={() => setShowModal(false)} className="flex-1 py-2.5 md:py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">
+                {t('common.cancel', 'Cancel')}
+              </button>
+              <button onClick={handleSave} className="flex-1 py-2.5 md:py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
+                {modalMode === 'edit' ? t('common.update', 'Update') : modalMode === 'invite' ? t('orgDashboard.sendInvite', 'Send Invite') : t('common.create', 'Create')}
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Import Modal */}
+      {/* Import Modal - Mobile optimized */}
       {showImport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowImport(false)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Import Staff "” Step {importStep}/3</h3>
-              <button onClick={() => setShowImport(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowImport(false)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h3 className="text-base md:text-lg font-bold">Import Staff – Step {importStep}/3</h3>
+              <button onClick={() => setShowImport(false)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 -mr-1"><span className="material-symbols-outlined text-xl">close</span></button>
             </div>
 
             {importStep === 1 && (
               <div>
-                <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-8 text-center mb-4 cursor-pointer hover:border-primary transition-colors"
+                <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-6 md:p-8 text-center mb-4 cursor-pointer hover:border-primary transition-colors"
                   onClick={() => fileRef.current?.click()}
                   onDragOver={e => e.preventDefault()}
                   onDrop={e => { e.preventDefault(); setImportFile(e.dataTransfer.files[0]); }}>
                   <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">upload_file</span>
-                  <p className="text-sm font-medium">{importFile ? importFile.name : 'Drag & drop or click to upload (.xlsx, .csv)'}</p>
+                  <p className="text-xs md:text-sm font-medium break-words">{importFile ? importFile.name : 'Drag & drop or click to upload (.xlsx, .csv)'}</p>
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => setImportFile(e.target.files[0])} />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5">Default Password (for new accounts)</label>
-                  <input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder="Optional" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder="Optional" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
-                <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? 'Uploading...' : 'Upload & Preview'}</button>
+                <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-2.5 md:py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? 'Uploading...' : 'Upload & Preview'}</button>
               </div>
             )}
 

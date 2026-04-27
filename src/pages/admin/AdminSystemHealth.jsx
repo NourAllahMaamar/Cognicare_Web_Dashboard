@@ -350,24 +350,25 @@ export default function AdminSystemHealth() {
   const isInitialLoading = viewState === 'loading_initial' && probeRows.length === 0;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('adminSystemHealth.title')}</h2>
-          <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminSystemHealth.subtitle')}</p>
-          <div className="flex items-center gap-2 mt-3">
-            <span className={`relative inline-flex h-3 w-3 rounded-full ${probeRows.length > 0 && probeRows.every((row) => row.ok) ? 'bg-success' : 'bg-warning'}`} />
-            <span className={`text-sm font-mono font-bold ${probeRows.length > 0 && probeRows.every((row) => row.ok) ? 'text-success' : 'text-warning'}`}>
+          <h2 className="text-xl md:text-2xl font-bold">{t('adminSystemHealth.title')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('adminSystemHealth.subtitle')}</p>
+          <div className="flex items-center gap-2 mt-2 md:mt-3">
+            <span className={`relative inline-flex h-3 w-3 rounded-full flex-shrink-0 ${probeRows.length > 0 && probeRows.every((row) => row.ok) ? 'bg-success' : 'bg-warning'}`} />
+            <span className={`text-xs md:text-sm font-mono font-bold ${probeRows.length > 0 && probeRows.every((row) => row.ok) ? 'text-success' : 'text-warning'}`}>
               {systemStatus}
             </span>
           </div>
         </div>
         <button
           onClick={() => void loadHealth({ manual: true })}
-          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark flex-shrink-0"
         >
-          <span className="material-symbols-outlined text-lg">refresh</span>
-          {t('adminSystemHealth.refresh')}
+          <span className="material-symbols-outlined text-lg flex-shrink-0">refresh</span>
+          <span className="hidden sm:inline">{t('adminSystemHealth.refresh')}</span>
+          <span className="sm:hidden">Refresh</span>
         </button>
       </div>
 
@@ -392,17 +393,17 @@ export default function AdminSystemHealth() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 md:gap-4">
             {probeRows.map((svc) => (
-              <div key={svc.component} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4">
+              <div key={svc.component} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-3 md:p-4">
                 <div className="flex items-center justify-between mb-1">
-                  <p className="font-bold text-sm">{svc.component}</p>
+                  <p className="font-bold text-xs md:text-sm truncate">{svc.component}</p>
                   <span className={`text-xs font-bold ${svc.ok ? 'text-success' : 'text-error'}`}>
                     {svc.ok ? t('adminSystemHealth.online') : t('adminSystemHealth.error')}
                   </span>
                 </div>
-                <p className="text-2xl font-black">{svc.latencyMs} ms</p>
-                <p className="text-xs text-slate-500 mt-1">{svc.path}</p>
+                <p className="text-lg md:text-2xl font-black">{svc.latencyMs} ms</p>
+                <p className="text-[10px] md:text-xs text-slate-500 mt-1 truncate">{svc.path}</p>
                 {svc.estimated ? (
                   <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-300">{t('adminSystemHealth.estimated')}</p>
                 ) : null}
@@ -410,8 +411,8 @@ export default function AdminSystemHealth() {
             ))}
           </div>
 
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-            <h3 className="font-bold mb-4">{t('adminSystemHealth.latencyTable')}</h3>
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+            <h3 className="font-bold mb-3 md:mb-4 text-sm md:text-base">{t('adminSystemHealth.latencyTable')}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -443,12 +444,13 @@ export default function AdminSystemHealth() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold">{t('adminSystemHealth.auditLog')}</h3>
-              <button onClick={exportCsv} className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors">
-                <span className="material-symbols-outlined text-sm">download</span>
-                {t('adminSystemHealth.exportCsv')}
+          <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 md:mb-6">
+              <h3 className="font-bold text-sm md:text-base">{t('adminSystemHealth.auditLog')}</h3>
+              <button onClick={exportCsv} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors">
+                <span className="material-symbols-outlined text-sm flex-shrink-0">download</span>
+                <span className="hidden sm:inline">{t('adminSystemHealth.exportCsv')}</span>
+                <span className="sm:hidden">Export</span>
               </button>
             </div>
 

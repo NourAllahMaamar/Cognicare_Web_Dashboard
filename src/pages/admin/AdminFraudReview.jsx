@@ -101,10 +101,10 @@ export default function AdminFraudReview() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       <div>
-        <h2 className="text-2xl font-bold">{t('adminFraud.title')}</h2>
-        <p className="text-slate-500 dark:text-text-muted mt-1">{t('adminFraud.subtitle')}</p>
+        <h2 className="text-xl md:text-2xl font-bold">{t('adminFraud.title')}</h2>
+        <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('adminFraud.subtitle')}</p>
       </div>
 
       {error && <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium">{error}</div>}
@@ -131,26 +131,26 @@ export default function AdminFraudReview() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : subTab === 'pending' ? (
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {pending.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
-              <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
-              <p>{t('adminFraud.noPendingReviews')}</p>
+            <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">
+              <span className="material-symbols-outlined text-4xl mb-2 flex-shrink-0">check_circle</span>
+              <p className="text-sm md:text-base">{t('adminFraud.noPendingReviews')}</p>
             </div>
           ) : (
             pending.map(org => (
-              <div key={org._id || org.organizationId} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                      <span className="material-symbols-outlined text-2xl">corporate_fare</span>
+              <div key={org._id || org.organizationId} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                      <span className="material-symbols-outlined text-xl md:text-2xl">corporate_fare</span>
                     </div>
-                    <div>
-                      <p className="font-bold">{org.organizationName || org.name}</p>
-                      <p className="text-sm text-slate-500">{org.leaderName || org.leader?.fullName} • {org.leaderEmail || org.leader?.email}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-sm md:text-base truncate">{org.organizationName || org.name}</p>
+                      <p className="text-xs md:text-sm text-slate-500 truncate">{org.leaderName || org.leader?.fullName} • {org.leaderEmail || org.leader?.email}</p>
                     </div>
                   </div>
-                  <button onClick={() => openReview(org)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors">{t('adminFraud.review')}</button>
+                  <button onClick={() => openReview(org)} className="px-3 md:px-4 py-2 bg-primary text-white rounded-lg text-xs md:text-sm font-bold hover:bg-primary-dark transition-colors flex-shrink-0">{t('adminFraud.review')}</button>
                 </div>
               </div>
             ))
@@ -159,17 +159,17 @@ export default function AdminFraudReview() {
       ) : (
         <div className="space-y-3">
           {reviewed.map(org => (
-            <div key={org._id || org.organizationId} className="flex items-center justify-between bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <span className="material-symbols-outlined">corporate_fare</span>
+            <div key={org._id || org.organizationId} className="flex items-center justify-between bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-3 md:p-4 gap-3">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                  <span className="material-symbols-outlined text-base md:text-lg">corporate_fare</span>
                 </div>
-                <div>
-                  <p className="font-bold text-sm">{org.organizationName || org.name}</p>
-                  <p className="text-xs text-slate-500">{org.leaderEmail || org.leader?.email}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-xs md:text-sm truncate">{org.organizationName || org.name}</p>
+                  <p className="text-[10px] md:text-xs text-slate-500 truncate">{org.leaderEmail || org.leader?.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
                 <StatusBadge status={org.reviewStatus || org.status || 'reviewed'} />
                 <button onClick={() => handleReReview(org, 'approved')} className="text-xs text-success font-medium hover:underline">{t('adminFraud.approve')}</button>
                 <button onClick={() => handleReReview(org, 'rejected')} className="text-xs text-error font-medium hover:underline">{t('adminFraud.revoke')}</button>
@@ -177,17 +177,17 @@ export default function AdminFraudReview() {
             </div>
           ))}
           {reviewed.length === 0 && (
-            <div className="p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">{t('adminFraud.noReviewHistory')}</div>
+            <div className="p-8 md:p-12 text-center text-slate-400 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800">{t('adminFraud.noReviewHistory')}</div>
           )}
         </div>
       )}
 
       {/* Review Modal */}
       {reviewingOrg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setReviewingOrg(null)}>
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">{t('adminFraud.reviewModalTitle', { name: reviewingOrg.organizationName || reviewingOrg.name })}</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setReviewingOrg(null)}>
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h3 className="text-base md:text-lg font-bold truncate">{t('adminFraud.reviewModalTitle', { name: reviewingOrg.organizationName || reviewingOrg.name })}</h3>
               <button onClick={() => setReviewingOrg(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
@@ -204,7 +204,7 @@ export default function AdminFraudReview() {
             {loadingAnalysis ? (
               <div className="flex justify-center py-8"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" /></div>
             ) : fraudAnalysis ? (
-              <div className="space-y-4 mb-6">
+              <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
                 <h4 className="font-bold flex items-center gap-2">
                   <span className="material-symbols-outlined text-lg">shield</span>
                   {t('adminFraud.aiAnalysis')}
@@ -260,7 +260,7 @@ export default function AdminFraudReview() {
 
             {/* Decision */}
             <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
-              <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder={t('adminFraud.notesPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-20 focus:ring-2 focus:ring-primary" />
+              <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder={t('adminFraud.notesPlaceholder')} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm mb-4 resize-none h-20 focus:ring-2 focus:ring-primary" />
               <div className="flex gap-3">
                 <button onClick={() => setReviewingOrg(null)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('adminFraud.skip')}</button>
                 <button onClick={() => handleDecision('rejected')} className="flex-1 py-3 bg-error text-white rounded-xl font-bold text-sm hover:bg-error/90">{t('adminFraud.reject')}</button>
