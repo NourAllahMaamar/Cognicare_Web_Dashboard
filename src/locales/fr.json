@@ -83,7 +83,8 @@
     "backToHome": "Retour à l'Accueil",
     "accessDenied": "Accès refusé. Privilèges administrateur requis.",
     "loginFailed": "Échec de la connexion",
-    "organizationPendingApproval": "Votre demande d'organisation a été soumise avec succès. Veuillez attendre l'approbation de l'administrateur. Vous recevrez une notification par e-mail une fois votre demande examinée."
+    "organizationPendingApproval": "Votre demande d'organisation a été soumise avec succès. Veuillez attendre l'approbation de l'administrateur. Vous recevrez une notification par e-mail une fois votre demande examinée.",
+    "seoDescription": "Connectez-vous au tableau de bord administrateur de CogniCare pour gérer les utilisateurs, les organisations et les analyses de la plateforme."
   },
   "orgLeaderLogin": {
     "title": "Connexion du Leader de l'Organisation",
@@ -128,7 +129,9 @@
     "optional": "Optionnel",
     "pdfOnly": "Seuls les fichiers PDF sont autorisés",
     "fileTooLarge": "La taille du fichier doit être inférieure à 10 Mo",
-    "certificateHint": "Téléchargez le certificat d'enregistrement officiel de votre organisation pour la détection de fraude par IA (requis pour l'approbation)"
+    "certificateHint": "Téléchargez le certificat d'enregistrement officiel de votre organisation pour la détection de fraude par IA (requis pour l'approbation)",
+    "specialistLogin": "Connexion Spécialiste",
+    "seoDescription": "Connectez-vous ou inscrivez votre organisation sur CogniCare pour gérer le personnel, les familles et les programmes de soins pour l'autisme."
   },
   "specialistLogin": {
     "title": "Connexion Spécialiste",
@@ -164,7 +167,15 @@
     "googleSignIn": "Se connecter avec Google",
     "googleSignUp": "S'inscrire avec Google",
     "loadingGoogle": "Chargement de Google Sign-In...",
-    "googleUnavailable": "Connexion Google indisponible (ID client non configuré)"
+    "googleUnavailable": "Connexion Google indisponible (ID client non configuré)",
+    "verificationCodeSent": "Code de vérification envoyé à votre adresse e-mail",
+    "verificationCode": "Code de vérification",
+    "verificationCodePlaceholder": "000000",
+    "backToForm": "← Retour au formulaire",
+    "organizationLogin": "Connexion Organisation",
+    "fullNamePlaceholder": "Votre nom complet",
+    "emailPlaceholder": "specialist@cognicare.com",
+    "codeSentSuccess": "Code de vérification envoyé à votre adresse e-mail"
   },
   "orgDashboard": {
     "title": "Tableau de Bord de l'Organisation",
@@ -250,6 +261,30 @@
       },
       "table": {
         "status": "État du compte"
+      },
+      "importExport": "Importer/Exporter",
+      "exportStaff": "Exporter le Personnel",
+      "importStaff": "Importer le Personnel",
+      "downloadTemplate": "Télécharger le Modèle",
+      "addStaff": "Ajouter du Personnel",
+      "searchPlaceholder": "Rechercher par nom, e-mail ou rôle...",
+      "importModal": {
+        "title": "Importer le Personnel",
+        "dragDrop": "Glissez-déposez un fichier Excel ici, ou cliquez pour parcourir",
+        "defaultPassword": "Mot de passe par défaut",
+        "defaultPasswordPlaceholder": "CogniCare2026!",
+        "columnMapping": "Mappage des colonnes",
+        "excelColumn": "Colonne Excel",
+        "mapsTo": "Correspond à",
+        "confidence": "Confiance",
+        "sample": "Aperçu",
+        "importButton": "Importer",
+        "importing": "Importation en cours...",
+        "results": "Résultats",
+        "created": "Créés",
+        "skipped": "Ignorés",
+        "errors": "Erreurs",
+        "done": "Terminé"
       }
     },
     "modal": {
@@ -334,7 +369,36 @@
       "accountCreated": "Compte de famille créé avec succès !",
       "noPhone": "N/D",
       "emptyState": "Aucune famille enregistrée pour le moment",
-      "editTitle": "Modifier la famille"
+      "editTitle": "Modifier la famille",
+      "importExport": "Importer/Exporter",
+      "exportFamilies": "Exporter les Familles",
+      "importFamilies": "Importer les Familles",
+      "importFamiliesChildren": "Importer Familles + Enfants",
+      "downloadTemplate": "Télécharger le Modèle",
+      "downloadFamiliesChildrenTemplate": "Télécharger le Modèle Familles+Enfants",
+      "addFamily": "Ajouter une Famille",
+      "searchPlaceholder": "Rechercher par nom ou e-mail...",
+      "childrenLabel": "enfants",
+      "childrenButton": "Enfants",
+      "noChildren": "Aucun enfant",
+      "importModal": {
+        "title": "Importer les Familles",
+        "dragDrop": "Glissez-déposez un fichier Excel ici, ou cliquez pour parcourir",
+        "defaultPassword": "Mot de passe par défaut",
+        "defaultPasswordPlaceholder": "CogniCare2026!",
+        "columnMapping": "Mappage des colonnes",
+        "excelColumn": "Colonne Excel",
+        "mapsTo": "Correspond à",
+        "confidence": "Confiance",
+        "sample": "Aperçu",
+        "importButton": "Importer",
+        "importing": "Importation en cours...",
+        "results": "Résultats",
+        "created": "Créés",
+        "skipped": "Ignorés",
+        "errors": "Erreurs",
+        "done": "Terminé"
+      }
     },
     "children": {
       "title": "Enfants Sous Soins",
@@ -350,7 +414,24 @@
       "emptyState": "Aucun enfant enregistré pour le moment",
       "ageYears": "{{count}} ans",
       "ageYear": "{{count}} an",
-      "yearsOld": "ans"
+      "yearsOld": "ans",
+      "yearsShort": "{{count}} ans",
+      "monthsShort": "{{count}} mois",
+      "importExport": "Importer/Exporter",
+      "exportChildren": "Exporter les Enfants",
+      "downloadTemplate": "Télécharger le Modèle",
+      "export": {
+        "childName": "Nom de l'Enfant",
+        "dob": "Date de Naissance",
+        "gender": "Sexe",
+        "parentName": "Nom du Parent",
+        "parentEmail": "Email du Parent",
+        "diagnosis": "Diagnostic",
+        "medicalHistory": "Antécédents Médicaux",
+        "allergies": "Allergies",
+        "medications": "Médicaments",
+        "notes": "Notes"
+      }
     },
     "invitations": {
       "title": "Invitations en Attente",
@@ -365,7 +446,9 @@
       "family": "Famille",
       "cancel": "Annuler l'Invitation",
       "expired": "Expiré",
-      "cancelConfirm": "Êtes-vous sûr de vouloir annuler cette invitation?"
+      "cancelConfirm": "Êtes-vous sûr de vouloir annuler cette invitation?",
+      "sent": "Envoyé :",
+      "expiresLabel": "Expire :"
     },
     "importExport": {
       "import": "Importer",
@@ -453,11 +536,13 @@
     "community": {
       "title": "Fil communautaire",
       "subtitle": "Connectez-vous avec les familles, les spécialistes et les soignants",
-      "noPosts": "Aucune publication pour le moment"
+      "noPosts": "Aucune publication pour le moment",
+      "postImageAlt": "Image de la publication"
     },
     "marketplace": {
       "title": "Marché",
-      "subtitle": "Parcourir les outils et ressources éducatifs"
+      "subtitle": "Parcourir les outils et ressources éducatifs",
+      "currency": "TND"
     },
     "onboarding": {
       "welcome": {
@@ -798,12 +883,112 @@
       "addSuccess": "Enfant ajouté avec succès !",
       "childNotFound": "Enfant introuvable.",
       "fetchError": "Échec du chargement de l'enfant.",
-      "inviteNotSupported": "L'invitation des familles existantes n'est pas encore prise en charge pour la pratique privée."
+      "inviteNotSupported": "L'invitation des familles existantes n'est pas encore prise en charge pour la pratique privée.",
+      "nameEmailPasswordRequired": "Nom, email et mot de passe requis",
+      "childMustBe3Years": "L'enfant \"{{name}}\" doit avoir au moins 3 ans",
+      "familyCreated": "Famille créée",
+      "planDeleted": "Plan supprimé",
+      "deleted": "Plan supprimé"
+    },
+    "children": {
+      "total": "total",
+      "org": "org",
+      "private": "privés",
+      "addFamily": "Ajouter une Famille Privée",
+      "addFamilyShort": "Ajouter une Famille",
+      "orgChildren": "Enfants de l'Organisation",
+      "privatePatients": "Patients Privés",
+      "noOrgChildren": "Aucun enfant d'organisation",
+      "noPrivatePatients": "Aucun patient privé",
+      "selectChild": "Sélectionner un enfant pour voir les détails",
+      "confirmDelete": "Supprimer ce plan ?",
+      "actions": {
+        "aiRecs": "Recs IA",
+        "pecs": "PECS",
+        "teacch": "TEACCH",
+        "skills": "Compétences",
+        "games": "Jeux"
+      },
+      "plans": {
+        "title": "Plans",
+        "filterAll": "Tous",
+        "empty": "Aucun plan trouvé"
+      },
+      "pecs": {
+        "phase": "Phase",
+        "cards": "cartes"
+      },
+      "teacch": {
+        "mastered": "maîtrisé",
+        "inProgress": "en cours",
+        "notStarted": "non commencé"
+      },
+      "skillTracker": {
+        "baseline": "Base :",
+        "current": "Actuel :",
+        "target": "Cible :",
+        "mastered": "🏆 Maîtrisé"
+      },
+      "activity": {
+        "due": "Échéance :",
+        "materials": "matériaux",
+        "hasInstructions": "A des instructions pour les parents"
+      },
+      "priority": {
+        "high": "élevé",
+        "medium": "moyen",
+        "low": "faible"
+      },
+      "modal": {
+        "title": "Ajouter une Famille Privée",
+        "parentName": "Nom du Parent *",
+        "email": "Email *",
+        "phone": "Téléphone",
+        "password": "Mot de passe *",
+        "children": "Enfants",
+        "addChild": "+ Ajouter un Enfant",
+        "childName": "Nom *",
+        "male": "Masculin",
+        "female": "Féminin",
+        "cancel": "Annuler",
+        "creating": "Création...",
+        "create": "Créer la Famille",
+        "childAgeTip": "L'enfant doit avoir au moins 3 ans"
+      }
+    },
+    "myPlans": {
+      "totalPlans": "plans totaux",
+      "refresh": "Actualiser",
+      "filterAll": "Tous",
+      "empty": "Aucun plan trouvé",
+      "confirmDelete": "Supprimer ce plan ?",
+      "deleted": "Plan supprimé",
+      "pecs": {
+        "boardItems": "Éléments du Tableau PECS"
+      },
+      "teacch": {
+        "workSystem": "Système de Travail",
+        "whatToDo": "quoi faire",
+        "howMuch": "combien",
+        "whenDone": "quand fini",
+        "whatNext": "ensuite",
+        "goals": "Objectifs"
+      },
+      "skillTracker": {
+        "title": "Suivi de Compétences",
+        "trials": "essais",
+        "progress": "Progrès"
+      },
+      "activity": {
+        "title": "Plan d'Activité",
+        "due": "Échéance :",
+        "statusCompleted": "terminé",
+        "statusInProgress": "en_cours"
+      }
     },
     "brand": "Spécialiste",
     "subtitle": "Suite professionnelle",
     "welcome": "Bienvenue",
-    "myPlans": "Mes plans",
     "noPlans": "Aucun plan trouvé",
     "addFamily": "Ajouter une famille",
     "orgChildren": "Enfants de l'organisation",
@@ -845,6 +1030,7 @@
     "approved": "approuvée",
     "denied": "refusée",
     "openInNewTab": "Ouvrir dans un nouvel onglet",
+    "docPreview": "Aperçu du Document",
     "roles": {
       "caregiver": "Intervenant",
       "psychologist": "Psychologue",
@@ -1126,7 +1312,101 @@
     },
     "cta": {
       "title": "Prêt à Transformer les Soins Cognitifs ?",
-      "subtitle": "Rejoignez des centaines d'organisations et de professionnels qui tirent parti de CogniCare pour fournir des services de santé cognitive meilleurs et plus efficaces."
+      "subtitle": "Rejoignez des centaines d'organisations et de professionnels qui tirent parti de CogniCare pour fournir des services de santé cognitive meilleurs et plus efficaces.",
+      "contact": "Contacter les Ventes"
+    },
+    "slides": {
+      "admin": {
+        "title": "Tableau de bord Admin",
+        "subtitle": "Analyses et contrôle à l'échelle du système",
+        "stats": {
+          "users": { "value": "2,4K", "label": "Utilisateurs" },
+          "orgs": { "value": "120", "label": "Organisations" },
+          "uptime": { "value": "98%", "label": "Disponibilité" }
+        }
+      },
+      "pecs": {
+        "title": "Tableau PECS",
+        "subtitle": "Communication par échange d'images",
+        "badges": {
+          "phase": "Phase III",
+          "cards": "6 Cartes",
+          "mastered": "🏆 2 Maîtrisées"
+        }
+      },
+      "org": {
+        "title": "Portail Organisation",
+        "subtitle": "Gestion du personnel et des familles",
+        "stats": {
+          "staff": { "value": "48", "label": "Personnel" },
+          "families": { "value": "86", "label": "Familles" },
+          "children": { "value": "152", "label": "Enfants" }
+        }
+      },
+      "ai": {
+        "title": "Informations IA",
+        "subtitle": "Analyse intelligente des modèles",
+        "badges": {
+          "pattern": "Analyse des Modèles",
+          "detection": "Détection Précoce",
+          "alerts": "Alertes Intelligentes"
+        }
+      }
+    },
+    "release": {
+      "android": {
+        "comingSoon": "Bientôt disponible",
+        "preparing": "La version pilote Android est en préparation.",
+        "checkingRelease": "Vérification de la version",
+        "pilot": "Pilote Android",
+        "preparingDownload": "Préparation du téléchargement…",
+        "downloadComingSoon": "Téléchargement bientôt disponible",
+        "buildPending": "Build Android en attente",
+        "checkingManifest": "Vérification du manifeste de la dernière version Android.",
+        "versionPublished": "La version {{version}} est publiée et prête au téléchargement."
+      },
+      "ios": {
+        "comingSoon": "Bientôt disponible",
+        "notes": "La distribution iOS suivra après la configuration de l'App Store."
+      }
+    },
+    "downloadSection": {
+      "title": "Accès Pilote pour le Web et Android",
+      "subtitle": "Les organisations, les spécialistes et les administrateurs peuvent accéder à CogniCare directement depuis ce site Web, tandis que les familles peuvent installer la version pilote Android actuelle à partir du même point d'entrée public.",
+      "get": "Obtenir l'application",
+      "downloadApk": "Télécharger APK",
+      "availableSoon": "Disponible bientôt pour Android. Version iOS à venir plus tard.",
+      "android": {
+        "platform": "Android",
+        "title": "Build pilote mobile",
+        "downloadButton": "Télécharger Android"
+      },
+      "web": {
+        "platform": "Web",
+        "title": "Tableaux de bord par rôle",
+        "description": "Le même site Web public est le point d'accès pilote pour les dirigeants d'organisation, les spécialistes et les administrateurs. Choisissez le rôle d'entrée qui correspond à votre compte de test et connectez-vous directement ici.",
+        "orgLogin": "Connexion Organisation",
+        "specialistLogin": "Connexion Spécialiste"
+      },
+      "ios": {
+        "platform": "iOS",
+        "title": "À venir plus tard"
+      }
+    },
+    "roles": {
+      "org": "Portail Chef d'Organisation",
+      "orgDesc": "Supervision stratégique de haut niveau, allocation des ressources et gestion des performances organisationnelles.",
+      "pro": "Suite Professionnelle",
+      "proDesc": "Outils cliniques spécialisés pour les soins approfondis aux patients, les évaluations automatisées et la planification thérapeutique.",
+      "admin": "Console d'Administration",
+      "adminDesc": "Contrôles système robustes, surveillance de sécurité granulaire et gestion des permissions utilisateur."
+    },
+    "learnMore": "Commencer",
+    "footerLinks": {
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "contact": "Contact",
+      "copyright": "© 2026 CogniCare. Tous droits réservés."
     }
   },
   "activitiesCreator": {
@@ -1615,7 +1895,8 @@
     "analytics": "Analytique",
     "systemHealth": "Santé du Système",
     "settings": "Paramètres",
-    "refresh": "Actualiser"
+    "refresh": "Actualiser",
+    "seoTitle": "Tableau de Bord Admin"
   },
   "adminUsers": {
     "title": "Gestion des Utilisateurs",
@@ -1690,7 +1971,8 @@
     "confirmDelete": "Supprimer cette organisation et toutes ses données ?",
     "invitedSuccess": "Responsable d'organisation invité avec succès",
     "deleted": "Organisation supprimée",
-    "leaderChanged": "Responsable modifié avec succès"
+    "leaderChanged": "Responsable modifié avec succès",
+    "invitationCancelled": "Invitation annulée"
   },
   "adminFraud": {
     "title": "File d'Examen des Organisations",
@@ -1722,7 +2004,8 @@
     "riskHigh": "Élevé",
     "riskMedium": "Moyen",
     "riskLow": "Faible",
-    "orgDecision": "Organisation {{decision}}"
+    "orgDecision": "Organisation {{decision}}",
+    "scanFailed": "Échec de l'analyse IA"
   },
   "adminTraining": {
     "title": "Cours de Formation (Autisme)",
@@ -1740,7 +2023,8 @@
     "submitApprove": "Approuver",
     "submitNeedsWork": "Marquer comme nécessite des précisions",
     "courseApproved": "Cours approuvé",
-    "courseNeedsWork": "Cours marqué comme nécessite des précisions"
+    "courseNeedsWork": "Cours marqué comme nécessite des précisions",
+    "updateFailed": "Échec de la mise à jour"
   },
   "adminSystemHealth": {
     "title": "Santé du Système & Conformité",
@@ -1775,6 +2059,8 @@
     "compAnalytics": "Analytique",
     "compSystemHealth": "Santé du Système",
     "compSettings": "Paramètres",
+    "compAiEngine": "Moteur IA",
+    "aiDebugLabel": "Réponse de l'endpoint IA :",
     "fallbackTitle": "Mode dégradé actif",
     "aiFallbackSnapshot": "Le service IA est indisponible. Affichage des dernières données valides.",
     "aiFallbackEstimate": "Le service IA est indisponible. Affichage d'estimations locales basées sur le trafic récent.",
@@ -1885,7 +2171,8 @@
     "hoursAgo": "Il y a {{count}} heures",
     "daysAgo": "Il y a {{count}} jours",
     "loadMore": "Charger plus",
-    "anonymous": "Anonyme"
+    "anonymous": "Anonyme",
+    "na": "N/A"
   },
   "notFound": {
     "title": "Page introuvable",

@@ -90,7 +90,7 @@ export default function AdminCaregiverApplications() {
         <button onClick={fetchApplications} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
           <span className="material-symbols-outlined text-lg flex-shrink-0">refresh</span>
           <span className="hidden sm:inline">{t('caregiverApplications.refresh')}</span>
-          <span className="sm:hidden">Refresh</span>
+          <span className="sm:hidden">{t('caregiverApplications.refresh')}</span>
         </button>
       </div>
 
@@ -183,7 +183,7 @@ export default function AdminCaregiverApplications() {
                     <span className="material-symbols-outlined text-sm text-slate-400">calendar_today</span>
                     <span className="text-slate-500 dark:text-slate-400">{t('caregiverApplications.submittedOn')}:</span>
                     <span className="font-medium text-slate-700 dark:text-slate-200">
-                      {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'N/A'}
+                      {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : t('common.na')}
                     </span>
                   </div>
 
@@ -318,7 +318,7 @@ export default function AdminCaregiverApplications() {
                 <iframe
                   src={getUploadUrl(previewDoc.url)}
                   className="w-full h-[70vh] rounded-lg border border-slate-300 dark:border-slate-700"
-                  title="Document Preview"
+                  title={t('caregiverApplications.docPreview')}
                 />
               ) : (
                 <img

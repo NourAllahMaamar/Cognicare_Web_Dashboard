@@ -65,7 +65,7 @@ export default function AdminOrganizations() {
   const handleCancelInvite = async (id) => {
     try {
       await authMutate(`/organization/admin/invitations/${id}`, { method: 'DELETE' });
-      setSuccess('Invitation cancelled');
+      setSuccess(t('adminOrgs.invitationCancelled'));
       fetchInvites();
     } catch (err) { setError(err.message); }
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
@@ -109,7 +109,7 @@ export default function AdminOrganizations() {
         <button onClick={() => setShowInviteModal(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-all">
           <span className="material-symbols-outlined text-lg">add</span>
           <span className="hidden sm:inline">{t('adminOrgs.inviteLeader')}</span>
-          <span className="sm:hidden">Invite Leader</span>
+          <span className="sm:hidden">{t('adminOrgs.inviteLeader')}</span>
         </button>
       </div>
 

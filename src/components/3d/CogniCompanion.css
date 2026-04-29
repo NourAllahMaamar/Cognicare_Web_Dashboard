@@ -188,9 +188,45 @@
   filter: none !important;
 }
 
-/* ── Hide on very small screens to prevent distraction ── */
+/* ── Responsive behavior for different screen sizes ── */
 @media (max-width: 520px) {
   .cogni-companion-container {
-    display: none;
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+/* Tablets and small laptops - reduce glow effects */
+@media (min-width: 521px) and (max-width: 768px) {
+  .cogni-companion-container {
+    max-width: 200px !important;
+    max-height: 200px !important;
+  }
+  
+  .cogni-glow-ring,
+  .cogni-motion-halo {
+    opacity: 0.4 !important;
+  }
+  
+  .cogni-speech-bubble {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cogni-companion-container {
+    max-width: 250px !important;
+    max-height: 250px !important;
+  }
+  
+  .cogni-glow-ring,
+  .cogni-motion-halo {
+    opacity: 0.5 !important;
+  }
+  
+  .cogni-speech-bubble {
+    font-size: 11px;
+    padding: 6px 12px;
   }
 }

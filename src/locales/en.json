@@ -83,7 +83,8 @@
     "backToHome": "Back to Home",
     "accessDenied": "Access denied. Admin privileges required.",
     "loginFailed": "Login failed",
-    "organizationPendingApproval": "Your organization request has been submitted successfully. Please wait for admin approval. You will receive an email notification once your request is reviewed."
+    "organizationPendingApproval": "Your organization request has been submitted successfully. Please wait for admin approval. You will receive an email notification once your request is reviewed.",
+    "seoDescription": "Sign in to the CogniCare admin dashboard to manage users, organizations, and platform analytics."
   },
   "orgLeaderLogin": {
     "title": "Organization Leader Login",
@@ -121,6 +122,7 @@
     "resendCode": "Resend Code",
     "backToHome": "Back to Home",
     "adminLink": "Admin Login",
+    "specialistLogin": "Specialist Login",
     "accessDenied": "Access denied. Organization leader privileges required.",
     "loginFailed": "Login failed",
     "certificateRequired": "Organization certificate (PDF) is required before sending verification code",
@@ -128,7 +130,8 @@
     "optional": "Optional",
     "pdfOnly": "Only PDF files are allowed",
     "fileTooLarge": "File size must be less than 10MB",
-    "certificateHint": "Upload your organization's official registration certificate for AI-powered fraud detection (required for approval)"
+    "certificateHint": "Upload your organization's official registration certificate for AI-powered fraud detection (required for approval)",
+    "seoDescription": "Sign in or register your organization on CogniCare to manage staff, families, and autism care programs."
   },
   "specialistLogin": {
     "title": "Specialist Login",
@@ -164,7 +167,15 @@
     "googleSignIn": "Sign in with Google",
     "googleSignUp": "Sign up with Google",
     "loadingGoogle": "Loading Google Sign-In...",
-    "googleUnavailable": "Google login unavailable (client ID not configured)"
+    "googleUnavailable": "Google login unavailable (client ID not configured)",
+    "verificationCodeSent": "Verification code sent to your email",
+    "verificationCode": "Verification Code",
+    "verificationCodePlaceholder": "000000",
+    "backToForm": "← Back to form",
+    "organizationLogin": "Organization Login",
+    "fullNamePlaceholder": "Your full name",
+    "emailPlaceholder": "specialist@cognicare.com",
+    "codeSentSuccess": "Verification code sent to your email"
   },
   "orgDashboard": {
     "title": "Organization Dashboard",
@@ -250,6 +261,30 @@
       },
       "table": {
         "status": "Account Status"
+      },
+      "importExport": "Import/Export",
+      "exportStaff": "Export Staff",
+      "importStaff": "Import Staff",
+      "downloadTemplate": "Download Template",
+      "addStaff": "Add Staff",
+      "searchPlaceholder": "Search staff by name, email, or role...",
+      "importModal": {
+        "title": "Import Staff from Excel",
+        "dragDrop": "Drag & drop an Excel file here, or click to browse",
+        "defaultPassword": "Default Password (for new accounts)",
+        "defaultPasswordPlaceholder": "Optional - leave blank to auto-generate",
+        "columnMapping": "Column Mapping",
+        "excelColumn": "Excel Column",
+        "mapsTo": "Maps To",
+        "confidence": "Confidence",
+        "sample": "Sample",
+        "importButton": "Import {{count}} staff members",
+        "importing": "Importing...",
+        "results": "Import Results",
+        "created": "Created",
+        "skipped": "Skipped",
+        "errors": "Errors",
+        "done": "Done"
       }
     },
     "modal": {
@@ -334,7 +369,35 @@
       "accountCreated": "Family account created successfully!",
       "noPhone": "N/A",
       "emptyState": "No families registered yet",
-      "editTitle": "Edit family"
+      "editTitle": "Edit family",
+      "importExport": "Import/Export",
+      "exportFamilies": "Export Families",
+      "importFamilies": "Import Families",
+      "importFamiliesChildren": "Import Families + Children",
+      "downloadTemplate": "Download Template",
+      "downloadFamiliesChildrenTemplate": "Download Families+Children Template",
+      "addFamily": "Add Family",
+      "searchPlaceholder": "Search families by name or email...",
+      "childrenLabel": "children",
+      "childrenButton": "Children",
+      "noChildren": "No children",
+      "importModal": {
+        "title": "Import from Excel",
+        "dragDrop": "Drag & drop an Excel file here, or click to browse",
+        "defaultPassword": "Default Password",
+        "defaultPasswordPlaceholder": "Optional",
+        "columnMapping": "Column Mapping",
+        "excelColumn": "Excel Column",
+        "mapsTo": "Maps To",
+        "confidence": "Confidence",
+        "importButton": "Import {{count}} rows",
+        "importing": "Importing...",
+        "results": "Import Results",
+        "created": "Created",
+        "skipped": "Skipped",
+        "errors": "Errors",
+        "done": "Done"
+      }
     },
     "children": {
       "title": "Children Under Care",
@@ -350,7 +413,24 @@
       "emptyState": "No children registered yet",
       "ageYears": "{{count}} years",
       "ageYear": "{{count}} year",
-      "yearsOld": "years old"
+      "yearsOld": "years old",
+      "yearsShort": "{{count}} yrs",
+      "monthsShort": "{{count}} months",
+      "importExport": "Import/Export",
+      "exportChildren": "Export Children",
+      "downloadTemplate": "Download Template",
+      "export": {
+        "childName": "Child Name",
+        "dob": "DOB",
+        "gender": "Gender",
+        "parentName": "Parent Name",
+        "parentEmail": "Parent Email",
+        "diagnosis": "Diagnosis",
+        "medicalHistory": "Medical History",
+        "allergies": "Allergies",
+        "medications": "Medications",
+        "notes": "Notes"
+      }
     },
     "invitations": {
       "title": "Pending Invitations",
@@ -365,7 +445,9 @@
       "expired": "Expired",
       "noInvites": "No pending invitations",
       "cancel": "Cancel",
-      "cancelConfirm": "Are you sure you want to cancel this invitation?"
+      "cancelConfirm": "Are you sure you want to cancel this invitation?",
+      "sent": "Sent:",
+      "expiresLabel": "Expires:"
     },
     "importExport": {
       "import": "Import",
@@ -453,11 +535,13 @@
     "community": {
       "title": "Community Feed",
       "subtitle": "Connect with families, specialists, and caregivers",
-      "noPosts": "No posts yet"
+      "noPosts": "No posts yet",
+      "postImageAlt": "Post image"
     },
     "marketplace": {
       "title": "Marketplace",
-      "subtitle": "Browse educational tools and resources"
+      "subtitle": "Browse educational tools and resources",
+      "currency": "TND"
     },
     "onboarding": {
       "welcome": {
@@ -798,12 +882,112 @@
       "addSuccess": "Child added successfully!",
       "inviteNotSupported": "Inviting existing families is not yet supported for private practice.",
       "childNotFound": "Child not found.",
-      "fetchError": "Failed to load child."
+      "fetchError": "Failed to load child.",
+      "nameEmailPasswordRequired": "Name, email, and password required",
+      "childMustBe3Years": "Child \"{{name}}\" must be at least 3 years old",
+      "familyCreated": "Family created",
+      "planDeleted": "Plan deleted",
+      "deleted": "Plan deleted"
+    },
+    "children": {
+      "total": "total",
+      "org": "org",
+      "private": "private",
+      "addFamily": "Add Private Family",
+      "addFamilyShort": "Add Family",
+      "orgChildren": "Organization Children",
+      "privatePatients": "Private Patients",
+      "noOrgChildren": "No organization children",
+      "noPrivatePatients": "No private patients",
+      "selectChild": "Select a child to view details",
+      "confirmDelete": "Delete this plan?",
+      "actions": {
+        "aiRecs": "AI Recs",
+        "pecs": "PECS",
+        "teacch": "TEACCH",
+        "skills": "Skills",
+        "games": "Games"
+      },
+      "plans": {
+        "title": "Plans",
+        "filterAll": "All",
+        "empty": "No plans found"
+      },
+      "pecs": {
+        "phase": "Phase",
+        "cards": "cards"
+      },
+      "teacch": {
+        "mastered": "mastered",
+        "inProgress": "in progress",
+        "notStarted": "not started"
+      },
+      "skillTracker": {
+        "baseline": "Baseline:",
+        "current": "Current:",
+        "target": "Target:",
+        "mastered": "🏆 Mastered"
+      },
+      "activity": {
+        "due": "Due:",
+        "materials": "materials",
+        "hasInstructions": "Has parent instructions"
+      },
+      "priority": {
+        "high": "high",
+        "medium": "medium",
+        "low": "low"
+      },
+      "modal": {
+        "title": "Add Private Family",
+        "parentName": "Parent Name *",
+        "email": "Email *",
+        "phone": "Phone",
+        "password": "Password *",
+        "children": "Children",
+        "addChild": "+ Add Child",
+        "childName": "Name *",
+        "male": "Male",
+        "female": "Female",
+        "cancel": "Cancel",
+        "creating": "Creating...",
+        "create": "Create Family",
+        "childAgeTip": "Child must be at least 3 years old"
+      }
+    },
+    "myPlans": {
+      "totalPlans": "total plans",
+      "refresh": "Refresh",
+      "filterAll": "All",
+      "empty": "No plans found",
+      "confirmDelete": "Delete this plan?",
+      "deleted": "Plan deleted",
+      "pecs": {
+        "boardItems": "PECS Board Items"
+      },
+      "teacch": {
+        "workSystem": "Work System",
+        "whatToDo": "whatToDo",
+        "howMuch": "howMuch",
+        "whenDone": "whenDone",
+        "whatNext": "whatNext",
+        "goals": "Goals"
+      },
+      "skillTracker": {
+        "title": "Skill Tracker",
+        "trials": "trials",
+        "progress": "Progress"
+      },
+      "activity": {
+        "title": "Activity Plan",
+        "due": "Due:",
+        "statusCompleted": "completed",
+        "statusInProgress": "in_progress"
+      }
     },
     "brand": "Specialist",
     "subtitle": "Professional Suite",
     "welcome": "Welcome back",
-    "myPlans": "My Plans",
     "noPlans": "No plans found",
     "addFamily": "Add Family",
     "orgChildren": "Organization Children",
@@ -845,6 +1029,7 @@
     "approved": "approved",
     "denied": "denied",
     "openInNewTab": "Open in new tab",
+    "docPreview": "Document Preview",
     "roles": {
       "caregiver": "Caregiver",
       "psychologist": "Psychologist",
@@ -1126,7 +1311,101 @@
     },
     "cta": {
       "title": "Ready to Transform Cognitive Care?",
-      "subtitle": "Join hundreds of organizations and professionals who are leveraging CogniCare to provide better, more efficient cognitive health services."
+      "subtitle": "Join hundreds of organizations and professionals who are leveraging CogniCare to provide better, more efficient cognitive health services.",
+      "contact": "Contact Sales"
+    },
+    "slides": {
+      "admin": {
+        "title": "Admin Dashboard",
+        "subtitle": "System-wide analytics & control",
+        "stats": {
+          "users": { "value": "2.4K", "label": "Users" },
+          "orgs": { "value": "120", "label": "Orgs" },
+          "uptime": { "value": "98%", "label": "Uptime" }
+        }
+      },
+      "pecs": {
+        "title": "PECS Board",
+        "subtitle": "Picture-exchange communication",
+        "badges": {
+          "phase": "Phase III",
+          "cards": "6 Cards",
+          "mastered": "🏆 2 Mastered"
+        }
+      },
+      "org": {
+        "title": "Organization Portal",
+        "subtitle": "Staff & family management",
+        "stats": {
+          "staff": { "value": "48", "label": "Staff" },
+          "families": { "value": "86", "label": "Families" },
+          "children": { "value": "152", "label": "Children" }
+        }
+      },
+      "ai": {
+        "title": "AI Insights",
+        "subtitle": "Smart pattern analysis",
+        "badges": {
+          "pattern": "Pattern Analysis",
+          "detection": "Early Detection",
+          "alerts": "Smart Alerts"
+        }
+      }
+    },
+    "release": {
+      "android": {
+        "comingSoon": "Coming soon",
+        "preparing": "The Android pilot build is being prepared.",
+        "checkingRelease": "Checking release",
+        "pilot": "Android pilot",
+        "preparingDownload": "Preparing download…",
+        "downloadComingSoon": "Download coming soon",
+        "buildPending": "Android build pending",
+        "checkingManifest": "Checking the latest Android release manifest now.",
+        "versionPublished": "Version {{version}} is published and ready for direct download."
+      },
+      "ios": {
+        "comingSoon": "Coming soon",
+        "notes": "iOS distribution will follow after App Store setup."
+      }
+    },
+    "downloadSection": {
+      "title": "Pilot Access for Web and Android",
+      "subtitle": "Organizations, specialists, and admins can access CogniCare directly from this website, while families can install the current Android pilot build from the same public entrypoint.",
+      "get": "Get the app",
+      "downloadApk": "Download APK",
+      "availableSoon": "Available for Android soon. iOS version coming later.",
+      "android": {
+        "platform": "Android",
+        "title": "Mobile pilot build",
+        "downloadButton": "Download Android"
+      },
+      "web": {
+        "platform": "Web",
+        "title": "Role-based dashboards",
+        "description": "The same public website is the pilot access point for organization leaders, specialists, and admins. Choose the role entry that matches your test account and sign in directly here.",
+        "orgLogin": "Organization login",
+        "specialistLogin": "Specialist login"
+      },
+      "ios": {
+        "platform": "iOS",
+        "title": "Coming later"
+      }
+    },
+    "roles": {
+      "org": "Org Leader Portal",
+      "orgDesc": "High-level strategic oversight, resource allocation, and organizational performance management.",
+      "pro": "Professional Suite",
+      "proDesc": "Specialized clinical tools for deep patient care, automated assessments, and therapy planning.",
+      "admin": "Admin Console",
+      "adminDesc": "Robust system controls, granular security monitoring, and user permission management."
+    },
+    "learnMore": "Get Started",
+    "footerLinks": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "contact": "Contact",
+      "copyright": "© 2026 CogniCare. All rights reserved."
     }
   },
   "activitiesCreator": {
@@ -1615,7 +1894,8 @@
     "analytics": "Analytics",
     "systemHealth": "System Health",
     "settings": "Settings",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "seoTitle": "Admin Dashboard"
   },
   "adminUsers": {
     "title": "User Management",
@@ -1690,7 +1970,8 @@
     "confirmDelete": "Delete this organization and all its data?",
     "invitedSuccess": "Organization leader invited successfully",
     "deleted": "Organization deleted",
-    "leaderChanged": "Leader changed successfully"
+    "leaderChanged": "Leader changed successfully",
+    "invitationCancelled": "Invitation cancelled"
   },
   "adminFraud": {
     "title": "Organization Review Queue",
@@ -1722,7 +2003,8 @@
     "riskHigh": "High",
     "riskMedium": "Medium",
     "riskLow": "Low",
-    "orgDecision": "Organization {{decision}}"
+    "orgDecision": "Organization {{decision}}",
+    "scanFailed": "Failed to run AI scan"
   },
   "adminTraining": {
     "title": "Training Courses (Autism)",
@@ -1740,7 +2022,8 @@
     "submitApprove": "Approve",
     "submitNeedsWork": "Mark needs clarification",
     "courseApproved": "Course approved",
-    "courseNeedsWork": "Course marked as needs clarification"
+    "courseNeedsWork": "Course marked as needs clarification",
+    "updateFailed": "Update failed"
   },
   "adminSystemHealth": {
     "title": "System Health & Compliance",
@@ -1775,6 +2058,8 @@
     "compAnalytics": "Analytics",
     "compSystemHealth": "System Health",
     "compSettings": "Settings",
+    "compAiEngine": "AI Engine",
+    "aiDebugLabel": "AI health endpoint response:",
     "fallbackTitle": "Degraded mode active",
     "aiFallbackSnapshot": "AI service is unavailable. Showing the latest known valid data.",
     "aiFallbackEstimate": "AI service is unavailable. Showing local estimates based on recent traffic.",
@@ -1885,7 +2170,8 @@
     "minutesAgo": "{{count}} minutes ago",
     "hoursAgo": "{{count}} hours ago",
     "daysAgo": "{{count}} days ago",
-    "anonymous": "Anonymous"
+    "anonymous": "Anonymous",
+    "na": "N/A"
   },
   "notFound": {
     "title": "Page Not Found",

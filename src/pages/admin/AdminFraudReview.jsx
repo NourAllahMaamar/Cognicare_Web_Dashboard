@@ -57,7 +57,7 @@ export default function AdminFraudReview() {
       setFraudAnalysis(result);
       setSuccess(t('adminFraud.runAiScan'));
     } catch (err) {
-      setError(err.message || 'Failed to run AI scan');
+      setError(err.message || t('adminFraud.scanFailed'));
       setFraudAnalysis(null);
     }
     setLoadingAnalysis(false);

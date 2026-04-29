@@ -54,7 +54,7 @@ function AdminLogin() {
     <div className="min-h-screen flex bg-bg-light dark:bg-bg-dark font-display">
       <SEOHead
         title="Admin Login"
-        description="Sign in to the CogniCare admin dashboard to manage users, organizations, and platform analytics."
+        description={t('adminLogin.seoDescription')}
         path="/admin/login"
       />
       {/* Left Branding Panel */}

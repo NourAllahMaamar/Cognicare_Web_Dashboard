@@ -187,12 +187,12 @@ export default function AdminAnalytics() {
           <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
             <span className="material-symbols-outlined text-lg flex-shrink-0">calendar_today</span>
             <span className="hidden sm:inline">{t('adminAnalytics.last30Days')}</span>
-            <span className="sm:hidden">Last 30 Days</span>
+            <span className="sm:hidden">{t('adminAnalytics.last30Days')}</span>
           </button>
           <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
             <span className="material-symbols-outlined text-lg flex-shrink-0">download</span>
             <span className="hidden sm:inline">{t('adminAnalytics.exportReport')}</span>
-            <span className="sm:hidden">Export</span>
+            <span className="sm:hidden">{t('adminAnalytics.exportReport')}</span>
           </button>
         </div>
       </div>

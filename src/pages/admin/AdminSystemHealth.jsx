@@ -368,7 +368,7 @@ export default function AdminSystemHealth() {
         >
           <span className="material-symbols-outlined text-lg flex-shrink-0">refresh</span>
           <span className="hidden sm:inline">{t('adminSystemHealth.refresh')}</span>
-          <span className="sm:hidden">Refresh</span>
+          <span className="sm:hidden">{t('adminSystemHealth.refresh')}</span>
         </button>
       </div>
 
@@ -450,7 +450,7 @@ export default function AdminSystemHealth() {
               <button onClick={exportCsv} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors">
                 <span className="material-symbols-outlined text-sm flex-shrink-0">download</span>
                 <span className="hidden sm:inline">{t('adminSystemHealth.exportCsv')}</span>
-                <span className="sm:hidden">Export</span>
+                <span className="sm:hidden">{t('adminSystemHealth.exportCsv')}</span>
               </button>
             </div>
 

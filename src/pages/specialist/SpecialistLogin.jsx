@@ -178,7 +178,7 @@ function SpecialistLogin() {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || 'Failed to send verification code');
             setCodeSent(true);
-            setSuccess('Verification code sent to your email');
+            setSuccess(t('specialistLogin.codeSentSuccess'));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -337,7 +337,7 @@ function SpecialistLogin() {
                                     <label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('orgLeaderLogin.email', 'Email')}</label>
                                     <input
                                         type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="specialist@cognicare.com" required autoComplete="email"
+                                        placeholder={t('specialistLogin.emailPlaceholder')} required autoComplete="email"
                                         className={inputCls}
                                     />
                                 </div>
@@ -400,11 +400,11 @@ function SpecialistLogin() {
                                     <>
                                         <div className="flex flex-col gap-1.5">
                                             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('orgLeaderLogin.fullName', 'Full Name')}</label>
-                                            <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" required className={inputCls} />
+                                            <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={t('specialistLogin.fullNamePlaceholder')} required className={inputCls} />
                                         </div>
                                         <div className="flex flex-col gap-1.5">
                                             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('orgLeaderLogin.email', 'Email')}</label>
-                                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="specialist@cognicare.com" required autoComplete="email" className={inputCls} />
+                                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('specialistLogin.emailPlaceholder')} required autoComplete="email" className={inputCls} />
                                         </div>
                                         <div className="flex flex-col gap-1.5">
                                             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('orgLeaderLogin.phone', 'Phone')} <span className="text-slate-400 font-normal">(optional)</span></label>
@@ -450,11 +450,11 @@ function SpecialistLogin() {
                                     <>
                                         <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
                                             <span className="material-symbols-outlined text-lg shrink-0">mail</span>
-                                            Verification code sent to your email
+                                            {t('specialistLogin.verificationCodeSent')}
                                         </div>
                                         <div className="flex flex-col gap-1.5">
-                                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Verification Code</label>
-                                            <input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} placeholder="000000" required maxLength={6}
+                                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t('specialistLogin.verificationCode')}</label>
+                                            <input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} placeholder={t('specialistLogin.verificationCodePlaceholder')} required maxLength={6}
                                                 className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm text-center tracking-[0.3em] font-mono text-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate-400 placeholder:tracking-[0.3em]" />
                                         </div>
                                         <button type="submit" disabled={loading}
@@ -465,7 +465,7 @@ function SpecialistLogin() {
                                         </button>
                                         <button type="button" onClick={() => { setCodeSent(false); setVerificationCode(''); }}
                                             className="text-sm text-primary font-medium hover:underline text-center">
-                                            ← Back to form
+                                            {t('specialistLogin.backToForm')}
                                         </button>
                                     </>
                                 )}
@@ -489,7 +489,7 @@ function SpecialistLogin() {
                         <div className="flex items-center justify-center gap-3 mt-6 text-xs text-slate-400">
                             <button onClick={() => navigate('/admin/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.adminLink', 'Admin Login')}</button>
                             <span>•</span>
-                            <button onClick={() => navigate('/org/login')} className="hover:text-primary transition-colors">Organization Login</button>
+                            <button onClick={() => navigate('/org/login')} className="hover:text-primary transition-colors">{t('specialistLogin.organizationLogin')}</button>
                         </div>
                     </div>
                 </div>

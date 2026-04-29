@@ -97,7 +97,7 @@ export default function AdminUsers() {
         <button onClick={() => { resetForm(); setShowModal(true); }} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-all">
           <span className="material-symbols-outlined text-lg">person_add</span>
           <span className="hidden sm:inline">{t('adminUsers.addUser')}</span>
-          <span className="sm:hidden">Add User</span>
+          <span className="sm:hidden">{t('adminUsers.addUser')}</span>
         </button>
       </div>
 
@@ -150,7 +150,7 @@ export default function AdminUsers() {
                 {u.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">phone</span><span className="truncate">{u.phone}</span></p>}
                 <p className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm flex-shrink-0">calendar_today</span>
-                  <span className="truncate">{t('adminUsers.joined')} {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</span>
+                  <span className="truncate">{t('adminUsers.joined')} {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : t('common.na')}</span>
                 </p>
               </div>
 

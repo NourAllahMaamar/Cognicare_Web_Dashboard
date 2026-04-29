@@ -80,12 +80,12 @@ export default function OrgInvitations() {
               </div>
 
               <div className="space-y-1.5 text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-3 md:mb-4">
-                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">schedule</span><span className="truncate">Sent: {dateFmt(inv.createdAt || inv.sentAt)}</span></p>
+                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">schedule</span><span className="truncate">{t('orgDashboard.invitations.sent')} {dateFmt(inv.createdAt || inv.sentAt)}</span></p>
                 {inv.expiresAt && (
                   <p className="flex items-center gap-2">
                     <span className={`material-symbols-outlined text-sm flex-shrink-0 ${isExpired(inv.expiresAt) ? 'text-error' : ''}`}>{isExpired(inv.expiresAt) ? 'timer_off' : 'timer'}</span>
-                    <span className="truncate">Expires: {dateFmt(inv.expiresAt)}</span>
-                    {isExpired(inv.expiresAt) && <span className="text-error text-xs font-bold ms-1">Expired</span>}
+                    <span className="truncate">{t('orgDashboard.invitations.expiresLabel')} {dateFmt(inv.expiresAt)}</span>
+                    {isExpired(inv.expiresAt) && <span className="text-error text-xs font-bold ms-1">{t('orgDashboard.invitations.expired')}</span>}
                   </p>
                 )}
               </div>

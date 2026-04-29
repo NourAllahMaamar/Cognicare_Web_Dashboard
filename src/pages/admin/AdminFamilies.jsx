@@ -218,7 +218,7 @@ export default function AdminFamilies() {
         <button onClick={openAddFamily} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
           <span className="material-symbols-outlined text-lg flex-shrink-0">add</span>
           <span className="hidden sm:inline">{t('adminFamilies.addFamily')}</span>
-          <span className="sm:hidden">Add Family</span>
+          <span className="sm:hidden">{t('adminFamilies.addFamily')}</span>
         </button>
       </div>
 

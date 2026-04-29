@@ -52,7 +52,7 @@ export default function OrgMarketplace() {
 
   const formatPrice = (price) => {
     if (!price) return t('marketplace.free', 'Free');
-    return `${price} TND`;
+    return `${price} ${t('orgDashboard.marketplace.currency')}`;
   };
 
   return (

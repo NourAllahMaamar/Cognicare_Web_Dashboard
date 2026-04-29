@@ -281,11 +281,11 @@ export default function OrgFamilies() {
               <>
                 <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
                 <div className="absolute right-0 left-0 sm:left-auto mt-2 sm:w-56 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
-                <button onClick={exportData} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Families</button>
-                <button onClick={() => openImport('families')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Families</button>
-                <button onClick={() => openImport('families_children')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Families + Children</button>
-                <button onClick={() => downloadTemplate('families')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Download Template</button>
-                <button onClick={() => downloadTemplate('families_children')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Families+Children Template</button>
+                <button onClick={exportData} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">{t('orgDashboard.families.exportFamilies')}</button>
+                <button onClick={() => openImport('families')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('orgDashboard.families.importFamilies')}</button>
+                <button onClick={() => openImport('families_children')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('orgDashboard.families.importFamiliesChildren')}</button>
+                <button onClick={() => downloadTemplate('families')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('orgDashboard.families.downloadTemplate')}</button>
+                <button onClick={() => downloadTemplate('families_children')} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">{t('orgDashboard.families.downloadFamiliesChildrenTemplate')}</button>
               </div>
               </>
             )}
@@ -335,12 +335,12 @@ export default function OrgFamilies() {
                 </div>
                 <div className="space-y-1.5 text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-3 md:mb-4">
                   {fam.phone && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">phone</span><span className="truncate">{fam.phone}</span></p>}
-                  <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">child_care</span>{fam.childrenCount ?? famChildren.length} children</p>
+                  <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">child_care</span>{fam.childrenCount ?? famChildren.length} {t('orgDashboard.families.children')}</p>
                   <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm flex-shrink-0">calendar_today</span>{dateFmt(fam.createdAt)}</p>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => openEdit(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('common.edit', 'Edit')}</button>
-                  <button onClick={() => setViewFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Children</button>
+                  <button onClick={() => setViewFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('orgDashboard.families.viewChildren')}</button>
                   <button onClick={() => handleDelete(fam)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg transition-colors">
                     <span className="material-symbols-outlined text-base md:text-sm">delete</span>
                   </button>
@@ -385,7 +385,7 @@ export default function OrgFamilies() {
                 <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-bold text-sm">{t('orgDashboard.children', 'Children')}</h4>
-                    <button onClick={addNewChild} className="text-xs text-primary font-bold hover:underline">+ Add Child</button>
+                    <button onClick={addNewChild} className="text-xs text-primary font-bold hover:underline">{t('orgDashboard.families.addChild')}</button>
                   </div>
 
                   {/* Existing children (edit mode) */}
@@ -397,11 +397,11 @@ export default function OrgFamilies() {
                     
                     return (
                     <div key={c._id} className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                      <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder="Name" className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder={t('common.name')} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <input type="date" value={(c.dateOfBirth || '').split('T')[0]} onChange={e => updateExistingChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender || 'male'} onChange={e => updateExistingChild(i, 'gender', e.target.value)} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="male">{t('common.male')}</option>
+                        <option value="female">{t('common.female')}</option>
                       </select>
                       <button onClick={() => markDeleteChild(c)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     </div>
@@ -417,11 +417,11 @@ export default function OrgFamilies() {
                     
                     return (
                     <div key={i} className="grid grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
-                      <input value={c.fullName} onChange={e => updateNewChild(i, 'fullName', e.target.value)} placeholder="Name *" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input value={c.fullName} onChange={e => updateNewChild(i, 'fullName', e.target.value)} placeholder={t('common.nameRequired')} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <input type="date" value={c.dateOfBirth} onChange={e => updateNewChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender} onChange={e => updateNewChild(i, 'gender', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="male">{t('common.male')}</option>
+                        <option value="female">{t('common.female')}</option>
                       </select>
                       <button onClick={() => removeNewChild(i)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     </div>
@@ -444,11 +444,11 @@ export default function OrgFamilies() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setViewFamily(null)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Children of {viewFamily.fullName}</h3>
+              <h3 className="text-lg font-bold">{t('orgDashboard.families.childrenOf', { name: viewFamily.fullName })}</h3>
               <button onClick={() => setViewFamily(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
             {allChildren.filter(c => childBelongsToFamily(c, viewFamily._id)).length === 0 ? (
-              <p className="text-center text-slate-400 py-8">No children</p>
+              <p className="text-center text-slate-400 py-8">{t('orgDashboard.families.noChildren')}</p>
             ) : (
               <div className="space-y-3">
                 {allChildren.filter(c => childBelongsToFamily(c, viewFamily._id)).map(child => (
@@ -473,7 +473,7 @@ export default function OrgFamilies() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowImport(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold">Import {importType === 'families_children' ? 'Families + Children' : 'Families'} "” Step {importStep}/3</h3>
+              <h3 className="text-lg font-bold">{t(importType === 'families_children' ? 'orgDashboard.families.importModal.titleFamiliesChildren' : 'orgDashboard.families.importModal.title', { step: importStep, total: 3 })}</h3>
               <button onClick={() => setShowImport(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
@@ -484,8 +484,8 @@ export default function OrgFamilies() {
                   <p className="text-sm font-medium">{importFile ? importFile.name : 'Drag & drop or click to upload'}</p>
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => setImportFile(e.target.files[0])} />
                 </div>
-                <div><label className="block text-sm font-bold mb-1.5">Default Password</label><input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder="Optional" className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm" /></div>
-                <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50">{importLoading ? 'Uploading...' : 'Upload & Preview'}</button>
+                <div><label className="block text-sm font-bold mb-1.5">{t('orgDashboard.families.importModal.defaultPassword')}</label><input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder={t('orgDashboard.families.importModal.defaultPasswordPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm" /></div>
+                <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50">{importLoading ? t('orgDashboard.families.importModal.importing') : t('orgDashboard.families.importModal.uploadPreview')}</button>
               </div>
             )}
 
@@ -494,7 +494,7 @@ export default function OrgFamilies() {
                 <p className="text-sm text-slate-500 mb-4">{importPreview.totalRows} rows found</p>
                 <div className="overflow-x-auto mb-4">
                   <table className="w-full text-sm">
-                    <thead><tr className="border-b border-slate-200 dark:border-slate-800"><th className="text-left p-2 text-xs font-bold text-slate-400">Excel Column</th><th className="text-left p-2 text-xs font-bold text-slate-400">Maps To</th><th className="text-left p-2 text-xs font-bold text-slate-400">Confidence</th></tr></thead>
+                    <thead><tr className="border-b border-slate-200 dark:border-slate-800"><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.families.importModal.excelColumn')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.families.importModal.mapsTo')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.families.importModal.confidence')}</th></tr></thead>
                     <tbody>
                       {importMappings.map((m, i) => (
                         <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50">
@@ -506,18 +506,18 @@ export default function OrgFamilies() {
                     </tbody>
                   </table>
                 </div>
-                <button onClick={handleExecuteImport} disabled={importLoading} className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50">{importLoading ? 'Importing...' : 'Execute Import'}</button>
+                <button onClick={handleExecuteImport} disabled={importLoading} className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50">{importLoading ? t('orgDashboard.families.importModal.importing') : t('orgDashboard.families.importModal.executeImport')}</button>
               </div>
             )}
 
             {importStep === 3 && importResult && (
               <div>
                 <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div className="p-4 bg-success/10 rounded-xl text-center"><p className="text-2xl font-black text-success">{importResult.created || 0}</p><p className="text-xs">Created</p></div>
-                  <div className="p-4 bg-amber-500/10 rounded-xl text-center"><p className="text-2xl font-black text-amber-500">{importResult.skipped || 0}</p><p className="text-xs">Skipped</p></div>
-                  <div className="p-4 bg-error/10 rounded-xl text-center"><p className="text-2xl font-black text-error">{importResult.errors?.length || 0}</p><p className="text-xs">Errors</p></div>
+                  <div className="p-4 bg-success/10 rounded-xl text-center"><p className="text-2xl font-black text-success">{importResult.created || 0}</p><p className="text-xs">{t('orgDashboard.families.importModal.created')}</p></div>
+                  <div className="p-4 bg-amber-500/10 rounded-xl text-center"><p className="text-2xl font-black text-amber-500">{importResult.skipped || 0}</p><p className="text-xs">{t('orgDashboard.families.importModal.skipped')}</p></div>
+                  <div className="p-4 bg-error/10 rounded-xl text-center"><p className="text-2xl font-black text-error">{importResult.errors?.length || 0}</p><p className="text-xs">{t('orgDashboard.families.importModal.errors')}</p></div>
                 </div>
-                <button onClick={() => setShowImport(false)} className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm">Done</button>
+                <button onClick={() => setShowImport(false)} className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm">{t('orgDashboard.families.importModal.done')}</button>
               </div>
             )}
           </div>

@@ -91,7 +91,7 @@ function OrgLeaderLogin() {
     <div className="min-h-screen flex bg-bg-light dark:bg-bg-dark font-display">
       <SEOHead
         title="Organization Login"
-        description="Sign in or register your organization on CogniCare to manage staff, families, and autism care programs."
+        description={t('orgLeaderLogin.seoDescription')}
         path="/org/login"
       />
       {/* Left Branding Panel */}
@@ -276,7 +276,7 @@ function OrgLeaderLogin() {
             <div className="flex items-center justify-center gap-3 mt-6 text-xs text-slate-400">
               <button onClick={() => navigate('/admin/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.adminLink', 'Admin Login')}</button>
               <span>•</span>
-              <button onClick={() => navigate('/specialist/login')} className="hover:text-primary transition-colors">Specialist Login</button>
+              <button onClick={() => navigate('/specialist/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.specialistLogin')}</button>
             </div>
           </div>
         </div>

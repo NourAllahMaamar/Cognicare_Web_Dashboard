@@ -48,10 +48,10 @@ export default function SpecialistChildren() {
   };
 
   const handleDeletePlan = async (plan) => {
-    if (!confirm('Delete this plan?')) return;
+    if (!confirm(t('specialistDashboard.children.confirmDelete'))) return;
     try {
       await authFetch(`/specialized-plans/${plan._id}`, { method: 'DELETE' });
-      setSuccess('Plan deleted');
+      setSuccess(t('specialistDashboard.messages.planDeleted'));
       if (selectedChild) selectChild(selectedChild);
     } catch (err) { setError(err.message); }
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
@@ -86,7 +86,7 @@ export default function SpecialistChildren() {
   const updateChild = (i, field, val) => { const nc = [...formChildren]; nc[i] = { ...nc[i], [field]: val }; setFormChildren(nc); };
 
   const handleCreateFamily = async () => {
-    if (!familyForm.fullName || !familyForm.email || !familyForm.password) { flash('Name, email, and password required', 'error'); return; }
+    if (!familyForm.fullName || !familyForm.email || !familyForm.password) { flash(t('specialistDashboard.messages.nameEmailPasswordRequired'), 'error'); return; }
     
     // Validate children age - must be at least 3 years old
     const threeYearsAgo = new Date();
@@ -96,7 +96,7 @@ export default function SpecialistChildren() {
       if (child.fullName && child.dateOfBirth) {
         const birthDate = new Date(child.dateOfBirth);
         if (birthDate > threeYearsAgo) {
-          flash(`Child "${child.fullName}" must be at least 3 years old`, 'error');
+          flash(t('specialistDashboard.messages.childMustBe3Years', { name: child.fullName }), 'error');
           return;
         }
       }
@@ -106,7 +106,7 @@ export default function SpecialistChildren() {
     try {
       const body = { ...familyForm, children: formChildren.filter(c => c.fullName) };
       await authMutate('/children/specialist/add-family', { body });
-      flash('Family created');
+      flash(t('specialistDashboard.messages.familyCreated'));
       setShowModal(false);
       loadChildren();
     } catch (err) { flash(err.message, 'error'); }
@@ -124,10 +124,10 @@ export default function SpecialistChildren() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">{t('specialistDashboard.tabs.children', 'Children')}</h2>
-          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{allChildren.length} total ({orgChildren.length} org, {privateChildren.length} private)</p>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{allChildren.length} {t('specialistDashboard.children.total')} ({orgChildren.length} {t('specialistDashboard.children.org')}, {privateChildren.length} {t('specialistDashboard.children.private')})</p>
         </div>
         <button onClick={openAddFamily} className="w-full sm:w-auto flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
-          <span className="material-symbols-outlined flex-shrink-0 text-lg">add</span> <span className="hidden sm:inline">Add Private Family</span><span className="sm:hidden">Add Family</span>
+          <span className="material-symbols-outlined flex-shrink-0 text-lg">add</span> <span className="hidden sm:inline">{t('specialistDashboard.children.addFamily')}</span><span className="sm:hidden">{t('specialistDashboard.children.addFamilyShort')}</span>
         </button>
       </div>
 
@@ -139,11 +139,11 @@ export default function SpecialistChildren() {
         <div className="lg:col-span-1 space-y-4">
           {/* Org Children */}
           <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase mb-2">{t('specialistDashboard.orgChildren', 'Organization Children')}</h3>
+            <h3 className="text-xs font-bold text-slate-400 uppercase mb-2">{t('specialistDashboard.children.orgChildren')}</h3>
             {loading ? (
               <div className="flex justify-center py-4"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" /></div>
             ) : orgChildren.length === 0 ? (
-              <p className="text-sm text-slate-400 p-3">No organization children</p>
+              <p className="text-sm text-slate-400 p-3">{t('specialistDashboard.children.noOrgChildren')}</p>
             ) : (
               <div className="space-y-2">
                 {orgChildren.map(child => (
@@ -161,9 +161,9 @@ export default function SpecialistChildren() {
 
           {/* Private Children */}
           <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase mb-2">{t('specialistDashboard.privatePatients', 'Private Patients')}</h3>
+            <h3 className="text-xs font-bold text-slate-400 uppercase mb-2">{t('specialistDashboard.children.privatePatients')}</h3>
             {privateChildren.length === 0 ? (
-              <p className="text-sm text-slate-400 p-3">No private patients</p>
+              <p className="text-sm text-slate-400 p-3">{t('specialistDashboard.children.noPrivatePatients')}</p>
             ) : (
               <div className="space-y-2">
                 {privateChildren.map(child => (
@@ -185,7 +185,7 @@ export default function SpecialistChildren() {
           {!selectedChild ? (
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-12 text-center text-slate-400">
               <span className="material-symbols-outlined text-5xl mb-3">child_care</span>
-              <p className="font-medium">Select a child to view details</p>
+              <p className="font-medium">{t('specialistDashboard.children.selectChild')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -202,19 +202,19 @@ export default function SpecialistChildren() {
                 {/* Action buttons */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   <button onClick={() => navigate(`/specialist/ai-recommendations/${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-primary/5 rounded-xl text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
-                    <span className="material-symbols-outlined text-lg">auto_awesome</span>AI Recs
+                    <span className="material-symbols-outlined text-lg">auto_awesome</span>{t('specialistDashboard.children.actions.aiRecs')}
                   </button>
                   <button onClick={() => navigate(`/specialist/pecs/create?childId=${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-blue-500/5 rounded-xl text-xs font-bold text-blue-500 hover:bg-blue-500/10 transition-colors">
-                    <span className="material-symbols-outlined text-lg">grid_view</span>PECS
+                    <span className="material-symbols-outlined text-lg">grid_view</span>{t('specialistDashboard.children.actions.pecs')}
                   </button>
                   <button onClick={() => navigate(`/specialist/teacch/create?childId=${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-purple-500/5 rounded-xl text-xs font-bold text-purple-500 hover:bg-purple-500/10 transition-colors">
-                    <span className="material-symbols-outlined text-lg">track_changes</span>TEACCH
+                    <span className="material-symbols-outlined text-lg">track_changes</span>{t('specialistDashboard.children.actions.teacch')}
                   </button>
                   <button onClick={() => navigate(`/specialist/skill-tracker?childId=${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-success/5 rounded-xl text-xs font-bold text-success hover:bg-success/10 transition-colors">
-                    <span className="material-symbols-outlined text-lg">insights</span>Skills
+                    <span className="material-symbols-outlined text-lg">insights</span>{t('specialistDashboard.children.actions.skills')}
                   </button>
                   <button onClick={() => navigate(`/specialist/activities?childId=${selectedChild._id}`)} className="flex items-center gap-2 p-2.5 bg-amber-500/5 rounded-xl text-xs font-bold text-amber-500 hover:bg-amber-500/10 transition-colors">
-                    <span className="material-symbols-outlined text-lg">sports_esports</span>Games
+                    <span className="material-symbols-outlined text-lg">sports_esports</span>{t('specialistDashboard.children.actions.games')}
                   </button>
                 </div>
               </div>
@@ -239,16 +239,16 @@ export default function SpecialistChildren() {
                 )}
 
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-bold">Plans ({childPlans.length})</h4>
+                  <h4 className="font-bold">{t('specialistDashboard.children.plans.title')} ({childPlans.length})</h4>
                   <div className="flex gap-1">
                     {['all', 'PECS', 'TEACCH', 'SkillTracker', 'Activity'].map(f => (
-                      <button key={f} onClick={() => setPlanFilter(f)} className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${planFilter === f ? 'bg-primary text-white' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{f === 'all' ? 'All' : f}</button>
+                      <button key={f} onClick={() => setPlanFilter(f)} className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${planFilter === f ? 'bg-primary text-white' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{f === 'all' ? t('specialistDashboard.children.plans.filterAll') : f}</button>
                     ))}
                   </div>
                 </div>
 
                 {filteredPlans.length === 0 ? (
-                  <p className="text-sm text-slate-400 text-center py-4">No plans found</p>
+                  <p className="text-sm text-slate-400 text-center py-4">{t('specialistDashboard.children.plans.empty')}</p>
                 ) : (
                   <div className="space-y-3">
                     {filteredPlans.map(plan => {
@@ -270,7 +270,7 @@ export default function SpecialistChildren() {
                             <div className="mt-2 space-y-1.5">
                               <div className="flex items-center gap-2 text-xs text-slate-500">
                                 <span className="material-symbols-outlined text-xs">grid_view</span>
-                                Phase {c.phase || '"”'} • {c.items.length} cards
+                                {t('specialistDashboard.children.pecs.phase')} {c.phase || '""'} • {c.items.length} {t('specialistDashboard.children.pecs.cards')}
                               </div>
                               <div className="flex gap-1 flex-wrap">
                                 {c.items.map((item, idx) => (
@@ -291,9 +291,9 @@ export default function SpecialistChildren() {
                           {plan.type === 'TEACCH' && c.goals && (
                             <div className="mt-2 space-y-1.5">
                               <div className="flex items-center gap-3 text-xs">
-                                <span className="text-success font-bold">{c.goals.filter(g => g.status === 'mastered').length} mastered</span>
-                                <span className="text-amber-500 font-bold">{c.goals.filter(g => g.status === 'in_progress').length} in progress</span>
-                                <span className="text-slate-400 font-bold">{c.goals.filter(g => g.status === 'not_started').length} not started</span>
+                                <span className="text-success font-bold">{c.goals.filter(g => g.status === 'mastered').length} {t('specialistDashboard.children.teacch.mastered')}</span>
+                                <span className="text-amber-500 font-bold">{c.goals.filter(g => g.status === 'in_progress').length} {t('specialistDashboard.children.teacch.inProgress')}</span>
+                                <span className="text-slate-400 font-bold">{c.goals.filter(g => g.status === 'not_started').length} {t('specialistDashboard.children.teacch.notStarted')}</span>
                               </div>
                               <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden flex">
                                 <div className="h-full bg-success transition-all" style={{ width: `${(c.goals.filter(g => g.status === 'mastered').length / c.goals.length) * 100}%` }} />
@@ -306,10 +306,10 @@ export default function SpecialistChildren() {
                           {plan.type === 'SkillTracker' && (
                             <div className="mt-2 space-y-1.5">
                               <div className="flex items-center gap-3 text-xs">
-                                <span className="text-slate-400">Baseline: {c.baselinePercent || 0}%</span>
-                                <span className={`font-bold ${(c.currentPercent || 0) >= (c.targetPercent || 80) ? 'text-success' : 'text-primary'}`}>Current: {c.currentPercent || 0}%</span>
-                                <span className="text-slate-400">Target: {c.targetPercent || 80}%</span>
-                                {c.mastered && <span className="text-success font-bold">ðŸ† Mastered</span>}
+                                <span className="text-slate-400">{t('specialistDashboard.children.skillTracker.baseline')} {c.baselinePercent || 0}%</span>
+                                <span className={`font-bold ${(c.currentPercent || 0) >= (c.targetPercent || 80) ? 'text-success' : 'text-primary'}`}>{t('specialistDashboard.children.skillTracker.current')} {c.currentPercent || 0}%</span>
+                                <span className="text-slate-400">{t('specialistDashboard.children.skillTracker.target')} {c.targetPercent || 80}%</span>
+                                {c.mastered && <span className="text-success font-bold">{t('specialistDashboard.children.skillTracker.mastered')}</span>}
                               </div>
                               <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                 <div className="absolute h-full bg-slate-300 dark:bg-slate-600 rounded-full" style={{ width: `${c.baselinePercent || 0}%` }} />
@@ -323,11 +323,11 @@ export default function SpecialistChildren() {
                           {plan.type === 'Activity' && (
                             <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                               {c.priority && (
-                                <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${c.priority === 'high' ? 'bg-error/10 text-error' : c.priority === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>{c.priority}</span>
+                                <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${c.priority === 'high' ? 'bg-error/10 text-error' : c.priority === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>{t(`specialistDashboard.children.priority.${c.priority}`)}</span>
                               )}
-                              {c.dueDate && <span className="text-slate-400">Due: {dateFmt(c.dueDate)}</span>}
-                              {c.materials?.length > 0 && <span className="text-slate-400">{c.materials.length} materials</span>}
-                              {c.parentInstructions && <span className="text-primary flex items-center gap-1"><span className="material-symbols-outlined text-xs">family_restroom</span>Has parent instructions</span>}
+                              {c.dueDate && <span className="text-slate-400">{t('specialistDashboard.children.activity.due')} {dateFmt(c.dueDate)}</span>}
+                              {c.materials?.length > 0 && <span className="text-slate-400">{c.materials.length} {t('specialistDashboard.children.activity.materials')}</span>}
+                              {c.parentInstructions && <span className="text-primary flex items-center gap-1"><span className="material-symbols-outlined text-xs">family_restroom</span>{t('specialistDashboard.children.activity.hasInstructions')}</span>}
                             </div>
                           )}
                         </div>
@@ -346,21 +346,21 @@ export default function SpecialistChildren() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-base md:text-lg font-bold">Add Private Family</h3>
+              <h3 className="text-base md:text-lg font-bold">{t('specialistDashboard.children.modal.title')}</h3>
               <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span className="material-symbols-outlined">close</span></button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-3">
-              <div><label className="block text-sm font-bold mb-1.5">Parent Name *</label><input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-              <div><label className="block text-sm font-bold mb-1.5">Email *</label><input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-              <div><label className="block text-sm font-bold mb-1.5">Phone</label><input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
-              <div><label className="block text-sm font-bold mb-1.5">Password *</label><input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">{t('specialistDashboard.children.modal.parentName')}</label><input value={familyForm.fullName} onChange={e => setFamilyForm({...familyForm, fullName: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">{t('specialistDashboard.children.modal.email')}</label><input type="email" value={familyForm.email} onChange={e => setFamilyForm({...familyForm, email: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">{t('specialistDashboard.children.modal.phone')}</label><input value={familyForm.phone} onChange={e => setFamilyForm({...familyForm, phone: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
+              <div><label className="block text-sm font-bold mb-1.5">{t('specialistDashboard.children.modal.password')}</label><input type="password" value={familyForm.password} onChange={e => setFamilyForm({...familyForm, password: e.target.value})} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" /></div>
             </div>
 
             <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="font-bold text-sm">Children</h4>
-                <button onClick={addChild} className="text-xs text-primary font-bold hover:underline">+ Add Child</button>
+                <h4 className="font-bold text-sm">{t('specialistDashboard.children.modal.children')}</h4>
+                <button onClick={addChild} className="text-xs text-primary font-bold hover:underline">{t('specialistDashboard.children.modal.addChild')}</button>
               </div>
               {formChildren.map((c, i) => {
                 // Calculate max date (3 years ago from today)
@@ -370,11 +370,11 @@ export default function SpecialistChildren() {
                 
                 return (
                 <div key={i} className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
-                  <input value={c.fullName} onChange={e => updateChild(i, 'fullName', e.target.value)} placeholder="Name *" className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                  <input value={c.fullName} onChange={e => updateChild(i, 'fullName', e.target.value)} placeholder={t('specialistDashboard.children.modal.childName')} className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                   <input type="date" value={c.dateOfBirth} onChange={e => updateChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                   <select value={c.gender} onChange={e => updateChild(i, 'gender', e.target.value)} className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="male">{t('specialistDashboard.children.modal.male')}</option>
+                    <option value="female">{t('specialistDashboard.children.modal.female')}</option>
                   </select>
                   <button onClick={() => removeChild(i)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                 </div>
@@ -383,8 +383,8 @@ export default function SpecialistChildren() {
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
-              <button onClick={handleCreateFamily} disabled={formLoading} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{formLoading ? 'Creating...' : 'Create Family'}</button>
+              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('specialistDashboard.children.modal.cancel')}</button>
+              <button onClick={handleCreateFamily} disabled={formLoading} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{formLoading ? t('specialistDashboard.children.modal.creating') : t('specialistDashboard.children.modal.create')}</button>
             </div>
           </div>
         </div>

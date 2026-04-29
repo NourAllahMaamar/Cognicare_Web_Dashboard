@@ -28,20 +28,40 @@ export default function OrgChildren() {
     if (!dob) return '"”';
     const diff = Date.now() - new Date(dob).getTime();
     const years = Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
-    return years > 0 ? `${years} yrs` : `${Math.floor(diff / (30.44 * 24 * 60 * 60 * 1000))} months`;
+    if (years > 0) {
+      return t('orgDashboard.children.yearsShort', { count: years });
+    }
+    const months = Math.floor(diff / (30.44 * 24 * 60 * 60 * 1000));
+    return t('orgDashboard.children.monthsShort', { count: months });
   };
 
   const downloadTemplate = async () => {
-    await exportTemplate(['Child Name', 'DOB', 'Gender', 'Parent Email', 'Diagnosis', 'Medical History', 'Allergies', 'Medications', 'Notes'], 'Children', 'cognicare_children_template.xlsx');
+    await exportTemplate([
+      t('orgDashboard.children.export.childName'),
+      t('orgDashboard.children.export.dob'),
+      t('orgDashboard.children.export.gender'),
+      t('orgDashboard.children.export.parentEmail'),
+      t('orgDashboard.children.export.diagnosis'),
+      t('orgDashboard.children.export.medicalHistory'),
+      t('orgDashboard.children.export.allergies'),
+      t('orgDashboard.children.export.medications'),
+      t('orgDashboard.children.export.notes')
+    ], 'Children', 'cognicare_children_template.xlsx');
     setShowDropdown(false);
   };
 
   const exportChildren = async () => {
     const data = children.map(c => ({
-      'Child Name': c.fullName, DOB: dateFmt(c.dateOfBirth), Gender: c.gender || '',
-      'Parent Name': c.parentId?.fullName || c.parentName || '', 'Parent Email': c.parentId?.email || c.parentEmail || '',
-      Diagnosis: c.diagnosis || '', 'Medical History': c.medicalHistory || '', Allergies: c.allergies || '',
-      Medications: c.medications || '', Notes: c.notes || ''
+      [t('orgDashboard.children.export.childName')]: c.fullName,
+      [t('orgDashboard.children.export.dob')]: dateFmt(c.dateOfBirth),
+      [t('orgDashboard.children.export.gender')]: c.gender || '',
+      [t('orgDashboard.children.export.parentName')]: c.parentId?.fullName || c.parentName || '',
+      [t('orgDashboard.children.export.parentEmail')]: c.parentId?.email || c.parentEmail || '',
+      [t('orgDashboard.children.export.diagnosis')]: c.diagnosis || '',
+      [t('orgDashboard.children.export.medicalHistory')]: c.medicalHistory || '',
+      [t('orgDashboard.children.export.allergies')]: c.allergies || '',
+      [t('orgDashboard.children.export.medications')]: c.medications || '',
+      [t('orgDashboard.children.export.notes')]: c.notes || ''
     }));
     await exportJson(data, 'Children', 'children_export.xlsx');
     setShowDropdown(false);
@@ -63,14 +83,14 @@ export default function OrgChildren() {
           <button onClick={() => setShowDropdown(!showDropdown)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800">
             <span className="material-symbols-outlined text-lg">import_export</span>
             <span className="hidden sm:inline">{t('common.importExport', 'Import/Export')}</span>
-            <span className="sm:hidden">Import/Export</span>
+            <span className="sm:hidden">{t('orgDashboard.children.importExport')}</span>
           </button>
           {showDropdown && (
             <>
               <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
               <div className="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 sm:w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
-                <button onClick={exportChildren} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Children</button>
-                <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
+                <button onClick={exportChildren} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">{t('orgDashboard.children.exportChildren')}</button>
+                <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">{t('orgDashboard.children.downloadTemplate')}</button>
               </div>
             </>
           )}

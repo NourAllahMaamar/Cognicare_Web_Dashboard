@@ -65,7 +65,7 @@ export default function AdminLayout() {
         user={user}
         onLogout={logout}
         headerActions={headerActions}
-        seoHead={<SEOHead title="Admin Dashboard" path="/admin/dashboard" noindex />}
+        seoHead={<SEOHead title={t('adminLayout.seoTitle')} path="/admin/dashboard" noindex />}
       >
         <Outlet />
       </SidebarLayout>

@@ -178,25 +178,25 @@ export default function OrgStaff() {
           <div className="relative">
             <button onClick={() => setShowDropdown(!showDropdown)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
               <span className="material-symbols-outlined text-lg">import_export</span>
-              <span className="hidden sm:inline">{t('common.importExport', 'Import/Export')}</span>
-              <span className="sm:hidden">Import/Export</span>
+              <span className="hidden sm:inline">{t('orgDashboard.staff.importExport')}</span>
+              <span className="sm:hidden">{t('orgDashboard.staff.importExport')}</span>
             </button>
             {showDropdown && (
               <>
                 {/* Backdrop for mobile */}
                 <div className="sm:hidden fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
                 <div className="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 sm:w-48 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 shadow-xl z-20">
-                  <button onClick={exportStaff} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">Export Staff</button>
-                  <button onClick={openImport} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Import Staff</button>
-                  <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">Download Template</button>
+                  <button onClick={exportStaff} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-t-xl">{t('orgDashboard.staff.exportStaff')}</button>
+                  <button onClick={openImport} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('orgDashboard.staff.importStaff')}</button>
+                  <button onClick={downloadTemplate} className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 rounded-b-xl">{t('orgDashboard.staff.downloadTemplate')}</button>
                 </div>
               </>
             )}
           </div>
           <button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-colors">
             <span className="material-symbols-outlined text-lg">add</span>
-            <span className="hidden sm:inline">{t('orgDashboard.addStaff', 'Add Staff')}</span>
-            <span className="sm:hidden">Add Staff</span>
+            <span className="hidden sm:inline">{t('orgDashboard.staff.addStaff')}</span>
+            <span className="sm:hidden">{t('orgDashboard.staff.addStaff')}</span>
           </button>
         </div>
       </div>
@@ -345,7 +345,7 @@ export default function OrgStaff() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowImport(false)}>
           <div className="bg-white dark:bg-surface-dark rounded-2xl p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 dark:border-slate-800" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4 md:mb-6">
-              <h3 className="text-base md:text-lg font-bold">Import Staff – Step {importStep}/3</h3>
+              <h3 className="text-base md:text-lg font-bold">{t('orgDashboard.staff.importModal.title', { step: importStep, total: 3 })}</h3>
               <button onClick={() => setShowImport(false)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 -mr-1"><span className="material-symbols-outlined text-xl">close</span></button>
             </div>
 
@@ -356,14 +356,14 @@ export default function OrgStaff() {
                   onDragOver={e => e.preventDefault()}
                   onDrop={e => { e.preventDefault(); setImportFile(e.dataTransfer.files[0]); }}>
                   <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">upload_file</span>
-                  <p className="text-xs md:text-sm font-medium break-words">{importFile ? importFile.name : 'Drag & drop or click to upload (.xlsx, .csv)'}</p>
+                  <p className="text-xs md:text-sm font-medium break-words">{importFile ? importFile.name : t('orgDashboard.staff.importModal.dragDrop')}</p>
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => setImportFile(e.target.files[0])} />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5">Default Password (for new accounts)</label>
-                  <input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder="Optional" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                  <label className="block text-sm font-bold mb-1.5">{t('orgDashboard.staff.importModal.defaultPassword')}</label>
+                  <input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder={t('orgDashboard.staff.importModal.defaultPasswordPlaceholder')} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                 </div>
-                <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-2.5 md:py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? 'Uploading...' : 'Upload & Preview'}</button>
+                <button onClick={handleUploadPreview} disabled={!importFile || importLoading} className="mt-4 w-full py-2.5 md:py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? t('orgDashboard.staff.importModal.importing') : t('orgDashboard.staff.importModal.uploadPreview')}</button>
               </div>
             )}
 
@@ -372,7 +372,7 @@ export default function OrgStaff() {
                 <p className="text-sm text-slate-500 mb-4">{importPreview.totalRows} rows found. Review column mappings:</p>
                 <div className="overflow-x-auto mb-4">
                   <table className="w-full text-sm">
-                    <thead><tr className="border-b border-slate-200 dark:border-slate-800"><th className="text-left p-2 text-xs font-bold text-slate-400">Excel Column</th><th className="text-left p-2 text-xs font-bold text-slate-400">Maps To</th><th className="text-left p-2 text-xs font-bold text-slate-400">Confidence</th><th className="text-left p-2 text-xs font-bold text-slate-400">Sample</th></tr></thead>
+                    <thead><tr className="border-b border-slate-200 dark:border-slate-800"><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.staff.importModal.excelColumn')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.staff.importModal.mapsTo')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.staff.importModal.confidence')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.staff.importModal.sample')}</th></tr></thead>
                     <tbody>
                       {importMappings.map((m, i) => (
                         <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50">
@@ -390,16 +390,16 @@ export default function OrgStaff() {
                     </tbody>
                   </table>
                 </div>
-                <button onClick={handleExecuteImport} disabled={importLoading} className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? 'Importing...' : 'Execute Import'}</button>
+                <button onClick={handleExecuteImport} disabled={importLoading} className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark disabled:opacity-50">{importLoading ? t('orgDashboard.staff.importModal.importing') : t('orgDashboard.staff.importModal.executeImport')}</button>
               </div>
             )}
 
             {importStep === 3 && importResult && (
               <div>
                 <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div className="p-4 bg-success/10 rounded-xl text-center"><p className="text-2xl font-black text-success">{importResult.created || 0}</p><p className="text-xs text-slate-500">Created</p></div>
-                  <div className="p-4 bg-amber-500/10 rounded-xl text-center"><p className="text-2xl font-black text-amber-500">{importResult.skipped || 0}</p><p className="text-xs text-slate-500">Skipped</p></div>
-                  <div className="p-4 bg-error/10 rounded-xl text-center"><p className="text-2xl font-black text-error">{importResult.errors?.length || 0}</p><p className="text-xs text-slate-500">Errors</p></div>
+                  <div className="p-4 bg-success/10 rounded-xl text-center"><p className="text-2xl font-black text-success">{importResult.created || 0}</p><p className="text-xs text-slate-500">{t('orgDashboard.staff.importModal.created')}</p></div>
+                  <div className="p-4 bg-amber-500/10 rounded-xl text-center"><p className="text-2xl font-black text-amber-500">{importResult.skipped || 0}</p><p className="text-xs text-slate-500">{t('orgDashboard.staff.importModal.skipped')}</p></div>
+                  <div className="p-4 bg-error/10 rounded-xl text-center"><p className="text-2xl font-black text-error">{importResult.errors?.length || 0}</p><p className="text-xs text-slate-500">{t('orgDashboard.staff.importModal.errors')}</p></div>
                 </div>
                 {importResult.errors?.length > 0 && (
                   <div className="max-h-40 overflow-y-auto space-y-1">
@@ -408,7 +408,7 @@ export default function OrgStaff() {
                     ))}
                   </div>
                 )}
-                <button onClick={() => setShowImport(false)} className="mt-4 w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">Done</button>
+                <button onClick={() => setShowImport(false)} className="mt-4 w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{t('orgDashboard.staff.importModal.done')}</button>
               </div>
             )}
           </div>

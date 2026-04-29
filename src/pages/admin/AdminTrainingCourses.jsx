@@ -54,7 +54,7 @@ export default function AdminTrainingCourses() {
       setReviewing(null);
       loadData();
     } catch (err) {
-      setError(err.message || 'Update failed');
+      setError(err.message || t('adminTraining.updateFailed'));
     }
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };

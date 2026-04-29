@@ -140,7 +140,7 @@ export default function OrgCommunity() {
                 <div className="mb-3 md:mb-4 rounded-lg overflow-hidden">
                   <img 
                     src={post.imageUrl} 
-                    alt={post.title || 'Post image'}
+                    alt={post.title || t('orgDashboard.community.postImageAlt')}
                     className="w-full h-48 sm:h-56 md:h-64 object-cover"
                   />
                 </div>

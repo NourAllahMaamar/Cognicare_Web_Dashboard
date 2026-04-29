@@ -83,7 +83,8 @@
     "backToHome": "العودة إلى الرئيسية",
     "accessDenied": "تم رفض الوصول. مطلوب امتيازات المدير.",
     "loginFailed": "فشل تسجيل الدخول",
-    "organizationPendingApproval": "تم تقديم طلب منظمتك بنجاح. يرجى انتظار موافقة المسؤول. ستتلقى إشعاراً عبر البريد الإلكتروني بمجرد مراجعة طلبك."
+    "organizationPendingApproval": "تم تقديم طلب منظمتك بنجاح. يرجى انتظار موافقة المسؤول. ستتلقى إشعاراً عبر البريد الإلكتروني بمجرد مراجعة طلبك.",
+    "seoDescription": "سجل الدخول إلى لوحة تحكم المسؤول في CogniCare لإدارة المستخدمين والمنظمات وتحليلات المنصة."
   },
   "orgLeaderLogin": {
     "title": "تسجيل دخول قائد المنظمة",
@@ -128,7 +129,9 @@
     "optional": "اختياري",
     "pdfOnly": "يُسمح فقط بملفات PDF",
     "fileTooLarge": "يجب أن يكون حجم الملف أقل من 10 ميغابايت",
-    "certificateHint": "قم بتحميل شهادة التسجيل الرسمية لمنظمتك للكشف عن الاحتيال بالذكاء الاصطناعي (مطلوبة للموافقة)"
+    "certificateHint": "قم بتحميل شهادة التسجيل الرسمية لمنظمتك للكشف عن الاحتيال بالذكاء الاصطناعي (مطلوبة للموافقة)",
+    "specialistLogin": "تسجيل دخول المختص",
+    "seoDescription": "سجل الدخول أو سجل مؤسستك على CogniCare لإدارة الموظفين والعائلات وبرامج رعاية التوحد."
   },
   "specialistLogin": {
     "title": "تسجيل دخول المتخصص",
@@ -164,7 +167,15 @@
     "googleSignIn": "تسجيل الدخول بواسطة Google",
     "googleSignUp": "التسجيل بواسطة Google",
     "loadingGoogle": "جاري تحميل Google Sign-In...",
-    "googleUnavailable": "تسجيل الدخول بـ Google غير متاح (لم يتم تكوين معرف العميل)"
+    "googleUnavailable": "تسجيل الدخول بـ Google غير متاح (لم يتم تكوين معرف العميل)",
+    "verificationCodeSent": "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
+    "verificationCode": "رمز التحقق",
+    "verificationCodePlaceholder": "000000",
+    "backToForm": "→ العودة إلى النموذج",
+    "organizationLogin": "تسجيل دخول المنظمة",
+    "fullNamePlaceholder": "اسمك الكامل",
+    "emailPlaceholder": "specialist@cognicare.com",
+    "codeSentSuccess": "تم إرسال رمز التحقق إلى بريدك الإلكتروني"
   },
   "orgDashboard": {
     "title": "لوحة إدارة المنظمة",
@@ -250,6 +261,30 @@
       },
       "table": {
         "status": "حالة الحساب"
+      },
+      "importExport": "استيراد/تصدير",
+      "exportStaff": "تصدير الموظفين",
+      "importStaff": "استيراد الموظفين",
+      "downloadTemplate": "تنزيل النموذج",
+      "addStaff": "إضافة موظف",
+      "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الدور...",
+      "importModal": {
+        "title": "استيراد الموظفين من Excel",
+        "dragDrop": "اسحب وأفلت ملف Excel هنا، أو انقر للتصفح",
+        "defaultPassword": "كلمة المرور الافتراضية (للحسابات الجديدة)",
+        "defaultPasswordPlaceholder": "اختياري - اتركه فارغًا للتوليد التلقائي",
+        "columnMapping": "تعيين الأعمدة",
+        "excelColumn": "عمود Excel",
+        "mapsTo": "يعين إلى",
+        "confidence": "الثقة",
+        "sample": "نموذج",
+        "importButton": "استيراد {{count}} موظف",
+        "importing": "جاري الاستيراد...",
+        "results": "نتائج الاستيراد",
+        "created": "تم الإنشاء",
+        "skipped": "تم التخطي",
+        "errors": "أخطاء",
+        "done": "تم"
       }
     },
     "modal": {
@@ -334,7 +369,36 @@
       "accountCreated": "تم إنشاء حساب العائلة بنجاح!",
       "noPhone": "غير متوفر",
       "emptyState": "لا توجد عائلات مسجلة بعد",
-      "editTitle": "تعديل بيانات العائلة"
+      "editTitle": "تعديل بيانات العائلة",
+      "importExport": "استيراد/تصدير",
+      "exportFamilies": "تصدير العائلات",
+      "importFamilies": "استيراد العائلات",
+      "importFamiliesChildren": "استيراد العائلات + الأطفال",
+      "downloadTemplate": "تنزيل النموذج",
+      "downloadFamiliesChildrenTemplate": "تنزيل نموذج العائلات+الأطفال",
+      "addFamily": "إضافة عائلة",
+      "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني...",
+      "childrenLabel": "أطفال",
+      "childrenButton": "الأطفال",
+      "noChildren": "لا يوجد أطفال",
+      "importModal": {
+        "title": "استيراد العائلات من Excel",
+        "dragDrop": "اسحب وأفلت ملف Excel هنا، أو انقر للتصفح",
+        "defaultPassword": "كلمة المرور الافتراضية (للحسابات الجديدة)",
+        "defaultPasswordPlaceholder": "اختياري - اتركه فارغًا للتوليد التلقائي",
+        "columnMapping": "تعيين الأعمدة",
+        "excelColumn": "عمود Excel",
+        "mapsTo": "يعين إلى",
+        "confidence": "الثقة",
+        "sample": "نموذج",
+        "importButton": "استيراد {{count}} عائلة",
+        "importing": "جاري الاستيراد...",
+        "results": "نتائج الاستيراد",
+        "created": "تم الإنشاء",
+        "skipped": "تم التخطي",
+        "errors": "أخطاء",
+        "done": "تم"
+      }
     },
     "children": {
       "title": "الأطفال تحت الرعاية",
@@ -350,7 +414,24 @@
       "emptyState": "لا يوجد أطفال مسجلين بعد",
       "ageYears": "{{count}} سنوات",
       "ageYear": "{{count}} سنة",
-      "yearsOld": "سنوات"
+      "yearsOld": "سنوات",
+      "yearsShort": "{{count}} سنة",
+      "monthsShort": "{{count}} شهر",
+      "importExport": "استيراد/تصدير",
+      "exportChildren": "تصدير الأطفال",
+      "downloadTemplate": "تنزيل النموذج",
+      "export": {
+        "childName": "اسم الطفل",
+        "dob": "تاريخ الميلاد",
+        "gender": "الجنس",
+        "parentName": "اسم الوالد",
+        "parentEmail": "بريد الوالد الإلكتروني",
+        "diagnosis": "التشخيص",
+        "medicalHistory": "التاريخ الطبي",
+        "allergies": "الحساسية",
+        "medications": "الأدوية",
+        "notes": "ملاحظات"
+      }
     },
     "invitations": {
       "title": "الدعوات المعلقة",
@@ -365,7 +446,9 @@
       "family": "عائلة",
       "expired": "منتهية",
       "cancel": "إلغاء",
-      "cancelConfirm": "هل أنت متأكد أنك تريد إلغاء هذه الدعوة؟"
+      "cancelConfirm": "هل أنت متأكد أنك تريد إلغاء هذه الدعوة؟",
+      "sent": "تم الإرسال:",
+      "expiresLabel": "تنتهي في:"
     },
     "importExport": {
       "import": "استيراد",
@@ -453,11 +536,13 @@
     "community": {
       "title": "خلاصة المجتمع",
       "subtitle": "تواصل مع العائلات والمتخصصين ومقدمي الرعاية",
-      "noPosts": "لا توجد منشورات بعد"
+      "noPosts": "لا توجد منشورات بعد",
+      "postImageAlt": "صورة المنشور"
     },
     "marketplace": {
       "title": "السوق",
-      "subtitle": "تصفح الأدوات والموارد التعليمية"
+      "subtitle": "تصفح الأدوات والموارد التعليمية",
+      "currency": "دينار"
     },
     "onboarding": {
       "welcome": {
@@ -798,12 +883,112 @@
       "addSuccess": "تم إضافة الطفل بنجاح!",
       "inviteNotSupported": "دعوة العائلات الموجودة غير مدعومة حالياً للممارسة الخاصة.",
       "childNotFound": "الطفل غير موجود.",
-      "fetchError": "فشل تحميل الطفل."
+      "fetchError": "فشل تحميل الطفل.",
+      "nameEmailPasswordRequired": "الاسم والبريد الإلكتروني وكلمة المرور مطلوبة",
+      "childMustBe3Years": "يجب أن يكون عمر الطفل \"{{name}}\" 3 سنوات على الأقل",
+      "familyCreated": "تم إنشاء العائلة",
+      "planDeleted": "تم حذف الخطة",
+      "deleted": "تم الحذف"
+    },
+    "children": {
+      "total": "المجموع",
+      "org": "المنظمة",
+      "private": "خاص",
+      "addFamily": "إضافة عائلة خاصة",
+      "addFamilyShort": "إضافة عائلة",
+      "orgChildren": "أطفال المنظمة",
+      "privatePatients": "المرضى الخاصون",
+      "noOrgChildren": "لا يوجد أطفال منظمة",
+      "noPrivatePatients": "لا يوجد مرضى خاصون",
+      "selectChild": "اختر طفلاً لعرض التفاصيل",
+      "confirmDelete": "حذف هذه الخطة؟",
+      "actions": {
+        "aiRecs": "توصيات الذكاء الاصطناعي",
+        "pecs": "PECS",
+        "teacch": "TEACCH",
+        "skills": "المهارات",
+        "games": "الألعاب"
+      },
+      "plans": {
+        "title": "الخطط",
+        "filterAll": "الكل",
+        "empty": "لم يتم العثور على خطط"
+      },
+      "pecs": {
+        "phase": "المرحلة",
+        "cards": "بطاقات"
+      },
+      "teacch": {
+        "mastered": "متقن",
+        "inProgress": "قيد التقدم",
+        "notStarted": "لم يبدأ"
+      },
+      "skillTracker": {
+        "baseline": "الأساس:",
+        "current": "الحالي:",
+        "target": "الهدف:",
+        "mastered": "🏆 متقن"
+      },
+      "activity": {
+        "due": "الموعد النهائي:",
+        "materials": "مواد",
+        "hasInstructions": "يحتوي على تعليمات للوالدين"
+      },
+      "priority": {
+        "high": "عالية",
+        "medium": "متوسطة",
+        "low": "منخفضة"
+      },
+      "modal": {
+        "title": "إضافة عائلة خاصة",
+        "parentName": "اسم الوالد *",
+        "email": "البريد الإلكتروني *",
+        "phone": "الهاتف",
+        "password": "كلمة المرور *",
+        "children": "الأطفال",
+        "addChild": "+ إضافة طفل",
+        "childName": "الاسم *",
+        "male": "ذكر",
+        "female": "أنثى",
+        "cancel": "إلغاء",
+        "creating": "جاري الإنشاء...",
+        "create": "إنشاء العائلة",
+        "childAgeTip": "يجب أن يكون عمر الطفل 3 سنوات على الأقل"
+      }
+    },
+    "myPlans": {
+      "totalPlans": "مجموع الخطط",
+      "refresh": "تحديث",
+      "filterAll": "الكل",
+      "empty": "لم يتم العثور على خطط",
+      "confirmDelete": "حذف هذه الخطة؟",
+      "deleted": "تم حذف الخطة",
+      "pecs": {
+        "boardItems": "عناصر لوحة PECS"
+      },
+      "teacch": {
+        "workSystem": "نظام العمل",
+        "whatToDo": "ماذا أفعل",
+        "howMuch": "كم",
+        "whenDone": "متى ينتهي",
+        "whatNext": "ما التالي",
+        "goals": "الأهداف"
+      },
+      "skillTracker": {
+        "title": "متتبع المهارات",
+        "trials": "محاولات",
+        "progress": "التقدم"
+      },
+      "activity": {
+        "title": "خطة النشاط",
+        "due": "الموعد النهائي:",
+        "statusCompleted": "مكتمل",
+        "statusInProgress": "قيد التقدم"
+      }
     },
     "brand": "الأخصائي",
     "subtitle": "مجموعة المختصين",
     "welcome": "مرحباً بك",
-    "myPlans": "خططي",
     "noPlans": "لا توجد خطط",
     "addFamily": "إضافة عائلة",
     "orgChildren": "أطفال المنظمة",
@@ -845,6 +1030,7 @@
     "approved": "الموافقة على",
     "denied": "رفض",
     "openInNewTab": "فتح في علامة تبويب جديدة",
+    "docPreview": "معاينة المستند",
     "roles": {
       "caregiver": "مقدم رعاية",
       "psychologist": "أخصائي نفسي",
@@ -1126,7 +1312,101 @@
     },
     "cta": {
       "title": "هل أنت مستعد لتحويل الرعاية الإدراكية؟",
-      "subtitle": "انضم إلى مئات المنظمات والمهنيين الذين يستفيدون من CogniCare لتقديم خدمات صحية إدراكية أفضل وأكثر كفاءة."
+      "subtitle": "انضم إلى مئات المنظمات والمهنيين الذين يستفيدون من CogniCare لتقديم خدمات صحية إدراكية أفضل وأكثر كفاءة.",
+      "contact": "اتصل بالمبيعات"
+    },
+    "slides": {
+      "admin": {
+        "title": "لوحة تحكم المسؤول",
+        "subtitle": "تحليلات ومراقبة على مستوى النظام",
+        "stats": {
+          "users": { "value": "2.4K", "label": "المستخدمون" },
+          "orgs": { "value": "120", "label": "المؤسسات" },
+          "uptime": { "value": "98%", "label": "وقت التشغيل" }
+        }
+      },
+      "pecs": {
+        "title": "لوحة PECS",
+        "subtitle": "التواصل بتبادل الصور",
+        "badges": {
+          "phase": "المرحلة الثالثة",
+          "cards": "6 بطاقات",
+          "mastered": "🏆 2 محترفة"
+        }
+      },
+      "org": {
+        "title": "بوابة المؤسسة",
+        "subtitle": "إدارة الموظفين والعائلات",
+        "stats": {
+          "staff": { "value": "48", "label": "الموظفون" },
+          "families": { "value": "86", "label": "العائلات" },
+          "children": { "value": "152", "label": "الأطفال" }
+        }
+      },
+      "ai": {
+        "title": "رؤى الذكاء الاصطناعي",
+        "subtitle": "تحليل ذكي للأنماط",
+        "badges": {
+          "pattern": "تحليل الأنماط",
+          "detection": "الكشف المبكر",
+          "alerts": "تنبيهات ذكية"
+        }
+      }
+    },
+    "release": {
+      "android": {
+        "comingSoon": "قريبًا",
+        "preparing": "إصدار أندرويد التجريبي قيد التحضير.",
+        "checkingRelease": "التحقق من الإصدار",
+        "pilot": "أندرويد تجريبي",
+        "preparingDownload": "جاري تحضير التنزيل…",
+        "downloadComingSoon": "التنزيل قريبًا",
+        "buildPending": "بناء أندرويد قيد الانتظار",
+        "checkingManifest": "جاري التحقق من بيان أحدث إصدار أندرويد الآن.",
+        "versionPublished": "الإصدار {{version}} منشور وجاهز للتنزيل المباشر."
+      },
+      "ios": {
+        "comingSoon": "قريبًا",
+        "notes": "سيتم توزيع iOS بعد إعداد متجر التطبيقات."
+      }
+    },
+    "downloadSection": {
+      "title": "الوصول التجريبي للويب وأندرويد",
+      "subtitle": "يمكن للمؤسسات والمختصين والمسؤولين الوصول إلى CogniCare مباشرة من هذا الموقع، بينما يمكن للعائلات تثبيت إصدار أندرويد التجريبي الحالي من نفس نقطة الدخول العامة.",
+      "get": "احصل على التطبيق",
+      "downloadApk": "تنزيل APK",
+      "availableSoon": "متاح قريبًا لأندرويد. إصدار iOS قادم لاحقًا.",
+      "android": {
+        "platform": "أندرويد",
+        "title": "إصدار تجريبي للموبايل",
+        "downloadButton": "تنزيل أندرويد"
+      },
+      "web": {
+        "platform": "الويب",
+        "title": "لوحات تحكم حسب الدور",
+        "description": "نفس الموقع العام هو نقطة الوصول التجريبية لقادة المنظمات والمختصين والمسؤولين. اختر دور الدخول الذي يتطابق مع حساب الاختبار الخاص بك وقم بتسجيل الدخول مباشرة هنا.",
+        "orgLogin": "تسجيل دخول المؤسسة",
+        "specialistLogin": "تسجيل دخول المختص"
+      },
+      "ios": {
+        "platform": "iOS",
+        "title": "قادم لاحقًا"
+      }
+    },
+    "roles": {
+      "org": "بوابة قائد المؤسسة",
+      "orgDesc": "إشراف استراتيجي رفيع المستوى، تخصيص الموارد، وإدارة أداء المؤسسة.",
+      "pro": "مجموعة المحترفين",
+      "proDesc": "أدوات سريرية متخصصة لرعاية المرضى المعمقة، التقييمات الآلية، والتخطيط العلاجي.",
+      "admin": "وحدة التحكم الإدارية",
+      "adminDesc": "ضوابط نظام قوية، مراقبة أمنية دقيقة، وإدارة أذونات المستخدمين."
+    },
+    "learnMore": "ابدأ الآن",
+    "footerLinks": {
+      "privacy": "الخصوصية",
+      "terms": "الشروط",
+      "contact": "اتصل بنا",
+      "copyright": "© 2026 CogniCare. جميع الحقوق محفوظة."
     }
   },
   "activitiesCreator": {
@@ -1615,7 +1895,8 @@
     "analytics": "التحليلات",
     "systemHealth": "صحة النظام",
     "settings": "الإعدادات",
-    "refresh": "تحديث"
+    "refresh": "تحديث",
+    "seoTitle": "لوحة التحكم الإدارية"
   },
   "adminUsers": {
     "title": "إدارة المستخدمين",
@@ -1690,7 +1971,8 @@
     "confirmDelete": "هل تريد حذف هذه المنظمة وجميع بياناتها؟",
     "invitedSuccess": "تمت دعوة قائد المنظمة بنجاح",
     "deleted": "تم حذف المنظمة",
-    "leaderChanged": "تم تغيير القائد بنجاح"
+    "leaderChanged": "تم تغيير القائد بنجاح",
+    "invitationCancelled": "تم إلغاء الدعوة"
   },
   "adminFraud": {
     "title": "قائمة مراجعة المنظمات",
@@ -1722,7 +2004,8 @@
     "riskHigh": "مرتفع",
     "riskMedium": "متوسط",
     "riskLow": "منخفض",
-    "orgDecision": "المنظمة {{decision}}"
+    "orgDecision": "المنظمة {{decision}}",
+    "scanFailed": "فشل تشغيل مسح الذكاء الاصطناعي"
   },
   "adminTraining": {
     "title": "دورات التدريب (التوحد)",
@@ -1740,7 +2023,8 @@
     "submitApprove": "موافقة",
     "submitNeedsWork": "تحديد كيحتاج توضيحاً",
     "courseApproved": "تمت الموافقة على الدورة",
-    "courseNeedsWork": "تم تحديد الدورة كتحتاج توضيحاً"
+    "courseNeedsWork": "تم تحديد الدورة كتحتاج توضيحاً",
+    "updateFailed": "فشل التحديث"
   },
   "adminSystemHealth": {
     "title": "صحة النظام والامتثال",
@@ -1775,6 +2059,8 @@
     "compAnalytics": "التحليلات",
     "compSystemHealth": "صحة النظام",
     "compSettings": "الإعدادات",
+    "compAiEngine": "محرك الذكاء الاصطناعي",
+    "aiDebugLabel": "استجابة نقطة نهاية الذكاء الاصطناعي:",
     "fallbackTitle": "وضع متدهور مفعل",
     "aiFallbackSnapshot": "خدمة الذكاء الاصطناعي غير متاحة. يتم عرض آخر بيانات صالحة.",
     "aiFallbackEstimate": "خدمة الذكاء الاصطناعي غير متاحة. يتم عرض تقديرات محلية من حركة المرور الأخيرة.",
@@ -1885,7 +2171,8 @@
     "hoursAgo": "منذ {{count}} ساعة",
     "daysAgo": "منذ {{count}} يوم",
     "loadMore": "تحميل المزيد",
-    "anonymous": "مجهول"
+    "anonymous": "مجهول",
+    "na": "غير متاح"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",

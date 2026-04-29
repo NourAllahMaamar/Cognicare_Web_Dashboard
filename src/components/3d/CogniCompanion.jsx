@@ -23,7 +23,17 @@ const SECTION_ANCHORS = [
   { id: 'footer', x: 50, y: 88, tip: '💜 Let\'s stay connected!', pose: COGNI_POSES.INTERACTION_B, sectionId: 'section-footer' },
 ];
 
-const COMPANION_SIZE = 310;
+// Responsive companion size based on viewport width
+const getCompanionSize = () => {
+  if (typeof window === 'undefined') return 310;
+  const vw = window.innerWidth;
+  if (vw < 520) return 0; // Hidden on very small screens (handled by CSS)
+  if (vw < 768) return 200; // Smaller on tablets
+  if (vw < 1024) return 250; // Medium on small laptops
+  return 310; // Full size on desktop
+};
+
+const COMPANION_SIZE = 310; // Default for SSR
 
 /* ─── Enhanced Speech Bubble with animations ─── */
 function SpeechBubble({ text, visible }) {
@@ -63,6 +73,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [cursorVelocity, setCursorVelocity] = useState({ x: 0, y: 0 });
   const [orbitTick, setOrbitTick] = useState(0);
+  const [companionSize, setCompanionSize] = useState(() => getCompanionSize());
   
   const containerRef = useRef(null);
   const tipTimer = useRef(null);
@@ -75,12 +86,28 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   // Compute pixel position from viewport-percentage anchor
   const getAnchorPosition = useCallback((anchorIndex) => {
     const anchor = SECTION_ANCHORS[anchorIndex] || SECTION_ANCHORS[0];
-    const anchorX = isRtl ? (100 - anchor.x) : anchor.x;
+    const safeMargin = 10; // Minimum distance from viewport edge
+    const size = companionSize;
+    
+    // Calculate X position with proper RTL handling
+    let x;
+    if (isRtl) {
+      // For RTL: mirror the position from the right edge
+      const mirroredX = 100 - anchor.x;
+      x = (mirroredX / 100) * window.innerWidth - size / 2;
+    } else {
+      // For LTR: normal positioning from left
+      x = (anchor.x / 100) * window.innerWidth - size / 2;
+    }
+    
+    const y = (anchor.y / 100) * window.innerHeight - size / 2;
+    
+    // Clamp position to ensure companion stays within viewport bounds
     return {
-      x: (anchorX / 100) * window.innerWidth - COMPANION_SIZE / 2,
-      y: (anchor.y / 100) * window.innerHeight - COMPANION_SIZE / 2,
+      x: Math.max(safeMargin, Math.min(x, window.innerWidth - size - safeMargin)),
+      y: Math.max(safeMargin, Math.min(y, window.innerHeight - size - safeMargin)),
     };
-  }, [isRtl]);
+  }, [isRtl, companionSize]);
 
   // ─── Handle zone changes ───
   const handleZoneChange = useCallback((zone) => {
@@ -124,6 +151,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     return `👀 ${label}`;
   }, [focusTarget]);
 
+  // ─── Track Cursor for 3D Character ───
   // ─── Track Cursor for 3D Character ───
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -171,38 +199,39 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       bottom: rect.bottom + targetBuffer,
     };
 
+    const size = companionSize;
     const candidatePositions = [
       {
         x: rect.right + pad,
-        y: rect.top + rect.height / 2 - COMPANION_SIZE / 2,
+        y: rect.top + rect.height / 2 - size / 2,
       },
       {
-        x: rect.left - COMPANION_SIZE - pad,
-        y: rect.top + rect.height / 2 - COMPANION_SIZE / 2,
+        x: rect.left - size - pad,
+        y: rect.top + rect.height / 2 - size / 2,
       },
       {
-        x: rect.left + rect.width / 2 - COMPANION_SIZE / 2,
+        x: rect.left + rect.width / 2 - size / 2,
         y: rect.bottom + pad,
       },
       {
-        x: rect.left + rect.width / 2 - COMPANION_SIZE / 2,
-        y: rect.top - COMPANION_SIZE - pad,
+        x: rect.left + rect.width / 2 - size / 2,
+        y: rect.top - size - pad,
       },
       {
         x: rect.right + pad,
         y: rect.bottom + pad,
       },
       {
-        x: rect.left - COMPANION_SIZE - pad,
+        x: rect.left - size - pad,
         y: rect.bottom + pad,
       },
       {
         x: rect.right + pad,
-        y: rect.top - COMPANION_SIZE - pad,
+        y: rect.top - size - pad,
       },
       {
-        x: rect.left - COMPANION_SIZE - pad,
-        y: rect.top - COMPANION_SIZE - pad,
+        x: rect.left - size - pad,
+        y: rect.top - size - pad,
       },
     ];
 
@@ -234,14 +263,14 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     ];
 
     const clampPos = (p) => ({
-      x: Math.max(safeMargin, Math.min(p.x, viewportWidth - COMPANION_SIZE - safeMargin)),
-      y: Math.max(safeMargin, Math.min(p.y, viewportHeight - COMPANION_SIZE - safeMargin)),
+      x: Math.max(safeMargin, Math.min(p.x, viewportWidth - size - safeMargin)),
+      y: Math.max(safeMargin, Math.min(p.y, viewportHeight - size - safeMargin)),
     });
 
     const overlapsTarget = (p) => !(
-      p.x + COMPANION_SIZE < bufferedRect.left ||
+      p.x + size < bufferedRect.left ||
       p.x > bufferedRect.right ||
-      p.y + COMPANION_SIZE < bufferedRect.top ||
+      p.y + size < bufferedRect.top ||
       p.y > bufferedRect.bottom
     );
 
@@ -260,8 +289,8 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       const targetLeftHalf = targetCenterX < viewportWidth / 2;
       const targetTopHalf = targetCenterY < viewportHeight / 2;
       const emergency = clampPos({
-        x: targetLeftHalf ? viewportWidth - COMPANION_SIZE - safeMargin : safeMargin,
-        y: targetTopHalf ? viewportHeight - COMPANION_SIZE - safeMargin : safeMargin,
+        x: targetLeftHalf ? viewportWidth - size - safeMargin : safeMargin,
+        y: targetTopHalf ? viewportHeight - size - safeMargin : safeMargin,
       });
       chosen = emergency;
     }
@@ -290,7 +319,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
         mass: 1.15,
       },
     });
-  }, [controls, focusTarget, isJumping, isRtl, orbitTick]);
+  }, [controls, focusTarget, isJumping, isRtl, orbitTick, companionSize]);
 
   // ─── Entry animation ───
   useEffect(() => {
@@ -415,7 +444,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
           y: pos.y,
           scaleX: 1.1,
           scaleY: 0.9,
-          transition: { duration: 0.12, ease: 'easeOut' },
+              transition: { duration: 0.12, ease: 'easeOut' },
         });
       }).then(() => {
         // Phase 4: Settle to rest
@@ -499,19 +528,36 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   }, [clickCount, currentAnchor, clickTips, currentZone, focusTarget, focusTip, showTip]);
   const isElementEngaged = Boolean(focusTarget?.rect);
   const initialPosition = useMemo(() => {
-    const anchorX = isRtl ? 0.24 : 0.76;
     // Guard window access for SSR/hydration safety
     if (typeof window === 'undefined') {
       return { x: 0, y: 0 };
     }
+    const anchor = SECTION_ANCHORS[0];
+    const safeMargin = 10;
+    const size = companionSize;
+    
+    // Calculate X position with proper RTL handling
+    let x;
+    if (isRtl) {
+      const mirroredX = 100 - anchor.x;
+      x = (mirroredX / 100) * window.innerWidth - size / 2;
+    } else {
+      x = (anchor.x / 100) * window.innerWidth - size / 2;
+    }
+    
+    const y = (anchor.y / 100) * window.innerHeight - size / 2;
+    
+    // Clamp to viewport bounds
     return {
-      x: (window.innerWidth * anchorX) - (COMPANION_SIZE / 2),
-      y: (window.innerHeight * 0.28) - (COMPANION_SIZE / 2),
+      x: Math.max(safeMargin, Math.min(x, window.innerWidth - size - safeMargin)),
+      y: Math.max(safeMargin, Math.min(y, window.innerHeight - size - safeMargin)),
     };
-  }, [isRtl]);
+  }, [isRtl, companionSize]);
   // ─── Window resize ───
   useEffect(() => {
     const handleResize = () => {
+      const newSize = getCompanionSize();
+      setCompanionSize(newSize);
       if (hasEnteredRef.current) {
         const pos = getAnchorPosition(currentAnchor);
         controls.set({ x: pos.x, y: pos.y });
@@ -529,8 +575,8 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       animate={controls}
       style={{
         position: 'fixed',
-        width: COMPANION_SIZE,
-        height: COMPANION_SIZE,
+        width: companionSize,
+        height: companionSize,
         zIndex: isElementEngaged ? 42 : 22,
         cursor: 'default',
         pointerEvents: 'none',
