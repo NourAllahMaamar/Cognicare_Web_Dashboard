@@ -56,7 +56,7 @@ export default function CogniCharacter({
   // Setup 3D floating particles
   // Notify parent that textures are loaded and the character is ready to display.
   // useTexture suspends above, so this fires only after all textures have loaded.
-  useEffect(() => { onReady?.(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { onReady?.(); }, []);  
 
   // Setup 3D floating particles
   const particles = useMemo(() => {
