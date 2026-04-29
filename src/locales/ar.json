@@ -175,7 +175,17 @@
     "organizationLogin": "تسجيل دخول المنظمة",
     "fullNamePlaceholder": "اسمك الكامل",
     "emailPlaceholder": "specialist@cognicare.com",
-    "codeSentSuccess": "تم إرسال رمز التحقق إلى بريدك الإلكتروني"
+    "codeSentSuccess": "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
+    "sendVerificationCode": "إرسال رمز التحقق",
+    "sendingCode": "جاري الإرسال...",
+    "createAccountFinal": "إنشاء الحساب",
+    "creatingAccount": "جاري إنشاء الحساب...",
+    "sendCodeFailed": "فشل إرسال رمز التحقق",
+    "googleLoginFailed": "فشل تسجيل الدخول بـ Google",
+    "accessDenied": "تم رفض الوصول. تسجيل الدخول هذا مخصص للمختصين فقط.",
+    "profileFailed": "فشل إكمال الملف الشخصي",
+    "sessionExpired": "انتهت الجلسة، الرجاء تسجيل الدخول مجدداً",
+    "loginAfterProfileFailed": "فشل إتمام تسجيل الدخول بعد إعداد الملف الشخصي"
   },
   "orgDashboard": {
     "title": "لوحة إدارة المنظمة",
@@ -533,6 +543,9 @@
     "confirmDeleteStaff": "هل أنت متأكد من حذف هذا الموظف؟",
     "confirmDeleteFamily": "هل أنت متأكد من حذف هذه العائلة؟",
     "confirmCancelInvitation": "هل أنت متأكد من إلغاء هذه الدعوة؟",
+    "childAgeTooYoung": "يجب أن يكون عمر \"{{name}}\" 3 سنوات على الأقل",
+    "importDragDrop": "اسحب وأفلت أو انقر للتحميل",
+    "importRowsFound": "{{count}} صف تم العثور عليه",
     "community": {
       "title": "خلاصة المجتمع",
       "subtitle": "تواصل مع العائلات والمتخصصين ومقدمي الرعاية",
@@ -824,8 +837,10 @@
       "viewChildren": "عرض الأطفال",
       "viewChildrenDesc": "اختر طفلاً لإنشاء خطط",
       "myPlans": "خططي",
-      "myPlansDesc": "عرض جميع خططك المنشأة"
+      "myPlansDesc": "عرض جميع خططك المنشأة",
+      "createFamily": "إنشاء عائلة جديدة"
     },
+    "suggestionAvailable": "اقتراح متاح",
     "gettingStarted": "البدء",
     "noChildrenTip": "لم يتم العثور على أطفال. يمكنك إضافة مرضاك الخاصين باستخدام زر 'إضافة طفل خاص' أعلاه، أو اطلب من قائد المنظمة إضافة أطفال.",
     "recentPlans": "الخطط الأخيرة",
@@ -1049,6 +1064,7 @@
   },
   "rneVerification": {
     "title": "التحقق من السجل التجاري",
+    "systemLog": "سجل النظام",
     "subtitle": "نظام تحقق آلي من هوية المنظمة بالذكاء الاصطناعي",
     "reset": "البدء من جديد",
     "phases": {
@@ -1228,7 +1244,11 @@
     "successTitle": "تم تفعيل الحساب!",
     "successMessage": "تم تأكيد حسابك بنجاح. سيتم إعادة توجيهك إلى صفحة تسجيل الدخول في غضون بضع ثوان...",
     "goToLogin": "الانتقال إلى تسجيل الدخول الآن",
-    "backToHome": "العودة إلى الصفحة الرئيسية"
+    "backToHome": "العودة إلى الصفحة الرئيسية",
+    "invalidToken": "رمز التفعيل غير صالح أو مفقود.",
+    "passwordMismatch": "كلمات المرور غير متطابقة",
+    "passwordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+    "activateFailed": "فشل تفعيل الحساب."
   },
   "landing": {
     "nav": {
@@ -1320,9 +1340,18 @@
         "title": "لوحة تحكم المسؤول",
         "subtitle": "تحليلات ومراقبة على مستوى النظام",
         "stats": {
-          "users": { "value": "2.4K", "label": "المستخدمون" },
-          "orgs": { "value": "120", "label": "المؤسسات" },
-          "uptime": { "value": "98%", "label": "وقت التشغيل" }
+          "users": {
+            "value": "2.4K",
+            "label": "المستخدمون"
+          },
+          "orgs": {
+            "value": "120",
+            "label": "المؤسسات"
+          },
+          "uptime": {
+            "value": "98%",
+            "label": "وقت التشغيل"
+          }
         }
       },
       "pecs": {
@@ -1338,9 +1367,18 @@
         "title": "بوابة المؤسسة",
         "subtitle": "إدارة الموظفين والعائلات",
         "stats": {
-          "staff": { "value": "48", "label": "الموظفون" },
-          "families": { "value": "86", "label": "العائلات" },
-          "children": { "value": "152", "label": "الأطفال" }
+          "staff": {
+            "value": "48",
+            "label": "الموظفون"
+          },
+          "families": {
+            "value": "86",
+            "label": "العائلات"
+          },
+          "children": {
+            "value": "152",
+            "label": "الأطفال"
+          }
         }
       },
       "ai": {
@@ -1432,7 +1470,8 @@
     "due": "الاستحقاق",
     "materials": "مواد",
     "childRequired": "يرجى اختيار طفل أولاً.",
-    "titleRequired": "العنوان مطلوب."
+    "titleRequired": "العنوان مطلوب.",
+    "saved": "تم حفظ النشاط!"
   },
   "pecsCreator": {
     "title": "منشئ لوحة PECS",
@@ -1515,7 +1554,8 @@
     "stepTrials": "التجارب",
     "stepSave": "حفظ",
     "trialInstructions": "انقر على كل بطاقة لتسجيل التجارب الناجحة والفاشلة",
-    "validationError": "يرجى إضافة عنوان وبطاقة واحدة على الأقل"
+    "validationError": "يرجى إضافة عنوان وبطاقة واحدة على الأقل",
+    "boardSaved": "تم حفظ اللوحة!"
   },
   "skillTracker": {
     "title": "متتبع المهارات",
@@ -1540,7 +1580,8 @@
     "childRequired": "يرجى اختيار طفل أولاً.",
     "titleRequired": "العنوان مطلوب.",
     "instructions": "انقر على كل خلية لتحديدها صحيحة (✓) أو خاطئة (✗)",
-    "trial": "تجربة"
+    "trial": "تجربة",
+    "saved": "تم حفظ متتبع المهارات!"
   },
   "teachCreator": {
     "title": "متتبع TEACCH",
@@ -1625,6 +1666,7 @@
     "inProgressCount": "قيد التنفيذ",
     "mastered": "تم الإتقان",
     "validationError": "يرجى ملء جميع الحقول المطلوبة وإضافة هدف واحد على الأقل",
+    "saved": "تم حفظ المتتبع!",
     "workSteps": "خطوات العمل"
   },
   "progressAI": {
@@ -2146,7 +2188,8 @@
     "modified": "معدَّل",
     "dismissed": "مرفوض",
     "noData": "لا توجد بيانات متاحة لهذا المختص بعد.",
-    "errorLoad": "فشل تحميل بيانات المختص"
+    "errorLoad": "فشل تحميل بيانات المختص",
+    "defaultName": "مختص"
   },
   "common": {
     "cancel": "إلغاء",
@@ -2172,7 +2215,13 @@
     "daysAgo": "منذ {{count}} يوم",
     "loadMore": "تحميل المزيد",
     "anonymous": "مجهول",
-    "na": "غير متاح"
+    "na": "غير متاح",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "nameEmailPasswordRequired": "الاسم والبريد الإلكتروني وكلمة المرور مطلوبة",
+    "minSixChars": "6 أحرف على الأقل",
+    "skip": "تخطي",
+    "switchToLight": "التبديل إلى الوضع الفاتح",
+    "switchToDark": "التبديل إلى الوضع الداكن"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",
@@ -2221,7 +2270,12 @@
     "userId": "معرف المستخدم",
     "verified": "موثق",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "nameRequired": "الاسم مطلوب",
+    "updateFailed": "فشل تحديث الملف الشخصي",
+    "passwordTooShort": "يجب أن تتكون كلمة المرور الجديدة من 6 أحرف على الأقل",
+    "passwordMismatch": "كلمات المرور غير متطابقة",
+    "changePasswordFailed": "فشل تغيير كلمة المرور"
   },
   "pwa": {
     "offline": "أنت غير متصل حالياً. قد تكون بعض الميزات غير متاحة.",
@@ -2229,5 +2283,26 @@
     "updateDesc": "إصدار جديد من CogniCare جاهز. أعد التحميل للحصول على أحدث الميزات.",
     "later": "لاحقاً",
     "reload": "إعادة التحميل"
+  },
+  "cogniCompanion": {
+    "tipHero": "👋 مرحبًا! أنا كوغني!",
+    "tipFeatures": "✨ اكتشف لوحات التحكم!",
+    "tipCta": "🚀 هل أنت مستعد للبدء؟",
+    "tipFooter": "💜 لنبقى على تواصل!",
+    "clickTip0": "😄 هذا يضحكني!",
+    "clickTip1": "🧠 عقل عظيم!",
+    "clickTip2": "✨ لنستكشف معًا!",
+    "clickTip3": "🎉 هورا!",
+    "clickTip4": "💜 أنت رائع!",
+    "clickTip5": "🤖 بيب بوب!",
+    "clickTip6": "🌟 أحب المساعدة!",
+    "clickTip7": "🎵 لا لا لا~",
+    "focusTipAction": "🚀 {{label}}",
+    "focusTipNav": "🧭 {{label}}",
+    "focusTipGeneric": "👀 {{label}}",
+    "zoneHeader": "👋 مرحبًا بعودتك!",
+    "zoneFeatures": "💡 ميزات رائعة في انتظارك!",
+    "zoneCta": "🚀 هل أنت مستعد للانضمام إلينا؟",
+    "zoneFooter": "👋 إلى اللقاء!"
   }
 }

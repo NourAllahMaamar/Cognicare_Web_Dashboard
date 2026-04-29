@@ -98,7 +98,7 @@ export default function AdminTrainingCourses() {
                 <div className="min-w-0 flex-1">
                   <p className="font-bold text-xs md:text-sm truncate">{course.title}</p>
                   <p className="text-[10px] md:text-xs text-slate-500 truncate">
-                    {course.topics?.join(', ') || '""'} • {t('adminTraining.orderLabel')} {course.order ?? 0}
+                    {course.topics?.join(', ') || ''} • {t('adminTraining.orderLabel')} {course.order ?? 0}
                   </p>
                 </div>
               </div>

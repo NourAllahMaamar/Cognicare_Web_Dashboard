@@ -134,11 +134,11 @@ export default function AdminSystemHealth() {
     }, {});
 
     const probes = [
-      { component: 'Users', path: '/users' },
-      { component: 'Organizations', path: '/organization/all' },
-      { component: 'Families', path: '/organization/admin/families' },
-      { component: 'Org Reviews', path: '/organization/admin/pending-requests' },
-      { component: 'AI Engine', path: '/org-scan-ai/health', public: true },
+      { component: t('adminSystemHealth.compUsers'), path: '/users' },
+      { component: t('adminSystemHealth.compOrganizations'), path: '/organization/all' },
+      { component: t('adminSystemHealth.compFamilies'), path: '/organization/admin/families' },
+      { component: t('adminSystemHealth.compOrgReviews'), path: '/organization/admin/pending-requests' },
+      { component: t('adminSystemHealth.compAiEngine'), path: '/org-scan-ai/health', public: true },
     ];
 
     return probes.map((probe) => {
@@ -259,11 +259,11 @@ export default function AdminSystemHealth() {
     }
 
     const probes = [
-      { component: 'Users', path: '/users', method: 'GET' },
-      { component: 'Organizations', path: '/organization/all', method: 'GET' },
-      { component: 'Families', path: '/organization/admin/families', method: 'GET' },
-      { component: 'Org Reviews', path: '/organization/admin/pending-requests', method: 'GET' },
-      { component: 'AI Engine', path: '/org-scan-ai/health', method: 'GET', public: true },
+      { component: t('adminSystemHealth.compUsers'), path: '/users', method: 'GET' },
+      { component: t('adminSystemHealth.compOrganizations'), path: '/organization/all', method: 'GET' },
+      { component: t('adminSystemHealth.compFamilies'), path: '/organization/admin/families', method: 'GET' },
+      { component: t('adminSystemHealth.compOrgReviews'), path: '/organization/admin/pending-requests', method: 'GET' },
+      { component: t('adminSystemHealth.compAiEngine'), path: '/org-scan-ai/health', method: 'GET', public: true },
     ];
 
     let aiResponse = null;
@@ -493,7 +493,7 @@ export default function AdminSystemHealth() {
 
           {aiHealth ? (
             <div className="text-xs text-slate-500">
-              AI health endpoint response: <span className="font-mono">{JSON.stringify(aiHealth)}</span>
+              {t('adminSystemHealth.aiDebugLabel')} <span className="font-mono">{JSON.stringify(aiHealth)}</span>
             </div>
           ) : null}
         </>

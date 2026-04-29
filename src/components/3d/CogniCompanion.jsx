@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { useAnimation, AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import './CogniCompanion.css';
 import { ZONES } from '../ui/InteractiveZones';
 
@@ -27,16 +28,17 @@ const SECTION_ANCHORS = [
 const getCompanionSize = () => {
   if (typeof window === 'undefined') return 310;
   const vw = window.innerWidth;
-  if (vw < 520) return 0; // Hidden on very small screens (handled by CSS)
-  if (vw < 768) return 200; // Smaller on tablets
+  if (vw < 380) return 0;    // Hidden on very tiny screens (handled by CSS)
+  if (vw < 520) return 130;  // Small on mobile
+  if (vw < 768) return 200;  // Smaller on tablets
   if (vw < 1024) return 250; // Medium on small laptops
-  return 310; // Full size on desktop
+  return 310;                 // Full size on desktop
 };
 
 const COMPANION_SIZE = 310; // Default for SSR
 
 /* ─── Enhanced Speech Bubble with animations ─── */
-function SpeechBubble({ text, visible }) {
+function SpeechBubble({ text, visible, isRtl }) {
   return (
     <AnimatePresence>
       {visible && (
@@ -46,6 +48,7 @@ function SpeechBubble({ text, visible }) {
           exit={{ opacity: 0, scale: 0.7, y: 10 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           className="cogni-speech-bubble"
+          dir={isRtl ? 'rtl' : 'ltr'}
         >
           <span>{text}</span>
           <div className="cogni-speech-arrow" />
@@ -62,6 +65,7 @@ function SpeechBubble({ text, visible }) {
  * ═══════════════════════════════════════════════════*/
 export default function CogniCompanion({ focusTarget = null, activeZone = null }) {
   const controls = useAnimation();
+  const { t, i18n } = useTranslation();
   const [isRtl, setIsRtl] = useState(() => document?.documentElement?.dir === 'rtl');
   const [currentAnchor, setCurrentAnchor] = useState(0);
   const [currentPose, setCurrentPose] = useState(COGNI_POSES.WAVING);
@@ -74,14 +78,17 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const [cursorVelocity, setCursorVelocity] = useState({ x: 0, y: 0 });
   const [orbitTick, setOrbitTick] = useState(0);
   const [companionSize, setCompanionSize] = useState(() => getCompanionSize());
+  const [isDragging, setIsDragging] = useState(false);
   
   const containerRef = useRef(null);
   const tipTimer = useRef(null);
   const hasEnteredRef = useRef(false);
-  const idleTimerRef = useRef(null);
   const zoneTimerRef = useRef(null);
-  const roamTimerRef = useRef(null);
   const prevCursorRef = useRef({ x: 0, y: 0 });
+  const userDragged = useRef(false);
+  const isDraggingRef = useRef(false);
+  const dragOrigin = useRef({ pointerX: 0, pointerY: 0, elemX: 0, elemY: 0 });
+  const currentPosRef = useRef(null);
 
   // Compute pixel position from viewport-percentage anchor
   const getAnchorPosition = useCallback((anchorIndex) => {
@@ -141,15 +148,22 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
 
     const label = focusTarget.label;
     if (/(get started|start free|join|submit|continue|watch demo|book|sign up)/i.test(label)) {
-      return `🚀 ${label}`;
+      return t('cogniCompanion.focusTipAction', { label });
     }
 
     if (/(search|filter|input|form|field|settings|menu|login|sign in)/i.test(label)) {
-      return `🧭 ${label}`;
+      return t('cogniCompanion.focusTipNav', { label });
     }
 
-    return `👀 ${label}`;
-  }, [focusTarget]);
+    return t('cogniCompanion.focusTipGeneric', { label });
+  }, [focusTarget, t]);
+
+  const sectionTips = useMemo(() => [
+    t('cogniCompanion.tipHero'),
+    t('cogniCompanion.tipFeatures'),
+    t('cogniCompanion.tipCta'),
+    t('cogniCompanion.tipFooter'),
+  ], [t]);
 
   // ─── Track Cursor for 3D Character ───
   // ─── Track Cursor for 3D Character ───
@@ -183,7 +197,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   }, [focusTarget, isJumping]);
 
   useEffect(() => {
-    if (!focusTarget?.rect || isJumping) return;
+    if (!focusTarget?.rect || isJumping || userDragged.current) return undefined;
 
     const { rect, label, kind } = focusTarget;
     const viewportWidth = window.innerWidth;
@@ -308,6 +322,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     if (tipTimer.current) clearTimeout(tipTimer.current);
     tipTimer.current = setTimeout(() => setShowTip(false), 2200);
 
+    currentPosRef.current = chosen;
     controls.start({
       x: chosen.x,
       y: chosen.y,
@@ -325,6 +340,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   useEffect(() => {
     hasEnteredRef.current = true;
     const pos = getAnchorPosition(0);
+    currentPosRef.current = pos;
     controls.set({
       x: pos.x,
       y: pos.y,
@@ -350,23 +366,13 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     return () => observer.disconnect();
   }, []);
 
-  // ─── Idle animations: cycle through poses occasionally ───
+  // Re-show tip whenever language changes so translated text is visible
   useEffect(() => {
-    const startIdleCycle = () => {
-      idleTimerRef.current = setInterval(() => {
-        if (isJumping) return;
-        // Random idle pose swap
-        const idlePoses = [COGNI_POSES.IDLE, COGNI_POSES.WAVING, COGNI_POSES.THINKING, COGNI_POSES.CURIOUS];
-        const randomPose = idlePoses[Math.floor(Math.random() * idlePoses.length)];
-        setCurrentPose(randomPose);
-      }, 6000);
-    };
+    if (tipTimer.current) clearTimeout(tipTimer.current);
+    setShowTip(true);
+    tipTimer.current = setTimeout(() => setShowTip(false), 4000);
+  }, [i18n.language]);
 
-    startIdleCycle();
-    return () => {
-      if (idleTimerRef.current) clearInterval(idleTimerRef.current);
-    };
-  }, [isJumping]);
 
   // ─── Scroll-based section detection (real section geometry) ───
   useEffect(() => {
@@ -409,7 +415,9 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   // ─── Jump animation between sections ───
   const jumpToAnchor = useCallback(
     (anchorIndex) => {
+      if (userDragged.current) return;
       const pos = getAnchorPosition(anchorIndex);
+      currentPosRef.current = pos;
       const anchor = SECTION_ANCHORS[anchorIndex];
       setIsJumping(true);
 
@@ -461,24 +469,6 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     [controls, getAnchorPosition]
   );
 
-  // ─── Autonomous roaming when no focused element ───
-  useEffect(() => {
-    if (focusTarget?.rect || isJumping) return undefined;
-
-    if (roamTimerRef.current) clearInterval(roamTimerRef.current);
-    roamTimerRef.current = setInterval(() => {
-      setCurrentAnchor((prev) => {
-        const next = (prev + 1) % SECTION_ANCHORS.length;
-        jumpToAnchor(next);
-        return next;
-      });
-    }, 4200);
-
-    return () => {
-      if (roamTimerRef.current) clearInterval(roamTimerRef.current);
-    };
-  }, [focusTarget, isJumping, jumpToAnchor]);
-
   // ─── Click handler ───
   const _handleClick = useCallback(() => {
     setClickCount((c) => c + 1);
@@ -509,24 +499,6 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     }, 2500);
   }, [controls, currentAnchor, getAnchorPosition]);
 
-  const clickTips = useMemo(() => [
-    '😄 That tickles!',
-    '🧠 Big brain energy!',
-    '✨ Let\'s explore together!',
-    '🎉 Wheeee!',
-    '💜 You\'re awesome!',
-    '🤖 Beep boop beep!',
-    '🌟 I love helping!',
-    '🎵 La la la~',
-  ], []);
-
-  const currentTip = useMemo(() => {
-    if (focusTarget && showTip && focusTip) return focusTip;
-    if (currentZone && showTip) return currentZone.tip || '';
-    if (clickCount > 0 && showTip) return clickTips[(clickCount - 1) % clickTips.length];
-    return SECTION_ANCHORS[currentAnchor]?.tip || '';
-  }, [clickCount, currentAnchor, clickTips, currentZone, focusTarget, focusTip, showTip]);
-  const isElementEngaged = Boolean(focusTarget?.rect);
   const initialPosition = useMemo(() => {
     // Guard window access for SSR/hydration safety
     if (typeof window === 'undefined') {
@@ -553,13 +525,73 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       y: Math.max(safeMargin, Math.min(y, window.innerHeight - size - safeMargin)),
     };
   }, [isRtl, companionSize]);
+
+  // ─── Drag handlers ───
+  const handlePointerDown = useCallback((e) => {
+    if (e.button !== 0) return;
+    isDraggingRef.current = true;
+    setIsDragging(true);
+    dragOrigin.current = {
+      pointerX: e.clientX,
+      pointerY: e.clientY,
+      elemX: currentPosRef.current?.x ?? initialPosition.x,
+      elemY: currentPosRef.current?.y ?? initialPosition.y,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, [initialPosition]);
+
+  const handlePointerMove = useCallback((e) => {
+    if (!isDraggingRef.current) return;
+    const dx = e.clientX - dragOrigin.current.pointerX;
+    const dy = e.clientY - dragOrigin.current.pointerY;
+    const newX = Math.max(0, Math.min(dragOrigin.current.elemX + dx, window.innerWidth - companionSize));
+    const newY = Math.max(0, Math.min(dragOrigin.current.elemY + dy, window.innerHeight - companionSize));
+    currentPosRef.current = { x: newX, y: newY };
+    controls.set({ x: newX, y: newY });
+  }, [controls, companionSize]);
+
+  const handlePointerUp = useCallback((e) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    setIsDragging(false);
+    const dx = e.clientX - dragOrigin.current.pointerX;
+    const dy = e.clientY - dragOrigin.current.pointerY;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      userDragged.current = true;
+    }
+  }, []);
+
+  const handlePointerCancel = useCallback(() => {
+    isDraggingRef.current = false;
+    setIsDragging(false);
+  }, []);
+
+  const clickTips = useMemo(() => [
+    t('cogniCompanion.clickTip0'),
+    t('cogniCompanion.clickTip1'),
+    t('cogniCompanion.clickTip2'),
+    t('cogniCompanion.clickTip3'),
+    t('cogniCompanion.clickTip4'),
+    t('cogniCompanion.clickTip5'),
+    t('cogniCompanion.clickTip6'),
+    t('cogniCompanion.clickTip7'),
+  ], [t]);
+
+  const currentTip = useMemo(() => {
+    if (focusTarget && showTip && focusTip) return focusTip;
+    if (currentZone && showTip) return currentZone.tipKey ? t(currentZone.tipKey) : '';
+    if (clickCount > 0 && showTip) return clickTips[(clickCount - 1) % clickTips.length];
+    return sectionTips[currentAnchor] || '';
+  }, [clickCount, currentAnchor, clickTips, currentZone, focusTarget, focusTip, sectionTips, showTip, t]);
+  const isElementEngaged = Boolean(focusTarget?.rect);
   // ─── Window resize ───
   useEffect(() => {
     const handleResize = () => {
       const newSize = getCompanionSize();
       setCompanionSize(newSize);
-      if (hasEnteredRef.current) {
+      if (hasEnteredRef.current && !userDragged.current) {
         const pos = getAnchorPosition(currentAnchor);
+        currentPosRef.current = pos;
         controls.set({ x: pos.x, y: pos.y });
       }
     };
@@ -573,13 +605,21 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       className="cogni-companion-container"
       initial={{ scale: 1, opacity: 1, x: initialPosition.x, y: initialPosition.y }}
       animate={controls}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
       style={{
         position: 'fixed',
+        left: 0,
+        top: 0,
         width: companionSize,
         height: companionSize,
         zIndex: isElementEngaged ? 42 : 22,
-        cursor: 'default',
-        pointerEvents: 'none',
+        cursor: isDragging ? 'grabbing' : 'grab',
+        pointerEvents: companionSize === 0 ? 'none' : 'auto',
+        touchAction: 'none',
+        userSelect: 'none',
       }}
     >
       {/* Glow ring behind character */}
@@ -600,10 +640,10 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
         left: '50%',
         transform: 'translateX(-50%)',
         marginBottom: 8,
-        whiteSpace: 'nowrap',
         zIndex: 50,
+        direction: isRtl ? 'rtl' : 'ltr',
       }}>
-        <SpeechBubble text={currentTip} visible={showTip} />
+        <SpeechBubble text={currentTip} visible={showTip} isRtl={isRtl} />
       </div>
 
       {/* 3D Character Canvas */}

@@ -160,7 +160,7 @@ export default function AdminOrganizations() {
                     <p className="text-xs text-slate-500 dark:text-text-muted truncate">{org.leader?.fullName || t('adminOrgs.noLeader')}</p>
                   </div>
                 </div>
-                <StatusBadge status={org.status || 'Active'} />
+                <StatusBadge status={org.status || 'active'} />
               </div>
               <div className="flex gap-4 text-xs text-slate-500 dark:text-text-muted mb-4">
                 <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">badge</span>{t('adminOrgs.staffCount', { count: org.staff?.length || 0 })}</span>

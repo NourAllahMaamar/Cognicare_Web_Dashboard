@@ -189,10 +189,30 @@
 }
 
 /* ── Responsive behavior for different screen sizes ── */
-@media (max-width: 520px) {
+@media (max-width: 379px) {
   .cogni-companion-container {
     display: none !important;
-    visibility: hidden !important;
+  }
+}
+
+/* Small mobile: show with reduced size */
+@media (min-width: 380px) and (max-width: 520px) {
+  .cogni-companion-container {
+    max-width: 130px !important;
+    max-height: 130px !important;
+  }
+
+  .cogni-glow-ring,
+  .cogni-motion-halo {
+    opacity: 0.25 !important;
+  }
+
+  .cogni-speech-bubble {
+    font-size: 9px;
+    padding: 4px 8px;
+    white-space: normal;
+    max-width: 160px;
+    text-align: center;
   }
 }
 

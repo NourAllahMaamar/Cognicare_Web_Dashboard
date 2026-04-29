@@ -52,7 +52,7 @@ export default function SkillTrackerCreator() {
           content: { description, baselinePercent, targetPercent, trials, currentPercent, mastered, completedTrials, passCount },
         },
       });
-      setSuccess('Skill Tracker saved!');
+      setSuccess(t('skillTracker.saved'));
       setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
@@ -131,7 +131,7 @@ export default function SkillTrackerCreator() {
                 <p className="text-xs text-slate-500 mt-1">{t('skillTracker.accuracy')}</p>
               </div>
               <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 text-center">
-                <p className="text-2xl font-black">{mastered ? 'Trophy' : '-'}</p>
+                <p className="text-2xl font-black">{mastered ? '🏆' : '—'}</p>
                 <p className="text-xs text-slate-500 mt-1">{mastered ? t('skillTracker.mastered') : t('skillTracker.inProgress')}</p>
               </div>
             </div>

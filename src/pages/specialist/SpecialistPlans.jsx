@@ -79,7 +79,7 @@ export default function SpecialistPlans() {
                     <div>
                       <span className="text-xs font-bold uppercase text-slate-400">{plan.type}</span>
                       <p className="font-bold">{plan.title || plan.name || plan.type}</p>
-                      <p className="text-sm text-slate-500">{plan.childName || plan.child?.fullName || '"”'}</p>
+                      <p className="text-sm text-slate-500">{plan.childName || plan.child?.fullName || ''}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -123,7 +123,7 @@ export default function SpecialistPlans() {
                           {['whatToDo', 'howMuch', 'whenDone', 'whatNext'].map(key => (
                             <div key={key} className="bg-white dark:bg-surface-dark rounded-lg p-3">
                               <p className="text-xs text-slate-400 capitalize">{t(`specialistDashboard.myPlans.teacch.${key}`)}</p>
-                              <p className="text-sm font-medium mt-0.5">{plan.workSystem[key] || '"”'}</p>
+                              <p className="text-sm font-medium mt-0.5">{plan.workSystem[key] || ''}</p>
                             </div>
                           ))}
                         </div>

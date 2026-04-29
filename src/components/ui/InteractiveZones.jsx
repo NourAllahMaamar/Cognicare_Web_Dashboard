@@ -13,25 +13,25 @@ const ZONES = [
     id: 'header',
     sectionId: 'section-header',
     reaction: COGNI_POSES.WAVING,
-    tip: '👋 Welcome back!',
+    tipKey: 'cogniCompanion.zoneHeader',
   },
   {
     id: 'features',
     sectionId: 'section-features',
     reaction: COGNI_POSES.THINKING,
-    tip: '💡 Amazing features await!',
+    tipKey: 'cogniCompanion.zoneFeatures',
   },
   {
     id: 'cta',
     sectionId: 'section-cta',
     reaction: COGNI_POSES.CELEBRATING,
-    tip: '🚀 Ready to join us?',
+    tipKey: 'cogniCompanion.zoneCta',
   },
   {
     id: 'footer',
     sectionId: 'section-footer',
     reaction: COGNI_POSES.INTERACTION_B,
-    tip: '👋 See you soon!',
+    tipKey: 'cogniCompanion.zoneFooter',
   },
 ];
 

@@ -223,13 +223,14 @@ function DropZone({ file, onFile, error }) {
 
 /* ─── EventLog ─── */
 function EventLog({ events }) {
+  const { t } = useTranslation();
   const endRef = useRef(null);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [events]);
   if (!events.length) return null;
 
   return (
     <div>
-      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">System Log</p>
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{t('rneVerification.systemLog')}</p>
       <div className="bg-slate-900 dark:bg-slate-950 rounded-xl p-4 max-h-44 overflow-y-auto font-mono text-[11px] space-y-1">
         {events.map((ev, i) => (
           <div key={i} className={`flex items-start gap-2 ${

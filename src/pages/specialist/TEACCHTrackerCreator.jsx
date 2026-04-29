@@ -74,7 +74,7 @@ export default function TEACCHTrackerCreator() {
       await authMutate('/specialized-plans', {
         body: { childId, type: 'TEACCH', title, content: { category, goals, workSystem } },
       });
-      setSuccess('Tracker saved!');
+      setSuccess(t('teachCreator.saved'));
       setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);

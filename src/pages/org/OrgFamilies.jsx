@@ -73,7 +73,7 @@ export default function OrgFamilies() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
 
   // â”€â”€ Family CRUD â”€â”€
   const openAdd = () => {
@@ -107,7 +107,7 @@ export default function OrgFamilies() {
       if (child.fullName && child.dateOfBirth) {
         const birthDate = new Date(child.dateOfBirth);
         if (birthDate > threeYearsAgo) {
-          flash(`Child "${child.fullName}" must be at least 3 years old`, 'error');
+          flash(t('orgDashboard.childAgeTooYoung', { name: child.fullName }), 'error');
           return;
         }
       }
@@ -118,7 +118,7 @@ export default function OrgFamilies() {
       if (child._modified && child.dateOfBirth) {
         const birthDate = new Date(child.dateOfBirth);
         if (birthDate > threeYearsAgo) {
-          flash(`Child "${child.fullName}" must be at least 3 years old`, 'error');
+          flash(t('orgDashboard.childAgeTooYoung', { name: child.fullName }), 'error');
           return;
         }
       }
@@ -146,11 +146,11 @@ export default function OrgFamilies() {
         }
         flash(t('orgDashboard.familyUpdated', 'Family updated'));
       } else if (modalMode === 'invite') {
-        if (!inviteEmail) { flash('Email is required', 'error'); return; }
+        if (!inviteEmail) { flash(t('common.emailRequired'), 'error'); return; }
         await authMutate('/organization/my-organization/families/invite', { body: { email: inviteEmail, role: 'family' } });
         flash(t('orgDashboard.invitationSent', 'Invitation sent'));
       } else {
-        if (!form.fullName || !form.email || !form.password) { flash('Name, email, and password are required', 'error'); return; }
+        if (!form.fullName || !form.email || !form.password) { flash(t('common.nameEmailPasswordRequired'), 'error'); return; }
         const body = { fullName: form.fullName, email: form.email, phone: form.phone, password: form.password, children: formChildren.filter(c => c.fullName) };
         await authMutate('/organization/my-organization/families/create', { body });
         flash(t('orgDashboard.familyCreated', 'Family created'));
@@ -293,7 +293,7 @@ export default function OrgFamilies() {
           <button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">
             <span className="material-symbols-outlined text-lg">add</span>
             <span className="hidden sm:inline">{t('orgDashboard.addFamily', 'Add Family')}</span>
-            <span className="sm:hidden">Add Family</span>
+            <span className="sm:hidden">{t('orgDashboard.addFamily', 'Add Family')}</span>
           </button>
         </div>
       </div>
@@ -398,7 +398,7 @@ export default function OrgFamilies() {
                     return (
                     <div key={c._id} className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                       <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder={t('common.name')} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                      <input type="date" value={(c.dateOfBirth || '').split('T')[0]} onChange={e => updateExistingChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input type="date" value={(c.dateOfBirth || '').split('T')[0]} onChange={e => updateExistingChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title={t('specialistDashboard.children.modal.childAgeTip')} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender || 'male'} onChange={e => updateExistingChild(i, 'gender', e.target.value)} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
                         <option value="male">{t('common.male')}</option>
                         <option value="female">{t('common.female')}</option>
@@ -418,7 +418,7 @@ export default function OrgFamilies() {
                     return (
                     <div key={i} className="grid grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
                       <input value={c.fullName} onChange={e => updateNewChild(i, 'fullName', e.target.value)} placeholder={t('common.nameRequired')} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                      <input type="date" value={c.dateOfBirth} onChange={e => updateNewChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input type="date" value={c.dateOfBirth} onChange={e => updateNewChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title={t('specialistDashboard.children.modal.childAgeTip')} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender} onChange={e => updateNewChild(i, 'gender', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
                         <option value="male">{t('common.male')}</option>
                         <option value="female">{t('common.female')}</option>
@@ -481,7 +481,7 @@ export default function OrgFamilies() {
               <div>
                 <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-8 text-center mb-4 cursor-pointer hover:border-primary" onClick={() => fileRef.current?.click()} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); setImportFile(e.dataTransfer.files[0]); }}>
                   <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">upload_file</span>
-                  <p className="text-sm font-medium">{importFile ? importFile.name : 'Drag & drop or click to upload'}</p>
+                  <p className="text-sm font-medium">{importFile ? importFile.name : t('orgDashboard.importDragDrop')}</p>
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => setImportFile(e.target.files[0])} />
                 </div>
                 <div><label className="block text-sm font-bold mb-1.5">{t('orgDashboard.families.importModal.defaultPassword')}</label><input type="password" value={defaultPassword} onChange={e => setDefaultPassword(e.target.value)} placeholder={t('orgDashboard.families.importModal.defaultPasswordPlaceholder')} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm" /></div>
@@ -491,7 +491,7 @@ export default function OrgFamilies() {
 
             {importStep === 2 && importPreview && (
               <div>
-                <p className="text-sm text-slate-500 mb-4">{importPreview.totalRows} rows found</p>
+                <p className="text-sm text-slate-500 mb-4">{t('orgDashboard.importRowsFound', { count: importPreview.totalRows })}</p>
                 <div className="overflow-x-auto mb-4">
                   <table className="w-full text-sm">
                     <thead><tr className="border-b border-slate-200 dark:border-slate-800"><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.families.importModal.excelColumn')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.families.importModal.mapsTo')}</th><th className="text-left p-2 text-xs font-bold text-slate-400">{t('orgDashboard.families.importModal.confidence')}</th></tr></thead>
@@ -499,7 +499,7 @@ export default function OrgFamilies() {
                       {importMappings.map((m, i) => (
                         <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50">
                           <td className="p-2">{m.excelHeader}</td>
-                          <td className="p-2"><select value={m.dbField || ''} onChange={e => { const nm = [...importMappings]; nm[i] = { ...m, dbField: e.target.value }; setImportMappings(nm); }} className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"><option value="">Skip</option>{(importPreview.availableFields || []).map(f => <option key={f} value={f}>{f}</option>)}</select></td>
+                          <td className="p-2"><select value={m.dbField || ''} onChange={e => { const nm = [...importMappings]; nm[i] = { ...m, dbField: e.target.value }; setImportMappings(nm); }} className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"><option value="">{t('common.skip')}</option>{(importPreview.availableFields || []).map(f => <option key={f} value={f}>{f}</option>)}</select></td>
                           <td className="p-2"><span className={`text-xs font-bold ${(m.confidence || 0) > 0.7 ? 'text-success' : 'text-amber-500'}`}>{Math.round((m.confidence || 0) * 100)}%</span></td>
                         </tr>
                       ))}

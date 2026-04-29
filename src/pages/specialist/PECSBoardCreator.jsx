@@ -58,7 +58,7 @@ export default function PECSBoardCreator() {
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || t('pecsCreator.uploadFailed'));
       const { imageUrl } = await res.json();
       setNewItemImage(imageUrl);
-      setSuccess('Image uploaded');
+      setSuccess(t('pecsCreator.imageUploaded'));
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) { setError(err.message); }
     setUploadingImage(false);
@@ -94,7 +94,7 @@ export default function PECSBoardCreator() {
     setLoading(true);
     try {
       await authMutate('/specialized-plans', { body: { childId, type: 'PECS', title, content: { phase: selectedPhase, phaseName: currentPhase.name, items: items.map(it => ({ ...it, ...getStats(it) })), criteria: currentPhase.criteria } } });
-      setSuccess('Board saved!');
+      setSuccess(t('pecsCreator.boardSaved'));
       setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
@@ -194,7 +194,7 @@ export default function PECSBoardCreator() {
           <div className="lg:col-span-3">
             <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-4 md:p-6">
               <h3 className="text-lg font-bold mb-1">{t('pecsCreator.board')}</h3>
-              <p className="text-xs text-slate-400 mb-4">{items.length} {t('pecsCreator.cards')} "" {t('pecsCreator.trialInstructions')}</p>
+              <p className="text-xs text-slate-400 mb-4">{items.length} {t('pecsCreator.cards')} • {t('pecsCreator.trialInstructions')}</p>
 
               {items.length === 0 ? (
                 <div className="p-8 md:p-12 text-center text-slate-400">

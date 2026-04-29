@@ -89,9 +89,9 @@ function SpecialistLogin() {
                 }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Google login failed');
+            if (!res.ok) throw new Error(data.message || t('specialistLogin.googleLoginFailed'));
             if (!specialistRoles.includes(data.user.role)) {
-                throw new Error('Access denied. This login is for specialists only.');
+                throw new Error(t('specialistLogin.accessDenied'));
             }
             storeTokensAndRedirect(data);
         } catch (err) {
@@ -156,7 +156,7 @@ function SpecialistLogin() {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || t('dashboard.messages.loginFailed'));
             if (!specialistRoles.includes(data.user.role)) {
-                throw new Error('Access denied. This login is for specialists only.');
+                throw new Error(t('specialistLogin.accessDenied'));
             }
             storeTokensAndRedirect(data);
         } catch (err) {
@@ -176,7 +176,7 @@ function SpecialistLogin() {
                 body: JSON.stringify({ email }),
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Failed to send verification code');
+            if (!response.ok) throw new Error(data.message || t('specialistLogin.sendCodeFailed'));
             setCodeSent(true);
             setSuccess(t('specialistLogin.codeSentSuccess'));
         } catch (err) {
@@ -203,7 +203,7 @@ function SpecialistLogin() {
                 }),
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Signup failed');
+            if (!response.ok) throw new Error(data.message || t('specialistLogin.signupFailed'));
             storeTokensAndRedirect(data);
         } catch (err) {
             setError(err.message);
@@ -228,11 +228,11 @@ function SpecialistLogin() {
                 }),
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Profile completion failed');
+            if (!response.ok) throw new Error(data.message || t('specialistLogin.profileFailed'));
             
             // Now perform proper login with the new password
             const tempEmail = sessionStorage.getItem('tempUserEmail');
-            if (!tempEmail) throw new Error('Session expired, please login again');
+            if (!tempEmail) throw new Error(t('specialistLogin.sessionExpired'));
             
             const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
@@ -243,7 +243,7 @@ function SpecialistLogin() {
                 }),
             });
             const loginData = await loginResponse.json();
-            if (!loginResponse.ok) throw new Error('Failed to login after profile completion');
+            if (!loginResponse.ok) throw new Error(t('specialistLogin.loginAfterProfileFailed'));
             
             sessionStorage.removeItem('tempUserEmail');
             localStorage.setItem('specialistToken', loginData.accessToken);
@@ -417,8 +417,8 @@ function SpecialistLogin() {
                                         <button type="submit" disabled={loading}
                                             className="w-full py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed transition-all text-sm flex items-center justify-center gap-2">
                                             {loading ? (
-                                                <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Sending...</>
-                                            ) : 'Send Verification Code'}
+                                                <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{t('specialistLogin.sendingCode')}</>
+                                            ) : t('specialistLogin.sendVerificationCode')}
                                         </button>
 
                                         {/* Google Sign-Up */}
@@ -460,8 +460,8 @@ function SpecialistLogin() {
                                         <button type="submit" disabled={loading}
                                             className="w-full py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed transition-all text-sm flex items-center justify-center gap-2">
                                             {loading ? (
-                                                <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Creating account...</>
-                                            ) : 'Create Account'}
+                                                <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{t('specialistLogin.creatingAccount')}</>
+                                            ) : t('specialistLogin.createAccountFinal')}
                                         </button>
                                         <button type="button" onClick={() => { setCodeSent(false); setVerificationCode(''); }}
                                             className="text-sm text-primary font-medium hover:underline text-center">

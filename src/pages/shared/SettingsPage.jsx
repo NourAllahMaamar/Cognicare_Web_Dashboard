@@ -27,7 +27,7 @@ export default function SettingsPage() {
 
   const handleProfileSave = async (e) => {
     e.preventDefault();
-    if (!profileForm.fullName.trim()) { setProfileMsg({ type: 'error', text: 'Name is required' }); return; }
+    if (!profileForm.fullName.trim()) { setProfileMsg({ type: 'error', text: t('settings.nameRequired', 'Name is required') }); return; }
     setProfileLoading(true);
     try {
       await authMutate('/auth/profile', { method: 'PATCH', body: { fullName: profileForm.fullName.trim(), phone: profileForm.phone.trim() } });
@@ -37,7 +37,7 @@ export default function SettingsPage() {
       localStorage.setItem(keys[role], JSON.stringify({ ...stored, fullName: profileForm.fullName.trim(), phone: profileForm.phone.trim() }));
       setProfileMsg({ type: 'success', text: t('settings.profileSaved', 'Profile updated successfully') });
     } catch (err) {
-      setProfileMsg({ type: 'error', text: err.message || 'Failed to update profile' });
+      setProfileMsg({ type: 'error', text: err.message || t('settings.updateFailed', 'Failed to update profile') });
     }
     setProfileLoading(false);
     setTimeout(() => setProfileMsg({ type: '', text: '' }), 4000);
@@ -45,15 +45,15 @@ export default function SettingsPage() {
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
-    if (passwordForm.newPassword.length < 6) { setPasswordMsg({ type: 'error', text: 'New password must be at least 6 characters' }); return; }
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) { setPasswordMsg({ type: 'error', text: 'Passwords do not match' }); return; }
+    if (passwordForm.newPassword.length < 6) { setPasswordMsg({ type: 'error', text: t('settings.passwordTooShort', 'New password must be at least 6 characters') }); return; }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) { setPasswordMsg({ type: 'error', text: t('settings.passwordMismatch', 'Passwords do not match') }); return; }
     setPasswordLoading(true);
     try {
       await authMutate('/auth/change-password', { method: 'PATCH', body: { currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword } });
       setPasswordMsg({ type: 'success', text: t('settings.passwordChanged', 'Password changed successfully') });
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
-      setPasswordMsg({ type: 'error', text: err.message || 'Failed to change password' });
+      setPasswordMsg({ type: 'error', text: err.message || t('settings.changePasswordFailed', 'Failed to change password') });
     }
     setPasswordLoading(false);
     setTimeout(() => setPasswordMsg({ type: '', text: '' }), 4000);
@@ -162,7 +162,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
             <span className="text-slate-500">{t('settings.userId', 'User ID')}</span>
-            <span className="font-mono text-xs text-slate-400">{user?._id || user?.id || '"”'}</span>
+            <span className="font-mono text-xs text-slate-400">{user?._id || user?.id || ''}</span>
           </div>
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-500">{t('settings.verified', 'Verified')}</span>

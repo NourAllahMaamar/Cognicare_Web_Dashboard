@@ -26,7 +26,7 @@ export default function OrgSpecialistDetail() {
         ]);
         setSummary(summaryData);
         const spec = Array.isArray(staff) ? staff.find(s => (s._id || s.id) === specialistId) : null;
-        if (spec) setSpecialistInfo({ name: spec.fullName || 'Specialist', role: spec.role || 'specialist', email: spec.email || '', phone: spec.phone || '' });
+        if (spec) setSpecialistInfo({ name: spec.fullName || t('orgSpecialist.defaultName'), role: spec.role || 'specialist', email: spec.email || '', phone: spec.phone || '' });
       } catch (err) {
         setError(err.message || t('orgSpecialist.errorLoad'));
       }

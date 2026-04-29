@@ -23,18 +23,18 @@ const ConfirmAccount = () => {
         if (t) {
             setToken(t);
         } else {
-            setError('Invalid or missing activation token.');
+            setError(t('confirmAccount.invalidToken', 'Invalid or missing activation token.'));
         }
     }, [searchParams]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('confirmAccount.passwordMismatch', 'Passwords do not match'));
             return;
         }
         if (password.length < 6) {
-            setError('Password must be at least 6 characters');
+            setError(t('confirmAccount.passwordTooShort', 'Password must be at least 6 characters'));
             return;
         }
 
@@ -53,7 +53,7 @@ const ConfirmAccount = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Failed to activate account. The link may have expired.');
+                throw new Error(data.message || t('confirmAccount.activateFailed'));
             }
 
             setSuccess(true);
@@ -61,7 +61,7 @@ const ConfirmAccount = () => {
                 navigate('/org/login');
             }, 3000);
         } catch (err) {
-            setError(err.message || 'Failed to activate account.');
+            setError(err.message || t('confirmAccount.activateFailed', 'Failed to activate account.'));
         } finally {
             setLoading(false);
         }

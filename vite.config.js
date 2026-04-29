@@ -114,7 +114,6 @@ export default defineConfig(({ mode }) => {
             'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
             'vendor-motion': ['framer-motion'],
             'vendor-charts': ['recharts'],
-            'vendor-xlsx': ['xlsx'],
           },
         },
       },

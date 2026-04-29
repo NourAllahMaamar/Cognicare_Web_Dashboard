@@ -151,7 +151,7 @@ export default function SpecialistChildren() {
                     <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm md:text-base truncate">{child.fullName}</p>
-                      <p className="text-xs md:text-sm text-slate-400 truncate">{child.diagnosis || '""'}</p>
+                      <p className="text-xs md:text-sm text-slate-400 truncate">{child.diagnosis || ''}</p>
                     </div>
                   </button>
                 ))}
@@ -171,7 +171,7 @@ export default function SpecialistChildren() {
                     <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold text-sm">{(child.fullName || '?')[0].toUpperCase()}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm md:text-base truncate">{child.fullName}</p>
-                      <p className="text-xs md:text-sm text-slate-400 truncate">{child.diagnosis || '""'}</p>
+                      <p className="text-xs md:text-sm text-slate-400 truncate">{child.diagnosis || ''}</p>
                     </div>
                   </button>
                 ))}
@@ -195,7 +195,7 @@ export default function SpecialistChildren() {
                   <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl">{(selectedChild.fullName || '?')[0].toUpperCase()}</div>
                   <div>
                     <h3 className="text-xl font-bold">{selectedChild.fullName}</h3>
-                    <p className="text-sm text-slate-500">{selectedChild.gender || '"”'} • {dateFmt(selectedChild.dateOfBirth)}</p>
+                    <p className="text-sm text-slate-500">{selectedChild.gender || ''} • {dateFmt(selectedChild.dateOfBirth)}</p>
                     {selectedChild.diagnosis && <p className="text-sm text-primary mt-0.5">{selectedChild.diagnosis}</p>}
                   </div>
                 </div>
@@ -270,7 +270,7 @@ export default function SpecialistChildren() {
                             <div className="mt-2 space-y-1.5">
                               <div className="flex items-center gap-2 text-xs text-slate-500">
                                 <span className="material-symbols-outlined text-xs">grid_view</span>
-                                {t('specialistDashboard.children.pecs.phase')} {c.phase || '""'} • {c.items.length} {t('specialistDashboard.children.pecs.cards')}
+                                {t('specialistDashboard.children.pecs.phase')} {c.phase || ''} • {c.items.length} {t('specialistDashboard.children.pecs.cards')}
                               </div>
                               <div className="flex gap-1 flex-wrap">
                                 {c.items.map((item, idx) => (
@@ -371,7 +371,7 @@ export default function SpecialistChildren() {
                 return (
                 <div key={i} className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
                   <input value={c.fullName} onChange={e => updateChild(i, 'fullName', e.target.value)} placeholder={t('specialistDashboard.children.modal.childName')} className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
-                  <input type="date" value={c.dateOfBirth} onChange={e => updateChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title="Child must be at least 3 years old" className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                  <input type="date" value={c.dateOfBirth} onChange={e => updateChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title={t('specialistDashboard.children.modal.childAgeTip')} className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                   <select value={c.gender} onChange={e => updateChild(i, 'gender', e.target.value)} className="px-3 md:px-4 py-2 md:py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
                     <option value="male">{t('specialistDashboard.children.modal.male')}</option>
                     <option value="female">{t('specialistDashboard.children.modal.female')}</option>

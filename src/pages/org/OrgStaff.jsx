@@ -76,11 +76,11 @@ export default function OrgStaff() {
         await authMutate(`/organization/my-organization/staff/${editingStaff._id}`, { method: 'PATCH', body: { fullName: form.fullName, email: form.email, phone: form.phone, role: form.role } });
         flash(t('orgDashboard.staffUpdated', 'Staff updated'));
       } else if (modalMode === 'invite') {
-        if (!inviteEmail) { flash('Email is required', 'error'); return; }
+        if (!inviteEmail) { flash(t('common.emailRequired'), 'error'); return; }
         await authMutate('/organization/my-organization/staff/invite', { body: { email: inviteEmail, role: 'specialist' } });
         flash(t('orgDashboard.invitationSent', 'Invitation sent'));
       } else {
-        if (!form.fullName || !form.email || !form.password) { flash('Name, email, and password are required', 'error'); return; }
+        if (!form.fullName || !form.email || !form.password) { flash(t('common.nameEmailPasswordRequired'), 'error'); return; }
         await authMutate('/organization/my-organization/staff/create', { body: { email: form.email, fullName: form.fullName, phone: form.phone, role: form.role, password: form.password } });
         flash(t('orgDashboard.staffCreated', 'Staff created'));
       }
@@ -162,7 +162,7 @@ export default function OrgStaff() {
     return !q || (s.fullName || '').toLowerCase().includes(q) || (s.email || '').toLowerCase().includes(q) || (s.role || '').toLowerCase().includes(q);
   });
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
@@ -322,7 +322,7 @@ export default function OrgStaff() {
                 {modalMode === 'create' && (
                   <div>
                     <label className="block text-sm font-bold mb-1.5">{t('common.password', 'Password')} *</label>
-                    <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Min 6 characters" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                    <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder={t('common.minSixChars')} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
                   </div>
                 )}
               </div>
@@ -379,12 +379,12 @@ export default function OrgStaff() {
                           <td className="p-2 font-medium">{m.excelHeader}</td>
                           <td className="p-2">
                             <select value={m.dbField || ''} onChange={e => { const nm = [...importMappings]; nm[i] = { ...m, dbField: e.target.value }; setImportMappings(nm); }} className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                              <option value="">Skip</option>
+                              <option value="">{t('common.skip')}</option>
                               {(importPreview.availableFields || []).map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
                           </td>
                           <td className="p-2"><span className={`text-xs font-bold ${(m.confidence || 0) > 0.7 ? 'text-success' : 'text-amber-500'}`}>{Math.round((m.confidence || 0) * 100)}%</span></td>
-                          <td className="p-2 text-xs text-slate-400">{importPreview.sampleRows?.[0]?.[m.excelHeader] || '"”'}</td>
+                          <td className="p-2 text-xs text-slate-400">{importPreview.sampleRows?.[0]?.[m.excelHeader] || ''}</td>
                         </tr>
                       ))}
                     </tbody>

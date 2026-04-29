@@ -78,7 +78,7 @@ export default function SpecialistOverview() {
         .map((item) =>
           typeof item === 'string'
             ? item
-            : item?.suggestion || item?.text || 'Suggestion available',
+            : item?.suggestion || item?.text || t('specialistDashboard.suggestionAvailable'),
         ),
     });
   }, [
@@ -107,8 +107,8 @@ export default function SpecialistOverview() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <StatCard label={t('specialistDashboard.orgChildren', 'Org Children')} value={orgChildren.length} icon="groups" />
             <StatCard label={t('specialistDashboard.privatePatients', 'Private Patients')} value={privateChildren.length} icon="person" />
-            <StatCard label="PECS Boards" value={pecsCount} icon="grid_view" />
-            <StatCard label="TEACCH Trackers" value={teacchCount} icon="track_changes" />
+            <StatCard label={t('specialistDashboard.stats.pecsBoards')} value={pecsCount} icon="grid_view" />
+            <StatCard label={t('specialistDashboard.stats.teacchTrackers')} value={teacchCount} icon="track_changes" />
           </div>
 
           {/* Quick Actions */}
@@ -123,7 +123,7 @@ export default function SpecialistOverview() {
             </button>
             <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 md:p-5 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
               <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-success/10 text-success flex items-center justify-center"><span className="material-symbols-outlined">add_circle</span></div>
-              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.addFamily', 'Add Private Family')}</p><p className="text-xs text-slate-400 truncate">Create new family</p></div>
+              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.addFamily', 'Add Private Family')}</p><p className="text-xs text-slate-400 truncate">{t('specialistDashboard.quickActions.createFamily')}</p></div>
             </button>
           </div>
 

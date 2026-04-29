@@ -22,7 +22,7 @@ export default function OrgChildren() {
     setLoading(false);
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '"”';
+  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
 
   const calcAge = (dob) => {
     if (!dob) return '"”';
@@ -119,11 +119,11 @@ export default function OrgChildren() {
                 </div>
                 <div className="flex-1">
                   <p className="font-bold">{child.fullName}</p>
-                  <p className="text-xs text-slate-500">{calcAge(child.dateOfBirth)} • {child.gender || '"”'}</p>
+                  <p className="text-xs text-slate-500">{calcAge(child.dateOfBirth)} • {child.gender || '—'}</p>
                 </div>
               </div>
               <div className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400">
-                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">person</span>{child.parentId?.fullName || child.parentName || '"”'}</p>
+                <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">person</span>{child.parentId?.fullName || child.parentName || '—'}</p>
                 {child.diagnosis && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">medical_information</span>{child.diagnosis}</p>}
                 <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">cake</span>{dateFmt(child.dateOfBirth)}</p>
                 {child.allergies && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">warning</span>{child.allergies}</p>}

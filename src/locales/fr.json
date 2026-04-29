@@ -175,7 +175,17 @@
     "organizationLogin": "Connexion Organisation",
     "fullNamePlaceholder": "Votre nom complet",
     "emailPlaceholder": "specialist@cognicare.com",
-    "codeSentSuccess": "Code de vérification envoyé à votre adresse e-mail"
+    "codeSentSuccess": "Code de vérification envoyé à votre adresse e-mail",
+    "sendVerificationCode": "Envoyer le code de vérification",
+    "sendingCode": "Envoi en cours...",
+    "createAccountFinal": "Créer un compte",
+    "creatingAccount": "Création du compte...",
+    "sendCodeFailed": "Échec de l'envoi du code de vérification",
+    "googleLoginFailed": "Échec de la connexion Google",
+    "accessDenied": "Accès refusé. Cette connexion est réservée aux spécialistes.",
+    "profileFailed": "Échec de la complétion du profil",
+    "sessionExpired": "Session expirée, veuillez vous reconnecter",
+    "loginAfterProfileFailed": "Échec de la connexion après configuration du profil"
   },
   "orgDashboard": {
     "title": "Tableau de Bord de l'Organisation",
@@ -533,6 +543,9 @@
     "confirmDeleteStaff": "Êtes-vous sûr de vouloir supprimer ce membre ?",
     "confirmDeleteFamily": "Êtes-vous sûr de vouloir supprimer cette famille ?",
     "confirmCancelInvitation": "Êtes-vous sûr de vouloir annuler cette invitation ?",
+    "childAgeTooYoung": "L'enfant \"{{name}}\" doit avoir au moins 3 ans",
+    "importDragDrop": "Glisser-déposer ou cliquer pour télécharger",
+    "importRowsFound": "{{count}} lignes trouvées",
     "community": {
       "title": "Fil communautaire",
       "subtitle": "Connectez-vous avec les familles, les spécialistes et les soignants",
@@ -824,8 +837,10 @@
       "viewChildren": "Voir les Enfants",
       "viewChildrenDesc": "Sélectionnez un enfant pour créer des plans",
       "myPlans": "Mes Plans",
-      "myPlansDesc": "Voir tous vos plans créés"
+      "myPlansDesc": "Voir tous vos plans créés",
+      "createFamily": "Créer une nouvelle famille"
     },
+    "suggestionAvailable": "Suggestion disponible",
     "gettingStarted": "Pour Commencer",
     "noChildrenTip": "Aucun enfant trouvé. Vous pouvez ajouter vos propres patients privés en utilisant le bouton 'Ajouter un Enfant Privé' ci-dessus, ou demander à votre Leader d'Organisation d'ajouter des enfants.",
     "recentPlans": "Plans Récents",
@@ -1049,6 +1064,7 @@
   },
   "rneVerification": {
     "title": "Vérification RNE",
+    "systemLog": "Journal Système",
     "subtitle": "Système automatisé de vérification d'identité des organisations par IA",
     "reset": "Recommencer",
     "phases": {
@@ -1228,7 +1244,11 @@
     "successTitle": "Compte activé !",
     "successMessage": "Votre compte a été confirmé avec succès. Vous serez redirigé vers la page de connexion dans quelques secondes...",
     "goToLogin": "Aller à la connexion maintenant",
-    "backToHome": "Retour à l'accueil"
+    "backToHome": "Retour à l'accueil",
+    "invalidToken": "Jeton d'activation invalide ou manquant.",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Le mot de passe doit comporter au moins 6 caractères",
+    "activateFailed": "Échec de l'activation du compte."
   },
   "landing": {
     "nav": {
@@ -1320,9 +1340,18 @@
         "title": "Tableau de bord Admin",
         "subtitle": "Analyses et contrôle à l'échelle du système",
         "stats": {
-          "users": { "value": "2,4K", "label": "Utilisateurs" },
-          "orgs": { "value": "120", "label": "Organisations" },
-          "uptime": { "value": "98%", "label": "Disponibilité" }
+          "users": {
+            "value": "2,4K",
+            "label": "Utilisateurs"
+          },
+          "orgs": {
+            "value": "120",
+            "label": "Organisations"
+          },
+          "uptime": {
+            "value": "98%",
+            "label": "Disponibilité"
+          }
         }
       },
       "pecs": {
@@ -1338,9 +1367,18 @@
         "title": "Portail Organisation",
         "subtitle": "Gestion du personnel et des familles",
         "stats": {
-          "staff": { "value": "48", "label": "Personnel" },
-          "families": { "value": "86", "label": "Familles" },
-          "children": { "value": "152", "label": "Enfants" }
+          "staff": {
+            "value": "48",
+            "label": "Personnel"
+          },
+          "families": {
+            "value": "86",
+            "label": "Familles"
+          },
+          "children": {
+            "value": "152",
+            "label": "Enfants"
+          }
         }
       },
       "ai": {
@@ -1432,7 +1470,8 @@
     "due": "Échéance",
     "materials": "matériaux",
     "childRequired": "Veuillez d'abord sélectionner un enfant.",
-    "titleRequired": "Le titre est requis."
+    "titleRequired": "Le titre est requis.",
+    "saved": "Activité sauvegardée !"
   },
   "pecsCreator": {
     "title": "Créateur de Tableau PECS",
@@ -1515,7 +1554,8 @@
     "stepTrials": "Essais",
     "stepSave": "Enregistrer",
     "trialInstructions": "Cliquez sur chaque carte pour enregistrer les essais réussis/échoués",
-    "validationError": "Veuillez ajouter un titre et au moins une carte"
+    "validationError": "Veuillez ajouter un titre et au moins une carte",
+    "boardSaved": "Tableau sauvegardé !"
   },
   "skillTracker": {
     "title": "Suivi des Compétences",
@@ -1540,7 +1580,8 @@
     "childRequired": "Veuillez d'abord sélectionner un enfant.",
     "titleRequired": "Le titre est requis.",
     "instructions": "Cliquez sur chaque cellule d'essai pour la marquer comme correcte (✓) ou incorrecte (✗)",
-    "trial": "Essai"
+    "trial": "Essai",
+    "saved": "Suivi des compétences sauvegardé !"
   },
   "teachCreator": {
     "title": "Suivi TEACCH",
@@ -1625,6 +1666,7 @@
     "inProgressCount": "En cours",
     "mastered": "Maîtrisé",
     "validationError": "Veuillez remplir tous les champs requis et ajouter au moins un objectif",
+    "saved": "Suivi sauvegardé !",
     "workSteps": "Étapes de travail"
   },
   "progressAI": {
@@ -2146,7 +2188,8 @@
     "modified": "Modifié",
     "dismissed": "Rejeté",
     "noData": "Aucune donnée disponible pour ce spécialiste.",
-    "errorLoad": "Impossible de charger les données du spécialiste"
+    "errorLoad": "Impossible de charger les données du spécialiste",
+    "defaultName": "Spécialiste"
   },
   "common": {
     "cancel": "Annuler",
@@ -2172,7 +2215,13 @@
     "daysAgo": "Il y a {{count}} jours",
     "loadMore": "Charger plus",
     "anonymous": "Anonyme",
-    "na": "N/A"
+    "na": "N/A",
+    "emailRequired": "L'email est requis",
+    "nameEmailPasswordRequired": "Le nom, l'email et le mot de passe sont requis",
+    "minSixChars": "Min 6 caractères",
+    "skip": "Ignorer",
+    "switchToLight": "Passer au mode clair",
+    "switchToDark": "Passer au mode sombre"
   },
   "notFound": {
     "title": "Page introuvable",
@@ -2221,7 +2270,12 @@
     "userId": "ID utilisateur",
     "verified": "Vérifié",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "nameRequired": "Le nom est requis",
+    "updateFailed": "Échec de la mise à jour du profil",
+    "passwordTooShort": "Le nouveau mot de passe doit comporter au moins 6 caractères",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "changePasswordFailed": "Échec du changement de mot de passe"
   },
   "pwa": {
     "offline": "Vous êtes actuellement hors ligne. Certaines fonctionnalités peuvent être indisponibles.",
@@ -2229,5 +2283,26 @@
     "updateDesc": "Une nouvelle version de CogniCare est prête. Rechargez pour obtenir les dernières fonctionnalités.",
     "later": "Plus tard",
     "reload": "Recharger"
+  },
+  "cogniCompanion": {
+    "tipHero": "👋 Salut ! Je suis Cogni !",
+    "tipFeatures": "✨ Découvrez nos tableaux de bord !",
+    "tipCta": "🚀 Prêt·e à commencer ?",
+    "tipFooter": "💜 Restons connectés !",
+    "clickTip0": "😄 Ça chatouille !",
+    "clickTip1": "🧠 Quel cerveau !",
+    "clickTip2": "✨ Explorons ensemble !",
+    "clickTip3": "🎉 Youpi !",
+    "clickTip4": "💜 Tu es formidable !",
+    "clickTip5": "🤖 Bip bip boup !",
+    "clickTip6": "🌟 J'adore aider !",
+    "clickTip7": "🎵 La la la~",
+    "focusTipAction": "🚀 {{label}}",
+    "focusTipNav": "🧭 {{label}}",
+    "focusTipGeneric": "👀 {{label}}",
+    "zoneHeader": "👋 Bon retour !",
+    "zoneFeatures": "💡 Des fonctionnalités incroyables vous attendent !",
+    "zoneCta": "🚀 Prêt à nous rejoindre ?",
+    "zoneFooter": "👋 À bientôt !"
   }
 }

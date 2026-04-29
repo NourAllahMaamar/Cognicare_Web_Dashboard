@@ -175,7 +175,17 @@
     "organizationLogin": "Organization Login",
     "fullNamePlaceholder": "Your full name",
     "emailPlaceholder": "specialist@cognicare.com",
-    "codeSentSuccess": "Verification code sent to your email"
+    "codeSentSuccess": "Verification code sent to your email",
+    "sendVerificationCode": "Send Verification Code",
+    "sendingCode": "Sending...",
+    "createAccountFinal": "Create Account",
+    "creatingAccount": "Creating account...",
+    "sendCodeFailed": "Failed to send verification code",
+    "googleLoginFailed": "Google login failed",
+    "accessDenied": "Access denied. This login is for specialists only.",
+    "profileFailed": "Profile completion failed",
+    "sessionExpired": "Session expired, please log in again",
+    "loginAfterProfileFailed": "Failed to complete login after profile setup"
   },
   "orgDashboard": {
     "title": "Organization Dashboard",
@@ -532,6 +542,9 @@
     "confirmDeleteStaff": "Are you sure you want to delete this staff member?",
     "confirmDeleteFamily": "Are you sure you want to delete this family?",
     "confirmCancelInvitation": "Are you sure you want to cancel this invitation?",
+    "childAgeTooYoung": "Child \"{{name}}\" must be at least 3 years old",
+    "importDragDrop": "Drag & drop or click to upload",
+    "importRowsFound": "{{count}} rows found",
     "community": {
       "title": "Community Feed",
       "subtitle": "Connect with families, specialists, and caregivers",
@@ -654,7 +667,7 @@
       "caregivers": "Caregivers",
       "communityHelpers": "Community helpers",
       "orgLeaders": "Organization Leaders",
-      "volunteers": "Volunteers" 
+      "volunteers": "Volunteers"
     },
     "quickActions": {
       "title": "Quick Actions",
@@ -823,8 +836,10 @@
       "viewChildren": "View Children",
       "viewChildrenDesc": "Select a child to create plans",
       "myPlans": "My Plans",
-      "myPlansDesc": "View all your created plans"
+      "myPlansDesc": "View all your created plans",
+      "createFamily": "Create new family"
     },
+    "suggestionAvailable": "Suggestion available",
     "gettingStarted": "Getting Started",
     "noChildrenTip": "No children found. You can add your own private patients using the 'Add Private Child' button above, or ask your Organization Leader to add children.",
     "recentPlans": "Recent Plans",
@@ -1048,6 +1063,7 @@
   },
   "rneVerification": {
     "title": "RNE Verification",
+    "systemLog": "System Log",
     "subtitle": "Automated AI-powered organization identity verification system",
     "reset": "Start Over",
     "phases": {
@@ -1227,7 +1243,11 @@
     "successTitle": "Account Activated!",
     "successMessage": "Your account has been successfully confirmed. You will be redirected to the login page in a few seconds...",
     "goToLogin": "Go to Login Now",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "invalidToken": "Invalid or missing activation token.",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "activateFailed": "Failed to activate account."
   },
   "landing": {
     "nav": {
@@ -1319,9 +1339,18 @@
         "title": "Admin Dashboard",
         "subtitle": "System-wide analytics & control",
         "stats": {
-          "users": { "value": "2.4K", "label": "Users" },
-          "orgs": { "value": "120", "label": "Orgs" },
-          "uptime": { "value": "98%", "label": "Uptime" }
+          "users": {
+            "value": "2.4K",
+            "label": "Users"
+          },
+          "orgs": {
+            "value": "120",
+            "label": "Orgs"
+          },
+          "uptime": {
+            "value": "98%",
+            "label": "Uptime"
+          }
         }
       },
       "pecs": {
@@ -1337,9 +1366,18 @@
         "title": "Organization Portal",
         "subtitle": "Staff & family management",
         "stats": {
-          "staff": { "value": "48", "label": "Staff" },
-          "families": { "value": "86", "label": "Families" },
-          "children": { "value": "152", "label": "Children" }
+          "staff": {
+            "value": "48",
+            "label": "Staff"
+          },
+          "families": {
+            "value": "86",
+            "label": "Families"
+          },
+          "children": {
+            "value": "152",
+            "label": "Children"
+          }
         }
       },
       "ai": {
@@ -1431,7 +1469,8 @@
     "due": "Due",
     "materials": "materials",
     "childRequired": "Please select a child first.",
-    "titleRequired": "Title is required."
+    "titleRequired": "Title is required.",
+    "saved": "Activity saved!"
   },
   "pecsCreator": {
     "title": "PECS Board Creator",
@@ -1514,7 +1553,8 @@
     "stepTrials": "Trials",
     "stepSave": "Save",
     "trialInstructions": "Click each card to record pass/fail trials",
-    "validationError": "Please add a title and at least one card"
+    "validationError": "Please add a title and at least one card",
+    "boardSaved": "Board saved!"
   },
   "skillTracker": {
     "title": "Skill Tracker",
@@ -1539,7 +1579,8 @@
     "childRequired": "Please select a child first.",
     "titleRequired": "Title is required.",
     "instructions": "Click each trial cell to mark it as correct (✓) or incorrect (✗)",
-    "trial": "Trial"
+    "trial": "Trial",
+    "saved": "Skill Tracker saved!"
   },
   "teachCreator": {
     "title": "TEACCH Tracker",
@@ -1624,6 +1665,7 @@
     "inProgressCount": "In Progress",
     "mastered": "Mastered",
     "validationError": "Please fill in all required fields and add at least one goal",
+    "saved": "Tracker saved!",
     "workSteps": "Work Steps"
   },
   "progressAI": {
@@ -2145,7 +2187,8 @@
     "modified": "Modified",
     "dismissed": "Dismissed",
     "noData": "No data available for this specialist yet.",
-    "errorLoad": "Failed to load specialist data"
+    "errorLoad": "Failed to load specialist data",
+    "defaultName": "Specialist"
   },
   "common": {
     "cancel": "Cancel",
@@ -2171,7 +2214,13 @@
     "hoursAgo": "{{count}} hours ago",
     "daysAgo": "{{count}} days ago",
     "anonymous": "Anonymous",
-    "na": "N/A"
+    "na": "N/A",
+    "emailRequired": "Email is required",
+    "nameEmailPasswordRequired": "Name, email, and password are required",
+    "minSixChars": "Min 6 characters",
+    "skip": "Skip",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
   },
   "notFound": {
     "title": "Page Not Found",
@@ -2220,7 +2269,12 @@
     "userId": "User ID",
     "verified": "Verified",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "nameRequired": "Name is required",
+    "updateFailed": "Failed to update profile",
+    "passwordTooShort": "New password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match",
+    "changePasswordFailed": "Failed to change password"
   },
   "pwa": {
     "offline": "You are currently offline. Some features may be unavailable.",
@@ -2228,5 +2282,26 @@
     "updateDesc": "A new version of CogniCare is ready. Reload to get the latest features.",
     "later": "Later",
     "reload": "Reload"
+  },
+  "cogniCompanion": {
+    "tipHero": "👋 Hi! I'm Cogni!",
+    "tipFeatures": "✨ Check out our dashboards!",
+    "tipCta": "🚀 Ready to get started?",
+    "tipFooter": "💜 Let's stay connected!",
+    "clickTip0": "😄 That tickles!",
+    "clickTip1": "🧠 Big brain energy!",
+    "clickTip2": "✨ Let's explore together!",
+    "clickTip3": "🎉 Wheeee!",
+    "clickTip4": "💜 You're awesome!",
+    "clickTip5": "🤖 Beep boop beep!",
+    "clickTip6": "🌟 I love helping!",
+    "clickTip7": "🎵 La la la~",
+    "focusTipAction": "🚀 {{label}}",
+    "focusTipNav": "🧭 {{label}}",
+    "focusTipGeneric": "👀 {{label}}",
+    "zoneHeader": "👋 Welcome back!",
+    "zoneFeatures": "💡 Amazing features await!",
+    "zoneCta": "🚀 Ready to join us?",
+    "zoneFooter": "👋 See you soon!"
   }
 }

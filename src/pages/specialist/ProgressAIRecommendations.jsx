@@ -40,7 +40,7 @@ export default function ProgressAIRecommendations() {
                 handleUnauthorized();
                 return;
             }
-            setError(e.message || 'Failed to load recommendations');
+            setError(e.message || t('progressAI.loadFailed'));
             setData(null);
         } finally {
             setLoading(false);
@@ -82,7 +82,7 @@ export default function ProgressAIRecommendations() {
             setParentFeedbackHelpful(null);
             fetchRecommendations();
         } catch (e) {
-            setError(e.message || 'Failed to submit feedback');
+            setError(e.message || t('progressAI.feedbackFailed'));
         }
     };
 

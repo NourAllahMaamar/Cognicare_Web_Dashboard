@@ -49,7 +49,7 @@ export default function ActivitiesCreator() {
           content: { description, parentInstructions, dueDate, priority, materials },
         },
       });
-      setSuccess('Activity saved!');
+      setSuccess(t('activitiesCreator.saved'));
       setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
