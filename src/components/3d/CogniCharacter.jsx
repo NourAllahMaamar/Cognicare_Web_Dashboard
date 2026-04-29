@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Float, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,6 +12,7 @@ import {
 export default function CogniCharacter({
   animationState = COGNI_FALLBACK_POSE,
   onClick,
+  onReady,
   cursorPos = { x: 0, y: 0 },
   cursorVelocity = { x: 0, y: 0 },
 }) {
@@ -51,6 +52,11 @@ export default function CogniCharacter({
     clickFlashRef.current = 1;
     onClick?.();
   };
+
+  // Setup 3D floating particles
+  // Notify parent that textures are loaded and the character is ready to display.
+  // useTexture suspends above, so this fires only after all textures have loaded.
+  useEffect(() => { onReady?.(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Setup 3D floating particles
   const particles = useMemo(() => {

@@ -7,10 +7,17 @@ import { ZONES } from '../ui/InteractiveZones';
 
 /* ─── 3D Character integration ─── */
 import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, Environment } from '@react-three/drei';
+import { PerspectiveCamera, Environment, useTexture } from '@react-three/drei';
 import { Suspense } from 'react';
 import CogniCharacter from './CogniCharacter';
-import { COGNI_POSES, normalizePose } from './cogniPoseConfig';
+import { COGNI_POSES, COGNI_POSE_TEXTURES, normalizePose } from './cogniPoseConfig';
+import initialPoseSrc from '../../assets/cogni/cogni-initialpose.png';
+
+/* Kick off texture downloads immediately at module-evaluation time so they are
+ * either already cached or well underway before CogniCharacter mounts. */
+if (typeof window !== 'undefined') {
+  Object.values(COGNI_POSE_TEXTURES).forEach((path) => useTexture.preload(path));
+}
 
 /* ═══════════════════════════════════════════════════╗
  *  Anchor positions (percentage of viewport)         ║
@@ -73,6 +80,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const [_isHovered, _setIsHovered] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [isJumping, setIsJumping] = useState(false);
+  const [is3dReady, setIs3dReady] = useState(false);
   const [currentZone, setCurrentZone] = useState(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [cursorVelocity, setCursorVelocity] = useState({ x: 0, y: 0 });
@@ -646,8 +654,16 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
         <SpeechBubble text={currentTip} visible={showTip} isRtl={isRtl} />
       </div>
 
-      {/* 3D Character Canvas */}
+      {/* 3D Character Canvas — placeholder shown until textures are downloaded */}
       <div className="cogni-media-stage">
+        {!is3dReady && (
+          <img
+            src={initialPoseSrc}
+            className="cogni-loading-placeholder"
+            aria-hidden="true"
+            alt=""
+          />
+        )}
         <Canvas
           className="cogni-media-frame"
           dpr={[1, 2]}
@@ -665,6 +681,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
               cursorPos={cursorPos}
               cursorVelocity={cursorVelocity}
               onClick={() => setCurrentPose(COGNI_POSES.JUMPING)}
+              onReady={() => setIs3dReady(true)}
             />
           </Suspense>
         </Canvas>

@@ -47,8 +47,8 @@
   if (checkFont()) return;
 
   // If fonts were previously cached, be more aggressive with checks
-  var maxRetries = wasCached ? 10 : 5;
-  var retryDelay = wasCached ? 50 : 100;
+  var maxRetries = wasCached ? 20 : 40;
+  var retryDelay = wasCached ? 50 : 150;
   var retryCount = 0;
 
   var retryCheck = function () {
@@ -82,15 +82,13 @@
       }, 500);
     });
 
-  // Hard fallback: reveal icons after 1.5s regardless so the UI is usable
-  // Reduced from 3s for better UX on slow connections
+  // Extended fallback: if font still not loaded after 6s, show styled text labels.
+  // We deliberately do NOT add 'fonts-loaded' here without the font actually being
+  // present — that would render raw ligature text like "menu" or "home" instead of icons.
   setTimeout(function () {
-    if (!fontsLoaded) {
-      if (!checkFont()) {
-        // Font still not loaded, force show with fallback
-        document.documentElement.classList.add('fonts-loaded');
-        console.warn('Material Symbols font timeout - forced display after 1.5s');
-      }
+    if (!fontsLoaded && !checkFont()) {
+      document.documentElement.classList.add('material-icons-fallback-active');
+      console.warn('Material Symbols font not available after 6s — activating text fallback');
     }
-  }, 1500);
+  }, 6000);
 })();
