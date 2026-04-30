@@ -16,6 +16,7 @@ const AdminTrainingCourses = lazy(() => import('./pages/admin/AdminTrainingCours
 const AdminSystemHealth = lazy(() => import('./pages/admin/AdminSystemHealth'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminCaregiverApplications = lazy(() => import('./pages/admin/AdminCaregiverApplications'));
+const AdminSupportTickets = lazy(() => import('./pages/admin/AdminSupportTickets'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const OrgLayout = lazy(() => import('./pages/org/OrgLayout'));
 const OrgOverview = lazy(() => import('./pages/org/OrgOverview'));
@@ -26,6 +27,7 @@ const OrgInvitations = lazy(() => import('./pages/org/OrgInvitations'));
 const OrgRNEVerification = lazy(() => import('./pages/org/OrgRNEVerification'));
 const OrgCommunity = lazy(() => import('./pages/org/OrgCommunity'));
 const OrgMarketplace = lazy(() => import('./pages/org/OrgMarketplace'));
+const OrgSupport = lazy(() => import('./pages/org/OrgSupport'));
 const OrgLeaderLogin = lazy(() => import('./pages/org-leader/OrgLeaderLogin'));
 const OrgSpecialistDetail = lazy(() => import('./pages/org-leader/OrgSpecialistDetail'));
 const SpecialistLayout = lazy(() => import('./pages/specialist/SpecialistLayout'));
@@ -38,6 +40,7 @@ const TEACCHTrackerCreator = lazy(() => import('./pages/specialist/TEACCHTracker
 const ActivitiesCreator = lazy(() => import('./pages/specialist/ActivitiesCreator'));
 const SkillTrackerCreator = lazy(() => import('./pages/specialist/SkillTrackerCreator'));
 const ProgressAIRecommendations = lazy(() => import('./pages/specialist/ProgressAIRecommendations'));
+const SpecialistSupport = lazy(() => import('./pages/specialist/SpecialistSupport'));
 const SettingsPage = lazy(() => import('./pages/shared/SettingsPage'));
 const NotFound = lazy(() => import('./pages/shared/NotFound'));
 const ConfirmAccount = lazy(() => import('./pages/ConfirmAccount'));
@@ -106,6 +109,7 @@ function App() {
           <Route path="caregiver-applications" element={<AdminCaregiverApplications />} />
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="system-health" element={<AdminSystemHealth />} />
+          <Route path="support" element={<AdminSupportTickets />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
@@ -123,6 +127,7 @@ function App() {
           <Route path="community" element={<OrgCommunity />} />
           <Route path="marketplace" element={<OrgMarketplace />} />
           <Route path="specialist/:specialistId" element={<OrgSpecialistDetail />} />
+          <Route path="support" element={<OrgSupport />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
@@ -133,6 +138,7 @@ function App() {
           <Route index element={<SpecialistOverview />} />
           <Route path="children" element={<SpecialistChildren />} />
           <Route path="plans" element={<SpecialistPlans />} />
+          <Route path="support" element={<SpecialistSupport />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route path="/specialist/pecs/create" element={<PECSBoardCreator />} />

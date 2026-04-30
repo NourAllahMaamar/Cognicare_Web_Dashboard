@@ -205,7 +205,8 @@
       "community": "المجتمع",
       "marketplace": "السوق",
       "invitations": "الدعوات",
-      "rneVerification": "التحقق من السجل التجاري"
+      "rneVerification": "التحقق من السجل التجاري",
+      "support": "الدعم"
     },
     "stats": {
       "totalStaff": "إجمالي الموظفين",
@@ -818,7 +819,8 @@
     "tabs": {
       "overview": "نظرة عامة",
       "children": "الأطفال",
-      "myPlans": "خططي"
+      "myPlans": "خططي",
+      "support": "الدعم"
     },
     "stats": {
       "orgChildren": "أطفال المنظمة",
@@ -1936,6 +1938,7 @@
     "applications": "الطلبات",
     "analytics": "التحليلات",
     "systemHealth": "صحة النظام",
+    "support": "تذاكر الدعم",
     "settings": "الإعدادات",
     "refresh": "تحديث",
     "seoTitle": "لوحة التحكم الإدارية"
@@ -2304,5 +2307,72 @@
     "zoneFeatures": "💡 ميزات رائعة في انتظارك!",
     "zoneCta": "🚀 هل أنت مستعد للانضمام إلينا؟",
     "zoneFooter": "👋 إلى اللقاء!"
+  },
+  "support": {
+    "title": "الدعم",
+    "adminTitle": "تذاكر الدعم",
+    "subtitle": "الإبلاغ عن الأخطاء أو إرسال المقترحات أو التواصل مع المشرفين",
+    "newTicket": "تذكرة جديدة",
+    "noTickets": "لا توجد تذاكر حتى الآن. افتح واحدة إذا كنت بحاجة للمساعدة!",
+    "noTicketsAdmin": "لم يتم العثور على تذاكر",
+    "ticketCreated": "تم إرسال التذكرة بنجاح",
+    "statusUpdated": "تم تحديث الحالة",
+    "ticketsTotal": "إجمالي التذاكر",
+    "view": "عرض",
+    "admin": "مشرف",
+    "you": "أنت",
+    "youAdmin": "أنت (المشرف)",
+    "noMessages": "لا توجد رسائل بعد",
+    "ticketResolved": "تم حل هذه التذكرة",
+    "pdfAttachment": "PDF",
+    "uploadFailed": "فشل الرفع",
+    "user": "مستخدم",
+    "replyPlaceholder": "اكتب رسالة…",
+    "type": {
+      "bug": "تقرير خطأ",
+      "suggestion": "اقتراح",
+      "contact": "التواصل مع المشرف"
+    },
+    "status": {
+      "open": "مفتوح",
+      "in_progress": "قيد التنفيذ",
+      "resolved": "محلول"
+    },
+    "priority": {
+      "low": "منخفض",
+      "medium": "متوسط",
+      "urgent": "عاجل"
+    },
+    "role": {
+      "careProvider": "متخصص",
+      "organization_leader": "قائد منظمة"
+    },
+    "form": {
+      "type": "النوع",
+      "subject": "الموضوع",
+      "subjectPlaceholder": "ملخص موجز لمشكلتك",
+      "description": "الوصف",
+      "descriptionPlaceholder": "صف المشكلة بالتفصيل…",
+      "priority": "الأولوية",
+      "noPriority": "— اختر الأولوية —",
+      "submit": "إرسال",
+      "attachments": "المرفقات",
+      "addAttachment": "إضافة صورة أو PDF",
+      "maxFiles": "الحد الأقصى 5 مرفقات",
+      "submitting": "جارٍ الإرسال…"
+    },
+    "filterAllStatuses": "جميع الحالات",
+    "filterAllTypes": "جميع الأنواع",
+    "filterAllRoles": "جميع الأدوار",
+    "col": {
+      "user": "المستخدم",
+      "role": "الدور",
+      "subject": "الموضوع",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "date": "التاريخ",
+      "actions": "الإجراءات"
+    }
   }
 }

@@ -205,7 +205,8 @@
       "community": "Community",
       "marketplace": "Marketplace",
       "invitations": "Invitations",
-      "rneVerification": "RNE Verification"
+      "rneVerification": "RNE Verification",
+      "support": "Support"
     },
     "stats": {
       "totalStaff": "Total Staff",
@@ -817,7 +818,8 @@
     "tabs": {
       "overview": "Overview",
       "children": "Children",
-      "myPlans": "My Plans"
+      "myPlans": "My Plans",
+      "support": "Support"
     },
     "stats": {
       "orgChildren": "Org Children",
@@ -1935,6 +1937,7 @@
     "applications": "Applications",
     "analytics": "Analytics",
     "systemHealth": "System Health",
+    "support": "Support Tickets",
     "settings": "Settings",
     "refresh": "Refresh",
     "seoTitle": "Admin Dashboard"
@@ -2303,5 +2306,72 @@
     "zoneFeatures": "💡 Amazing features await!",
     "zoneCta": "🚀 Ready to join us?",
     "zoneFooter": "👋 See you soon!"
+  },
+  "support": {
+    "title": "Support",
+    "adminTitle": "Support Tickets",
+    "subtitle": "Report bugs, send suggestions, or contact admins",
+    "newTicket": "New Ticket",
+    "noTickets": "No tickets yet. Open one if you need help!",
+    "noTicketsAdmin": "No tickets found",
+    "ticketCreated": "Ticket submitted successfully",
+    "statusUpdated": "Status updated",
+    "ticketsTotal": "tickets total",
+    "view": "View",
+    "admin": "Admin",
+    "you": "You",
+    "youAdmin": "You (Admin)",
+    "noMessages": "No messages yet",
+    "ticketResolved": "This ticket is resolved",
+    "pdfAttachment": "PDF",
+    "uploadFailed": "Upload failed",
+    "user": "User",
+    "replyPlaceholder": "Type a message…",
+    "type": {
+      "bug": "Bug Report",
+      "suggestion": "Suggestion",
+      "contact": "Contact Admin"
+    },
+    "status": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "resolved": "Resolved"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "urgent": "Urgent"
+    },
+    "role": {
+      "careProvider": "Specialist",
+      "organization_leader": "Org Leader"
+    },
+    "form": {
+      "type": "Type",
+      "subject": "Subject",
+      "subjectPlaceholder": "Brief summary of your issue",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the issue in detail…",
+      "priority": "Priority",
+      "noPriority": "— Select priority —",
+      "submit": "Submit",
+      "attachments": "Attachments",
+      "addAttachment": "Add image or PDF",
+      "maxFiles": "Max 5 attachments",
+      "submitting": "Submitting…"
+    },
+    "filterAllStatuses": "All Statuses",
+    "filterAllTypes": "All Types",
+    "filterAllRoles": "All Roles",
+    "col": {
+      "user": "User",
+      "role": "Role",
+      "subject": "Subject",
+      "type": "Type",
+      "priority": "Priority",
+      "status": "Status",
+      "date": "Date",
+      "actions": "Actions"
+    }
   }
 }

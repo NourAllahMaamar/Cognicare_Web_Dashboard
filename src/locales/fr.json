@@ -205,7 +205,8 @@
       "community": "Communauté",
       "marketplace": "Marché",
       "invitations": "Invitations",
-      "rneVerification": "Vérification RNE"
+      "rneVerification": "Vérification RNE",
+      "support": "Support"
     },
     "stats": {
       "totalStaff": "Personnel Total",
@@ -818,7 +819,8 @@
     "tabs": {
       "overview": "Aperçu",
       "children": "Enfants",
-      "myPlans": "Mes Plans"
+      "myPlans": "Mes Plans",
+      "support": "Support"
     },
     "stats": {
       "orgChildren": "Enfants de l'Org",
@@ -1936,6 +1938,7 @@
     "applications": "Candidatures",
     "analytics": "Analytique",
     "systemHealth": "Santé du Système",
+    "support": "Tickets de Support",
     "settings": "Paramètres",
     "refresh": "Actualiser",
     "seoTitle": "Tableau de Bord Admin"
@@ -2304,5 +2307,72 @@
     "zoneFeatures": "💡 Des fonctionnalités incroyables vous attendent !",
     "zoneCta": "🚀 Prêt à nous rejoindre ?",
     "zoneFooter": "👋 À bientôt !"
+  },
+  "support": {
+    "title": "Support",
+    "adminTitle": "Tickets de Support",
+    "subtitle": "Signalez des bugs, envoyez des suggestions ou contactez les admins",
+    "newTicket": "Nouveau Ticket",
+    "noTickets": "Aucun ticket pour l'instant. Ouvrez-en un si vous avez besoin d'aide !",
+    "noTicketsAdmin": "Aucun ticket trouvé",
+    "ticketCreated": "Ticket soumis avec succès",
+    "statusUpdated": "Statut mis à jour",
+    "ticketsTotal": "tickets au total",
+    "view": "Voir",
+    "admin": "Admin",
+    "you": "Vous",
+    "youAdmin": "Vous (Admin)",
+    "noMessages": "Aucun message pour l'instant",
+    "ticketResolved": "Ce ticket est résolu",
+    "pdfAttachment": "PDF",
+    "uploadFailed": "Échec du téléversement",
+    "user": "Utilisateur",
+    "replyPlaceholder": "Tapez un message…",
+    "type": {
+      "bug": "Rapport de Bug",
+      "suggestion": "Suggestion",
+      "contact": "Contacter l'Admin"
+    },
+    "status": {
+      "open": "Ouvert",
+      "in_progress": "En Cours",
+      "resolved": "Résolu"
+    },
+    "priority": {
+      "low": "Faible",
+      "medium": "Moyen",
+      "urgent": "Urgent"
+    },
+    "role": {
+      "careProvider": "Spécialiste",
+      "organization_leader": "Chef d'Org"
+    },
+    "form": {
+      "type": "Type",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Résumé bref de votre problème",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez le problème en détail…",
+      "priority": "Priorité",
+      "noPriority": "— Sélectionner la priorité —",
+      "submit": "Soumettre",
+      "attachments": "Pièces jointes",
+      "addAttachment": "Ajouter une image ou un PDF",
+      "maxFiles": "Max 5 pièces jointes",
+      "submitting": "Envoi en cours…"
+    },
+    "filterAllStatuses": "Tous les Statuts",
+    "filterAllTypes": "Tous les Types",
+    "filterAllRoles": "Tous les Rôles",
+    "col": {
+      "user": "Utilisateur",
+      "role": "Rôle",
+      "subject": "Sujet",
+      "type": "Type",
+      "priority": "Priorité",
+      "status": "Statut",
+      "date": "Date",
+      "actions": "Actions"
+    }
   }
 }

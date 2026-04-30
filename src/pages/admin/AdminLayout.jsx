@@ -32,6 +32,7 @@ export default function AdminLayout() {
     { path: '/admin/dashboard/caregiver-applications', icon: 'how_to_reg', label: t('adminLayout.applications') },
     { path: '/admin/dashboard/analytics', icon: 'bar_chart', label: t('adminLayout.analytics') },
     { path: '/admin/dashboard/system-health', icon: 'monitor_heart', label: t('adminLayout.systemHealth') },
+    { path: '/admin/dashboard/support', icon: 'support_agent', label: t('adminLayout.support', 'Support Tickets') },
   ];
 
   const bottomItems = [

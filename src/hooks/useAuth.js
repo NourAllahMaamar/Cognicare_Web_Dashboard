@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import { recordApiMetric } from '../utils/performanceMonitor';
@@ -27,16 +27,16 @@ function createCorrelationId() {
 export function useAuth(role) {
   const navigate = useNavigate();
 
-  const keys = {
+  const keys = useMemo(() => ({
     admin: { token: 'adminToken', refresh: 'adminRefreshToken', user: 'adminUser', loginPath: '/admin/login' },
     orgLeader: { token: 'orgLeaderToken', refresh: 'orgLeaderRefreshToken', user: 'orgLeaderUser', loginPath: '/org/login' },
     specialist: { token: 'specialistToken', refresh: 'specialistRefreshToken', user: 'specialistUser', loginPath: '/specialist/login' },
-  }[role];
+  })[role], [role]);
 
-  const getToken = () => localStorage.getItem(keys.token);
-  const getUser = () => {
+  const getToken = useCallback(() => localStorage.getItem(keys.token), [keys]);
+  const getUser = useCallback(() => {
     try { return JSON.parse(localStorage.getItem(keys.user)); } catch { return null; }
-  };
+  }, [keys]);
 
   const handleSessionExpired = useCallback(() => {
     clearAuthCache();

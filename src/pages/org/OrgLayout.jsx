@@ -43,6 +43,7 @@ export default function OrgLayout() {
     { to: '/org/dashboard/marketplace', icon: 'shopping_bag', label: t('orgDashboard.tabs.marketplace', 'Marketplace') },
     { to: '/org/dashboard/invitations', icon: 'mail', label: t('orgDashboard.tabs.invitations', 'Invitations') },
     { to: '/org/dashboard/rne-verification', icon: 'fact_check', label: t('orgDashboard.tabs.rneVerification', 'RNE Verification') },
+    { to: '/org/dashboard/support', icon: 'support_agent', label: t('orgDashboard.tabs.support', 'Support') },
   ];
 
   const bottomItems = [

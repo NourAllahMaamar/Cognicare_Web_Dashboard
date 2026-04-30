@@ -28,6 +28,7 @@ export default function SpecialistLayout() {
     { to: '/specialist/dashboard', icon: 'dashboard', label: t('specialistDashboard.tabs.overview', 'Overview'), end: true },
     { to: '/specialist/dashboard/children', icon: 'child_care', label: t('specialistDashboard.tabs.children', 'Children') },
     { to: '/specialist/dashboard/plans', icon: 'assignment', label: t('specialistDashboard.tabs.myPlans', 'My Plans') },
+    { to: '/specialist/dashboard/support', icon: 'support_agent', label: t('specialistDashboard.tabs.support', 'Support') },
   ];
 
   const bottomItems = [
