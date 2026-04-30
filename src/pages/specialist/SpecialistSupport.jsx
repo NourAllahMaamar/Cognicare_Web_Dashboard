@@ -114,6 +114,16 @@ export default function SpecialistSupport() {
     } catch (e) { flash(setError, e.message); }
   };
 
+  const handleDeleteTicket = async (ticketId) => {
+    if (!window.confirm(t('support.deleteConfirm', 'Are you sure you want to delete this ticket? This cannot be undone.'))) return;
+    try {
+      await authMutate(`/support/${ticketId}`, { method: 'DELETE' });
+      setTickets((prev) => prev.filter((tk) => tk._id !== ticketId));
+      setSelectedTicket(null);
+      flash(setSuccess, t('support.deleteSuccess', 'Ticket deleted successfully'));
+    } catch (e) { flash(setError, e.message); }
+  };
+
   const closeCreate = () => { setShowCreate(false); setFiles([]); setForm({ type: 'bug', subject: '', description: '', priority: '' }); };
 
   return (
@@ -289,9 +299,18 @@ export default function SpecialistSupport() {
                   <StatusBadge status={STATUS_COLORS[selectedTicket.status]} label={t(`support.status.${selectedTicket.status}`, selectedTicket.status)} />
                 </div>
               </div>
-              <button onClick={() => setSelectedTicket(null)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex-shrink-0">
-                <span className="material-symbols-outlined text-lg">close</span>
-              </button>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => handleDeleteTicket(selectedTicket._id)}
+                  className="p-1.5 rounded-lg text-red-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                  title={t('support.deleteTicket', 'Delete Ticket')}
+                >
+                  <span className="material-symbols-outlined text-lg">delete</span>
+                </button>
+                <button onClick={() => setSelectedTicket(null)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+                  <span className="material-symbols-outlined text-lg">close</span>
+                </button>
+              </div>
             </div>
 
             {/* Attachments row */}

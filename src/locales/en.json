@@ -2325,6 +2325,9 @@
     "ticketResolved": "This ticket is resolved",
     "pdfAttachment": "PDF",
     "uploadFailed": "Upload failed",
+    "deleteTicket": "Delete Ticket",
+    "deleteConfirm": "Are you sure you want to delete this ticket? This cannot be undone.",
+    "deleteSuccess": "Ticket deleted successfully",
     "user": "User",
     "replyPlaceholder": "Type a message…",
     "type": {

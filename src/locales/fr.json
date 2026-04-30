@@ -2326,6 +2326,9 @@
     "ticketResolved": "Ce ticket est résolu",
     "pdfAttachment": "PDF",
     "uploadFailed": "Échec du téléversement",
+    "deleteTicket": "Supprimer le ticket",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce ticket ? Cette action est irréversible.",
+    "deleteSuccess": "Ticket supprimé avec succès",
     "user": "Utilisateur",
     "replyPlaceholder": "Tapez un message…",
     "type": {

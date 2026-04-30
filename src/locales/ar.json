@@ -2326,6 +2326,9 @@
     "ticketResolved": "تم حل هذه التذكرة",
     "pdfAttachment": "PDF",
     "uploadFailed": "فشل الرفع",
+    "deleteTicket": "حذف التذكرة",
+    "deleteConfirm": "هل أنت متأكد من رغبتك في حذف هذه التذكرة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteSuccess": "تم حذف التذكرة بنجاح",
     "user": "مستخدم",
     "replyPlaceholder": "اكتب رسالة…",
     "type": {

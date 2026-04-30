@@ -41,14 +41,14 @@ export default function AdminSupportTickets() {
     setTimeout(() => setter(''), 3500);
   };
 
-  const fetchTickets = useCallback(async () => {
+  const fetchTickets = useCallback(async (skipCache = false) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ page, limit: LIMIT });
       if (filterStatus) params.set('status', filterStatus);
       if (filterType) params.set('type', filterType);
       if (filterRole) params.set('role', filterRole);
-      const data = await authGet(`/support/admin/all?${params}`);
+      const data = await authGet(`/support/admin/all?${params}`, skipCache ? { skipCache: true } : undefined);
       setTickets(Array.isArray(data?.tickets) ? data.tickets : []);
       setTotal(data?.total ?? 0);
     } catch (e) {
@@ -90,6 +90,19 @@ export default function AdminSupportTickets() {
     }
   };
 
+  const handleDeleteTicket = async (ticketId) => {
+    if (!window.confirm(t('support.deleteConfirm', 'Are you sure you want to delete this ticket? This cannot be undone.'))) return;
+    try {
+      await authMutate(`/support/admin/${ticketId}`, { method: 'DELETE' });
+      setTickets((prev) => prev.filter((tk) => tk._id !== ticketId));
+      setTotal((prev) => prev - 1);
+      if (selectedTicket?._id === ticketId) setSelectedTicket(null);
+      flash(setSuccess, t('support.deleteSuccess', 'Ticket deleted successfully'));
+    } catch (e) {
+      flash(setError, e.message);
+    }
+  };
+
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
@@ -103,10 +116,11 @@ export default function AdminSupportTickets() {
           </p>
         </div>
         <button
-          onClick={fetchTickets}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+          onClick={() => fetchTickets(true)}
+          disabled={loading}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          <span className="material-symbols-outlined text-base">refresh</span>
+          <span className={`material-symbols-outlined text-base${loading ? ' animate-spin' : ''}`}>refresh</span>
           {t('common.refresh', 'Refresh')}
         </button>
       </div>
@@ -223,6 +237,13 @@ export default function AdminSupportTickets() {
                           className="text-primary hover:underline text-xs font-medium"
                         >
                           {t('support.view', 'View')}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTicket(ticket._id)}
+                          className="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+                          title={t('support.deleteTicket', 'Delete Ticket')}
+                        >
+                          <span className="material-symbols-outlined text-base">delete</span>
                         </button>
                       </div>
                     </td>
