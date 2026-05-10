@@ -7,16 +7,9 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
-  // IMPORTANT:
-  // In dev we proxy /api and /uploads to the backend. If the Render hostname
-  // is unreachable (DNS/ENOTFOUND), login will succeed nowhere and the UI
-  // will appear to "not redirect".
-  //
-  // Set VITE_BACKEND_ORIGIN to your reachable backend, e.g.
-  // - http://localhost:3000
-  // - https://<your-deployed-backend>
+  
   const backendOrigin =
-    env.VITE_BACKEND_ORIGIN || 'http://localhost:3000'
+    env.VITE_BACKEND_ORIGIN || 'https://cognicare-mobile-h4ct.onrender.com'
 
   const csp = [
     "default-src 'self'",
