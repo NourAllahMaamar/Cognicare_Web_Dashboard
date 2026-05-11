@@ -25,7 +25,7 @@ export async function cachedGet(path, { ttlMs = 60_000, signal, token } = {}) {
     return structuredClone(cached.data);
   }
 
-  const headers = { 'X-Cogni-Client': 'web' };
+  const headers = {};
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }

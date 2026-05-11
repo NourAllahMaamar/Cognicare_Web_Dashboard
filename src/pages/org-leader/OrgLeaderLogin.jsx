@@ -35,7 +35,7 @@ function OrgLeaderLogin() {
     e.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' }, credentials: 'include', body: JSON.stringify({ email, password }) });
+      const response = await fetch(`${API_BASE_URL}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ email, password }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.loginFailed'));
       if (data.user.role !== 'organization_leader') throw new Error(t('orgLeaderLogin.accessDenied'));
@@ -69,7 +69,7 @@ function OrgLeaderLogin() {
       formData.append('organizationName', organizationName);
       formData.append('verificationCode', verificationCode);
       if (certificatePdf) formData.append('certificate', certificatePdf);
-      const response = await fetch(`${API_BASE_URL}/auth/signup`, { method: 'POST', headers: { 'X-Cogni-Client': 'web' }, credentials: 'include', body: formData });
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, { method: 'POST', credentials: 'include', body: formData });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.signupFailed'));
       if (data.requiresApproval) {

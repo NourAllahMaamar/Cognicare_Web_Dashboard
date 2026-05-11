@@ -80,7 +80,7 @@ function SpecialistLogin() {
         try {
             const res = await fetch(`${API_BASE_URL}/auth/social-login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
                     provider: 'google',
@@ -150,7 +150,7 @@ function SpecialistLogin() {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({ email, password }),
             });
@@ -193,7 +193,7 @@ function SpecialistLogin() {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/signup`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
                     fullName,
@@ -223,7 +223,6 @@ function SpecialistLogin() {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${profileCompletionToken}`,
-                    'X-Cogni-Client': 'web'
                 },
                 credentials: 'include',
                 body: JSON.stringify({
@@ -240,7 +239,7 @@ function SpecialistLogin() {
             
             const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
                     email: tempEmail,

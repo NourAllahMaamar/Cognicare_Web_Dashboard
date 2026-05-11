@@ -79,7 +79,6 @@ async function refreshSession(sessionKey, timeoutMs = 10_000) {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'X-Cogni-Client': 'web',
       },
       body: JSON.stringify({}),
       signal: controller.signal,
@@ -102,7 +101,6 @@ async function fetchProfileRole(token, timeoutMs = 10_000) {
       credentials: 'include',
       headers: {
         Authorization: `Bearer ${token}`,
-        'X-Cogni-Client': 'web',
       },
       signal: controller.signal,
     });

@@ -18,13 +18,6 @@ export function clearAuthCache() {
   _getCache.clear();
 }
 
-function createCorrelationId() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
-}
-
 /**
  * Reusable auth hook for role-based dashboard sessions.
  * Handles token storage, refresh, and authenticated fetch with auto-retry on 401.
@@ -55,7 +48,6 @@ export function useAuth(role) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Cogni-Client': 'web',
         },
         credentials: 'include',
         body: JSON.stringify({}),
@@ -97,7 +89,6 @@ export function useAuth(role) {
   const authFetch = useCallback(async (path, options = {}) => {
     const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
     let token = getToken();
-    const correlationId = createCorrelationId();
     const startedAt = (typeof performance !== 'undefined' ? performance.now() : Date.now());
     const method = (options.method || 'GET').toUpperCase();
     let status = 0;
@@ -110,8 +101,6 @@ export function useAuth(role) {
       credentials: 'include',
       headers: {
         ...options.headers,
-        'X-Correlation-Id': correlationId,
-        'X-Cogni-Client': 'web',
         ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
       },
     });
@@ -141,7 +130,6 @@ export function useAuth(role) {
         role,
         method,
         path,
-        correlationId,
         status,
         ok,
         retried,
@@ -204,7 +192,6 @@ export function useAuth(role) {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'X-Cogni-Client': 'web',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     }).catch(() => {});
