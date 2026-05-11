@@ -64,6 +64,30 @@ const routes = [
     description:
       'Sign in to the CogniCare specialist portal to manage PECS & TEACCH plans, track child progress, and collaborate with families.',
   },
+  {
+    path: '/privacy',
+    title: 'Privacy Policy | CogniCare',
+    description:
+      'CogniCare privacy policy covering account data, child and health data, camera, microphone, photos, retention, deletion, and privacy contact details.',
+  },
+  {
+    path: '/terms',
+    title: 'Terms of Service | CogniCare',
+    description:
+      'CogniCare terms of service for authorized use, care coordination, organization responsibilities, and service safety.',
+  },
+  {
+    path: '/account-deletion',
+    title: 'Account Deletion | CogniCare',
+    description:
+      'Instructions for requesting deletion of a CogniCare account and associated personal data.',
+  },
+  {
+    path: '/community-standards',
+    title: 'Community Standards | CogniCare',
+    description:
+      'CogniCare community standards for safe, respectful communication among families, children, caregivers, specialists, and organizations.',
+  },
 ];
 
 // Read the built index.html template

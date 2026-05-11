@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { clearAuthCache } from '../hooks/useAuth';
 import { API_BASE_URL } from '../config';
+import {
+  clearAuthSession,
+  getAccessToken,
+  getStoredUser,
+  storeAuthSession,
+} from '../utils/authSession';
 
 const SESSION_CONFIG = {
   admin: {
@@ -35,25 +41,19 @@ const SESSION_VALIDATION_TTL_MS = 60_000;
 const sessionValidationCache = new Map();
 
 function readStoredUser(userKey) {
-  if (!userKey || typeof localStorage === 'undefined') return null;
-  try {
-    const raw = localStorage.getItem(userKey);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+  if (!userKey) return null;
+  const sessionKey = Object.entries(SESSION_CONFIG).find(
+    ([, config]) => config.userKey === userKey,
+  )?.[0];
+  return sessionKey ? getStoredUser(sessionKey) : null;
 }
 
-function readStoredValue(key) {
-  if (!key || typeof localStorage === 'undefined') return '';
-  return localStorage.getItem(key) || '';
-}
-
-function clearSession({ tokenKey, userKey }) {
+function clearSession({ tokenKey }) {
   clearAuthCache();
-  if (typeof localStorage === 'undefined') return;
-  if (tokenKey) localStorage.removeItem(tokenKey);
-  if (userKey) localStorage.removeItem(userKey);
+  const sessionKey = Object.entries(SESSION_CONFIG).find(
+    ([, config]) => config.tokenKey === tokenKey,
+  )?.[0];
+  if (sessionKey) clearAuthSession(sessionKey);
 }
 
 function normalizeRole(role) {
@@ -70,13 +70,40 @@ function readCachedValidation(cacheKey) {
   return cached;
 }
 
+async function refreshSession(sessionKey, timeoutMs = 10_000) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Cogni-Client': 'web',
+      },
+      body: JSON.stringify({}),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`REFRESH_${res.status}`);
+    const payload = await res.json();
+    storeAuthSession(sessionKey, payload);
+    return payload;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 async function fetchProfileRole(token, timeoutMs = 10_000) {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(`${API_BASE_URL}/auth/profile`, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'X-Cogni-Client': 'web',
+      },
       signal: controller.signal,
     });
     if (!res.ok) {
@@ -102,48 +129,53 @@ export default function ProtectedRoute({
     .map((role) => normalizeRole(role))
     .join('|');
   const targetLoginPath = loginPath || config.loginPath || '/';
-  const token = readStoredValue(config.tokenKey);
+  const token = getAccessToken(sessionKey);
   const user = readStoredUser(config.userKey);
   const storedRole = normalizeRole(user?.role);
   const hasLocalSession = Boolean(token && user && storedRole);
-  const cacheKey = `${sessionKey}:${token}`;
-  const [validationState, setValidationState] = useState(
-    hasLocalSession ? 'checking' : 'denied',
-  );
+  const [validationState, setValidationState] = useState('checking');
 
   useEffect(() => {
     const expectedNormalizedRoles = expectedNormalizedRolesKey
       ? expectedNormalizedRolesKey.split('|')
       : [];
 
-    if (!hasLocalSession) {
-      setValidationState('denied');
-      return;
-    }
-
-    if (!expectedNormalizedRoles.includes(storedRole)) {
-      setValidationState('denied');
-      return;
-    }
-
-    const cached = readCachedValidation(cacheKey);
-    if (cached && expectedNormalizedRoles.includes(cached.role)) {
-      setValidationState('allowed');
-      return;
-    }
+    let activeToken = token;
+    let activeRole = storedRole;
 
     let isCancelled = false;
     setValidationState('checking');
 
-    fetchProfileRole(token)
+    const validate = async () => {
+      if (!hasLocalSession) {
+        const refreshed = await refreshSession(sessionKey);
+        activeToken = refreshed?.accessToken || '';
+        activeRole = normalizeRole(refreshed?.user?.role);
+      }
+
+      if (!activeToken || !expectedNormalizedRoles.includes(activeRole)) {
+        throw new Error('DENIED');
+      }
+
+      const activeCacheKey = `${sessionKey}:${activeToken}`;
+      const cached = readCachedValidation(activeCacheKey);
+      if (cached && expectedNormalizedRoles.includes(cached.role)) {
+        return cached.role;
+      }
+
+      const serverRole = await fetchProfileRole(activeToken);
+      sessionValidationCache.set(activeCacheKey, {
+        role: serverRole,
+        checkedAt: Date.now(),
+      });
+      return serverRole;
+    };
+
+    validate()
       .then((serverRole) => {
         if (isCancelled) return;
         const isAllowedRole = expectedNormalizedRoles.includes(serverRole);
         if (isAllowedRole) {
-          sessionValidationCache.set(cacheKey, {
-            role: serverRole,
-            checkedAt: Date.now(),
-          });
           setValidationState('allowed');
           return;
         }
@@ -158,9 +190,9 @@ export default function ProtectedRoute({
       isCancelled = true;
     };
   }, [
-    cacheKey,
     expectedNormalizedRolesKey,
     hasLocalSession,
+    sessionKey,
     storedRole,
     token,
   ]);

@@ -330,7 +330,7 @@ export default function LandingPage() {
   }, []);
 
   const navItems = [
-    { label: t('landing.nav.orgLeaders', 'Organizations'), to: '/org/login' },
+    { label: t('landing.nav.orgLeaders', 'Organization Leaders'), to: '/org/login' },
     { label: t('landing.nav.professionals', 'Professionals'), to: '/specialist/login' },
     { label: t('landing.nav.admins', 'Admins'), to: '/admin/login' },
   ];
@@ -343,11 +343,11 @@ export default function LandingPage() {
   const landingJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'CogniCare',
+    name: t('common.appName', 'CogniCare'),
     applicationCategory: 'HealthApplication',
     operatingSystem: 'Android, Web',
     description:
-      'CogniCare connects organizations, specialists, admins, and families through one cognitive care platform.',
+      t('landing.seo.jsonDescription', '{{appName}} connects organizations, specialists, admins, and families through one cognitive care platform.', { appName: t('common.appName', 'CogniCare') }),
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -386,8 +386,8 @@ export default function LandingPage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center gap-2.5 shrink-0 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-                <img src={logo} alt="CogniCare" className="h-10 w-10 rounded-xl object-contain shadow-sm" />
-                <span className="text-lg font-black tracking-tight bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">CogniCare</span>
+                <img src={logo} alt={t('common.appName', 'CogniCare')} className="h-10 w-10 rounded-xl object-contain shadow-sm" />
+                <span className="text-lg font-black tracking-tight bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">{t('common.appName', 'CogniCare')}</span>
               </div>
               <nav className="hidden md:flex items-center gap-8">
                 {navItems.map(n => (
@@ -428,6 +428,7 @@ export default function LandingPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 {/* Left */}
                 <motion.div 
+                  data-cogni-avoid
                   initial={{ opacity: 0, x: -30 }} 
                   animate={{ opacity: 1, x: 0 }} 
                   transition={{ duration: 0.8, ease: "easeOut" }}
@@ -531,6 +532,7 @@ export default function LandingPage() {
 
                 {/* Right "” Rotating Showcase card floating in 3D-light background */}
                 <motion.div 
+                  data-cogni-avoid
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.2 }}
@@ -591,6 +593,7 @@ export default function LandingPage() {
           <section id="section-features" className="py-20 sm:py-32 relative z-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <motion.div 
+                data-cogni-avoid
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
@@ -607,12 +610,13 @@ export default function LandingPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                  { icon: 'leaderboard', title: t('landing.roles.org', 'Org Leader Portal'), desc: t('landing.roles.orgDesc', 'High-level strategic oversight, resource allocation, and organizational performance management.'), link: '/org/login', gradient: 'from-purple-500/20 to-indigo-600/20', iconColor: 'text-purple-500' },
+                  { icon: 'leaderboard', title: t('landing.roles.org', 'Organization Leader Portal'), desc: t('landing.roles.orgDesc', 'High-level strategic oversight, resource allocation, and organizational performance management.'), link: '/org/login', gradient: 'from-purple-500/20 to-indigo-600/20', iconColor: 'text-purple-500' },
                   { icon: 'medical_services', title: t('landing.roles.pro', 'Professional Suite'), desc: t('landing.roles.proDesc', 'Specialized clinical tools for deep patient care, automated assessments, and therapy planning.'), link: '/specialist/login', gradient: 'from-blue-500/20 to-cyan-500/20', iconColor: 'text-blue-500' },
                   { icon: 'admin_panel_settings', title: t('landing.roles.admin', 'Admin Console'), desc: t('landing.roles.adminDesc', 'Robust system controls, granular security monitoring, and user permission management.'), link: '/admin/login', gradient: 'from-slate-500/20 to-slate-700/20', iconColor: 'text-slate-500' },
                 ].map((card, idx) => (
                   <motion.div 
                     data-cogni-interactive
+                    data-cogni-avoid
                     key={card.title} 
                     onClick={() => navigate(card.link)}
                     initial={{ opacity: 0, y: 40 }}
@@ -641,6 +645,7 @@ export default function LandingPage() {
           <section id="section-download" className="py-20 relative z-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <motion.div
+                data-cogni-avoid
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
@@ -657,6 +662,7 @@ export default function LandingPage() {
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <motion.div
+                  data-cogni-avoid
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
@@ -684,6 +690,7 @@ export default function LandingPage() {
                   <div className="mt-6">
                     {androidDownloadReady ? (
                       <a
+                        data-cogni-interactive
                         href={androidRelease.downloadUrl}
                         download
                         className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
@@ -693,6 +700,7 @@ export default function LandingPage() {
                       </a>
                     ) : (
                       <button
+                        data-cogni-interactive
                         type="button"
                         disabled
                         className="inline-flex items-center gap-2 rounded-2xl bg-slate-300/80 px-5 py-3 text-sm font-bold text-slate-600 cursor-not-allowed dark:bg-slate-700 dark:text-slate-300"
@@ -705,6 +713,7 @@ export default function LandingPage() {
                 </motion.div>
 
                 <motion.div
+                  data-cogni-avoid
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
@@ -727,6 +736,7 @@ export default function LandingPage() {
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
                     <button
+                      data-cogni-interactive
                       type="button"
                       onClick={() => navigate('/org/login')}
                       className="rounded-2xl border border-primary/20 bg-primary/10 px-4 py-2.5 text-sm font-bold text-primary transition-colors hover:bg-primary/15"
@@ -734,6 +744,7 @@ export default function LandingPage() {
                       {t('landing.downloadSection.web.orgLogin')}
                     </button>
                     <button
+                      data-cogni-interactive
                       type="button"
                       onClick={() => navigate('/specialist/login')}
                       className="rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
@@ -744,6 +755,7 @@ export default function LandingPage() {
                 </motion.div>
 
                 <motion.div
+                  data-cogni-avoid
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
@@ -777,6 +789,7 @@ export default function LandingPage() {
           <section id="section-cta" className="py-20 relative z-10">
             <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
               <motion.div 
+                data-cogni-avoid
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -789,7 +802,7 @@ export default function LandingPage() {
                 
                 <div className="relative z-10 flex flex-col items-center">
                   <div className="h-20 w-20 bg-white/20 backdrop-blur-xl rounded-3xl p-4 shadow-2xl mb-8 border border-white/30">
-                    <img src={logo} alt="CogniCare" className="h-full w-full object-contain filter drop-shadow-md" />
+                    <img src={logo} alt={t('common.appName', 'CogniCare')} className="h-full w-full object-contain filter drop-shadow-md" />
                   </div>
                   <h2 className="text-3xl sm:text-5xl font-black text-white mb-6 leading-tight">
                     {t('landing.cta.title', 'Ready to Transform Care?')}
@@ -825,16 +838,18 @@ export default function LandingPage() {
 
         {/* â”€â”€ Footer â”€â”€ */}
         <footer id="section-footer" className="relative z-10 border-t border-white/20 dark:border-slate-800/50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl mt-auto">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+          <div data-cogni-avoid className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-3">
-                <img src={logo} alt="CogniCare" className="h-8 w-8 rounded-lg object-contain" />
-                <span className="font-bold text-lg">CogniCare Systems</span>
+                <img src={logo} alt={t('common.appName', 'CogniCare')} className="h-8 w-8 rounded-lg object-contain" />
+                <span className="font-bold text-lg">{t('landing.footerLinks.brandSystems', '{{appName}} Systems', { appName: t('common.appName', 'CogniCare') })}</span>
               </div>
-              <div className="flex gap-6 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                <a className="hover:text-primary transition-colors" href="#">{t('landing.footerLinks.privacy')}</a>
-                <a className="hover:text-primary transition-colors" href="#">{t('landing.footerLinks.terms')}</a>
-                <a className="hover:text-primary transition-colors" href="#">{t('landing.footerLinks.contact')}</a>
+              <div className="flex flex-wrap justify-center gap-5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                <a className="hover:text-primary transition-colors" href="/privacy">{t('landing.footerLinks.privacy')}</a>
+                <a className="hover:text-primary transition-colors" href="/terms">{t('landing.footerLinks.terms')}</a>
+                <a className="hover:text-primary transition-colors" href="/account-deletion">{t('landing.footerLinks.accountDeletion')}</a>
+                <a className="hover:text-primary transition-colors" href="/community-standards">{t('landing.footerLinks.communityStandards')}</a>
+                <a className="hover:text-primary transition-colors" href="mailto:privacy@cognicare.app">{t('landing.footerLinks.contact')}</a>
               </div>
               <p className="text-sm font-medium text-slate-400">{t('landing.footerLinks.copyright')}</p>
             </div>

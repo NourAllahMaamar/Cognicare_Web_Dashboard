@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="fonts-loaded">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
@@ -25,12 +25,25 @@
     <meta name="apple-mobile-web-app-title" content="CogniCare" />
     <title>CogniCare</title>
     
-    <!-- Fonts: Use display=block to prevent FOUT/FOIT -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=block" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet" />
+    <!-- Fonts: display=swap prevents the UI from waiting on external font files. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     
-    <!-- Material Symbols: synchronous load ensures icons are available before React renders -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
+    <!-- Material Symbols: reserve icon space until the font is actually ready. -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const markFontsReady = () => root.classList.add('fonts-loaded');
+
+        if (!document.fonts?.ready) {
+          markFontsReady();
+          return;
+        }
+
+        document.fonts.ready.then(markFontsReady).catch(markFontsReady);
+      })();
+    </script>
     
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>

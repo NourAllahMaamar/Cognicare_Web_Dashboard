@@ -2,6 +2,13 @@ import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import { recordApiMetric } from '../utils/performanceMonitor';
+import {
+  clearAllLegacyAuthTokens,
+  clearAuthSession,
+  getAccessToken,
+  getStoredUser,
+  storeAuthSession,
+} from '../utils/authSession';
 
 /* ── In-memory GET cache (shared across all useAuth instances) ── */
 const _getCache = new Map();
@@ -33,33 +40,29 @@ export function useAuth(role) {
     specialist: { token: 'specialistToken', refresh: 'specialistRefreshToken', user: 'specialistUser', loginPath: '/specialist/login' },
   })[role], [role]);
 
-  const getToken = useCallback(() => localStorage.getItem(keys.token), [keys]);
-  const getUser = useCallback(() => {
-    try { return JSON.parse(localStorage.getItem(keys.user)); } catch { return null; }
-  }, [keys]);
+  const getToken = useCallback(() => getAccessToken(role), [role]);
+  const getUser = useCallback(() => getStoredUser(role), [role]);
 
   const handleSessionExpired = useCallback(() => {
     clearAuthCache();
-    localStorage.removeItem(keys.token);
-    localStorage.removeItem(keys.refresh);
-    localStorage.removeItem(keys.user);
+    clearAuthSession(role);
     navigate(keys.loginPath);
-  }, [navigate, keys]);
+  }, [navigate, keys, role]);
 
   const refreshAccessToken = useCallback(async () => {
-    const refreshToken = localStorage.getItem(keys.refresh);
-    if (!refreshToken) { handleSessionExpired(); return null; }
-
     try {
       const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Cogni-Client': 'web',
+        },
+        credentials: 'include',
+        body: JSON.stringify({}),
       });
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem(keys.token, data.accessToken);
-        if (data.refreshToken) localStorage.setItem(keys.refresh, data.refreshToken);
+        storeAuthSession(role, data);
         return data.accessToken;
       }
       handleSessionExpired();
@@ -68,7 +71,22 @@ export function useAuth(role) {
       handleSessionExpired();
       return null;
     }
-  }, [handleSessionExpired, keys]);
+  }, [handleSessionExpired, role]);
+
+  const ensureSession = useCallback(async () => {
+    clearAllLegacyAuthTokens();
+    const token = getToken();
+    const user = getUser();
+    if (token && user) {
+      return { accessToken: token, user };
+    }
+
+    const refreshedToken = await refreshAccessToken();
+    const refreshedUser = getStoredUser(role);
+    return refreshedToken && refreshedUser
+      ? { accessToken: refreshedToken, user: refreshedUser }
+      : null;
+  }, [getToken, getUser, refreshAccessToken, role]);
 
   /**
    * Authenticated fetch with auto-retry on 401.
@@ -89,9 +107,11 @@ export function useAuth(role) {
 
     const doFetch = (t) => fetch(url, {
       ...options,
+      credentials: 'include',
       headers: {
         ...options.headers,
         'X-Correlation-Id': correlationId,
+        'X-Cogni-Client': 'web',
         ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
       },
     });
@@ -158,7 +178,7 @@ export function useAuth(role) {
     const data = await res.json();
     _getCache.set(cacheKey, { ts: Date.now(), data });
     return data;
-  }, [authFetch, role]);
+  }, [authFetch, getToken, getUser, role]);
 
   /**
    * Convenience: authenticated POST/PATCH/DELETE with JSON body.
@@ -179,11 +199,20 @@ export function useAuth(role) {
   }, [authFetch]);
 
   const logout = useCallback(() => {
+    const token = getToken();
+    fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'X-Cogni-Client': 'web',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }).catch(() => {});
     handleSessionExpired();
-  }, [handleSessionExpired]);
+  }, [getToken, handleSessionExpired]);
 
   /** Manually clear the in-memory GET cache */
   const clearCache = useCallback(() => clearAuthCache(), []);
 
-  return { getToken, getUser, authFetch, authGet, authMutate, logout, handleSessionExpired, refreshAccessToken, clearCache };
+  return { getToken, getUser, ensureSession, authFetch, authGet, authMutate, logout, handleSessionExpired, refreshAccessToken, clearCache };
 }

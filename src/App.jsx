@@ -44,6 +44,7 @@ const SpecialistSupport = lazy(() => import('./pages/specialist/SpecialistSuppor
 const SettingsPage = lazy(() => import('./pages/shared/SettingsPage'));
 const NotFound = lazy(() => import('./pages/shared/NotFound'));
 const ConfirmAccount = lazy(() => import('./pages/ConfirmAccount'));
+const LegalPage = lazy(() => import('./pages/legal/LegalPage'));
 
 function PageLoader() {
   return (
@@ -149,6 +150,10 @@ function App() {
 
         {/* Misc */}
         <Route path="/confirm-account" element={<ConfirmAccount />} />
+        <Route path="/privacy" element={<LegalPage type="privacy" />} />
+        <Route path="/terms" element={<LegalPage type="terms" />} />
+        <Route path="/account-deletion" element={<LegalPage type="deletion" />} />
+        <Route path="/community-standards" element={<LegalPage type="standards" />} />
 
         {/* Legacy redirects */}
         <Route path="/healthcare" element={<Navigate to="/specialist/dashboard" replace />} />

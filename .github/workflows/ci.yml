@@ -3,19 +3,15 @@ name: CogniCare Web Dashboard CI
 on:
   push:
     branches: [ main, develop ]
-    paths:
-      - 'cognicareweb/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'cognicareweb/**'
 
 jobs:
   web-dashboard-test:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./cognicareweb
+        working-directory: .
 
     steps:
       - uses: actions/checkout@v4
@@ -23,9 +19,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-          cache-dependency-path: cognicareweb/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -64,7 +60,7 @@ jobs:
       - name: Build and push web dashboard Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./cognicareweb
+          context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cognicare-web:latest
           cache-from: type=gha

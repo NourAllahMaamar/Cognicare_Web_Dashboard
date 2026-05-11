@@ -89,6 +89,16 @@ You can also start from `.env.example`.
 
 `VITE_BACKEND_ORIGIN` is compiled into the production build and powers all dashboard API calls. The public Android release card on `/` reads `public/mobile-release.json`, so updating the downloadable APK/version does not require editing JSX.
 
+Production builds guard against accidentally baking a localhost API URL into Azure: if `VITE_BACKEND_ORIGIN` is local during a non-dev build, the dashboard falls back to the Render backend (`https://cognicare-mobile-h4ct.onrender.com`).
+
+## Azure App Service Deployment
+
+The live validation dashboard is the Azure App Service at `https://cognicare-web-dashboard-2026it.azurewebsites.net`.
+
+- `.github/workflows/deploy-azure-app-service.yml` rebuilds and deploys the App Service on every push to `main`.
+- The workflow expects the GitHub secret `AZURE_WEBAPP_PUBLISH_PROFILE` from the Azure App Service publish profile.
+- `scripts/prepare-azure-app-service-deploy.mjs` adds the small Node static server Azure needs to serve the Vite build, SPA routes, and APK downloads correctly.
+
 ## Role-Based Routing
 
 The dashboard automatically routes users based on their role:

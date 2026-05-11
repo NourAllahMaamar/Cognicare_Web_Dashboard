@@ -1,9 +1,11 @@
-﻿import { useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { useAuth } from '../../hooks/useAuth';
+import { updateStoredUser } from '../../utils/authSession';
+import { getArabicNumberStyle, setArabicNumberStyle } from '../../utils/localeFormat';
 
 function detectRole(pathname) {
   if (pathname.startsWith('/admin')) return 'admin';
@@ -12,18 +14,34 @@ function detectRole(pathname) {
 }
 
 export default function SettingsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const role = detectRole(pathname);
-  const { getUser, authMutate } = useAuth(role);
+  const { ensureSession, getUser, authMutate } = useAuth(role);
 
-  const user = getUser();
+  const [user, setUser] = useState(() => getUser());
   const [profileForm, setProfileForm] = useState({ fullName: user?.fullName || '', phone: user?.phone || '' });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [profileMsg, setProfileMsg] = useState({ type: '', text: '' });
   const [passwordMsg, setPasswordMsg] = useState({ type: '', text: '' });
   const [profileLoading, setProfileLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [arabicNumberStyle, setArabicNumberStyleState] = useState(() => getArabicNumberStyle());
+
+  useEffect(() => {
+    let cancelled = false;
+    ensureSession().then((session) => {
+      if (cancelled || !session?.user) return;
+      setUser(session.user);
+      setProfileForm({
+        fullName: session.user.fullName || '',
+        phone: session.user.phone || '',
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ensureSession]);
 
   const handleProfileSave = async (e) => {
     e.preventDefault();
@@ -31,10 +49,11 @@ export default function SettingsPage() {
     setProfileLoading(true);
     try {
       await authMutate('/auth/profile', { method: 'PATCH', body: { fullName: profileForm.fullName.trim(), phone: profileForm.phone.trim() } });
-      // Update stored user
-      const keys = { admin: 'adminUser', orgLeader: 'orgLeaderUser', specialist: 'specialistUser' };
-      const stored = JSON.parse(localStorage.getItem(keys[role]) || '{}');
-      localStorage.setItem(keys[role], JSON.stringify({ ...stored, fullName: profileForm.fullName.trim(), phone: profileForm.phone.trim() }));
+      const nextUser = updateStoredUser(role, {
+        fullName: profileForm.fullName.trim(),
+        phone: profileForm.phone.trim(),
+      });
+      if (nextUser) setUser(nextUser);
       setProfileMsg({ type: 'success', text: t('settings.profileSaved', 'Profile updated successfully') });
     } catch (err) {
       setProfileMsg({ type: 'error', text: err.message || t('settings.updateFailed', 'Failed to update profile') });
@@ -60,6 +79,11 @@ export default function SettingsPage() {
   };
 
   const inputCls = 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors';
+
+  const handleArabicNumberStyle = (style) => {
+    setArabicNumberStyle(style);
+    setArabicNumberStyleState(style);
+  };
 
   return (
     <div className="flex flex-col gap-6 md:gap-8 max-w-2xl">
@@ -146,6 +170,30 @@ export default function SettingsPage() {
             </div>
             <LanguageSwitcher />
           </div>
+          {(i18n.language || '').split('-')[0] === 'ar' && (
+            <div className="flex flex-col gap-3 py-3 border-t border-slate-100 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium">{t('settings.arabicNumbers', 'Arabic number style')}</p>
+                <p className="text-xs text-slate-500 dark:text-text-muted">{t('settings.arabicNumbersDesc', 'Choose Western digits or Arabic-Indic digits for Arabic dates and stats')}</p>
+              </div>
+              <div className="inline-flex rounded-xl border border-slate-300 bg-slate-50 p-1 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+                <button
+                  type="button"
+                  onClick={() => handleArabicNumberStyle('western')}
+                  className={`rounded-lg px-3 py-2 transition-colors ${arabicNumberStyle === 'western' ? 'bg-white text-primary shadow-sm dark:bg-slate-900' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                >
+                  123
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleArabicNumberStyle('arabic')}
+                  className={`rounded-lg px-3 py-2 transition-colors ${arabicNumberStyle === 'arabic' ? 'bg-white text-primary shadow-sm dark:bg-slate-900' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                >
+                  ١٢٣
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -176,5 +224,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
-
