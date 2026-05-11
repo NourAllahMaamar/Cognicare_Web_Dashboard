@@ -1,0 +1,109 @@
+/* src/styles/assistant-animations.css */
+
+/* Panel slide in from right (desktop) */
+@keyframes ca-slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Panel slide out to right (desktop) */
+@keyframes ca-slide-out-right {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+
+/* Panel slide in from bottom (mobile) */
+@keyframes ca-slide-in-bottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Message fade-in + slide up */
+@keyframes ca-message-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Typing indicator dots wave */
+@keyframes ca-typing-dot {
+  0%, 60%, 100% { transform: translateY(0);   opacity: 0.4; }
+  30%           { transform: translateY(-6px); opacity: 1;   }
+}
+
+/* Reaction bounce */
+@keyframes ca-reaction-bounce {
+  0%   { transform: scale(0);   opacity: 0; }
+  50%  { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Copy success checkmark */
+@keyframes ca-copy-success {
+  0%   { transform: scale(0.8); opacity: 0; }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Input focus glow pulse */
+@keyframes ca-focus-glow {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+  50%      { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2); }
+}
+
+/* Utility classes */
+.ca-panel-enter {
+  animation: ca-slide-in-right 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.ca-panel-exit {
+  animation: ca-slide-out-right 200ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@media (max-width: 639px) {
+  .ca-panel-enter {
+    animation: ca-slide-in-bottom 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+}
+
+.ca-message-enter {
+  animation: ca-message-enter 250ms ease-out both;
+}
+
+.ca-typing-dot {
+  animation: ca-typing-dot 1.4s infinite;
+}
+.ca-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ca-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+.ca-reaction-enter {
+  animation: ca-reaction-bounce 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+.ca-copy-success {
+  animation: ca-copy-success 300ms ease-out both;
+}
+
+/* RTL panel entrance — slide in from left */
+@keyframes ca-slide-in-left {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+[dir="rtl"] .ca-panel-enter {
+  animation-name: ca-slide-in-left;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .ca-panel-enter,
+  .ca-panel-exit,
+  .ca-message-enter,
+  .ca-reaction-enter,
+  .ca-copy-success {
+    animation: none !important;
+  }
+  .ca-typing-dot {
+    animation: none !important;
+    opacity: 0.6;
+  }
+}

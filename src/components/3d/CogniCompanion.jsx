@@ -25,24 +25,23 @@ if (typeof window !== 'undefined') {
  *  ENHANCED with interactive zone reactions          ║
  * ═══════════════════════════════════════════════════*/
 const SECTION_ANCHORS = [
-  { id: 'hero', x: 76, y: 28, tip: '👋 Hi! I\'m Cogni!', pose: COGNI_POSES.WAVING, sectionId: 'section-hero' },
-  { id: 'features', x: 16, y: 56, tip: '✨ Check out our dashboards!', pose: COGNI_POSES.POINTING, sectionId: 'section-features' },
-  { id: 'cta', x: 76, y: 76, tip: '🚀 Ready to get started?', pose: COGNI_POSES.CELEBRATING, sectionId: 'section-cta' },
-  { id: 'footer', x: 50, y: 88, tip: '💜 Let\'s stay connected!', pose: COGNI_POSES.INTERACTION_B, sectionId: 'section-footer' },
+  { id: 'hero', x: 90, y: 62, tip: '👋 Hi! I\'m Cogni!', pose: COGNI_POSES.WAVING, sectionId: 'section-hero' },
+  { id: 'features', x: 9, y: 58, tip: '✨ Check out our dashboards!', pose: COGNI_POSES.POINTING, sectionId: 'section-features' },
+  { id: 'download', x: 90, y: 58, tip: '📱 I can help you find the app!', pose: COGNI_POSES.INTERACTION_A, sectionId: 'section-download' },
+  { id: 'cta', x: 9, y: 64, tip: '🚀 Ready to get started?', pose: COGNI_POSES.CELEBRATING, sectionId: 'section-cta' },
+  { id: 'footer', x: 90, y: 74, tip: '💜 Let\'s stay connected!', pose: COGNI_POSES.INTERACTION_B, sectionId: 'section-footer' },
 ];
 
 // Responsive companion size based on viewport width
 const getCompanionSize = () => {
-  if (typeof window === 'undefined') return 310;
+  if (typeof window === 'undefined') return 230;
   const vw = window.innerWidth;
-  if (vw < 380) return 0;    // Hidden on very tiny screens (handled by CSS)
-  if (vw < 520) return 130;  // Small on mobile
-  if (vw < 768) return 200;  // Smaller on tablets
-  if (vw < 1024) return 250; // Medium on small laptops
-  return 310;                 // Full size on desktop
+  if (vw < 640) return 0;     // Avoid covering mobile content.
+  if (vw < 768) return 150;   // Compact tablets.
+  if (vw < 1024) return 180;  // Small laptops.
+  if (vw < 1280) return 205;  // Regular desktop.
+  return 230;                 // Large desktop, still content-safe.
 };
-
-const COMPANION_SIZE = 310; // Default for SSR
 
 /* ─── Enhanced Speech Bubble with animations ─── */
 function SpeechBubble({ text, visible, isRtl }) {
@@ -86,6 +85,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const [cursorVelocity, setCursorVelocity] = useState({ x: 0, y: 0 });
   const [orbitTick, setOrbitTick] = useState(0);
   const [companionSize, setCompanionSize] = useState(() => getCompanionSize());
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   
   const containerRef = useRef(null);
@@ -95,34 +95,95 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const prevCursorRef = useRef({ x: 0, y: 0 });
   const userDragged = useRef(false);
   const isDraggingRef = useRef(false);
+  const lastPointerMovedRef = useRef(false);
   const dragOrigin = useRef({ pointerX: 0, pointerY: 0, elemX: 0, elemY: 0 });
   const currentPosRef = useRef(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setCompanionSize(getCompanionSize());
+      setIsLayoutReady(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  const getAvoidRects = useCallback(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return [];
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    return Array.from(document.querySelectorAll('[data-cogni-avoid]'))
+      .map((node) => node.getBoundingClientRect())
+      .filter((rect) => (
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.top < viewportHeight &&
+        rect.left < viewportWidth
+      ));
+  }, []);
+
+  const overlapsAvoidRects = useCallback((position, size, rects, buffer = 20) => (
+    rects.some((rect) => !(
+      position.x + size < rect.left - buffer ||
+      position.x > rect.right + buffer ||
+      position.y + size < rect.top - buffer ||
+      position.y > rect.bottom + buffer
+    ))
+  ), []);
 
   // Compute pixel position from viewport-percentage anchor
   const getAnchorPosition = useCallback((anchorIndex) => {
     const anchor = SECTION_ANCHORS[anchorIndex] || SECTION_ANCHORS[0];
-    const safeMargin = 10; // Minimum distance from viewport edge
+    const safeMargin = 18; // Minimum distance from viewport edge
     const size = companionSize;
+    if (!size) return { x: 0, y: 0 };
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     
     // Calculate X position with proper RTL handling
     let x;
     if (isRtl) {
       // For RTL: mirror the position from the right edge
       const mirroredX = 100 - anchor.x;
-      x = (mirroredX / 100) * window.innerWidth - size / 2;
+      x = (mirroredX / 100) * viewportWidth - size / 2;
     } else {
       // For LTR: normal positioning from left
-      x = (anchor.x / 100) * window.innerWidth - size / 2;
+      x = (anchor.x / 100) * viewportWidth - size / 2;
     }
     
-    const y = (anchor.y / 100) * window.innerHeight - size / 2;
+    const y = (anchor.y / 100) * viewportHeight - size / 2;
+    const clampPos = (position) => ({
+      x: Math.max(safeMargin, Math.min(position.x, viewportWidth - size - safeMargin)),
+      y: Math.max(safeMargin, Math.min(position.y, viewportHeight - size - safeMargin)),
+    });
+    const anchoredPos = clampPos({ x, y });
+    const avoidRects = getAvoidRects();
+
+    if (!overlapsAvoidRects(anchoredPos, size, avoidRects)) {
+      return anchoredPos;
+    }
+
+    const preferredRight = isRtl ? anchor.x < 50 : anchor.x >= 50;
+    const edgeX = preferredRight ? viewportWidth - size - safeMargin : safeMargin;
+    const oppositeEdgeX = preferredRight ? safeMargin : viewportWidth - size - safeMargin;
+    const fallbackCandidates = [
+      clampPos({ x: edgeX, y }),
+      clampPos({ x: edgeX, y: Math.max(76, safeMargin) }),
+      clampPos({ x: edgeX, y: viewportHeight * 0.5 - size / 2 }),
+      clampPos({ x: edgeX, y: viewportHeight - size - safeMargin }),
+      clampPos({ x: oppositeEdgeX, y }),
+      clampPos({ x: oppositeEdgeX, y: Math.max(76, safeMargin) }),
+      clampPos({ x: oppositeEdgeX, y: viewportHeight - size - safeMargin }),
+    ];
+
+    const openPosition = fallbackCandidates.find((position) => !overlapsAvoidRects(position, size, avoidRects));
     
-    // Clamp position to ensure companion stays within viewport bounds
-    return {
-      x: Math.max(safeMargin, Math.min(x, window.innerWidth - size - safeMargin)),
-      y: Math.max(safeMargin, Math.min(y, window.innerHeight - size - safeMargin)),
-    };
-  }, [isRtl, companionSize]);
+    return openPosition || anchoredPos;
+  }, [companionSize, getAvoidRects, isRtl, overlapsAvoidRects]);
 
   // ─── Handle zone changes ───
   const handleZoneChange = useCallback((zone) => {
@@ -169,6 +230,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const sectionTips = useMemo(() => [
     t('cogniCompanion.tipHero'),
     t('cogniCompanion.tipFeatures'),
+    t('cogniCompanion.tipDownload'),
     t('cogniCompanion.tipCta'),
     t('cogniCompanion.tipFooter'),
   ], [t]);
@@ -222,6 +284,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     };
 
     const size = companionSize;
+    const avoidRects = getAvoidRects();
     const candidatePositions = [
       {
         x: rect.right + pad,
@@ -255,6 +318,30 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
         x: rect.left - size - pad,
         y: rect.top - size - pad,
       },
+      {
+        x: viewportWidth - size - safeMargin,
+        y: rect.top + rect.height / 2 - size / 2,
+      },
+      {
+        x: safeMargin,
+        y: rect.top + rect.height / 2 - size / 2,
+      },
+      {
+        x: viewportWidth - size - safeMargin,
+        y: viewportHeight * 0.5 - size / 2,
+      },
+      {
+        x: safeMargin,
+        y: viewportHeight * 0.5 - size / 2,
+      },
+      {
+        x: viewportWidth - size - safeMargin,
+        y: viewportHeight - size - safeMargin,
+      },
+      {
+        x: safeMargin,
+        y: viewportHeight - size - safeMargin,
+      },
     ];
 
     const orderedCandidates = isRtl
@@ -267,6 +354,12 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
           candidatePositions[3],
           candidatePositions[7],
           candidatePositions[6],
+          candidatePositions[9],
+          candidatePositions[8],
+          candidatePositions[11],
+          candidatePositions[10],
+          candidatePositions[13],
+          candidatePositions[12],
         ]
       : [
           candidatePositions[0],
@@ -277,6 +370,12 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
           candidatePositions[3],
           candidatePositions[6],
           candidatePositions[7],
+          candidatePositions[8],
+          candidatePositions[9],
+          candidatePositions[10],
+          candidatePositions[11],
+          candidatePositions[12],
+          candidatePositions[13],
         ];
     const orbitShift = orderedCandidates.length > 0 ? orbitTick % orderedCandidates.length : 0;
     const orbitOrderedCandidates = [
@@ -295,17 +394,20 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       p.y + size < bufferedRect.top ||
       p.y > bufferedRect.bottom
     );
+    const overlapsBlockedArea = (p) => (
+      overlapsTarget(p) || overlapsAvoidRects(p, size, avoidRects, 18)
+    );
 
     let chosen = clampPos(orbitOrderedCandidates[0]);
     for (const candidate of orbitOrderedCandidates) {
       const clamped = clampPos(candidate);
-      if (!overlapsTarget(clamped)) {
+      if (!overlapsBlockedArea(clamped)) {
         chosen = clamped;
         break;
       }
     }
 
-    if (overlapsTarget(chosen)) {
+    if (overlapsBlockedArea(chosen)) {
       const targetCenterX = rect.left + rect.width / 2;
       const targetCenterY = rect.top + rect.height / 2;
       const targetLeftHalf = targetCenterX < viewportWidth / 2;
@@ -342,10 +444,12 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
         mass: 1.15,
       },
     });
-  }, [controls, focusTarget, isJumping, isRtl, orbitTick, companionSize]);
+  }, [companionSize, controls, focusTarget, getAvoidRects, isJumping, isRtl, orbitTick, overlapsAvoidRects]);
 
   // ─── Entry animation ───
   useEffect(() => {
+    if (!isLayoutReady || companionSize === 0) return undefined;
+
     hasEnteredRef.current = true;
     const pos = getAnchorPosition(0);
     currentPosRef.current = pos;
@@ -362,7 +466,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     return () => {
       if (tipTimer.current) clearTimeout(tipTimer.current);
     };
-  }, [controls, getAnchorPosition]);
+  }, [companionSize, controls, getAnchorPosition, isLayoutReady]);
 
   useEffect(() => {
     const html = document?.documentElement;
@@ -384,6 +488,8 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
 
   // ─── Scroll-based section detection (real section geometry) ───
   useEffect(() => {
+    if (!isLayoutReady || companionSize === 0) return undefined;
+
     const resolveAnchorFromViewport = () => {
       let nextAnchor = 0;
       let bestDistance = Number.POSITIVE_INFINITY;
@@ -418,7 +524,7 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, [currentAnchor]);
+  }, [companionSize, currentAnchor, isLayoutReady]);
 
   // ─── Jump animation between sections ───
   const jumpToAnchor = useCallback(
@@ -478,7 +584,12 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   );
 
   // ─── Click handler ───
-  const _handleClick = useCallback(() => {
+  const handleClick = useCallback(() => {
+    if (lastPointerMovedRef.current) {
+      lastPointerMovedRef.current = false;
+      return;
+    }
+
     setClickCount((c) => c + 1);
     setCurrentPose(COGNI_POSES.DANCING);
 
@@ -566,6 +677,9 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     const dy = e.clientY - dragOrigin.current.pointerY;
     if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
       userDragged.current = true;
+      lastPointerMovedRef.current = true;
+    } else {
+      lastPointerMovedRef.current = false;
     }
   }, []);
 
@@ -594,6 +708,8 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
   const isElementEngaged = Boolean(focusTarget?.rect);
   // ─── Window resize ───
   useEffect(() => {
+    if (!isLayoutReady) return undefined;
+
     const handleResize = () => {
       const newSize = getCompanionSize();
       setCompanionSize(newSize);
@@ -605,25 +721,31 @@ export default function CogniCompanion({ focusTarget = null, activeZone = null }
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [controls, currentAnchor, getAnchorPosition]);
+  }, [controls, currentAnchor, getAnchorPosition, isLayoutReady]);
+
+  if (!isLayoutReady || companionSize === 0) return null;
 
   return (
     <motion.div
       ref={containerRef}
-      className="cogni-companion-container"
+      className={`cogni-companion-container ${isElementEngaged ? 'cogni-companion-engaged' : ''}`}
       initial={{ scale: 1, opacity: 1, x: initialPosition.x, y: initialPosition.y }}
       animate={controls}
+      whileHover={{ scale: 1.06, rotate: isRtl ? -2 : 2 }}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 18 }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
+      onClick={handleClick}
       style={{
         position: 'fixed',
         left: 0,
         top: 0,
         width: companionSize,
         height: companionSize,
-        zIndex: isElementEngaged ? 42 : 22,
+        zIndex: isElementEngaged ? 120 : 80,
         cursor: isDragging ? 'grabbing' : 'grab',
         pointerEvents: companionSize === 0 ? 'none' : 'auto',
         touchAction: 'none',

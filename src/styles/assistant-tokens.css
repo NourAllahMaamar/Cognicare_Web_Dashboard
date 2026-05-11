@@ -1,0 +1,110 @@
+/* src/styles/assistant-tokens.css */
+
+/* Scoped to the assistant panel to avoid polluting global scope */
+.cogni-assistant {
+  /* Glass morphism - light */
+  --ca-glass-bg: rgba(255, 255, 255, 0.95);
+  --ca-glass-border: rgba(226, 232, 240, 0.8);
+  --ca-glass-blur: 12px;
+  --ca-glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 60px -10px rgba(0, 0, 0, 0.1);
+
+  /* Header glass */
+  --ca-header-bg: rgba(255, 255, 255, 0.9);
+  --ca-header-border: rgba(226, 232, 240, 0.8);
+
+  /* Message bubbles */
+  --ca-bubble-user-bg: #2563EB;
+  --ca-bubble-user-text: #ffffff;
+  --ca-bubble-user-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  --ca-bubble-assistant-bg: #ffffff;
+  --ca-bubble-assistant-text: #0F172A;
+  --ca-bubble-assistant-border: rgba(226, 232, 240, 0.8);
+  --ca-bubble-assistant-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  /* Gradient accent bar */
+  --ca-accent-gradient: linear-gradient(to bottom, #2563EB, #3B82F6, #06B6D4);
+
+  /* Quick prompts */
+  --ca-prompt-bg: #ffffff;
+  --ca-prompt-border: rgba(226, 232, 240, 0.8);
+  --ca-prompt-text: #475569;
+  --ca-prompt-hover-bg: rgba(37, 99, 235, 0.05);
+  --ca-prompt-hover-border: rgba(37, 99, 235, 0.3);
+  --ca-prompt-hover-text: #2563EB;
+
+  /* Context chips */
+  --ca-chip-bg: #ffffff;
+  --ca-chip-border: rgba(226, 232, 240, 0.8);
+  --ca-chip-text: #475569;
+  --ca-chip-primary-bg: rgba(37, 99, 235, 0.1);
+  --ca-chip-primary-border: rgba(37, 99, 235, 0.2);
+  --ca-chip-primary-text: #2563EB;
+
+  /* Input area */
+  --ca-input-bg: #ffffff;
+  --ca-input-border: rgba(226, 232, 240, 0.8);
+  --ca-input-focus-border: #2563EB;
+  --ca-input-focus-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+
+  /* Conversation area */
+  --ca-conversation-bg: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 55%);
+
+  /* Scrollbar */
+  --ca-scrollbar-thumb: rgba(148, 163, 184, 0.3);
+  --ca-scrollbar-thumb-hover: rgba(148, 163, 184, 0.5);
+
+  transition: background 0.3s ease, border-color 0.3s ease;
+
+  /* Spacing by density */
+  --ca-message-gap: 0.75rem;       /* comfortable default */
+  --ca-message-padding-y: 0.75rem;
+  --ca-message-padding-x: 1rem;
+}
+
+/* Dark mode overrides — use :root.dark since the panel is portaled to body */
+:root.dark .cogni-assistant,
+.dark .cogni-assistant {
+  --ca-glass-bg: rgba(15, 23, 42, 0.96);
+  --ca-glass-border: rgba(255, 255, 255, 0.07);
+  --ca-glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 20px 60px -10px rgba(0, 0, 0, 0.5);
+
+  --ca-header-bg: rgba(15, 23, 42, 0.98);
+  --ca-header-border: rgba(255, 255, 255, 0.07);
+
+  --ca-bubble-assistant-bg: #1E293B;
+  --ca-bubble-assistant-text: #F1F5F9;
+  --ca-bubble-assistant-border: rgba(255, 255, 255, 0.08);
+  --ca-bubble-assistant-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  --ca-prompt-bg: rgba(30, 41, 59, 0.8);
+  --ca-prompt-border: rgba(255, 255, 255, 0.1);
+  --ca-prompt-text: #CBD5E1;
+  --ca-prompt-hover-bg: rgba(37, 99, 235, 0.2);
+  --ca-prompt-hover-border: rgba(37, 99, 235, 0.5);
+  --ca-prompt-hover-text: #93C5FD;
+
+  --ca-chip-bg: rgba(30, 41, 59, 0.8);
+  --ca-chip-border: rgba(255, 255, 255, 0.1);
+  --ca-chip-text: #94A3B8;
+
+  --ca-input-bg: #0F172A;
+  --ca-input-border: rgba(255, 255, 255, 0.08);
+
+  --ca-conversation-bg: radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 60%);
+
+  --ca-scrollbar-thumb: rgba(148, 163, 184, 0.25);
+  --ca-scrollbar-thumb-hover: rgba(148, 163, 184, 0.45);
+}
+
+/* Message density variants */
+.cogni-assistant[data-density="compact"] {
+  --ca-message-gap: 0.375rem;
+  --ca-message-padding-y: 0.5rem;
+  --ca-message-padding-x: 0.75rem;
+}
+
+.cogni-assistant[data-density="spacious"] {
+  --ca-message-gap: 1.25rem;
+  --ca-message-padding-y: 1rem;
+  --ca-message-padding-x: 1.25rem;
+}

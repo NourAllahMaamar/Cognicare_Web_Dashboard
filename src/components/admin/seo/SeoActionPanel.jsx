@@ -50,13 +50,31 @@ export default function SeoActionPanel({ runningAction, onAction }) {
       action: 'VALIDATE_ROBOTS_RULES',
       icon: 'rule_settings',
       label: t('adminAnalytics.seo.actions.items.VALIDATE_ROBOTS_RULES'),
-      tool: 'zap',
+      tool: undefined,
     },
     {
       action: 'SUBMIT_SITEMAP',
       icon: 'publish',
       label: t('adminAnalytics.seo.actions.items.SUBMIT_SITEMAP'),
       tool: 'search_console',
+    },
+    {
+      action: 'TRIGGER_LIGHTHOUSE_SCAN',
+      icon: 'lightbulb',
+      label: t('adminAnalytics.seo.actions.items.TRIGGER_LIGHTHOUSE_SCAN'),
+      tool: 'github_actions',
+    },
+    {
+      action: 'TRIGGER_ZAP_SCAN',
+      icon: 'shield',
+      label: t('adminAnalytics.seo.actions.items.TRIGGER_ZAP_SCAN'),
+      tool: 'github_actions',
+    },
+    {
+      action: 'TRIGGER_JENKINS_BUILD',
+      icon: 'lan',
+      label: t('adminAnalytics.seo.actions.items.TRIGGER_JENKINS_BUILD'),
+      tool: 'jenkins',
     },
   ];
 
@@ -92,7 +110,7 @@ export default function SeoActionPanel({ runningAction, onAction }) {
             <span className="material-symbols-outlined text-[22px]">manage_search</span>
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900 dark:text-white">{t('adminAnalytics.seo.actions.items.inspect_url_coverage')}</h4>
+            <h4 className="font-semibold text-slate-900 dark:text-white">{t('adminAnalytics.seo.actions.items.INSPECT_URL_COVERAGE')}</h4>
             <p className="mt-1 text-sm text-slate-500 dark:text-text-muted">{t('adminAnalytics.seo.actions.inspectHelp')}</p>
           </div>
         </div>

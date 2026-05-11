@@ -102,14 +102,19 @@ html.dark {
 
 /* Base icon styling with font loaded */
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+  font-family: 'Material Symbols Outlined', sans-serif;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  min-width: 1em;
+  height: 1em;
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
@@ -118,6 +123,9 @@ html.dark {
   text-rendering: optimizeLegibility;
   font-feature-settings: 'liga';
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  overflow: hidden;
+  flex-shrink: 0;
+  vertical-align: -0.125em;
   
   /* Prevent selection of icon text */
   user-select: none;
@@ -133,11 +141,6 @@ html:not(.fonts-loaded) .material-symbols-outlined {
   -webkit-text-fill-color: transparent;
   /* Show a visible placeholder with pulsing animation */
   position: relative;
-  min-width: 24px;
-  min-height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 html:not(.fonts-loaded) .material-symbols-outlined::before {
@@ -149,7 +152,7 @@ html:not(.fonts-loaded) .material-symbols-outlined::before {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: currentColor;
+  background-color: rgb(148 163 184 / 0.55);
   opacity: 0.4;
   animation: icon-pulse 1.5s ease-in-out infinite;
 }
@@ -291,3 +294,6 @@ body {
     padding-right: calc(var(--dashboard-assistant-width, 0px) + 1rem);
   }
 }
+
+@import './styles/assistant-tokens.css';
+@import './styles/assistant-animations.css';

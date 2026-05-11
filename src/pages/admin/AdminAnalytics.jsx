@@ -9,6 +9,13 @@ import SeoIntegrityPanel from '../../components/admin/seo/SeoIntegrityPanel';
 import SeoActionPanel from '../../components/admin/seo/SeoActionPanel';
 import SeoToolStatusGrid from '../../components/admin/seo/SeoToolStatusGrid';
 import SeoHistoryTable from '../../components/admin/seo/SeoHistoryTable';
+import {
+  API_BASE_URL,
+  LOCAL_BACKEND_ORIGIN,
+  RENDER_BACKEND_ORIGIN,
+  getBackendSource,
+  setBackendSource,
+} from '../../config';
 
 function listToText(list = []) {
   return Array.isArray(list) ? list.join(', ') : '';
@@ -21,12 +28,99 @@ function textToList(text = '') {
     .filter(Boolean);
 }
 
+function downloadTextFile(filename, content, mimeType = 'text/plain;charset=utf-8') {
+  const blob = new Blob([content || ''], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+const DEMO_INTEGRATION_DEFAULTS = {
+  githubRepository: 'CogniCare/cognicare',
+  githubBranch: 'main',
+  githubLighthouseWorkflowId: 'lighthouse.yml',
+  githubZapWorkflowId: 'zap.yml',
+  githubTokenSecretRef: 'GITHUB_TOKEN',
+  jenkinsBaseUrl: 'http://localhost:8080',
+  jenkinsJobName: 'cognicare-backend',
+  jenkinsUsernameSecretRef: 'JENKINS_USERNAME',
+  jenkinsApiTokenSecretRef: 'JENKINS_API_TOKEN',
+  searchConsolePropertyUri: 'sc-domain:cognicare.app',
+  searchConsoleCredentialsSecretRef: 'SEARCH_CONSOLE_CREDENTIALS',
+  searchConsoleSitemapUrl: 'https://cognicare.app/sitemap.xml',
+  sentryDsnSecretRef: 'SENTRY_DSN',
+  sentryEnvironment: 'production',
+  grafanaBaseUrl: 'http://localhost:3301',
+  grafanaDashboardUid: 'cognicare-observability',
+  grafanaApiTokenSecretRef: 'GRAFANA_API_TOKEN',
+  prometheusBaseUrl: 'http://localhost:9090',
+  prometheusJobName: 'cognicare_backend',
+  sonarqubeBaseUrl: 'http://localhost:9000',
+  sonarqubeProjectKey: 'cognicare-backend',
+  sonarqubeTokenSecretRef: 'SONAR_TOKEN_BACKEND',
+};
+
+function buildIntegrationLinks(draft) {
+  return [
+    {
+      label: 'GitHub Actions',
+      icon: 'commit',
+      href: draft.githubRepository
+        ? `https://github.com/${draft.githubRepository}/actions`
+        : '',
+    },
+    {
+      label: 'Jenkins',
+      icon: 'integration_instructions',
+      href: draft.jenkinsBaseUrl && draft.jenkinsJobName
+        ? `${draft.jenkinsBaseUrl.replace(/\/$/, '')}/job/${encodeURIComponent(draft.jenkinsJobName)}`
+        : '',
+    },
+    {
+      label: 'Search Console',
+      icon: 'travel_explore',
+      href: draft.searchConsolePropertyUri
+        ? `https://search.google.com/search-console?resource_id=${encodeURIComponent(draft.searchConsolePropertyUri)}`
+        : '',
+    },
+    {
+      label: 'Grafana',
+      icon: 'monitoring',
+      href: draft.grafanaBaseUrl && draft.grafanaDashboardUid
+        ? `${draft.grafanaBaseUrl.replace(/\/$/, '')}/d/${encodeURIComponent(draft.grafanaDashboardUid)}`
+        : '',
+    },
+    {
+      label: 'Prometheus',
+      icon: 'query_stats',
+      href: draft.prometheusBaseUrl
+        ? `${draft.prometheusBaseUrl.replace(/\/$/, '')}/targets`
+        : '',
+    },
+    {
+      label: 'SonarQube',
+      icon: 'verified',
+      href: draft.sonarqubeBaseUrl && draft.sonarqubeProjectKey
+        ? `${draft.sonarqubeBaseUrl.replace(/\/$/, '')}/dashboard?id=${encodeURIComponent(draft.sonarqubeProjectKey)}`
+        : '',
+    },
+  ];
+}
+
 export default function AdminAnalytics() {
   const { t } = useTranslation();
   const { authGet } = useAuth('admin');
   const [stats, setStats] = useState({ users: 0, orgs: 0, families: 0, pending: 0 });
   const [loading, setLoading] = useState(true);
   const [roleData, setRoleData] = useState([]);
+  const [backendSource, setBackendSourceState] = useState(() => getBackendSource());
+  const [backendHealth, setBackendHealth] = useState({
+    local: { status: 'checking', message: 'Checking local backend...' },
+    render: { status: 'checking', message: 'Checking Render backend...' },
+  });
 
   const {
     loading: seoLoading,
@@ -38,30 +132,126 @@ export default function AdminAnalytics() {
     controlPlane,
     toolStatuses,
     history,
+    generatedArtifacts,
     hasMoreHistory,
     lastSnapshotAt,
     reload: reloadSeo,
     saveControlPlane,
     runAction,
     loadMoreHistory,
+    refreshGeneratedArtifacts,
     resetFeedback,
   } = useSeoControlPlane();
 
   const [siteOrigin, setSiteOrigin] = useState('');
   const [publicRoutesText, setPublicRoutesText] = useState('');
   const [crawlerPolicies, setCrawlerPolicies] = useState([]);
+  const [integrationDraft, setIntegrationDraft] = useState({
+    githubRepository: '',
+    githubBranch: '',
+    githubLighthouseWorkflowId: '',
+    githubZapWorkflowId: '',
+    githubTokenSecretRef: '',
+    jenkinsBaseUrl: '',
+    jenkinsJobName: '',
+    jenkinsUsernameSecretRef: '',
+    jenkinsApiTokenSecretRef: '',
+    searchConsolePropertyUri: '',
+    searchConsoleCredentialsSecretRef: '',
+    searchConsoleSitemapUrl: '',
+    sentryDsnSecretRef: '',
+    sentryEnvironment: '',
+    grafanaBaseUrl: '',
+    grafanaDashboardUid: '',
+    grafanaApiTokenSecretRef: '',
+    prometheusBaseUrl: '',
+    prometheusJobName: '',
+    sonarqubeBaseUrl: '',
+    sonarqubeProjectKey: '',
+    sonarqubeTokenSecretRef: '',
+  });
+  const integrationLinks = useMemo(
+    () => buildIntegrationLinks(integrationDraft),
+    [integrationDraft],
+  );
 
   useEffect(() => {
     if (!controlPlane) return;
     setSiteOrigin(controlPlane.siteOrigin || '');
     setPublicRoutesText(listToText(controlPlane.publicRoutes));
     setCrawlerPolicies(Array.isArray(controlPlane.crawlerPolicies) ? controlPlane.crawlerPolicies : []);
+    setIntegrationDraft({
+      githubRepository: controlPlane.githubActions?.repository || '',
+      githubBranch: controlPlane.githubActions?.branch || '',
+      githubLighthouseWorkflowId: controlPlane.githubActions?.lighthouseWorkflowId || '',
+      githubZapWorkflowId: controlPlane.githubActions?.zapWorkflowId || '',
+      githubTokenSecretRef: controlPlane.githubActions?.tokenSecretRef || '',
+      jenkinsBaseUrl: controlPlane.jenkins?.baseUrl || '',
+      jenkinsJobName: controlPlane.jenkins?.jobName || '',
+      jenkinsUsernameSecretRef: controlPlane.jenkins?.usernameSecretRef || '',
+      jenkinsApiTokenSecretRef: controlPlane.jenkins?.apiTokenSecretRef || '',
+      searchConsolePropertyUri: controlPlane.searchConsole?.propertyUri || '',
+      searchConsoleCredentialsSecretRef: controlPlane.searchConsole?.credentialsSecretRef || '',
+      searchConsoleSitemapUrl: controlPlane.searchConsole?.sitemapUrl || '',
+      sentryDsnSecretRef: controlPlane.sentry?.dsnSecretRef || '',
+      sentryEnvironment: controlPlane.sentry?.environment || '',
+      grafanaBaseUrl: controlPlane.grafana?.baseUrl || '',
+      grafanaDashboardUid: controlPlane.grafana?.dashboardUid || '',
+      grafanaApiTokenSecretRef: controlPlane.grafana?.apiTokenSecretRef || '',
+      prometheusBaseUrl: controlPlane.prometheus?.baseUrl || '',
+      prometheusJobName: controlPlane.prometheus?.jobName || '',
+      sonarqubeBaseUrl: controlPlane.sonarqube?.baseUrl || '',
+      sonarqubeProjectKey: controlPlane.sonarqube?.projectKey || '',
+      sonarqubeTokenSecretRef: controlPlane.sonarqube?.tokenSecretRef || '',
+    });
   }, [controlPlane]);
 
   useEffect(() => {
     loadData();
     fetchRoles();
   }, []);
+
+  const refreshBackendHealth = useCallback(async () => {
+    const checks = [
+      ['local', LOCAL_BACKEND_ORIGIN],
+      ['render', RENDER_BACKEND_ORIGIN],
+    ];
+    const results = await Promise.all(
+      checks.map(async ([key, origin]) => {
+        try {
+          const startedAt = performance.now();
+          const res = await fetch(`${origin}/api/v1/health`, {
+            headers: { Accept: 'application/json' },
+          });
+          const durationMs = Math.round(performance.now() - startedAt);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const payload = await res.json().catch(() => ({}));
+          return [
+            key,
+            {
+              status: 'online',
+              message: `${payload.status || 'ok'} in ${durationMs} ms`,
+              origin,
+            },
+          ];
+        } catch (err) {
+          return [
+            key,
+            {
+              status: 'offline',
+              message: err?.message || 'Unavailable',
+              origin,
+            },
+          ];
+        }
+      }),
+    );
+    setBackendHealth(Object.fromEntries(results));
+  }, []);
+
+  useEffect(() => {
+    refreshBackendHealth();
+  }, [refreshBackendHealth]);
 
   const loadData = async () => {
     setLoading(true);
@@ -134,6 +324,66 @@ export default function AdminAnalytics() {
     });
   }, [crawlerPolicies, publicRoutesText, saveControlPlane, siteOrigin]);
 
+  const onSaveIntegrations = useCallback(async () => {
+    await saveControlPlane({
+      siteOrigin,
+      publicRoutes: textToList(publicRoutesText),
+      crawlerPolicies,
+      githubActions: {
+        repository: integrationDraft.githubRepository,
+        branch: integrationDraft.githubBranch,
+        lighthouseWorkflowId: integrationDraft.githubLighthouseWorkflowId,
+        zapWorkflowId: integrationDraft.githubZapWorkflowId,
+        tokenSecretRef: integrationDraft.githubTokenSecretRef,
+      },
+      jenkins: {
+        baseUrl: integrationDraft.jenkinsBaseUrl,
+        jobName: integrationDraft.jenkinsJobName,
+        usernameSecretRef: integrationDraft.jenkinsUsernameSecretRef,
+        apiTokenSecretRef: integrationDraft.jenkinsApiTokenSecretRef,
+      },
+      searchConsole: {
+        propertyUri: integrationDraft.searchConsolePropertyUri,
+        credentialsSecretRef: integrationDraft.searchConsoleCredentialsSecretRef,
+        sitemapUrl: integrationDraft.searchConsoleSitemapUrl,
+      },
+      sentry: {
+        dsnSecretRef: integrationDraft.sentryDsnSecretRef,
+        environment: integrationDraft.sentryEnvironment,
+      },
+      grafana: {
+        baseUrl: integrationDraft.grafanaBaseUrl,
+        dashboardUid: integrationDraft.grafanaDashboardUid,
+        apiTokenSecretRef: integrationDraft.grafanaApiTokenSecretRef,
+      },
+      prometheus: {
+        baseUrl: integrationDraft.prometheusBaseUrl,
+        jobName: integrationDraft.prometheusJobName,
+      },
+      sonarqube: {
+        baseUrl: integrationDraft.sonarqubeBaseUrl,
+        projectKey: integrationDraft.sonarqubeProjectKey,
+        tokenSecretRef: integrationDraft.sonarqubeTokenSecretRef,
+      },
+    });
+  }, [crawlerPolicies, integrationDraft, publicRoutesText, saveControlPlane, siteOrigin]);
+
+  const applyDemoIntegrations = useCallback(() => {
+    resetFeedback();
+    const nextSiteOrigin = siteOrigin || window.location.origin;
+    setSiteOrigin(nextSiteOrigin);
+    setIntegrationDraft({
+      ...DEMO_INTEGRATION_DEFAULTS,
+      searchConsoleSitemapUrl: `${nextSiteOrigin.replace(/\/$/, '')}/sitemap.xml`,
+    });
+  }, [resetFeedback, siteOrigin]);
+
+  const handleBackendSourceChange = useCallback((source) => {
+    setBackendSource(source);
+    setBackendSourceState(source);
+    window.location.reload();
+  }, []);
+
   const months = [
     t('adminAnalytics.months.jan'),
     t('adminAnalytics.months.feb'),
@@ -194,6 +444,63 @@ export default function AdminAnalytics() {
             <span className="hidden sm:inline">{t('adminAnalytics.exportReport')}</span>
             <span className="sm:hidden">{t('adminAnalytics.exportReport')}</span>
           </button>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-surface-dark">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-bold">Backend data source</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-text-muted">
+              Current API base: <span className="font-mono">{API_BASE_URL}</span>
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {[
+              { key: 'local', label: 'Local backend', origin: LOCAL_BACKEND_ORIGIN },
+              { key: 'render', label: 'Render backend', origin: RENDER_BACKEND_ORIGIN },
+            ].map((item) => {
+              const health = backendHealth[item.key] || {};
+              const active = backendSource === item.key;
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => handleBackendSourceChange(item.key)}
+                  className={`min-w-[220px] rounded-xl border px-3 py-2 text-left transition ${
+                    active
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-slate-300 hover:border-primary/60 dark:border-slate-700'
+                  }`}
+                >
+                  <span className="flex items-center justify-between gap-2 text-sm font-bold">
+                    {item.label}
+                    <span className={`h-2.5 w-2.5 rounded-full ${
+                      health.status === 'online'
+                        ? 'bg-success'
+                        : health.status === 'checking'
+                          ? 'bg-warning'
+                          : 'bg-error'
+                    }`} />
+                  </span>
+                  <span className="mt-1 block truncate text-[11px] text-slate-500 dark:text-text-muted">
+                    {item.origin}
+                  </span>
+                  <span className="mt-1 block text-[11px] font-semibold">
+                    {active ? 'Selected' : 'Switch and reload'} · {health.message || 'Not checked'}
+                  </span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={refreshBackendHealth}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold hover:border-primary hover:text-primary dark:border-slate-700"
+            >
+              <span className="material-symbols-outlined text-base">sync</span>
+              Check
+            </button>
+          </div>
         </div>
       </div>
 
@@ -420,14 +727,58 @@ export default function AdminAnalytics() {
             <SeoIntegrityPanel controlPlane={controlPlane} />
           </SeoSectionCard>
 
-          <SeoSectionCard
-            title={t('adminAnalytics.seo.actions.title')}
-            subtitle={t('adminAnalytics.seo.actions.subtitle')}
-            icon="rocket_launch"
-            className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
-          >
-            <SeoActionPanel runningAction={runningAction} onAction={runAction} />
-          </SeoSectionCard>
+          <div id="seo-actions">
+            <SeoSectionCard
+              title={t('adminAnalytics.seo.actions.title')}
+              subtitle={t('adminAnalytics.seo.actions.subtitle')}
+              icon="rocket_launch"
+              className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+            >
+              <div className="space-y-4">
+              <SeoActionPanel runningAction={runningAction} onAction={runAction} />
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <p className="text-sm font-bold">Generated crawl artifacts</p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-text-muted">
+                      {generatedArtifacts?.generatedAt
+                        ? `Generated ${generatedArtifacts.routeCount} public URLs on ${new Date(generatedArtifacts.generatedAt).toLocaleString()}.`
+                        : 'Generate the latest robots.txt and sitemap.xml from the saved control-plane routes.'}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void refreshGeneratedArtifacts()}
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-primary hover:text-primary dark:border-slate-700"
+                    >
+                      <span className="material-symbols-outlined text-sm">sync</span>
+                      Generate
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!generatedArtifacts?.robotsTxt}
+                      onClick={() => downloadTextFile('robots.txt', generatedArtifacts.robotsTxt)}
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700"
+                    >
+                      <span className="material-symbols-outlined text-sm">download</span>
+                      robots.txt
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!generatedArtifacts?.sitemapXml}
+                      onClick={() => downloadTextFile('sitemap.xml', generatedArtifacts.sitemapXml, 'application/xml;charset=utf-8')}
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700"
+                    >
+                      <span className="material-symbols-outlined text-sm">download</span>
+                      sitemap.xml
+                    </button>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </SeoSectionCard>
+          </div>
 
           <SeoSectionCard
             title={t('adminAnalytics.seo.tools.title')}
@@ -439,18 +790,188 @@ export default function AdminAnalytics() {
           </SeoSectionCard>
 
           <SeoSectionCard
-            title={t('adminAnalytics.seo.history.title')}
-            subtitle={t('adminAnalytics.seo.history.subtitle')}
-            icon="history"
+            title={t('adminAnalytics.seo.integrations.title', { defaultValue: 'Integration credentials and endpoints' })}
+            subtitle={t('adminAnalytics.seo.integrations.subtitle', { defaultValue: 'Configure Jenkins/GitHub/Search Console/Sentry/Grafana/Prometheus/SonarQube references for production automations.' })}
+            icon="admin_panel_settings"
             className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
           >
-            <SeoHistoryTable
-              history={history}
-              hasMoreHistory={hasMoreHistory}
-              refreshing={seoRefreshing}
-              onLoadMore={loadMoreHistory}
-            />
+            <div className="space-y-5">
+              <div className="flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/30 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-bold text-emerald-900 dark:text-emerald-100">
+                    Release-demo configuration
+                  </p>
+                  <p className="mt-1 text-xs text-emerald-800 dark:text-emerald-200">
+                    Fills the dashboard with project-specific endpoint references. Secret values still stay in backend environment variables.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={applyDemoIntegrations}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700"
+                >
+                  <span className="material-symbols-outlined text-sm">auto_fix_high</span>
+                  Fill demo setup
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1.2fr_0.8fr]">
+                <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-100">
+                  <p className="font-bold">Manual production setup</p>
+                  <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+                    {[
+                      'Create the GitHub or Jenkins workflows that run Lighthouse and ZAP against the production URL.',
+                      'Add token environment variables on the backend host; this form stores only secret reference names.',
+                      'Verify the Search Console property, grant API access, and use the sitemap URL shown here.',
+                      'Publish the downloaded robots.txt and sitemap.xml with the web app before submitting the sitemap.',
+                    ].map((item) => (
+                      <div key={item} className="flex gap-2">
+                        <span className="material-symbols-outlined mt-0.5 text-base text-sky-600">task_alt</span>
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="text-sm font-bold">Related admin sections and links</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a href="/admin/dashboard/system-health" className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-primary hover:text-primary dark:border-slate-700">
+                      <span className="material-symbols-outlined text-sm">monitor_heart</span>
+                      System Health
+                    </a>
+                    <a href="#seo-actions" className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-primary hover:text-primary dark:border-slate-700">
+                      <span className="material-symbols-outlined text-sm">rocket_launch</span>
+                      SEO Actions
+                    </a>
+                    <a href="#seo-history" className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-primary hover:text-primary dark:border-slate-700">
+                      <span className="material-symbols-outlined text-sm">history</span>
+                      Action History
+                    </a>
+                  </div>
+                  <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {integrationLinks.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.href || '#'}
+                        target={link.href ? '_blank' : undefined}
+                        rel={link.href ? 'noreferrer' : undefined}
+                        aria-disabled={!link.href}
+                        onClick={(event) => {
+                          if (!link.href) event.preventDefault();
+                        }}
+                        className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition ${
+                          link.href
+                            ? 'border-slate-300 hover:border-primary hover:text-primary dark:border-slate-700'
+                            : 'cursor-not-allowed border-slate-200 text-slate-400 dark:border-slate-800'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-sm">{link.icon}</span>
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">GitHub Actions</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.githubRepository} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, githubRepository: event.target.value })); }} placeholder="org/repository" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.githubBranch} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, githubBranch: event.target.value })); }} placeholder="main" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.githubLighthouseWorkflowId} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, githubLighthouseWorkflowId: event.target.value })); }} placeholder="lighthouse.yml" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.githubZapWorkflowId} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, githubZapWorkflowId: event.target.value })); }} placeholder="zap.yml" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.githubTokenSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, githubTokenSecretRef: event.target.value })); }} placeholder="GITHUB_TOKEN_SECRET_REF" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">Jenkins</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.jenkinsBaseUrl} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, jenkinsBaseUrl: event.target.value })); }} placeholder="https://jenkins.example.com" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.jenkinsJobName} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, jenkinsJobName: event.target.value })); }} placeholder="cognicare-prod-pipeline" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.jenkinsUsernameSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, jenkinsUsernameSecretRef: event.target.value })); }} placeholder="JENKINS_USERNAME_SECRET_REF" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.jenkinsApiTokenSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, jenkinsApiTokenSecretRef: event.target.value })); }} placeholder="JENKINS_API_TOKEN_SECRET_REF" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">Search Console</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.searchConsolePropertyUri} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, searchConsolePropertyUri: event.target.value })); }} placeholder="sc-domain:cognicare.app" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.searchConsoleSitemapUrl} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, searchConsoleSitemapUrl: event.target.value })); }} placeholder="https://cognicare.app/sitemap.xml" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.searchConsoleCredentialsSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, searchConsoleCredentialsSecretRef: event.target.value })); }} placeholder="SEARCH_CONSOLE_CREDENTIALS_REF" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">Sentry</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.sentryDsnSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, sentryDsnSecretRef: event.target.value })); }} placeholder="SENTRY_DSN_SECRET_REF" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.sentryEnvironment} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, sentryEnvironment: event.target.value })); }} placeholder="production" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">Grafana</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.grafanaBaseUrl} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, grafanaBaseUrl: event.target.value })); }} placeholder="http://devops-grafana:3000" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.grafanaDashboardUid} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, grafanaDashboardUid: event.target.value })); }} placeholder="cognicare-observability" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.grafanaApiTokenSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, grafanaApiTokenSecretRef: event.target.value })); }} placeholder="GRAFANA_API_TOKEN_SECRET_REF" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">Prometheus</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.prometheusBaseUrl} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, prometheusBaseUrl: event.target.value })); }} placeholder="http://devops-prometheus:9090" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.prometheusJobName} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, prometheusJobName: event.target.value })); }} placeholder="cognicare_backend_local" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                  <p className="font-semibold text-sm mb-3">SonarQube</p>
+                  <div className="space-y-3">
+                    <input value={integrationDraft.sonarqubeBaseUrl} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, sonarqubeBaseUrl: event.target.value })); }} placeholder="http://devops-sonarqube:9000" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.sonarqubeProjectKey} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, sonarqubeProjectKey: event.target.value })); }} placeholder="cognicare-backend" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                    <input value={integrationDraft.sonarqubeTokenSecretRef} onChange={(event) => { resetFeedback(); setIntegrationDraft((prev) => ({ ...prev, sonarqubeTokenSecretRef: event.target.value })); }} placeholder="SONAR_TOKEN_BACKEND" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={onSaveIntegrations}
+                  disabled={seoSaving}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <span className="material-symbols-outlined text-sm">save</span>
+                  {seoSaving ? t('adminAnalytics.seo.saving') : t('adminAnalytics.seo.savePolicies')}
+                </button>
+              </div>
+            </div>
           </SeoSectionCard>
+
+          <div id="seo-history">
+            <SeoSectionCard
+              title={t('adminAnalytics.seo.history.title')}
+              subtitle={t('adminAnalytics.seo.history.subtitle')}
+              icon="history"
+              className="border-slate-200 bg-slate-50/50 dark:bg-slate-900/20"
+            >
+              <SeoHistoryTable
+                history={history}
+                hasMoreHistory={hasMoreHistory}
+                refreshing={seoRefreshing}
+                onLoadMore={loadMoreHistory}
+              />
+            </SeoSectionCard>
+          </div>
         </div>
       </SeoSectionCard>
     </div>

@@ -5,6 +5,7 @@ const CONTROL_PLANE_PATH = '/admin/seo/control-plane';
 const ACTIONS_PATH = '/admin/seo/actions';
 const HISTORY_PATH = '/admin/seo/actions/history?limit=8';
 const TOOL_STATUS_PATH = '/admin/seo/tools/status';
+const ARTIFACTS_PATH = '/admin/seo/generated-artifacts';
 const POLL_INTERVAL_MS = 45_000;
 const SEO_SNAPSHOT_KEY = 'adminSeoControlPlaneSnapshot.v1';
 
@@ -18,6 +19,9 @@ const DEFAULT_TOOLS = [
   { tool: 'github_actions', label: 'GitHub Actions', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
   { tool: 'jenkins', label: 'Jenkins', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
   { tool: 'search_console', label: 'Search Console', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
+  { tool: 'grafana', label: 'Grafana', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
+  { tool: 'prometheus', label: 'Prometheus', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
+  { tool: 'sonarqube', label: 'SonarQube', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
   { tool: 'lighthouse', label: 'Lighthouse', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
   { tool: 'zap', label: 'OWASP ZAP', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
   { tool: 'sentry', label: 'Sentry', status: 'DISABLED', summary: 'Awaiting backend status.', lastSuccessAt: null, lastErrorSummary: '' },
@@ -130,6 +134,13 @@ function normalizeControlPlane(payload) {
     toolStatuses: payload?.toolStatuses,
     warnings: uniqueStrings(normalizeCollection(payload, ['warnings', 'issues'])),
     lastAuditAt: payload?.lastAuditAt || payload?.updatedAt || null,
+    githubActions: payload?.githubActions || {},
+    jenkins: payload?.jenkins || {},
+    searchConsole: payload?.searchConsole || {},
+    sentry: payload?.sentry || {},
+    grafana: payload?.grafana || {},
+    prometheus: payload?.prometheus || {},
+    sonarqube: payload?.sonarqube || {},
   };
 }
 
@@ -226,6 +237,17 @@ function normalizeHistory(payload) {
   };
 }
 
+function normalizeArtifacts(payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  return {
+    siteOrigin: payload.siteOrigin || '',
+    robotsTxt: payload.robotsTxt || '',
+    sitemapXml: payload.sitemapXml || '',
+    routeCount: Number(payload.routeCount || 0),
+    generatedAt: payload.generatedAt || null,
+  };
+}
+
 function createIdempotencyKey() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
@@ -247,6 +269,7 @@ export function useSeoControlPlane() {
   const [history, setHistory] = useState(() => (Array.isArray(initialSnapshot?.history) ? initialSnapshot.history : []));
   const [historyCursor, setHistoryCursor] = useState(() => initialSnapshot?.historyCursor || null);
   const [lastSnapshotAt, setLastSnapshotAt] = useState(() => initialSnapshot?.savedAt || null);
+  const [generatedArtifacts, setGeneratedArtifacts] = useState(() => normalizeArtifacts(initialSnapshot?.generatedArtifacts));
 
   const load = useCallback(async ({ silent = false, cursor = null } = {}) => {
     if (silent) {
@@ -268,10 +291,12 @@ export function useSeoControlPlane() {
       const normalizedHistory = normalizeHistory(historyResponse);
       const normalizedToolStatuses = normalizeToolStatuses(toolStatusResponse, normalizedControlPlane.toolStatuses);
       const scanAwareToolStatuses = enrichScanToolStatuses(normalizedToolStatuses, normalizedHistory.items);
+      const normalizedArtifacts = normalizeArtifacts(await authGet(ARTIFACTS_PATH, { skipCache: true }).catch(() => null));
       let nextHistory = normalizedHistory.items;
 
       setControlPlane(normalizedControlPlane);
       setToolStatuses(scanAwareToolStatuses);
+      setGeneratedArtifacts(normalizedArtifacts);
       setHistory((prev) => {
         nextHistory = cursor ? [...prev, ...normalizedHistory.items] : normalizedHistory.items;
         return nextHistory;
@@ -282,6 +307,7 @@ export function useSeoControlPlane() {
         toolStatuses: scanAwareToolStatuses,
         history: nextHistory,
         historyCursor: normalizedHistory.nextCursor,
+        generatedArtifacts: normalizedArtifacts,
         savedAt: Date.now(),
       };
       writeSeoSnapshot(snapshot);
@@ -297,6 +323,7 @@ export function useSeoControlPlane() {
         );
         setControlPlane(snapshotControlPlane);
         setToolStatuses(snapshotTools);
+        setGeneratedArtifacts(normalizeArtifacts(snapshot.generatedArtifacts));
         setHistory(snapshotHistory);
         setHistoryCursor(snapshot.historyCursor || null);
         setLastSnapshotAt(snapshot.savedAt || null);
@@ -384,6 +411,12 @@ export function useSeoControlPlane() {
     await load({ silent: true, cursor: historyCursor });
   }, [historyCursor, load]);
 
+  const refreshGeneratedArtifacts = useCallback(async () => {
+    const artifacts = normalizeArtifacts(await authGet(ARTIFACTS_PATH, { skipCache: true }));
+    setGeneratedArtifacts(artifacts);
+    return artifacts;
+  }, [authGet]);
+
   const resetFeedback = useCallback(() => {
     setError('');
     setSuccess('');
@@ -399,9 +432,10 @@ export function useSeoControlPlane() {
     controlPlane,
     toolStatuses,
     history,
+    generatedArtifacts,
     hasMoreHistory: Boolean(historyCursor),
     lastSnapshotAt,
-  }), [controlPlane, error, history, historyCursor, lastSnapshotAt, loading, refreshing, runningAction, saving, success, toolStatuses]);
+  }), [controlPlane, error, generatedArtifacts, history, historyCursor, lastSnapshotAt, loading, refreshing, runningAction, saving, success, toolStatuses]);
 
   return {
     ...derived,
@@ -409,6 +443,7 @@ export function useSeoControlPlane() {
     saveControlPlane,
     runAction,
     loadMoreHistory,
+    refreshGeneratedArtifacts,
     resetFeedback,
   };
 }

@@ -92,7 +92,7 @@
     "signupTitle": "Create Your Organization",
     "signupSubtitle": "Register as an organization leader",
     "branding": {
-      "title": "Organization Portal",
+      "title": "Organization Leader Portal",
       "description": "Manage your organization - oversee staff, families, children, and track progress with AI-powered insights across your care network."
     },
     "email": "Email Address",
@@ -324,6 +324,9 @@
       "childName": "Child Name",
       "dob": "Date of Birth",
       "gender": "Gender",
+      "childFullName": "Child Full Name",
+      "addChild": "Add Child",
+      "viewChildren": "View Children",
       "diagnosis": "Diagnosis",
       "allergies": "Allergies",
       "medicalHistory": "Medical History",
@@ -335,7 +338,6 @@
       "parentInfo": "Parent Information",
       "manageChildren": "Manage Children",
       "childrenOptional": "Children (Optional)",
-      "addChild": "Add Child",
       "existingChildren": "Existing Children",
       "delete": "Delete",
       "newChildrenToAdd": "New Children to Add",
@@ -388,6 +390,9 @@
       "downloadTemplate": "Download Template",
       "downloadFamiliesChildrenTemplate": "Download Families+Children Template",
       "addFamily": "Add Family",
+      "viewChildren": "View Children",
+      "children": "children",
+      "childrenOf": "Children of {{name}}",
       "searchPlaceholder": "Search families by name or email...",
       "childrenLabel": "children",
       "childrenButton": "Children",
@@ -407,6 +412,8 @@
         "created": "Created",
         "skipped": "Skipped",
         "errors": "Errors",
+        "uploadPreview": "Upload and preview",
+        "executeImport": "Execute import",
         "done": "Done"
       }
     },
@@ -609,6 +616,34 @@
     "refreshing": "Cogni is refreshing this view…",
     "status": {
       "live": "Cogni Live"
+    },
+    "search": "Search conversation",
+    "export": "Export conversation",
+    "settings": "Assistant settings",
+    "searchPlaceholder": "Search conversation…",
+    "clearSearch": "Clear search",
+    "results": "result(s)",
+    "clearConfirm": "Clear conversation?",
+    "yes": "Yes",
+    "cancel": "Cancel",
+    "onboarding": "Welcome to Cogni! I can summarize your dashboard, answer questions, and guide your workflow. Try a quick prompt above to get started.",
+    "gotIt": "Got it",
+    "messageInput": "Message input",
+    "conversationHistory": "Conversation history",
+    "longConversationWarning": "Long conversation — consider clearing to improve performance",
+    "resize": "Resize assistant panel",
+    "resizeHint": "Drag to resize",
+    "quick": {
+      "summarize": "Summarize this screen",
+      "risks": "What needs attention?",
+      "next": "What should I check next?",
+      "summarizeMetrics": "Summarize system metrics",
+      "pendingReviews": "Show pending reviews",
+      "userGrowth": "User growth trend",
+      "summarizeOrg": "Summarize my organization",
+      "staffOverview": "Staff overview",
+      "familyEnrollment": "Family enrollment status",
+      "childrenPlans": "Show my children's plans"
     },
     "localSummary": {
       "snapshot": "Current snapshot for {{route}}: {{metrics}}.",
@@ -920,6 +955,7 @@
       "confirmDelete": "Delete this plan?",
       "actions": {
         "aiRecs": "AI Recs",
+        "summaryWithCogni": "Summary",
         "pecs": "PECS",
         "teacch": "TEACCH",
         "skills": "Skills",
@@ -976,6 +1012,7 @@
       "totalPlans": "total plans",
       "refresh": "Refresh",
       "filterAll": "All",
+      "viewChild": "View Child",
       "empty": "No plans found",
       "confirmDelete": "Delete this plan?",
       "deleted": "Plan deleted",
@@ -1252,8 +1289,11 @@
     "activateFailed": "Failed to activate account."
   },
   "landing": {
+    "seo": {
+      "jsonDescription": "{{appName}} connects organizations, specialists, admins, and families through one cognitive care platform."
+    },
     "nav": {
-      "orgLeaders": "Organizations",
+      "orgLeaders": "Organization Leaders",
       "professionals": "Professionals",
       "admins": "Admins"
     },
@@ -1334,6 +1374,7 @@
     "cta": {
       "title": "Ready to Transform Cognitive Care?",
       "subtitle": "Join hundreds of organizations and professionals who are leveraging CogniCare to provide better, more efficient cognitive health services.",
+      "signup": "Create Free Account",
       "contact": "Contact Sales"
     },
     "slides": {
@@ -1365,7 +1406,7 @@
         }
       },
       "org": {
-        "title": "Organization Portal",
+        "title": "Organization Leader Portal",
         "subtitle": "Staff & family management",
         "stats": {
           "staff": {
@@ -1432,8 +1473,13 @@
         "title": "Coming later"
       }
     },
+    "download": {
+      "get": "Get the app",
+      "android": "Download APK",
+      "desc": "Available for Android soon. iOS version coming later."
+    },
     "roles": {
-      "org": "Org Leader Portal",
+      "org": "Organization Leader Portal",
       "orgDesc": "High-level strategic oversight, resource allocation, and organizational performance management.",
       "pro": "Professional Suite",
       "proDesc": "Specialized clinical tools for deep patient care, automated assessments, and therapy planning.",
@@ -1442,10 +1488,106 @@
     },
     "learnMore": "Get Started",
     "footerLinks": {
+      "brandSystems": "{{appName}} Systems",
       "privacy": "Privacy",
       "terms": "Terms",
+      "accountDeletion": "Account deletion",
+      "communityStandards": "Community standards",
       "contact": "Contact",
       "copyright": "© 2026 CogniCare. All rights reserved."
+    }
+  },
+  "legal": {
+    "privacyContact": "Privacy contact",
+    "pages": {
+      "privacy": {
+        "title": "Privacy Policy",
+        "updated": "Effective May 6, 2026",
+        "intro": "CogniCare is designed for autism and special needs care coordination. We collect only the data needed to provide accounts, care plans, communication, progress tracking, organization management, and safety features.",
+        "sections": [
+          {
+            "title": "Data We Process",
+            "body": "Account details, role and organization membership, family and child profiles, care notes, progress data, messages, appointments, volunteer training records, uploaded documents, support requests, and app diagnostics needed to operate the service."
+          },
+          {
+            "title": "Camera, Microphone, Photos, and Location",
+            "body": "Camera and photo access are used only when a user chooses to upload images, proof photos, profile media, documents, or participate in camera-enabled features. Microphone access is used for voice notes and calls. Location access supports map and nearby-service features when enabled by the user."
+          },
+          {
+            "title": "Health and Child Data",
+            "body": "Health, development, child, family, and care data is restricted by role-based access controls. Families, assigned specialists, organization leaders, caregivers, and admins can only access information required for their authorized workflow."
+          },
+          {
+            "title": "Security and Retention",
+            "body": "Sensitive app traffic is sent over HTTPS. Authentication tokens are protected on supported devices. We retain data while accounts are active or as needed for legal, safety, support, and service integrity purposes."
+          },
+          {
+            "title": "Deletion and User Rights",
+            "body": "Users can request account deletion, data correction, export, or privacy support using the account deletion page or by contacting the privacy address below."
+          }
+        ]
+      },
+      "terms": {
+        "title": "Terms of Service",
+        "updated": "Effective May 6, 2026",
+        "intro": "These terms govern access to CogniCare. By using the service, users agree to use it lawfully, protect account credentials, and respect the privacy and safety of families, children, specialists, organizations, and caregivers.",
+        "sections": [
+          {
+            "title": "Care Coordination Only",
+            "body": "CogniCare supports care organization and communication. It is not a replacement for emergency services, professional medical judgment, diagnosis, or treatment from licensed providers."
+          },
+          {
+            "title": "Authorized Use",
+            "body": "Users may only access data they are authorized to view. Sharing credentials, attempting to bypass role permissions, scraping data, or uploading unlawful or harmful content is prohibited."
+          },
+          {
+            "title": "Organizations and Professionals",
+            "body": "Organizations and professionals are responsible for the accuracy of submitted credentials, invitations, care records, and communications made through their accounts."
+          },
+          {
+            "title": "Service Changes",
+            "body": "Features may change as CogniCare improves safety, compliance, and reliability. We may restrict or terminate access when needed to protect users or comply with law."
+          }
+        ]
+      },
+      "deletion": {
+        "title": "Account Deletion",
+        "updated": "Effective May 6, 2026",
+        "intro": "Users can request deletion of their CogniCare account and associated personal data. Some records may be retained when required for legal, security, fraud prevention, support, or child-safety obligations.",
+        "sections": [
+          {
+            "title": "How to Request Deletion",
+            "body": "Send a deletion request from the email linked to your CogniCare account to privacy@cognicare.app. Include your full name, account email, role, and organization name if applicable."
+          },
+          {
+            "title": "What Happens Next",
+            "body": "We verify account ownership, review role and organization dependencies, then delete or anonymize eligible personal data. We will confirm completion or explain any limited retention requirement."
+          },
+          {
+            "title": "Organization-Managed Accounts",
+            "body": "If your account belongs to an organization, we may need to coordinate with the organization owner to preserve required care, audit, or safety records while removing personal access."
+          }
+        ]
+      },
+      "standards": {
+        "title": "Community Standards",
+        "updated": "Effective May 6, 2026",
+        "intro": "CogniCare community and communication features must remain safe, respectful, and appropriate for families, children, caregivers, specialists, and organizations.",
+        "sections": [
+          {
+            "title": "Not Allowed",
+            "body": "Harassment, bullying, hate, sexual content involving minors, threats, self-harm encouragement, illegal activity, spam, impersonation, privacy violations, and sharing sensitive data without permission are prohibited."
+          },
+          {
+            "title": "Reporting",
+            "body": "Users should report abusive, unsafe, or privacy-violating content to their organization administrator or to privacy@cognicare.app. Urgent safety concerns should be escalated to local emergency services."
+          },
+          {
+            "title": "Enforcement",
+            "body": "CogniCare may remove content, restrict accounts, preserve evidence, or notify appropriate administrators or authorities when required to protect users and comply with law."
+          }
+        ]
+      }
     }
   },
   "activitiesCreator": {
@@ -1671,7 +1813,12 @@
     "workSteps": "Work Steps"
   },
   "progressAI": {
-    "title": "AI Recommendations",
+    "title": "Summary with Cogni",
+    "subtitle": "AI-powered progress analysis",
+    "mock": {
+      "summary": "Based on recent progress, the child is showing improvement in communication skills and following visual schedules consistently.",
+      "notice": "Demo mode - showing sample recommendations"
+    },
     "childId": "Child ID",
     "loading": "Loading recommendations…",
     "summary": "Summary",
@@ -1855,6 +2002,9 @@
           "github_actions": "GitHub Actions",
           "jenkins": "Jenkins",
           "search_console": "Search Console",
+          "grafana": "Grafana",
+          "prometheus": "Prometheus",
+          "sonarqube": "SonarQube",
           "lighthouse": "Lighthouse",
           "zap": "OWASP ZAP",
           "sentry": "Sentry"
@@ -2049,6 +2199,7 @@
     "riskMedium": "Medium",
     "riskLow": "Low",
     "orgDecision": "Organization {{decision}}",
+    "certificateFailed": "Unable to open certificate",
     "scanFailed": "Failed to run AI scan"
   },
   "adminTraining": {
@@ -2068,6 +2219,11 @@
     "submitNeedsWork": "Mark needs clarification",
     "courseApproved": "Course approved",
     "courseNeedsWork": "Course marked as needs clarification",
+    "courseDeleted": "Course deleted",
+    "delete": "Delete",
+    "deleteCourseLabel": "Delete {{title}}",
+    "deleteConfirm": "Delete \"{{title}}\"? This removes it from the training catalog.",
+    "deleteFailed": "Delete failed",
     "updateFailed": "Update failed"
   },
   "adminSystemHealth": {
@@ -2194,6 +2350,7 @@
     "defaultName": "Specialist"
   },
   "common": {
+    "appName": "CogniCare",
     "cancel": "Cancel",
     "confirmed": "Confirmed",
     "create": "Create",
@@ -2267,6 +2424,8 @@
     "darkModeDesc": "Toggle between light and dark theme",
     "language": "Language",
     "languageDesc": "Choose your preferred language",
+    "arabicNumbers": "Arabic number style",
+    "arabicNumbersDesc": "Choose Western digits or Arabic-Indic digits for Arabic dates and stats",
     "accountInfo": "Account Information",
     "role": "Role",
     "userId": "User ID",
@@ -2289,6 +2448,7 @@
   "cogniCompanion": {
     "tipHero": "👋 Hi! I'm Cogni!",
     "tipFeatures": "✨ Check out our dashboards!",
+    "tipDownload": "📱 I can help you find the app!",
     "tipCta": "🚀 Ready to get started?",
     "tipFooter": "💜 Let's stay connected!",
     "clickTip0": "😄 That tickles!",
@@ -2302,8 +2462,10 @@
     "focusTipAction": "🚀 {{label}}",
     "focusTipNav": "🧭 {{label}}",
     "focusTipGeneric": "👀 {{label}}",
+    "zoneHero": "👋 Start here!",
     "zoneHeader": "👋 Welcome back!",
     "zoneFeatures": "💡 Amazing features await!",
+    "zoneDownload": "📱 App access lives here!",
     "zoneCta": "🚀 Ready to join us?",
     "zoneFooter": "👋 See you soon!"
   },

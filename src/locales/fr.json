@@ -92,7 +92,7 @@
     "signupTitle": "Créer Votre Organisation",
     "signupSubtitle": "S'inscrire en tant que leader d'organisation",
     "branding": {
-      "title": "Portail d'Organisation",
+      "title": "Portail du Leader de l'Organisation",
       "description": "Gérez votre organisation - supervisez le personnel, les familles, les enfants, et suivez les progrès avec des analyses IA à travers votre réseau de soins."
     },
     "email": "Adresse Email",
@@ -324,6 +324,7 @@
       "childName": "Nom de l'enfant",
       "dob": "Date de naissance",
       "gender": "Genre",
+      "childFullName": "Nom complet de l'enfant",
       "diagnosis": "Diagnostic",
       "allergies": "Allergies",
       "medicalHistory": "Antécédents médicaux",
@@ -388,6 +389,9 @@
       "downloadTemplate": "Télécharger le Modèle",
       "downloadFamiliesChildrenTemplate": "Télécharger le Modèle Familles+Enfants",
       "addFamily": "Ajouter une Famille",
+      "viewChildren": "Voir les enfants",
+      "children": "enfants",
+      "childrenOf": "Enfants de {{name}}",
       "searchPlaceholder": "Rechercher par nom ou e-mail...",
       "childrenLabel": "enfants",
       "childrenButton": "Enfants",
@@ -408,6 +412,8 @@
         "created": "Créés",
         "skipped": "Ignorés",
         "errors": "Erreurs",
+        "uploadPreview": "Téléverser et prévisualiser",
+        "executeImport": "Exécuter l'import",
         "done": "Terminé"
       }
     },
@@ -610,6 +616,34 @@
     "refreshing": "Cogni actualise cette vue…",
     "status": {
       "live": "Cogni en direct"
+    },
+    "search": "Rechercher dans la conversation",
+    "export": "Exporter la conversation",
+    "settings": "Paramètres de l'assistant",
+    "searchPlaceholder": "Rechercher…",
+    "clearSearch": "Effacer la recherche",
+    "results": "résultat(s)",
+    "clearConfirm": "Effacer la conversation ?",
+    "yes": "Oui",
+    "cancel": "Annuler",
+    "onboarding": "Bienvenue sur Cogni ! Je peux résumer votre tableau de bord, répondre à vos questions et guider votre flux de travail. Essayez une invite rapide ci-dessus pour commencer.",
+    "gotIt": "Compris",
+    "messageInput": "Saisie du message",
+    "conversationHistory": "Historique de la conversation",
+    "longConversationWarning": "Longue conversation — envisagez de l'effacer pour améliorer les performances",
+    "resize": "Redimensionner le panneau",
+    "resizeHint": "Glisser pour redimensionner",
+    "quick": {
+      "summarize": "Résumer cet écran",
+      "risks": "Que faut-il surveiller ?",
+      "next": "Que dois-je vérifier ensuite ?",
+      "summarizeMetrics": "Résumer les métriques système",
+      "pendingReviews": "Afficher les révisions en attente",
+      "userGrowth": "Tendance de croissance des utilisateurs",
+      "summarizeOrg": "Résumer mon organisation",
+      "staffOverview": "Vue d'ensemble du personnel",
+      "familyEnrollment": "Statut d'inscription des familles",
+      "childrenPlans": "Afficher les plans de mes enfants"
     },
     "localSummary": {
       "snapshot": "Aperçu actuel pour {{route}} : {{metrics}}.",
@@ -921,6 +955,7 @@
       "confirmDelete": "Supprimer ce plan ?",
       "actions": {
         "aiRecs": "Recs IA",
+        "summaryWithCogni": "Résumé",
         "pecs": "PECS",
         "teacch": "TEACCH",
         "skills": "Compétences",
@@ -977,6 +1012,7 @@
       "totalPlans": "plans totaux",
       "refresh": "Actualiser",
       "filterAll": "Tous",
+      "viewChild": "Voir l'Enfant",
       "empty": "Aucun plan trouvé",
       "confirmDelete": "Supprimer ce plan ?",
       "deleted": "Plan supprimé",
@@ -1253,8 +1289,11 @@
     "activateFailed": "Échec de l'activation du compte."
   },
   "landing": {
+    "seo": {
+      "jsonDescription": "{{appName}} connecte les organisations, les spécialistes, les administrateurs et les familles dans une seule plateforme de soins cognitifs."
+    },
     "nav": {
-      "orgLeaders": "Organisations",
+      "orgLeaders": "Chefs d'Organisation",
       "professionals": "Professionnels",
       "admins": "Admins"
     },
@@ -1335,6 +1374,7 @@
     "cta": {
       "title": "Prêt à Transformer les Soins Cognitifs ?",
       "subtitle": "Rejoignez des centaines d'organisations et de professionnels qui tirent parti de CogniCare pour fournir des services de santé cognitive meilleurs et plus efficaces.",
+      "signup": "Créer un compte gratuit",
       "contact": "Contacter les Ventes"
     },
     "slides": {
@@ -1433,6 +1473,11 @@
         "title": "À venir plus tard"
       }
     },
+    "download": {
+      "get": "Obtenir l'application",
+      "android": "Télécharger l'APK",
+      "desc": "Disponible bientôt sur Android. Version iOS à venir plus tard."
+    },
     "roles": {
       "org": "Portail Chef d'Organisation",
       "orgDesc": "Supervision stratégique de haut niveau, allocation des ressources et gestion des performances organisationnelles.",
@@ -1443,10 +1488,106 @@
     },
     "learnMore": "Commencer",
     "footerLinks": {
+      "brandSystems": "{{appName}} Systems",
       "privacy": "Confidentialité",
       "terms": "Conditions",
+      "accountDeletion": "Suppression du compte",
+      "communityStandards": "Règles communautaires",
       "contact": "Contact",
       "copyright": "© 2026 CogniCare. Tous droits réservés."
+    }
+  },
+  "legal": {
+    "privacyContact": "Contact confidentialité",
+    "pages": {
+      "privacy": {
+        "title": "Politique de confidentialité",
+        "updated": "En vigueur le 6 mai 2026",
+        "intro": "CogniCare est conçu pour la coordination des soins liés à l'autisme et aux besoins spécifiques. Nous collectons uniquement les données nécessaires aux comptes, plans de soins, communications, suivi des progrès, gestion des organisations et fonctions de sécurité.",
+        "sections": [
+          {
+            "title": "Données que nous traitons",
+            "body": "Coordonnées de compte, rôle et appartenance à une organisation, profils des familles et des enfants, notes de soins, données de progression, messages, rendez-vous, dossiers de formation des bénévoles, documents importés, demandes d'assistance et diagnostics d'application nécessaires au fonctionnement du service."
+          },
+          {
+            "title": "Caméra, microphone, photos et localisation",
+            "body": "L'accès à la caméra et aux photos est utilisé uniquement lorsqu'un utilisateur choisit d'importer des images, photos justificatives, médias de profil, documents ou de participer à des fonctions utilisant la caméra. Le microphone est utilisé pour les notes vocales et les appels. La localisation prend en charge les cartes et services à proximité lorsqu'elle est activée par l'utilisateur."
+          },
+          {
+            "title": "Données de santé et données d'enfants",
+            "body": "Les données de santé, de développement, d'enfants, de familles et de soins sont limitées par des contrôles d'accès fondés sur les rôles. Les familles, spécialistes assignés, responsables d'organisation, aidants et administrateurs ne peuvent accéder qu'aux informations nécessaires à leur flux de travail autorisé."
+          },
+          {
+            "title": "Sécurité et conservation",
+            "body": "Le trafic sensible de l'application est transmis via HTTPS. Les jetons d'authentification sont protégés sur les appareils compatibles. Nous conservons les données tant que les comptes sont actifs ou aussi longtemps que nécessaire pour des raisons juridiques, de sécurité, d'assistance et d'intégrité du service."
+          },
+          {
+            "title": "Suppression et droits des utilisateurs",
+            "body": "Les utilisateurs peuvent demander la suppression du compte, la correction des données, l'exportation ou une assistance confidentialité via la page de suppression de compte ou en contactant l'adresse indiquée ci-dessous."
+          }
+        ]
+      },
+      "terms": {
+        "title": "Conditions d'utilisation",
+        "updated": "En vigueur le 6 mai 2026",
+        "intro": "Ces conditions régissent l'accès à CogniCare. En utilisant le service, les utilisateurs acceptent de l'utiliser légalement, de protéger leurs identifiants et de respecter la confidentialité et la sécurité des familles, enfants, spécialistes, organisations et aidants.",
+        "sections": [
+          {
+            "title": "Coordination des soins uniquement",
+            "body": "CogniCare soutient l'organisation des soins et la communication. Il ne remplace pas les services d'urgence, le jugement médical professionnel, le diagnostic ou le traitement par des prestataires agréés."
+          },
+          {
+            "title": "Utilisation autorisée",
+            "body": "Les utilisateurs ne peuvent accéder qu'aux données qu'ils sont autorisés à consulter. Le partage d'identifiants, les tentatives de contournement des permissions, l'extraction de données ou l'importation de contenu illégal ou nuisible sont interdits."
+          },
+          {
+            "title": "Organisations et professionnels",
+            "body": "Les organisations et professionnels sont responsables de l'exactitude des justificatifs, invitations, dossiers de soins et communications soumis depuis leurs comptes."
+          },
+          {
+            "title": "Évolution du service",
+            "body": "Les fonctionnalités peuvent évoluer à mesure que CogniCare améliore la sécurité, la conformité et la fiabilité. Nous pouvons limiter ou mettre fin à l'accès si cela est nécessaire pour protéger les utilisateurs ou respecter la loi."
+          }
+        ]
+      },
+      "deletion": {
+        "title": "Suppression du compte",
+        "updated": "En vigueur le 6 mai 2026",
+        "intro": "Les utilisateurs peuvent demander la suppression de leur compte CogniCare et des données personnelles associées. Certains enregistrements peuvent être conservés lorsque cela est requis pour des obligations juridiques, de sécurité, de prévention de la fraude, d'assistance ou de protection des enfants.",
+        "sections": [
+          {
+            "title": "Comment demander la suppression",
+            "body": "Envoyez une demande de suppression depuis l'adresse e-mail liée à votre compte CogniCare à privacy@cognicare.app. Incluez votre nom complet, l'e-mail du compte, votre rôle et le nom de l'organisation si applicable."
+          },
+          {
+            "title": "Ce qui se passe ensuite",
+            "body": "Nous vérifions la propriété du compte, examinons les dépendances liées au rôle et à l'organisation, puis supprimons ou anonymisons les données personnelles éligibles. Nous confirmerons la finalisation ou expliquerons toute conservation limitée requise."
+          },
+          {
+            "title": "Comptes gérés par une organisation",
+            "body": "Si votre compte appartient à une organisation, nous pouvons devoir coordonner avec son propriétaire afin de préserver les dossiers de soins, d'audit ou de sécurité requis tout en supprimant l'accès personnel."
+          }
+        ]
+      },
+      "standards": {
+        "title": "Règles communautaires",
+        "updated": "En vigueur le 6 mai 2026",
+        "intro": "Les fonctions communautaires et de communication de CogniCare doivent rester sûres, respectueuses et adaptées aux familles, enfants, aidants, spécialistes et organisations.",
+        "sections": [
+          {
+            "title": "Non autorisé",
+            "body": "Le harcèlement, l'intimidation, la haine, le contenu sexuel impliquant des mineurs, les menaces, l'encouragement à l'automutilation, les activités illégales, le spam, l'usurpation d'identité, les atteintes à la vie privée et le partage de données sensibles sans autorisation sont interdits."
+          },
+          {
+            "title": "Signalement",
+            "body": "Les utilisateurs doivent signaler tout contenu abusif, dangereux ou portant atteinte à la vie privée à leur administrateur d'organisation ou à privacy@cognicare.app. Les urgences de sécurité doivent être transmises aux services d'urgence locaux."
+          },
+          {
+            "title": "Application",
+            "body": "CogniCare peut supprimer du contenu, restreindre des comptes, conserver des preuves ou notifier les administrateurs ou autorités appropriés lorsque cela est nécessaire pour protéger les utilisateurs et respecter la loi."
+          }
+        ]
+      }
     }
   },
   "activitiesCreator": {
@@ -1672,7 +1813,12 @@
     "workSteps": "Étapes de travail"
   },
   "progressAI": {
-    "title": "Recommandations IA",
+    "title": "Résumé avec Cogni",
+    "subtitle": "Analyse de progression par IA",
+    "mock": {
+      "summary": "D'après les progrès récents, l'enfant montre une amélioration des capacités de communication et suit les emplois du temps visuels de manière cohérente.",
+      "notice": "Mode démo - affichage d'exemples de recommandations"
+    },
     "childId": "ID Enfant",
     "loading": "Chargement des recommandations…",
     "summary": "Résumé",
@@ -1856,6 +2002,9 @@
           "github_actions": "GitHub Actions",
           "jenkins": "Jenkins",
           "search_console": "Search Console",
+          "grafana": "Grafana",
+          "prometheus": "Prometheus",
+          "sonarqube": "SonarQube",
           "lighthouse": "Lighthouse",
           "zap": "OWASP ZAP",
           "sentry": "Sentry"
@@ -2050,6 +2199,7 @@
     "riskMedium": "Moyen",
     "riskLow": "Faible",
     "orgDecision": "Organisation {{decision}}",
+    "certificateFailed": "Impossible d'ouvrir le certificat",
     "scanFailed": "Échec de l'analyse IA"
   },
   "adminTraining": {
@@ -2069,6 +2219,11 @@
     "submitNeedsWork": "Marquer comme nécessite des précisions",
     "courseApproved": "Cours approuvé",
     "courseNeedsWork": "Cours marqué comme nécessite des précisions",
+    "courseDeleted": "Cours supprimé",
+    "delete": "Supprimer",
+    "deleteCourseLabel": "Supprimer {{title}}",
+    "deleteConfirm": "Supprimer « {{title}} » ? Cela le retire du catalogue de formation.",
+    "deleteFailed": "Échec de la suppression",
     "updateFailed": "Échec de la mise à jour"
   },
   "adminSystemHealth": {
@@ -2195,6 +2350,7 @@
     "defaultName": "Spécialiste"
   },
   "common": {
+    "appName": "CogniCare",
     "cancel": "Annuler",
     "confirmed": "Confirmé",
     "create": "Créer",
@@ -2268,6 +2424,8 @@
     "darkModeDesc": "Basculer entre le thème clair et sombre",
     "language": "Langue",
     "languageDesc": "Choisissez votre langue préférée",
+    "arabicNumbers": "Style des chiffres arabes",
+    "arabicNumbersDesc": "Choisissez les chiffres occidentaux ou arabo-indiens pour les dates et statistiques en arabe",
     "accountInfo": "Informations du compte",
     "role": "Rôle",
     "userId": "ID utilisateur",
@@ -2290,6 +2448,7 @@
   "cogniCompanion": {
     "tipHero": "👋 Salut ! Je suis Cogni !",
     "tipFeatures": "✨ Découvrez nos tableaux de bord !",
+    "tipDownload": "📱 Je peux vous guider vers l'application !",
     "tipCta": "🚀 Prêt·e à commencer ?",
     "tipFooter": "💜 Restons connectés !",
     "clickTip0": "😄 Ça chatouille !",
@@ -2303,8 +2462,10 @@
     "focusTipAction": "🚀 {{label}}",
     "focusTipNav": "🧭 {{label}}",
     "focusTipGeneric": "👀 {{label}}",
+    "zoneHero": "👋 Commencez ici !",
     "zoneHeader": "👋 Bon retour !",
     "zoneFeatures": "💡 Des fonctionnalités incroyables vous attendent !",
+    "zoneDownload": "📱 L'accès à l'application est ici !",
     "zoneCta": "🚀 Prêt à nous rejoindre ?",
     "zoneFooter": "👋 À bientôt !"
   },
