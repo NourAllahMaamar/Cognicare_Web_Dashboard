@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 /**
  * Organization Leader Onboarding Modal
@@ -15,28 +16,28 @@ export default function OrgOnboardingModal({ onComplete }) {
 
   const slides = [
     {
-      icon: '🏢',
-      title: t('orgOnboarding.welcome.title', 'Welcome to CogniCare'),
+      icon: 'corporate_fare',
+      title: t('orgOnboarding.welcome.title', 'Welcome to {{appName}}', { appName: t('common.appName', 'CogniCare') }),
       subtitle: t('orgOnboarding.welcome.subtitle', 'Organization Leader Portal'),
       description: t('orgOnboarding.welcome.description', 'Manage your organization, monitor staff performance, and stay connected with your community.'),
       gradient: 'from-blue-500 to-blue-600',
     },
     {
-      icon: '💬',
+      icon: 'forum',
       title: t('orgOnboarding.community.title', 'Community Feed'),
       subtitle: t('orgOnboarding.community.subtitle', 'Stay Connected'),
       description: t('orgOnboarding.community.description', 'View posts from families, specialists, and caregivers. Stay informed about community activities and needs.'),
       gradient: 'from-purple-500 to-purple-600',
     },
     {
-      icon: '🛍️',
+      icon: 'storefront',
       title: t('orgOnboarding.marketplace.title', 'Marketplace'),
       subtitle: t('orgOnboarding.marketplace.subtitle', 'Resource Discovery'),
       description: t('orgOnboarding.marketplace.description', 'Browse products and resources that families are using. Understand the tools that support cognitive care.'),
       gradient: 'from-orange-500 to-orange-600',
     },
     {
-      icon: '👥',
+      icon: 'groups',
       title: t('orgOnboarding.staff.title', 'Staff Management'),
       subtitle: t('orgOnboarding.staff.subtitle', 'Monitor Performance'),
       description: t('orgOnboarding.staff.description', 'Track specialist progress, view AI-powered insights, and ensure quality care delivery across your organization.'),
@@ -76,6 +77,9 @@ export default function OrgOnboardingModal({ onComplete }) {
         >
           {/* Header */}
           <div className="relative p-6 pb-0">
+            <div className="absolute top-4 start-4">
+              <LanguageSwitcher />
+            </div>
             <button
               onClick={handleSkip}
               className="absolute top-4 end-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-sm font-medium"
@@ -96,8 +100,8 @@ export default function OrgOnboardingModal({ onComplete }) {
                 className="flex flex-col items-center"
               >
                 {/* Icon */}
-                <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${slides[currentSlide].gradient} flex items-center justify-center text-6xl mb-6 shadow-lg`}>
-                  {slides[currentSlide].icon}
+                <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${slides[currentSlide].gradient} flex items-center justify-center mb-6 shadow-lg`}>
+                  <span className="material-symbols-outlined text-6xl text-white">{slides[currentSlide].icon}</span>
                 </div>
 
                 {/* Title */}

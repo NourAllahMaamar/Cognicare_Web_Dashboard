@@ -274,7 +274,7 @@ function ScoreRing({ value, size = 64, strokeWidth = 6, color }) {
 ═══════════════════════════════════════════════════════════ */
 export default function OrgRNEVerification() {
   const { t } = useTranslation();
-  const { authFetch } = useAuth('orgLeader');
+  const { authFetch, getUser } = useAuth('orgLeader');
 
   /* ── Phase ── */
   const [phase, setPhase] = useState('upload');
@@ -340,7 +340,7 @@ export default function OrgRNEVerification() {
 
   const resolveOrganizationContext = async () => {
     try {
-      const storedUser = JSON.parse(localStorage.getItem('orgLeaderUser') || '{}');
+      const storedUser = getUser() || {};
       let pendingOrganization = null;
       try {
         const pendingRes = await authFetch('/organization/my-pending-request', {

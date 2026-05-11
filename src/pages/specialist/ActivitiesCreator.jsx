@@ -22,11 +22,8 @@ export default function ActivitiesCreator() {
   const [success, setSuccess] = useState('');
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-    navigate('/specialist/dashboard/children');
+    // Always go back to children list with this child selected
+    navigate(`/specialist/dashboard/children?selectedChildId=${childId}`);
   };
 
   useEffect(() => { if (!childId) setError(t('activitiesCreator.childRequired'));  }, [childId, t]);
@@ -50,7 +47,7 @@ export default function ActivitiesCreator() {
         },
       });
       setSuccess(t('activitiesCreator.saved'));
-      setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
+      setTimeout(() => navigate(`/specialist/dashboard/children?selectedChildId=${childId}`), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
   };

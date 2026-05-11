@@ -37,11 +37,8 @@ export default function PECSBoardCreator() {
   useEffect(() => { if (!childId) setError(t('pecsCreator.childRequired')); }, [childId, t]);
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-    navigate('/specialist/dashboard/children');
+    // Always go back to children list with this child selected
+    navigate(`/specialist/dashboard/children?selectedChildId=${childId}`);
   };
 
   const currentPhase = PECS_PHASES.find(p => p.id === selectedPhase);
@@ -95,7 +92,7 @@ export default function PECSBoardCreator() {
     try {
       await authMutate('/specialized-plans', { body: { childId, type: 'PECS', title, content: { phase: selectedPhase, phaseName: currentPhase.name, items: items.map(it => ({ ...it, ...getStats(it) })), criteria: currentPhase.criteria } } });
       setSuccess(t('pecsCreator.boardSaved'));
-      setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
+      setTimeout(() => navigate(`/specialist/dashboard/children?selectedChildId=${childId}`), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
   };

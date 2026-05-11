@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { exportTemplate, exportJson } from '../../utils/excelExport';
+import { formatDate } from '../../utils/localeFormat';
 
 export default function OrgFamilies() {
   const { t, i18n } = useTranslation();
@@ -73,7 +74,7 @@ export default function OrgFamilies() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
+  const dateFmt = (d) => formatDate(d, (i18n.language || 'en').split('-')[0]);
 
   // â”€â”€ Family CRUD â”€â”€
   const openAdd = () => {
@@ -147,8 +148,8 @@ export default function OrgFamilies() {
         flash(t('orgDashboard.familyUpdated', 'Family updated'));
       } else if (modalMode === 'invite') {
         if (!inviteEmail) { flash(t('common.emailRequired'), 'error'); return; }
-        await authMutate('/organization/my-organization/families/invite', { body: { email: inviteEmail, role: 'family' } });
-        flash(t('orgDashboard.invitationSent', 'Invitation sent'));
+        await authMutate('/organization/my-organization/families/link-existing', { body: { email: inviteEmail } });
+        flash(t('orgDashboard.familyLinked', 'Existing family added'));
       } else {
         if (!form.fullName || !form.email || !form.password) { flash(t('common.nameEmailPasswordRequired'), 'error'); return; }
         const body = { fullName: form.fullName, email: form.email, phone: form.phone, password: form.password, children: formChildren.filter(c => c.fullName) };
@@ -340,7 +341,7 @@ export default function OrgFamilies() {
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => openEdit(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('common.edit', 'Edit')}</button>
-                  <button onClick={() => setViewFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('orgDashboard.families.viewChildren')}</button>
+                  <button onClick={() => setViewFamily(fam)} className="flex-1 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">{t('orgDashboard.families.viewChildren', 'View Children')}</button>
                   <button onClick={() => handleDelete(fam)} className="py-2 px-3 text-xs font-bold text-error hover:bg-error/5 rounded-lg transition-colors">
                     <span className="material-symbols-outlined text-base md:text-sm">delete</span>
                   </button>
@@ -362,15 +363,16 @@ export default function OrgFamilies() {
 
             {modalMode !== 'edit' && (
               <div className="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 mb-4">
-                <button onClick={() => setModalMode('invite')} className={`flex-1 py-2 text-sm font-bold rounded-lg ${modalMode === 'invite' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>{t('orgDashboard.invite', 'Invite')}</button>
+                <button onClick={() => setModalMode('invite')} className={`flex-1 py-2 text-sm font-bold rounded-lg ${modalMode === 'invite' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>{t('orgDashboard.families.addExisting', 'Existing account')}</button>
                 <button onClick={() => setModalMode('create')} className={`flex-1 py-2 text-sm font-bold rounded-lg ${modalMode === 'create' ? 'bg-white dark:bg-surface-dark shadow-sm' : ''}`}>{t('orgDashboard.create', 'Create')}</button>
               </div>
             )}
 
             {modalMode === 'invite' ? (
-              <div>
+              <div className="space-y-2">
                 <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
                 <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('orgDashboard.families.existingFamilyHint', 'Adds an existing family account immediately and links their children to this organization.')}</p>
               </div>
             ) : (
               <>
@@ -384,8 +386,8 @@ export default function OrgFamilies() {
                 {/* Children section */}
                 <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-bold text-sm">{t('orgDashboard.children', 'Children')}</h4>
-                    <button onClick={addNewChild} className="text-xs text-primary font-bold hover:underline">{t('orgDashboard.families.addChild')}</button>
+                    <h4 className="font-bold text-sm">{t('orgDashboard.modal.children', 'Children')}</h4>
+                    <button onClick={addNewChild} className="text-xs text-primary font-bold hover:underline">{t('orgDashboard.modal.addChild', 'Add Child')}</button>
                   </div>
 
                   {/* Existing children (edit mode) */}
@@ -397,11 +399,11 @@ export default function OrgFamilies() {
                     
                     return (
                     <div key={c._id} className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                      <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder={t('common.name')} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input value={c.fullName || ''} onChange={e => updateExistingChild(i, 'fullName', e.target.value)} placeholder={t('orgDashboard.modal.childFullName', 'Child Full Name')} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <input type="date" value={(c.dateOfBirth || '').split('T')[0]} onChange={e => updateExistingChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title={t('specialistDashboard.children.modal.childAgeTip')} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender || 'male'} onChange={e => updateExistingChild(i, 'gender', e.target.value)} className="px-2 md:px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                        <option value="male">{t('common.male')}</option>
-                        <option value="female">{t('common.female')}</option>
+                        <option value="male">{t('orgDashboard.modal.male', 'Male')}</option>
+                        <option value="female">{t('orgDashboard.modal.female', 'Female')}</option>
                       </select>
                       <button onClick={() => markDeleteChild(c)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     </div>
@@ -417,11 +419,11 @@ export default function OrgFamilies() {
                     
                     return (
                     <div key={i} className="grid grid-cols-4 gap-2 mb-2 p-3 bg-primary/5 rounded-lg">
-                      <input value={c.fullName} onChange={e => updateNewChild(i, 'fullName', e.target.value)} placeholder={t('common.nameRequired')} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
+                      <input value={c.fullName} onChange={e => updateNewChild(i, 'fullName', e.target.value)} placeholder={t('orgDashboard.modal.childFullName', 'Child Full Name')} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <input type="date" value={c.dateOfBirth} onChange={e => updateNewChild(i, 'dateOfBirth', e.target.value)} max={maxDateStr} title={t('specialistDashboard.children.modal.childAgeTip')} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" />
                       <select value={c.gender} onChange={e => updateNewChild(i, 'gender', e.target.value)} className="p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
-                        <option value="male">{t('common.male')}</option>
-                        <option value="female">{t('common.female')}</option>
+                        <option value="male">{t('orgDashboard.modal.male', 'Male')}</option>
+                        <option value="female">{t('orgDashboard.modal.female', 'Female')}</option>
                       </select>
                       <button onClick={() => removeNewChild(i)} className="p-2 text-error text-xs font-bold hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     </div>
@@ -433,7 +435,7 @@ export default function OrgFamilies() {
 
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">{t('common.cancel', 'Cancel')}</button>
-              <button onClick={handleSave} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{modalMode === 'edit' ? t('common.update', 'Update') : modalMode === 'invite' ? t('orgDashboard.sendInvite', 'Send Invite') : t('common.create', 'Create')}</button>
+              <button onClick={handleSave} className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark">{modalMode === 'edit' ? t('common.update', 'Update') : modalMode === 'invite' ? t('orgDashboard.families.addExisting', 'Add existing') : t('common.create', 'Create')}</button>
             </div>
           </div>
         </div>
@@ -526,5 +528,3 @@ export default function OrgFamilies() {
     </div>
   );
 }
-
-

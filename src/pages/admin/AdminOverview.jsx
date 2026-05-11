@@ -3,8 +3,50 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import StatCard from '../../components/ui/StatCard';
 import { useAuth } from '../../hooks/useAuth';
-import { API_BASE_URL } from '../../config';
 import { useDashboardAssistantContext } from '../../assistant/useDashboardAssistantContext';
+
+function summarizeAiHealth(aiDiagnostics) {
+  const summary = aiDiagnostics?.summary || {};
+  const working = Number(summary.working || 0);
+  const attention = Number(summary.attention || 0);
+  const notConfigured = Number(summary.notConfigured || 0);
+  if (!aiDiagnostics) {
+    return {
+      tone: 'warning',
+      icon: 'help',
+      title: 'AI diagnostics unavailable',
+      subtitle: 'The admin diagnostics endpoint did not return data.',
+    };
+  }
+  if (working > 0 && attention === 0) {
+    return {
+      tone: 'success',
+      icon: 'check_circle',
+      title: 'AI engine verified',
+      subtitle: `${working} model checks working · ${notConfigured} not configured`,
+    };
+  }
+  if (working > 0) {
+    return {
+      tone: 'warning',
+      icon: 'warning',
+      title: 'AI engine partially available',
+      subtitle: `${working} working · ${attention} need attention · ${notConfigured} not configured`,
+    };
+  }
+  return {
+    tone: 'error',
+    icon: 'error',
+    title: 'AI engine needs attention',
+    subtitle: `${attention} failing · ${notConfigured} not configured`,
+  };
+}
+
+function aiBannerClasses(tone) {
+  if (tone === 'success') return 'bg-success/10 border-success/20 text-success';
+  if (tone === 'error') return 'bg-error/10 border-error/20 text-error';
+  return 'bg-warning/10 border-warning/20 text-warning';
+}
 
 export default function AdminOverview() {
   const { t } = useTranslation();
@@ -13,7 +55,7 @@ export default function AdminOverview() {
   const { setUiContext } = useDashboardAssistantContext();
   const [stats, setStats] = useState({ users: [], orgs: [], pending: [] });
   const [loading, setLoading] = useState(true);
-  const [aiHealth, setAiHealth] = useState(null);
+  const [aiDiagnostics, setAiDiagnostics] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -29,12 +71,10 @@ export default function AdminOverview() {
         authGet('/organization/admin/families').catch(() => []),
       ]);
 
-      // AI health - no auth needed
-      const aiRes = await fetch(`${API_BASE_URL}/org-scan-ai/health`).catch(() => null);
-      const aiData = aiRes?.ok ? await aiRes.json() : null;
+      const aiData = await authGet('/admin/ops/ai-diagnostics', { skipCache: true }).catch(() => null);
 
       setStats({ users: Array.isArray(users) ? users : [], orgs: Array.isArray(orgs) ? orgs : [], pending: Array.isArray(pending) ? pending : [], families: Array.isArray(families) ? families : [] });
-      setAiHealth(aiData);
+      setAiDiagnostics(aiData);
     } catch (err) {
       console.error('Failed to load overview data:', err);
     } finally {
@@ -51,10 +91,10 @@ export default function AdminOverview() {
       totalOrganizations: stats.orgs.length,
       pendingReviews: stats.pending.length,
       totalFamilies: stats.families?.length || 0,
-      aiConfigured: Boolean(aiHealth?.configured ?? aiHealth?.apiKeySet ?? aiHealth),
+      aiConfigured: Number(aiDiagnostics?.summary?.working || 0) > 0,
     });
   }, [
-    aiHealth,
+    aiDiagnostics,
     setUiContext,
     stats.families,
     stats.orgs.length,
@@ -79,17 +119,20 @@ export default function AdminOverview() {
       </div>
 
       {/* AI Health Banner */}
-      {aiHealth && (
-        <div className="flex items-center gap-4 p-4 rounded-xl bg-success/10 border border-success/20">
-          <div className="rounded-full bg-success/20 p-2 text-success">
-            <span className="material-symbols-outlined">check_circle</span>
+      {(() => {
+        const aiStatus = summarizeAiHealth(aiDiagnostics);
+        return (
+        <div className={`flex items-center gap-4 p-4 rounded-xl border ${aiBannerClasses(aiStatus.tone)}`}>
+          <div className="rounded-full bg-white/60 p-2 dark:bg-slate-950/30">
+            <span className="material-symbols-outlined">{aiStatus.icon}</span>
           </div>
           <div>
-            <p className="text-sm font-bold text-success">{t('adminOverview.aiOperational')}</p>
-            <p className="text-xs text-slate-500 dark:text-text-muted">{t('adminOverview.aiSubtitle')}</p>
+            <p className="text-sm font-bold">{aiStatus.title}</p>
+            <p className="text-xs text-slate-500 dark:text-text-muted">{aiStatus.subtitle}</p>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">

@@ -63,6 +63,13 @@ export default function SpecialistOverview() {
 
   const recentPlans = allPlans.slice(0, 6);
 
+  const getPlanChildName = (plan) =>
+    plan.childName ||
+    plan.child?.fullName ||
+    plan.childId?.fullName ||
+    plan.patientName ||
+    '';
+
   useEffect(() => {
     setUiContext({
       page: 'specialist-overview',
@@ -119,7 +126,7 @@ export default function SpecialistOverview() {
             </button>
             <button onClick={() => navigate('/specialist/dashboard/plans')} className="flex items-center gap-3 p-4 md:p-5 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
               <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center"><span className="material-symbols-outlined">assignment</span></div>
-              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.myPlans', 'My Plans')}</p><p className="text-xs text-slate-400 truncate">{allPlans.length} plans</p></div>
+              <div className="text-left min-w-0 flex-1"><p className="font-bold text-sm md:text-base truncate">{t('specialistDashboard.quickActions.myPlans', 'My Plans')}</p><p className="text-xs text-slate-400 truncate">{allPlans.length} plans</p></div>
             </button>
             <button onClick={() => navigate('/specialist/dashboard/children')} className="flex items-center gap-3 p-4 md:p-5 bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow">
               <div className="w-10 h-10 md:w-11 md:h-11 flex-shrink-0 rounded-xl bg-success/10 text-success flex items-center justify-center"><span className="material-symbols-outlined">add_circle</span></div>
@@ -156,13 +163,19 @@ export default function SpecialistOverview() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
                 {recentPlans.map(plan => (
-                  <div key={plan._id} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 md:p-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`w-2.5 h-2.5 rounded-full ${getTypeColor(plan.type)}`} />
-                      <span className="text-xs font-bold uppercase text-slate-400">{plan.type}</span>
+                  <div key={plan._id} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/70 dark:border-slate-700/70 p-4 md:p-5 hover:border-primary/40 hover:shadow-sm transition-all">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900 px-2.5 py-1 text-[11px] font-bold uppercase text-slate-500 dark:text-slate-300">
+                        <span className={`w-2 h-2 rounded-full ${getTypeColor(plan.type)}`} />
+                        {plan.type}
+                      </span>
+                      <span className="material-symbols-outlined text-slate-300 text-lg">assignment</span>
                     </div>
-                    <p className="font-bold text-sm mb-1">{plan.title || plan.name || plan.type}</p>
-                    <p className="text-xs text-slate-400">{plan.childName || plan.child?.fullName || '"”'}</p>
+                    <p className="font-bold text-sm md:text-base leading-snug text-slate-900 dark:text-white line-clamp-2">{plan.title || plan.name || plan.type}</p>
+                    <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <span className="material-symbols-outlined text-sm">child_care</span>
+                      <span className="truncate">{getPlanChildName(plan) || t('specialistDashboard.children.unassignedChild', 'Child not specified')}</span>
+                    </div>
                   </div>
                 ))}
               </div>

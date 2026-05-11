@@ -3,6 +3,21 @@ import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { useTranslation } from 'react-i18next';
 
+function countOrganizationMembers(org, kind) {
+  const directKey = kind === 'staff' ? 'staff' : 'families';
+  const idsKey = kind === 'staff' ? 'staffIds' : 'familyIds';
+  const countKeys = kind === 'staff'
+    ? ['staffCount', 'totalStaff']
+    : ['familiesCount', 'familyCount', 'totalFamilies'];
+
+  for (const key of countKeys) {
+    if (Number.isFinite(Number(org?.[key]))) return Number(org[key]);
+  }
+  if (Array.isArray(org?.[directKey])) return org[directKey].length;
+  if (Array.isArray(org?.[idsKey])) return org[idsKey].length;
+  return 0;
+}
+
 export default function AdminOrganizations() {
   const { authGet, authMutate } = useAuth('admin');
   const { t } = useTranslation();
@@ -163,8 +178,8 @@ export default function AdminOrganizations() {
                 <StatusBadge status={org.status || 'active'} />
               </div>
               <div className="flex gap-4 text-xs text-slate-500 dark:text-text-muted mb-4">
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">badge</span>{t('adminOrgs.staffCount', { count: org.staff?.length || 0 })}</span>
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">family_restroom</span>{t('adminOrgs.familiesCount', { count: org.families?.length || 0 })}</span>
+                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">badge</span>{t('adminOrgs.staffCount', { count: countOrganizationMembers(org, 'staff') })}</span>
+                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-sm">family_restroom</span>{t('adminOrgs.familiesCount', { count: countOrganizationMembers(org, 'families') })}</span>
               </div>
               <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-3">
                 <button onClick={() => viewMembers(org)} className="text-xs text-primary font-medium hover:underline">{t('adminOrgs.viewMembers')}</button>
@@ -267,5 +282,4 @@ export default function AdminOrganizations() {
     </div>
   );
 }
-
 

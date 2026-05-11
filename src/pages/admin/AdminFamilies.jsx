@@ -39,6 +39,15 @@ export default function AdminFamilies() {
   const [assignLoading, setAssignLoading] = useState(false);
 
   // Helper to match children to families (parentId is populated as object)
+  const asId = (value) => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') return value._id || value.id || '';
+    return String(value);
+  };
+
+  const familyOrganizationId = (family) => asId(family?.organization) || asId(family?.organizationId);
+
   const childBelongsToFamily = (child, familyId) => {
     const pid = typeof child.parentId === 'object' && child.parentId?._id 
       ? child.parentId._id.toString() 
@@ -78,7 +87,7 @@ export default function AdminFamilies() {
       email: fam.email || '',
       phone: fam.phone || '',
       password: '',
-      organizationId: fam.organization?._id || fam.organizationId || ''
+      organizationId: familyOrganizationId(fam)
     });
     setShowModal(true);
   };
@@ -90,9 +99,14 @@ export default function AdminFamilies() {
       if (editingFamily) {
         const body = { fullName: familyForm.fullName, email: familyForm.email, phone: familyForm.phone };
         await authMutate(`/organization/admin/families/${editingFamily._id}`, { method: 'PATCH', body });
-        // Handle org assignment inline
-        if (familyForm.organizationId && familyForm.organizationId !== (editingFamily.organization?._id || editingFamily.organizationId || '')) {
-          await authMutate(`/organization/admin/families/${editingFamily._id}/organization`, { method: 'PATCH', body: { organizationId: familyForm.organizationId } });
+        const previousOrgId = familyOrganizationId(editingFamily);
+        const nextOrgId = familyForm.organizationId || '';
+        if (nextOrgId !== previousOrgId) {
+          if (nextOrgId) {
+            await authMutate(`/organization/admin/families/${editingFamily._id}/organization`, { method: 'PATCH', body: { orgId: nextOrgId } });
+          } else {
+            await authMutate(`/organization/admin/families/${editingFamily._id}/organization`, { method: 'DELETE' });
+          }
         }
       } else {
         const body = { fullName: familyForm.fullName, email: familyForm.email, phone: familyForm.phone, password: familyForm.password };
@@ -101,8 +115,11 @@ export default function AdminFamilies() {
       }
       setSuccess(editingFamily ? t('adminFamilies.familyUpdated') : t('adminFamilies.familyCreated'));
       setShowModal(false);
-      loadData();
-    } catch (err) { setError(err.message); }
+      await loadData();
+    } catch (err) {
+      setShowModal(false);
+      setError(err.message);
+    }
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
@@ -119,7 +136,7 @@ export default function AdminFamilies() {
   // â”€â”€ Assign Org â”€â”€
   const openAssignOrg = (fam) => {
     setAssignFamily(fam);
-    setAssignOrgId(fam.organization?._id || fam.organizationId || '');
+    setAssignOrgId(familyOrganizationId(fam));
     setShowAssignOrg(true);
   };
 
@@ -128,7 +145,7 @@ export default function AdminFamilies() {
     setAssignLoading(true);
     try {
       if (assignOrgId) {
-        await authMutate(`/organization/admin/families/${assignFamily._id}/organization`, { method: 'PATCH', body: { organizationId: assignOrgId } });
+        await authMutate(`/organization/admin/families/${assignFamily._id}/organization`, { method: 'PATCH', body: { orgId: assignOrgId } });
       } else {
         await authMutate(`/organization/admin/families/${assignFamily._id}/organization`, { method: 'DELETE' });
       }
@@ -450,5 +467,4 @@ export default function AdminFamilies() {
     </div>
   );
 }
-
 

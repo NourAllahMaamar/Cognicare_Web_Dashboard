@@ -41,11 +41,8 @@ export default function TEACCHTrackerCreator() {
   useEffect(() => { if (!childId) setError(t('teachCreator.childRequired')); }, [childId, t]);
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-    navigate('/specialist/dashboard/children');
+    // Always go back to children list with this child selected
+    navigate(`/specialist/dashboard/children?selectedChildId=${childId}`);
   };
 
   const addGoal = (text) => {
@@ -75,7 +72,7 @@ export default function TEACCHTrackerCreator() {
         body: { childId, type: 'TEACCH', title, content: { category, goals, workSystem } },
       });
       setSuccess(t('teachCreator.saved'));
-      setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
+      setTimeout(() => navigate(`/specialist/dashboard/children?selectedChildId=${childId}`), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
   };

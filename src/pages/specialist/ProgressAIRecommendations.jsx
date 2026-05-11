@@ -1,13 +1,13 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { API_BASE_URL } from '../../config';
-import { cachedGet } from '../../apiClient';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function ProgressAIRecommendations() {
     const { childId } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const { ensureSession, authGet, authFetch, handleSessionExpired } = useAuth('specialist');
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -16,23 +16,18 @@ export default function ProgressAIRecommendations() {
     const [resultsImproved, setResultsImproved] = useState(null); // true | false
     const [parentFeedbackHelpful, setParentFeedbackHelpful] = useState(null); // true | false | 'skip'
 
-    const token = localStorage.getItem('specialistToken');
-
     const handleUnauthorized = useCallback(() => {
-        localStorage.removeItem('specialistToken');
-        localStorage.removeItem('specialistRefreshToken');
-        localStorage.removeItem('specialistUser');
-        navigate('/specialist/login');
-    }, [navigate]);
+        handleSessionExpired();
+    }, [handleSessionExpired]);
 
     const fetchRecommendations = useCallback(async () => {
-        if (!childId || !token) return;
+        if (!childId) return;
         setLoading(true);
         setError('');
         try {
-            const json = await cachedGet(
+            const json = await authGet(
                 `/progress-ai/child/${childId}/recommendations`,
-                { ttlMs: 30_000, token }
+                { ttl: 30_000 }
             );
             setData(json);
         } catch (e) {
@@ -45,26 +40,30 @@ export default function ProgressAIRecommendations() {
         } finally {
             setLoading(false);
         }
-    }, [childId, token, handleUnauthorized]);
+    }, [authGet, childId, handleUnauthorized, t]);
 
     useEffect(() => {
-        fetchRecommendations();
+        ensureSession().then((session) => {
+            if (!session) {
+                navigate('/specialist/login');
+                return;
+            }
+            fetchRecommendations();
+        });
         const interval = setInterval(fetchRecommendations, 30000);
         return () => clearInterval(interval);
-    }, [fetchRecommendations]);
+    }, [ensureSession, fetchRecommendations, navigate]);
 
     const submitFeedback = async (payload) => {
-        if (!token || !data?.recommendationId) return;
+        if (!data?.recommendationId) return;
         try {
-            const res = await fetch(
-                `${API_BASE_URL}/progress-ai/recommendations/${data.recommendationId}/feedback`,
+            const res = await authFetch(
+                `/progress-ai/recommendations/${data.recommendationId}/feedback`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
                     },
-                    credentials: 'include',
                     body: JSON.stringify(payload),
                 }
             );
@@ -129,25 +128,23 @@ export default function ProgressAIRecommendations() {
         submitFeedback(payload);
     };
 
-    if (!token) {
-        navigate('/specialist/login');
-        return null;
-    }
-
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-bg-dark">
             <header className="sticky top-0 z-30 bg-white/80 dark:bg-surface-dark/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
                 <div className="max-w-5xl mx-auto px-6 py-4">
                     <div className="flex items-center gap-4">
                         <button
-                            onClick={() => navigate('/specialist/dashboard')}
+                            onClick={() => navigate(`/specialist/dashboard/children?selectedChildId=${childId}`)}
                             className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                         >
                             <span className="material-symbols-outlined">arrow_back</span>
                         </button>
                         <div>
-                            <h1 className="text-xl md:text-2xl font-bold">{t('progressAI.title')}</h1>
-                            <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('progressAI.childId')}: {childId}</p>
+                            <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">smart_toy</span>
+                                {t('progressAI.title')}
+                            </h1>
+                            <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">{t('progressAI.subtitle')}</p>
                         </div>
                     </div>
                 </div>
@@ -319,5 +316,3 @@ export default function ProgressAIRecommendations() {
         </div>
     );
 }
-
-

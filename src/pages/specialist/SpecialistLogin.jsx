@@ -5,6 +5,7 @@ import SEOHead from '../../components/SEOHead';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL, GOOGLE_CLIENT_ID } from '../../config';
+import { storeAuthSession } from '../../utils/authSession';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
 const specialistRoles = ['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'volunteer', 'careProvider'];
@@ -69,9 +70,7 @@ function SpecialistLogin() {
             return;
         }
         
-        localStorage.setItem('specialistToken', data.accessToken);
-        localStorage.setItem('specialistRefreshToken', data.refreshToken);
-        localStorage.setItem('specialistUser', JSON.stringify(data.user));
+        storeAuthSession('specialist', data);
         navigate('/specialist/dashboard');
     }, [navigate]);
 
@@ -81,7 +80,8 @@ function SpecialistLogin() {
         try {
             const res = await fetch(`${API_BASE_URL}/auth/social-login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                credentials: 'include',
                 body: JSON.stringify({
                     provider: 'google',
                     idToken: response.credential,
@@ -150,7 +150,8 @@ function SpecialistLogin() {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                credentials: 'include',
                 body: JSON.stringify({ email, password }),
             });
             const data = await response.json();
@@ -192,7 +193,8 @@ function SpecialistLogin() {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/signup`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                credentials: 'include',
                 body: JSON.stringify({
                     fullName,
                     email,
@@ -218,10 +220,12 @@ function SpecialistLogin() {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/complete-profile`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${profileCompletionToken}`
+                    'Authorization': `Bearer ${profileCompletionToken}`,
+                    'X-Cogni-Client': 'web'
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     careProviderType,
                     password: profilePassword,
@@ -236,7 +240,8 @@ function SpecialistLogin() {
             
             const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+                credentials: 'include',
                 body: JSON.stringify({
                     email: tempEmail,
                     password: profilePassword,
@@ -246,9 +251,7 @@ function SpecialistLogin() {
             if (!loginResponse.ok) throw new Error(t('specialistLogin.loginAfterProfileFailed'));
             
             sessionStorage.removeItem('tempUserEmail');
-            localStorage.setItem('specialistToken', loginData.accessToken);
-            localStorage.setItem('specialistRefreshToken', loginData.refreshToken);
-            localStorage.setItem('specialistUser', JSON.stringify(loginData.user));
+            storeAuthSession('specialist', loginData);
             navigate('/specialist/dashboard');
         } catch (err) {
             setError(err.message);
@@ -309,7 +312,7 @@ function SpecialistLogin() {
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden">
                                 <img src={logo} alt="CogniCare" className="w-8 h-8 object-contain" />
                             </div>
-                            <span className="text-xl font-bold tracking-tight">CogniCare</span>
+                            <span className="text-xl font-bold tracking-tight">{t('common.appName', 'CogniCare')}</span>
                         </div>
 
                         <h1 className="text-2xl font-black tracking-tight mb-1">
@@ -487,9 +490,9 @@ function SpecialistLogin() {
 
                         {/* Footer links */}
                         <div className="flex items-center justify-center gap-3 mt-6 text-xs text-slate-400">
-                            <button onClick={() => navigate('/admin/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.adminLink', 'Admin Login')}</button>
+                            <button onClick={() => navigate('/privacy')} className="hover:text-primary transition-colors">{t('landing.footerLinks.privacy', 'Privacy')}</button>
                             <span>•</span>
-                            <button onClick={() => navigate('/org/login')} className="hover:text-primary transition-colors">{t('specialistLogin.organizationLogin')}</button>
+                            <button onClick={() => navigate('/terms')} className="hover:text-primary transition-colors">{t('landing.footerLinks.terms', 'Terms')}</button>
                         </div>
                     </div>
                 </div>

@@ -88,6 +88,17 @@ export default function AdminFraudReview() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
+  const openCertificate = async (org) => {
+    const certificateUrl = org.certificateUrl || fraudAnalysis?.originalPdfPath;
+    try {
+      if (!certificateUrl) throw new Error('Missing certificate URL');
+      window.open(getUploadUrl(certificateUrl), '_blank', 'noopener,noreferrer');
+    } catch {
+      setError(t('adminFraud.certificateFailed', 'Unable to open certificate'));
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const getRiskColor = (score) => {
     if (score >= 70) return 'text-error';
     if (score >= 40) return 'text-warning';
@@ -195,8 +206,8 @@ export default function AdminFraudReview() {
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-6">
               <p className="text-sm"><strong>{t('adminFraud.leader')}</strong> {reviewingOrg.leaderName || reviewingOrg.leader?.fullName}</p>
               <p className="text-sm"><strong>{t('adminFraud.emailLabel')}</strong> {reviewingOrg.leaderEmail || reviewingOrg.leader?.email}</p>
-              {reviewingOrg.certificateUrl && (
-                <a href={getUploadUrl(reviewingOrg.certificateUrl)} target="_blank" rel="noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">{t('adminFraud.viewCertificate')}</a>
+              {(reviewingOrg.certificateUrl || fraudAnalysis?.originalPdfPath) && (
+                <button type="button" onClick={() => openCertificate(reviewingOrg)} className="text-sm text-primary hover:underline mt-2 inline-block">{t('adminFraud.viewCertificate')}</button>
               )}
             </div>
 
@@ -273,5 +284,3 @@ export default function AdminFraudReview() {
     </div>
   );
 }
-
-

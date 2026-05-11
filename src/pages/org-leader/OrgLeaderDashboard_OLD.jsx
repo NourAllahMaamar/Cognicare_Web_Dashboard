@@ -2,9 +2,9 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import * as XLSX from 'xlsx';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { API_BASE_URL } from '../../config';
+import { exportJson, exportTemplate } from '../../utils/excelExport';
 import './OrgLeaderDashboard.css';
 
 function OrgLeaderDashboard() {
@@ -875,7 +875,7 @@ function OrgLeaderDashboard() {
   };
 
   // ─── Template Download ───────────────────────────────
-  const handleDownloadTemplate = (type) => {
+  const handleDownloadTemplate = async (type) => {
     const templates = {
       staff: ['Full Name', 'Email', 'Phone', 'Role', 'Password'],
       families: ['Full Name', 'Email', 'Phone', 'Password'],
@@ -885,16 +885,11 @@ function OrgLeaderDashboard() {
     const cols = templates[type];
     if (!cols) return;
 
-    const ws = XLSX.utils.aoa_to_sheet([cols]);
-    // Auto-width based on header length
-    ws['!cols'] = cols.map(h => ({ wch: Math.max(h.length + 4, 14) }));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Template');
-    XLSX.writeFile(wb, `cognicare_${type}_template.xlsx`);
+    await exportTemplate(cols, 'Template', `cognicare_${type}_template.xlsx`);
   };
 
   // ─── Export Handlers ───────────────────────────────
-  const handleExport = (type) => {
+  const handleExport = async (type) => {
     let data = [];
     let filename = '';
 
@@ -961,17 +956,7 @@ function OrgLeaderDashboard() {
       filename = 'children_export.xlsx';
     }
 
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, type.charAt(0).toUpperCase() + type.slice(1));
-
-    // Auto-width columns
-    const colWidths = Object.keys(data[0] || {}).map(key => ({
-      wch: Math.max(key.length, ...data.map(row => String(row[key] || '').length)) + 2
-    }));
-    ws['!cols'] = colWidths;
-
-    XLSX.writeFile(wb, filename);
+    await exportJson(data, type.charAt(0).toUpperCase() + type.slice(1), filename);
     setSuccessMessage(t('orgDashboard.importExport.exportSuccess'));
     setTimeout(() => setSuccessMessage(''), 3000);
   };

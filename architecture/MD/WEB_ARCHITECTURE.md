@@ -199,10 +199,10 @@ All routing is client-side via React Router v7 with `BrowserRouter`. Every page 
 
 ### Auth Guards
 
-Each dashboard layout (`AdminLayout`, `OrgLayout`, `SpecialistLayout`) reads session state from `localStorage` on mount.
+Each dashboard layout (`AdminLayout`, `OrgLayout`, `SpecialistLayout`) calls `ensureSession()` from `useAuth(role)` on mount. That uses the in-memory access token when available, or refreshes from the backend `HttpOnly` refresh cookie after a page reload.
 
 - `AdminLayout` currently validates role explicitly.
-- `OrgLayout` and `SpecialistLayout` currently validate presence of stored user data, then rely on backend guards for sensitive API operations.
+- `OrgLayout` and `SpecialistLayout` validate the restored user role before rendering dashboard content, then rely on backend guards for sensitive API operations.
 
 2026-04-10 hardening requirement: introduce a unified protected-route wrapper with strict role validation for every role dashboard and creator route.
 
@@ -210,11 +210,13 @@ Each dashboard layout (`AdminLayout`, `OrgLayout`, `SpecialistLayout`) reads ses
 
 ## 5. Authentication System
 
-**Pattern:** JWT access token (15 min) + refresh token (7 days), stored per-role in `localStorage`.
+**Pattern:** JWT access token (15 min) + refresh token (7 days). Web stores the access token in module memory only and relies on a backend `cognicare_refresh` `HttpOnly` cookie for refresh. The non-token user summary is kept in `sessionStorage` so dashboard chrome can survive a reload after cookie refresh.
 
-### localStorage Keys
+### Legacy localStorage Keys
 
-| Role | Access token key | Refresh token key | User object key |
+These keys are no longer the active storage contract. `utils/authSession.js` purges them during session use so old releases do not leave bearer/refresh tokens behind.
+
+| Role | Legacy access token key | Legacy refresh token key | Legacy user object key |
 |---|---|---|---|
 | Admin | `adminToken` | `adminRefreshToken` | `adminUser` |
 | Org Leader | `orgLeaderToken` | `orgLeaderRefreshToken` | `orgLeaderUser` |
@@ -227,18 +229,19 @@ The central auth primitive. Returns:
 | Method | Description |
 |---|---|
 | `authFetch(path, options)` | Authenticated `fetch` with auto-retry on 401 (silent token refresh). Attaches `Authorization: Bearer <token>` and `X-Correlation-Id` headers. Records API metrics. |
-| `authGet(path, { ttl, skipCache })` | Wraps `authFetch`, parses JSON, maintains a shared in-memory TTL cache (60s default). Cache is currently keyed by `role:path` and must be user/session-scoped for production. |
+| `authGet(path, { ttl, skipCache })` | Wraps `authFetch`, parses JSON, maintains a shared in-memory TTL cache (60s default). Cache is keyed by role, restored user id, token scope, and path. |
 | `authMutate(path, { method, body, isFormData })` | POST/PATCH/DELETE helper. Automatically clears the entire GET cache after any mutation. |
-| `logout()` | Clears all 3 localStorage keys and redirects to login. |
-| `refreshAccessToken()` | Called internally on 401. Calls `POST /auth/refresh` and saves the new access token. |
+| `ensureSession()` | Restores a session from in-memory state or `POST /auth/refresh` with `credentials: include`. |
+| `logout()` | Calls backend logout, clears in-memory/session state, purges legacy localStorage token keys, and redirects to login. |
+| `refreshAccessToken()` | Called internally on 401. Calls `POST /auth/refresh` with `credentials: include` and stores the new access token in memory. |
 | `clearCache()` | Manually clears the shared In-memory GET cache. |
 
 ### Token Refresh Flow
 
 ```
 authFetch() → 401 response
-  → refreshAccessToken() → POST /auth/refresh { refreshToken }
-    → success: save new accessToken, retry original request
+  → refreshAccessToken() → POST /auth/refresh with HttpOnly cookie
+    → success: keep new accessToken in memory, retry original request
     → failure: logout() → redirect to /role/login
 ```
 
@@ -251,7 +254,7 @@ authFetch() → 401 response
 | Org leader signup | `POST /auth/signup` | `multipart/form-data` (profile + certificate PDF) |
 | Specialist login | `POST /auth/login` | `{ email, password }` |
 | Account activation | `POST /auth/activate` | `{ token, password }` |
-| Token refresh | `POST /auth/refresh` | `{ refreshToken }` |
+| Token refresh | `POST /auth/refresh` | Empty JSON body; refresh token comes from `cognicare_refresh` cookie |
 | Update profile | `PATCH /auth/profile` | `{ fullName, phone }` |
 | Change password | `PATCH /auth/change-password` | `{ currentPassword, newPassword }` |
 
@@ -397,7 +400,9 @@ All endpoints are relative to `/api/v1`. Role column indicates which dashboard m
 | Method | Endpoint | Description | Role |
 |---|---|---|---|
 | GET | `/training/admin/courses` | List all training courses | Admin |
+| POST | `/training/admin/courses/scrape` | Scrape a public website into a draft or approved caregiver course | Admin |
 | PATCH | `/training/admin/courses/:id/approve` | Approve/reject a training course | Admin |
+| DELETE | `/training/admin/courses/:id` | Delete a training course and related progress records | Admin |
 
 ### Volunteers (`/volunteers`)
 
@@ -513,6 +518,10 @@ dist/specialist/login/index.html → https://cognicare.app/specialist/login
 |---|---|
 | `public/robots.txt` | Allows `/`, `/*/login`; blocks all dashboard routes and `/api/` |
 | `public/sitemap.xml` | Lists 4 public URLs with priority weights |
+
+### Admin SEO Control Plane
+
+The admin analytics page consumes backend `admin/seo/*` endpoints to manage public route allowlists, crawler policies, tool references, queued SEO actions, and action history. `GET /api/v1/admin/seo/generated-artifacts` generates the current `robots.txt` and `sitemap.xml` content from saved control-plane state so an admin can publish the files with the static web deployment, then submit the sitemap through Search Console after the Search Console credential reference is configured on the backend host. The same page includes a local-vs-Render backend selector/health visualizer; Render defaults to `https://cognicare-mobile-h4ct.onrender.com`.
 
 ### Performance Hints (index.html)
 

@@ -17,6 +17,13 @@ export default function AdminTrainingCourses() {
   const [reviewing, setReviewing] = useState(null);
   const [approveDecision, setApproveDecision] = useState(true);
   const [professionalComments, setProfessionalComments] = useState('');
+  const [showScrapeModal, setShowScrapeModal] = useState(false);
+  const [scraping, setScraping] = useState(false);
+  const [deletingCourseId, setDeletingCourseId] = useState('');
+  const [scrapeForm, setScrapeForm] = useState({
+    websiteUrl: 'https://www.autismspeaks.org/tool-kit/100-day-kit-young-children',
+    approve: true,
+  });
 
   useEffect(() => {
     loadData();
@@ -59,13 +66,74 @@ export default function AdminTrainingCourses() {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
   };
 
+  const handleDelete = async (course) => {
+    if (!course?.id || deletingCourseId) return;
+    const confirmed = window.confirm(t('adminTraining.deleteConfirm', { title: course.title }));
+    if (!confirmed) return;
+
+    setDeletingCourseId(course.id);
+    setError('');
+    setSuccess('');
+    try {
+      await authMutate(`/training/admin/courses/${course.id}`, {
+        method: 'DELETE',
+      });
+      setSuccess(t('adminTraining.courseDeleted'));
+      await loadData();
+    } catch (err) {
+      setError(err.message || t('adminTraining.deleteFailed'));
+    } finally {
+      setDeletingCourseId('');
+      setTimeout(() => { setError(''); setSuccess(''); }, 3000);
+    }
+  };
+
+  const handleScrape = async (e) => {
+    e.preventDefault();
+    setScraping(true);
+    setError('');
+    setSuccess('');
+    try {
+      await authMutate('/training/admin/courses/scrape', {
+        method: 'POST',
+        body: {
+          websiteUrl: scrapeForm.websiteUrl.trim(),
+          approve: scrapeForm.approve,
+          professionalComments: scrapeForm.approve
+            ? 'Approved from admin website scraper for caregiver demo visibility.'
+            : 'Scraped content awaiting professional validation.',
+        },
+      });
+      setSuccess(scrapeForm.approve
+        ? 'Website scraped and published for caregivers.'
+        : 'Website scraped. Review it before publishing.');
+      setShowScrapeModal(false);
+      await loadData();
+    } catch (err) {
+      setError(err.message || 'Website scrape failed.');
+    } finally {
+      setScraping(false);
+      setTimeout(() => { setError(''); setSuccess(''); }, 4000);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 md:gap-6">
-      <div>
-        <h2 className="text-xl md:text-2xl font-bold">{t('adminTraining.title')}</h2>
-        <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">
-          {t('adminTraining.subtitle')}
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold">{t('adminTraining.title')}</h2>
+          <p className="text-sm text-slate-500 dark:text-text-muted mt-0.5 md:mt-1">
+            {t('adminTraining.subtitle')}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowScrapeModal(true)}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-dark sm:w-auto"
+        >
+          <span className="material-symbols-outlined text-lg">travel_explore</span>
+          Scrape website
+        </button>
       </div>
 
       {error && (
@@ -105,10 +173,23 @@ export default function AdminTrainingCourses() {
               <div className="flex items-center gap-2 md:gap-3 shrink-0">
                 <StatusBadge status={course.approved ? 'approved' : 'pending'} />
                 <button
+                  type="button"
                   onClick={() => openReview(course)}
                   className="text-xs md:text-sm text-primary font-medium hover:underline"
                 >
                   {t('adminTraining.review')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(course)}
+                  disabled={deletingCourseId === course.id}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-error transition hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-50"
+                  title={t('adminTraining.delete')}
+                  aria-label={t('adminTraining.deleteCourseLabel', { title: course.title })}
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    {deletingCourseId === course.id ? 'progress_activity' : 'delete'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -191,8 +272,79 @@ export default function AdminTrainingCourses() {
           </div>
         </div>
       )}
+
+      {showScrapeModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={() => setShowScrapeModal(false)}
+        >
+          <form
+            onSubmit={handleScrape}
+            className="w-full max-w-lg rounded-2xl border border-slate-300 bg-white p-4 shadow-xl dark:border-slate-800 dark:bg-surface-dark md:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-5 flex items-start justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-bold">Create course from website</h3>
+                <p className="mt-1 text-sm text-slate-500 dark:text-text-muted">
+                  The backend will fetch the public page, extract training sections, add a short quiz, and publish it if approved.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowScrapeModal(false)}
+                className="rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+
+            <label className="mb-1 block text-sm font-semibold text-slate-600 dark:text-slate-300">
+              Website URL
+            </label>
+            <input
+              type="url"
+              required
+              value={scrapeForm.websiteUrl}
+              onChange={(e) => setScrapeForm((prev) => ({ ...prev, websiteUrl: e.target.value }))}
+              className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-800"
+              placeholder="https://example.org/autism-training"
+            />
+
+            <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/40">
+              <input
+                type="checkbox"
+                checked={scrapeForm.approve}
+                onChange={(e) => setScrapeForm((prev) => ({ ...prev, approve: e.target.checked }))}
+                className="h-4 w-4"
+              />
+              <span>
+                <span className="block text-sm font-bold">Publish immediately for caregivers</span>
+                <span className="block text-xs text-slate-500 dark:text-text-muted">
+                  Turn this off when the content needs a professional review first.
+                </span>
+              </span>
+            </label>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowScrapeModal(false)}
+                className="flex-1 rounded-xl border border-slate-300 py-3 text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={scraping}
+                className="flex-1 rounded-xl bg-primary py-3 text-sm font-bold text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {scraping ? 'Scraping...' : 'Create course'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
-
-

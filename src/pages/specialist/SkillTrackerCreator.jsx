@@ -24,11 +24,8 @@ export default function SkillTrackerCreator() {
   useEffect(() => { if (!childId) setError(t('skillTracker.childRequired')); }, [childId, t]);
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-    navigate('/specialist/dashboard/children');
+    // Always go back to children list with this child selected
+    navigate(`/specialist/dashboard/children?selectedChildId=${childId}`);
   };
 
   const toggleTrial = (i) => {
@@ -53,7 +50,7 @@ export default function SkillTrackerCreator() {
         },
       });
       setSuccess(t('skillTracker.saved'));
-      setTimeout(() => navigate('/specialist/dashboard/children'), 1200);
+      setTimeout(() => navigate(`/specialist/dashboard/children?selectedChildId=${childId}`), 1200);
     } catch (err) { setError(err.message); }
     setLoading(false);
   };

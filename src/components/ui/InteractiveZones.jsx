@@ -10,6 +10,12 @@ import { COGNI_POSES } from '../3d/cogniPoseConfig';
 
 const ZONES = [
   {
+    id: 'hero',
+    sectionId: 'section-hero',
+    reaction: COGNI_POSES.WAVING,
+    tipKey: 'cogniCompanion.zoneHero',
+  },
+  {
     id: 'header',
     sectionId: 'section-header',
     reaction: COGNI_POSES.WAVING,
@@ -20,6 +26,12 @@ const ZONES = [
     sectionId: 'section-features',
     reaction: COGNI_POSES.THINKING,
     tipKey: 'cogniCompanion.zoneFeatures',
+  },
+  {
+    id: 'download',
+    sectionId: 'section-download',
+    reaction: COGNI_POSES.INTERACTION_A,
+    tipKey: 'cogniCompanion.zoneDownload',
   },
   {
     id: 'cta',

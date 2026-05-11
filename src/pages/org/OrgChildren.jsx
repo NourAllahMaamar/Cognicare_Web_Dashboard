@@ -2,27 +2,66 @@
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { exportTemplate, exportJson } from '../../utils/excelExport';
+import { getUploadUrl } from '../../config';
+import { formatDate } from '../../utils/localeFormat';
 
 export default function OrgChildren() {
   const { t, i18n } = useTranslation();
-  const { authGet } = useAuth('orgLeader');
+  const { authGet, authMutate } = useAuth('orgLeader');
   const [children, setChildren] = useState([]);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [assigningChildId, setAssigningChildId] = useState(null);
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => { loadChildren(); }, []);
 
   const loadChildren = async () => {
     setLoading(true);
     try {
-      const data = await authGet('/organization/my-organization/children');
-      setChildren(Array.isArray(data) ? data : []);
+      const [childrenData, staffData] = await Promise.all([
+        authGet('/organization/my-organization/children').catch(() => []),
+        authGet('/organization/my-organization/staff').catch(() => []),
+      ]);
+      setChildren(Array.isArray(childrenData) ? childrenData : []);
+      setStaff(Array.isArray(staffData) ? staffData : []);
     } catch {}
     setLoading(false);
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
+  const flash = (msg, type = 'success') => {
+    if (type === 'error') setError(msg); else setSuccess(msg);
+    setTimeout(() => { setError(''); setSuccess(''); }, 3000);
+  };
+
+  const getId = (value) => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value._id || value.id || '';
+  };
+
+  const specialistRoles = new Set(['psychologist', 'speech_therapist', 'occupational_therapist', 'doctor', 'careProvider']);
+  const specialists = staff.filter(member => specialistRoles.has(member.role));
+
+  const handleAssignSpecialist = async (childId, specialistId) => {
+    setAssigningChildId(childId);
+    try {
+      const updated = await authMutate(`/organization/my-organization/children/${childId}/specialist`, {
+        method: 'PATCH',
+        body: { specialistId: specialistId || undefined },
+      });
+      setChildren(prev => prev.map(child => (child._id === childId ? { ...child, specialistId: updated.specialistId } : child)));
+      flash(specialistId ? t('orgDashboard.children.specialistAssigned', 'Specialist assigned') : t('orgDashboard.children.specialistCleared', 'Specialist cleared'));
+    } catch (err) {
+      flash(err.message, 'error');
+    }
+    setAssigningChildId(null);
+  };
+
+  const dateFmt = (d) => formatDate(d, (i18n.language || 'en').split('-')[0]);
 
   const calcAge = (dob) => {
     if (!dob) return '"”';
@@ -102,6 +141,9 @@ export default function OrgChildren() {
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('common.search', 'Search children...')} className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
       </div>
 
+      {error && <div className="p-3 rounded-lg bg-error/10 text-error text-sm font-medium">{error}</div>}
+      {success && <div className="p-3 rounded-lg bg-success/10 text-success text-sm font-medium">{success}</div>}
+
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
       ) : filtered.length === 0 ? (
@@ -111,14 +153,31 @@ export default function OrgChildren() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
-          {filtered.map(child => (
+          {filtered.map(child => {
+            const assignedSpecialistId = getId(child.specialistId);
+            const assignedSpecialistName = child.specialistId?.fullName || specialists.find(s => s._id === assignedSpecialistId)?.fullName || '';
+            return (
             <div key={child._id} className="bg-white dark:bg-surface-dark rounded-xl border border-slate-300 dark:border-slate-800 p-5">
               <div className="flex items-start gap-3 mb-3">
-                <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+                {child.profilePicture ? (
+                  <img
+                    src={getUploadUrl(child.profilePicture)}
+                    alt={child.fullName}
+                    className="w-11 h-11 rounded-xl object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div
+                  className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg"
+                  style={{ display: child.profilePicture ? 'none' : 'flex' }}
+                >
                   {(child.fullName || '?')[0].toUpperCase()}
                 </div>
-                <div className="flex-1">
-                  <p className="font-bold">{child.fullName}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold truncate">{child.fullName}</p>
                   <p className="text-xs text-slate-500">{calcAge(child.dateOfBirth)} • {child.gender || '—'}</p>
                 </div>
               </div>
@@ -128,12 +187,30 @@ export default function OrgChildren() {
                 <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">cake</span>{dateFmt(child.dateOfBirth)}</p>
                 {child.allergies && <p className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">warning</span>{child.allergies}</p>}
               </div>
+              <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-4">
+                <label className="mb-1.5 flex items-center gap-2 text-xs font-bold uppercase text-slate-400">
+                  <span className="material-symbols-outlined text-sm">medical_services</span>
+                  {t('orgDashboard.children.assignedSpecialist', 'Assigned specialist')}
+                </label>
+                <select
+                  value={assignedSpecialistId}
+                  onChange={e => handleAssignSpecialist(child._id, e.target.value)}
+                  disabled={assigningChildId === child._id || specialists.length === 0}
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm focus:ring-2 focus:ring-primary disabled:opacity-60"
+                >
+                  <option value="">{t('orgDashboard.children.noAssignedSpecialist', 'No specialist assigned')}</option>
+                  {specialists.map(member => (
+                    <option key={member._id} value={member._id}>{member.fullName || member.email}</option>
+                  ))}
+                </select>
+                {assignedSpecialistName && <p className="mt-1.5 text-xs text-slate-500">{t('orgDashboard.children.currentSpecialist', 'Current')}: {assignedSpecialistName}</p>}
+                {specialists.length === 0 && <p className="mt-1.5 text-xs text-amber-600">{t('orgDashboard.children.noSpecialists', 'Create a specialist staff member before assigning children.')}</p>}
+              </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
-
-

@@ -40,7 +40,7 @@ The current pilot still serves the Android APK from the public web app. If artif
 ### High
 
 1. **Token/session storage in `localStorage`**
-   - Access and refresh tokens remain script-readable and vulnerable to XSS theft.
+   - Resolved for active dashboard routes on 2026-05-08: access tokens now stay in module memory, refresh state is held by the backend `HttpOnly` cookie, and legacy localStorage token keys are purged on session use.
 2. **Cache key collision risk in `cachedGet`**
    - `token.slice(0,16)` is not sufficient isolation between JWTs with shared prefixes.
 3. **Route protection is mostly client-storage based**
@@ -56,12 +56,25 @@ The current pilot still serves the Android APK from the public web app. If artif
 
 1. Remove runtime service-worker caching for authenticated API routes.
 2. Scope all in-memory caches by user/session identity and clear on login/logout/401.
-3. Move toward HttpOnly cookie session strategy for production deployments.
+3. Move toward HttpOnly cookie session strategy for production deployments. **Implemented for active dashboard auth on 2026-05-08.**
 4. Add explicit protected-route wrappers with strict role checks on all dashboard and creator routes.
 5. Reduce polling load with visibility-aware intervals and backoff policies.
 6. Enforce paginated API usage in admin/org/specialist heavy tables.
 
 ---
+
+## Execution Update (2026-05-08)
+
+### Resolved from the high-risk web findings
+
+- Token/session storage in `localStorage`:
+  - Active admin, organization, and specialist login/layout flows now use in-memory access tokens plus the backend `cognicare_refresh` `HttpOnly` cookie.
+  - Browser auth requests send `X-Cogni-Client: web` and `credentials: include`; backend browser-origin responses omit `refreshToken` from JSON.
+  - Legacy `_OLD.jsx` dashboard files still contain obsolete localStorage token patterns and must stay unrouted or be deleted before reuse.
+
+### Residual notes
+
+- Manual QA still needs to verify login, reload refresh, logout, and role-switch behavior in a production-like HTTPS deployment where third-party cookie/CORS behavior matches the real domains.
 
 ## Execution Update (2026-04-12)
 
@@ -83,4 +96,4 @@ The current pilot still serves the Android APK from the public web app. If artif
 ### Residual notes
 
 - Web lint still reports two warnings in untouched files (`src/components/3d/CogniCompanion.jsx`, `src/pages/home/LandingPage.jsx`) for unused `motion` imports.
-- Token strategy remains role-scoped local storage in this cycle (cookie-session migration intentionally deferred).
+- Superseded 2026-05-08: active dashboard auth no longer stores bearer/refresh tokens in localStorage.

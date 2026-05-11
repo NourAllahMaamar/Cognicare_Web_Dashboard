@@ -109,7 +109,9 @@ export default function AdminCaregiverApplications() {
               : 'bg-white dark:bg-surface-dark border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
-            {s === 'pending' && 'â³ '}{s === 'approved' && 'âœ… '}{s === 'denied' && 'âŒ '}
+            <span className="material-symbols-outlined align-[-3px] text-base mr-1">
+              {s === 'pending' ? 'schedule' : s === 'approved' ? 'check_circle' : 'cancel'}
+            </span>
             {t(`caregiverApplications.filters.${s}`)}
           </button>
         ))}

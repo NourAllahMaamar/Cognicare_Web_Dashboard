@@ -8,19 +8,26 @@ import DashboardAssistant from '../../components/assistant/DashboardAssistant';
 import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
 
 export default function AdminLayout() {
-  const { getUser, logout } = useAuth('admin');
+  const { ensureSession, logout } = useAuth('admin');
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const u = getUser();
-    if (!u || u.role !== 'admin') {
-      navigate('/admin/login');
-      return;
-    }
-    setUser(u);
-  }, []);
+    let cancelled = false;
+    ensureSession().then((session) => {
+      if (cancelled) return;
+      const u = session?.user;
+      if (!u || u.role !== 'admin') {
+        navigate('/admin/login');
+        return;
+      }
+      setUser(u);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ensureSession, navigate]);
 
   const navItems = [
     { path: '/admin/dashboard', icon: 'dashboard', label: t('adminLayout.dashboard'), end: true },

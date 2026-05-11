@@ -5,6 +5,7 @@ import SEOHead from '../../components/SEOHead';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
+import { storeAuthSession } from '../../utils/authSession';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
 function AdminLogin() {
@@ -23,7 +24,8 @@ function AdminLogin() {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
 
@@ -37,11 +39,7 @@ function AdminLogin() {
         throw new Error(t('adminLogin.accessDenied'));
       }
 
-      localStorage.setItem('adminToken', data.accessToken);
-      if (data.refreshToken) {
-        localStorage.setItem('adminRefreshToken', data.refreshToken);
-      }
-      localStorage.setItem('adminUser', JSON.stringify(data.user));
+      storeAuthSession('admin', data);
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.message);
@@ -100,7 +98,7 @@ function AdminLogin() {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden">
                 <img src={logo} alt="CogniCare" className="w-8 h-8 object-contain" />
               </div>
-              <span className="text-xl font-bold tracking-tight">CogniCare</span>
+              <span className="text-xl font-bold tracking-tight">{t('common.appName', 'CogniCare')}</span>
             </div>
 
             <h1 className="text-2xl font-black tracking-tight mb-1">{t('adminLogin.title', 'Admin Login')}</h1>
@@ -147,4 +145,3 @@ function AdminLogin() {
 }
 
 export default AdminLogin;
-

@@ -232,7 +232,37 @@ export default function OrgOverview() {
                 <h3 className="font-bold text-base md:text-lg truncate">{t('orgDashboard.ai.title', 'Progress AI Insights')}</h3>
                 <p className="text-[10px] md:text-xs text-slate-500 dark:text-text-muted truncate">{t('orgDashboard.ai.subtitle', 'Select a specialist to view AI-powered performance analytics')}</p>
               </div>
+              <div className="hidden rounded-xl border border-slate-200 px-3 py-2 text-right dark:border-slate-700 sm:block">
+                <p className="text-lg font-black">{specialists.length}</p>
+                <p className="text-[10px] font-semibold uppercase text-slate-400">Specialists</p>
+              </div>
             </div>
+
+            {specialists.length > 0 && (
+              <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {specialists.slice(0, 6).map((specialist) => (
+                  <button
+                    key={specialist._id}
+                    type="button"
+                    onClick={() => fetchAiSummary(specialist)}
+                    className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${
+                      selectedSpecialist?._id === specialist._id
+                        ? 'border-primary bg-primary/10'
+                        : 'border-slate-200 bg-slate-50 hover:border-primary/50 dark:border-slate-800 dark:bg-slate-900/30'
+                    }`}
+                  >
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 font-black text-primary">
+                      {(specialist.fullName || specialist.email || '?')[0].toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold">{specialist.fullName || specialist.email}</p>
+                      <p className="truncate text-xs text-slate-500 dark:text-text-muted">{roleLabel(specialist.role)}</p>
+                    </div>
+                    <span className="material-symbols-outlined text-base text-slate-400">insights</span>
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* ─── Search by Name ─── */}
             <div className="relative mb-4 md:mb-6" ref={searchRef}>
@@ -488,9 +518,30 @@ export default function OrgOverview() {
 
             {/* Empty state */}
             {!aiSummary && !aiLoading && !aiError && (
-              <div className="text-center py-10">
-                <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3 block">monitoring</span>
-                <p className="text-sm text-slate-400 dark:text-slate-500">{t('orgDashboard.ai.emptyState', 'Search for a specialist above to view their AI-powered progress analytics')}</p>
+              <div className="grid gap-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900/30 md:grid-cols-[0.8fr_1.2fr]">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <span className="material-symbols-outlined text-2xl">monitoring</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">Ready to compare specialist impact</p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-text-muted">
+                      Pick a specialist above to load AI plan usage, feedback, approval rate, and child coverage.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { icon: 'description', label: 'Plans' },
+                    { icon: 'reviews', label: 'Feedback' },
+                    { icon: 'trending_up', label: 'Progress' },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-slate-200 bg-white p-3 text-center dark:border-slate-800 dark:bg-surface-dark">
+                      <span className="material-symbols-outlined text-primary">{item.icon}</span>
+                      <p className="mt-1 text-xs font-bold">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

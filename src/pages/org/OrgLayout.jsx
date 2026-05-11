@@ -6,33 +6,35 @@ import SEOHead from '../../components/SEOHead';
 import DashboardAssistant from '../../components/assistant/DashboardAssistant';
 import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
 import OrgOnboardingModal from '../../components/onboarding/OrgOnboardingModal';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function OrgLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { ensureSession, logout } = useAuth('orgLeader');
   const [user, setUser] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('orgLeaderUser');
-    if (!stored) { navigate('/org/login'); return; }
-    try { 
-      setUser(JSON.parse(stored)); 
-      
+    let cancelled = false;
+    ensureSession().then((session) => {
+      if (cancelled) return;
+      const u = session?.user;
+      if (!u || u.role !== 'organization_leader') {
+        navigate('/org/login');
+        return;
+      }
+      setUser(u);
       // Check if onboarding has been completed
       const onboardingComplete = localStorage.getItem('orgLeaderOnboardingComplete');
       if (!onboardingComplete) {
         setShowOnboarding(true);
       }
-    } catch { navigate('/org/login'); }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('orgLeaderToken');
-    localStorage.removeItem('orgLeaderRefreshToken');
-    localStorage.removeItem('orgLeaderUser');
-    navigate('/org/login');
-  };
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ensureSession, navigate]);
 
   const navItems = [
     { to: '/org/dashboard', icon: 'dashboard', label: t('orgDashboard.tabs.overview', 'Overview'), end: true },
@@ -63,7 +65,7 @@ export default function OrgLayout() {
         navItems={navItems}
         bottomItems={bottomItems}
         user={user}
-        onLogout={handleLogout}
+        onLogout={logout}
         headerActions={<DashboardAssistant role="orgLeader" />}
         seoHead={<SEOHead title="Organization Dashboard" path="/org/dashboard" noindex />}
       >

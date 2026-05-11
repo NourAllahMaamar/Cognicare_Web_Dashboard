@@ -2,6 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
+import { formatDate } from '../../utils/localeFormat';
 
 export default function OrgInvitations() {
   const { t, i18n } = useTranslation();
@@ -22,7 +23,7 @@ export default function OrgInvitations() {
     setLoading(false);
   };
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
+  const dateFmt = (d) => formatDate(d, (i18n.language || 'en').split('-')[0]);
 
   const isExpired = (expiry) => expiry ? new Date(expiry) < new Date() : false;
 
@@ -100,4 +101,3 @@ export default function OrgInvitations() {
     </div>
   );
 }
-

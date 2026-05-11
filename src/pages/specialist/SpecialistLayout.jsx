@@ -5,24 +5,38 @@ import SidebarLayout from '../../components/layouts/SidebarLayout';
 import SEOHead from '../../components/SEOHead';
 import DashboardAssistant from '../../components/assistant/DashboardAssistant';
 import { DashboardAssistantProvider } from '../../assistant/DashboardAssistantContext';
+import { useAuth } from '../../hooks/useAuth';
+
+const specialistRoles = [
+  'psychologist',
+  'speech_therapist',
+  'occupational_therapist',
+  'doctor',
+  'volunteer',
+  'careProvider',
+];
 
 export default function SpecialistLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { ensureSession, logout } = useAuth('specialist');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem('specialistUser');
-    if (!stored) { navigate('/specialist/login'); return; }
-    try { setUser(JSON.parse(stored)); } catch { navigate('/specialist/login'); }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('specialistToken');
-    localStorage.removeItem('specialistRefreshToken');
-    localStorage.removeItem('specialistUser');
-    navigate('/specialist/login');
-  };
+    let cancelled = false;
+    ensureSession().then((session) => {
+      if (cancelled) return;
+      const u = session?.user;
+      if (!u || !specialistRoles.includes(u.role)) {
+        navigate('/specialist/login');
+        return;
+      }
+      setUser(u);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ensureSession, navigate]);
 
   const navItems = [
     { to: '/specialist/dashboard', icon: 'dashboard', label: t('specialistDashboard.tabs.overview', 'Overview'), end: true },
@@ -47,7 +61,7 @@ export default function SpecialistLayout() {
         navItems={navItems}
         bottomItems={bottomItems}
         user={user}
-        onLogout={handleLogout}
+        onLogout={logout}
         headerActions={<DashboardAssistant role="specialist" />}
         seoHead={<SEOHead title="Specialist Dashboard" path="/specialist/dashboard" noindex />}
       >

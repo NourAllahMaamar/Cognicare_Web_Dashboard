@@ -1,10 +1,12 @@
 ﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getTypeColor, getTypeBg } from '../../utils/planUtils';
 
 export default function SpecialistPlans() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { authGet, authFetch } = useAuth('specialist');
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,10 +19,13 @@ export default function SpecialistPlans() {
 
   const loadPlans = async () => {
     setLoading(true);
+    setError('');
     try {
       const data = await authGet('/specialized-plans/my-plans');
       setPlans(Array.isArray(data) ? data : []);
-    } catch {}
+    } catch (e) {
+      setError(e.message || 'Failed to load plans');
+    }
     setLoading(false);
   };
 
@@ -79,10 +84,13 @@ export default function SpecialistPlans() {
                     <div>
                       <span className="text-xs font-bold uppercase text-slate-400">{plan.type}</span>
                       <p className="font-bold">{plan.title || plan.name || plan.type}</p>
-                      <p className="text-sm text-slate-500">{plan.childName || plan.child?.fullName || ''}</p>
+                      <p className="text-sm text-slate-500">{plan.childId?.fullName || plan.childName || ''}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <button onClick={e => { e.stopPropagation(); navigate(`/specialist/dashboard/children?selectedChildId=${plan.childId?._id || plan.childId}`); }} className="p-2 text-primary hover:bg-primary/5 rounded-lg" title={t('specialistDashboard.myPlans.viewChild', 'View Child')}>
+                      <span className="material-symbols-outlined text-sm">child_care</span>
+                    </button>
                     <button onClick={e => { e.stopPropagation(); handleDelete(plan); }} className="p-2 text-error hover:bg-error/5 rounded-lg"><span className="material-symbols-outlined text-sm">delete</span></button>
                     <span className={`material-symbols-outlined transition-transform ${expandedPlan === plan._id ? 'rotate-180' : ''}`}>expand_more</span>
                   </div>
@@ -182,5 +190,4 @@ export default function SpecialistPlans() {
     </div>
   );
 }
-
 

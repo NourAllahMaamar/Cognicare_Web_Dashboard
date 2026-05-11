@@ -5,6 +5,7 @@ import SEOHead from '../../components/SEOHead';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import ThemeToggle from '../../components/ui/ThemeToggle';
 import { API_BASE_URL } from '../../config';
+import { storeAuthSession } from '../../utils/authSession';
 import logo from '../../assets/app_logo_withoutbackground.png';
 
 function OrgLeaderLogin() {
@@ -34,13 +35,11 @@ function OrgLeaderLogin() {
     e.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+      const response = await fetch(`${API_BASE_URL}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Cogni-Client': 'web' }, credentials: 'include', body: JSON.stringify({ email, password }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.loginFailed'));
       if (data.user.role !== 'organization_leader') throw new Error(t('orgLeaderLogin.accessDenied'));
-      localStorage.setItem('orgLeaderToken', data.accessToken);
-      localStorage.setItem('orgLeaderRefreshToken', data.refreshToken);
-      localStorage.setItem('orgLeaderUser', JSON.stringify(data.user));
+      storeAuthSession('orgLeader', data);
       navigate('/org/dashboard');
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
@@ -70,7 +69,7 @@ function OrgLeaderLogin() {
       formData.append('organizationName', organizationName);
       formData.append('verificationCode', verificationCode);
       if (certificatePdf) formData.append('certificate', certificatePdf);
-      const response = await fetch(`${API_BASE_URL}/auth/signup`, { method: 'POST', body: formData });
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, { method: 'POST', headers: { 'X-Cogni-Client': 'web' }, credentials: 'include', body: formData });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || t('dashboard.messages.signupFailed'));
       if (data.requiresApproval) {
@@ -78,9 +77,7 @@ function OrgLeaderLogin() {
         setCodeSent(false); setVerificationCode(''); setEmail(''); setPassword(''); setFullName(''); setPhone(''); setOrganizationName(''); setCertificatePdf(null);
         return;
       }
-      localStorage.setItem('orgLeaderToken', data.accessToken);
-      localStorage.setItem('orgLeaderRefreshToken', data.refreshToken);
-      localStorage.setItem('orgLeaderUser', JSON.stringify(data.user));
+      storeAuthSession('orgLeader', data);
       navigate('/org/dashboard');
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
@@ -106,7 +103,7 @@ function OrgLeaderLogin() {
           <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center text-white shadow-2xl mx-auto mb-8">
             <span className="material-symbols-outlined text-3xl">leaderboard</span>
           </div>
-          <h2 className="text-3xl font-black text-white mb-4">{t('orgLeaderLogin.branding.title', 'Organization Portal')}</h2>
+          <h2 className="text-3xl font-black text-white mb-4">{t('orgLeaderLogin.branding.title', 'Organization Leader Portal')}</h2>
           <p className="text-purple-100/80 text-sm leading-relaxed">{t('orgLeaderLogin.branding.description', 'Manage your organization - oversee staff, families, children, and track progress with AI-powered insights across your care network.')}</p>
           <div className="flex gap-4 justify-center mt-10">
             {['groups', 'family_restroom', 'trending_up'].map(icon => (
@@ -137,11 +134,11 @@ function OrgLeaderLogin() {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden">
                 <img src={logo} alt="CogniCare" className="w-8 h-8 object-contain" />
               </div>
-              <span className="text-xl font-bold tracking-tight">CogniCare</span>
+              <span className="text-xl font-bold tracking-tight">{t('common.appName', 'CogniCare')}</span>
             </div>
 
             <h1 className="text-2xl font-black tracking-tight mb-1">
-              {mode === 'login' ? t('orgLeaderLogin.title', 'Org Leader Login') : t('orgLeaderLogin.signupTitle', 'Create Organization')}
+              {mode === 'login' ? t('orgLeaderLogin.title', 'Organization Leader Login') : t('orgLeaderLogin.signupTitle', 'Create Your Organization')}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
               {mode === 'login' ? t('orgLeaderLogin.subtitle', 'Sign in to manage your organization') : t('orgLeaderLogin.signupSubtitle', 'Register a new organization')}
@@ -274,9 +271,9 @@ function OrgLeaderLogin() {
 
             {/* Footer links */}
             <div className="flex items-center justify-center gap-3 mt-6 text-xs text-slate-400">
-              <button onClick={() => navigate('/admin/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.adminLink', 'Admin Login')}</button>
+              <button onClick={() => navigate('/privacy')} className="hover:text-primary transition-colors">{t('landing.footerLinks.privacy', 'Privacy')}</button>
               <span>•</span>
-              <button onClick={() => navigate('/specialist/login')} className="hover:text-primary transition-colors">{t('orgLeaderLogin.specialistLogin')}</button>
+              <button onClick={() => navigate('/terms')} className="hover:text-primary transition-colors">{t('landing.footerLinks.terms', 'Terms')}</button>
             </div>
           </div>
         </div>
@@ -286,4 +283,3 @@ function OrgLeaderLogin() {
 }
 
 export default OrgLeaderLogin;
-

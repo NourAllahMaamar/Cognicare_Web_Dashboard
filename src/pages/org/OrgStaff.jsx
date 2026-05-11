@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { API_BASE_URL } from '../../config';
 import { exportTemplate, exportJson } from '../../utils/excelExport';
+import { formatDate } from '../../utils/localeFormat';
 
 export default function OrgStaff() {
   const { t, i18n } = useTranslation();
@@ -77,7 +78,7 @@ export default function OrgStaff() {
         flash(t('orgDashboard.staffUpdated', 'Staff updated'));
       } else if (modalMode === 'invite') {
         if (!inviteEmail) { flash(t('common.emailRequired'), 'error'); return; }
-        await authMutate('/organization/my-organization/staff/invite', { body: { email: inviteEmail, role: 'specialist' } });
+        await authMutate('/organization/my-organization/staff/invite', { body: { email: inviteEmail, role: form.role } });
         flash(t('orgDashboard.invitationSent', 'Invitation sent'));
       } else {
         if (!form.fullName || !form.email || !form.password) { flash(t('common.nameEmailPasswordRequired'), 'error'); return; }
@@ -105,7 +106,7 @@ export default function OrgStaff() {
   };
 
   const exportStaff = async () => {
-    const data = staff.map(s => ({ 'Full Name': s.fullName, Email: s.email, Phone: s.phone || '', Role: s.role, Joined: s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '' }));
+    const data = staff.map(s => ({ 'Full Name': s.fullName, Email: s.email, Phone: s.phone || '', Role: s.role, Joined: dateFmt(s.createdAt) }));
     await exportJson(data, 'Staff', 'staff_export.xlsx');
     setShowDropdown(false);
   };
@@ -162,7 +163,7 @@ export default function OrgStaff() {
     return !q || (s.fullName || '').toLowerCase().includes(q) || (s.email || '').toLowerCase().includes(q) || (s.role || '').toLowerCase().includes(q);
   });
 
-  const dateFmt = (d) => d ? new Date(d).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'fr' ? 'fr-FR' : 'en-US') : '';
+  const dateFmt = (d) => formatDate(d, (i18n.language || 'en').split('-')[0]);
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
@@ -295,9 +296,17 @@ export default function OrgStaff() {
             )}
 
             {modalMode === 'invite' ? (
-              <div>
-                <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
-                <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+              <div className="space-y-3 md:space-y-4">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5">{t('common.email', 'Email')}</label>
+                  <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@email.com" className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5">{t('common.role', 'Role')}</label>
+                  <select value={form.role} onChange={e => setForm({...form, role: e.target.value})} className="w-full p-2.5 md:p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary">
+                    {roles.map(r => <option key={r} value={r}>{t(`roles.${r}`, r)}</option>)}
+                  </select>
+                </div>
               </div>
             ) : (
               <div className="space-y-3 md:space-y-4">
@@ -417,5 +426,3 @@ export default function OrgStaff() {
     </div>
   );
 }
-
-
